@@ -151,9 +151,9 @@ public class ModelContextImplTest {
     @Test
     public void testHashCode() {
         ModelContext context = new ModelContextImpl();
-        assertEquals(1039629559, context.hashCode());
+        assertEquals(216866173, context.hashCode());
         addPropertysetsToContext(context);
-        assertEquals(-986989127, context.hashCode());
+        assertEquals(-1809752513, context.hashCode());
     }
 
     /**

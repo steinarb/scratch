@@ -216,9 +216,9 @@ public class ModelContextRecordingMetadataTest {
     public void testHashCode() {
         ModelContext inner = new ModelContextImpl();
         ModelContext context = new ModelContextRecordingMetadata(inner);
-        assertEquals(-2131111121, context.hashCode());
+        assertEquals(-1866972311, context.hashCode());
         addPropertysetsToContext(inner);
-        assertEquals(-531780947, context.hashCode());
+        assertEquals(-267642137, context.hashCode());
     }
 
     /**
