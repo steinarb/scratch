@@ -20,6 +20,7 @@ import no.priv.bang.modeling.modelstore.ErrorBean;
 import no.priv.bang.modeling.modelstore.Propertyset;
 import no.priv.bang.modeling.modelstore.ModelContext;
 import no.priv.bang.modeling.modelstore.Modelstore;
+import no.priv.bang.modeling.modelstore.ValueList;
 import no.priv.bang.modeling.modelstore.mocks.MockOutputStreamThatThrowsIOExceptionOnEverything;
 
 import org.junit.Ignore;
@@ -506,6 +507,54 @@ public class JsonPropertysetPersisterTest {
         JsonFactory jsonFactory = new JsonFactory();
         JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
         File propertysetsFile = folder.newFile("propertyset.json");
+        persister.persist(propertysetsFile, context);
+        String contents = new String(Files.readAllBytes(propertysetsFile.toPath()));
+        System.out.println(contents);
+    }
+
+    /**
+     * Not actually a unit test.  Generates a simple model
+     * with 10 interconnected nodes and outputs JSON for the model.
+     *
+     * @throws IOException
+     */
+    @Ignore
+    @Test
+    public void generateSimpleModel() throws IOException {
+        Modelstore modelstore = new ModelstoreProvider();
+        ModelContext context = modelstore.createContext();
+        Propertyset modelAspect = context.findPropertyset(modelstore.getModelAspectId());
+        Propertyset generalObjectAspect = context.findPropertyset(modelstore.getGeneralObjectAspectId());
+        Propertyset relationshipAspect = context.findPropertyset(modelstore.getRelationshipAspectId());
+
+        Propertyset model = context.findPropertyset(UUID.randomUUID());
+        model.addAspect(modelAspect);
+
+        ValueList nodes = new ValueArrayList();
+        for (int i = 0; i < 10; i++) {
+            Propertyset node = context.findPropertyset(UUID.randomUUID());
+            node.addAspect(generalObjectAspect);
+            String nodeName = "Node " + i;
+            node.setStringProperty("name", nodeName);
+            nodes.add(node);
+        }
+
+        ValueList connections = new ValueArrayList();
+        for (int i = 0; i < 10 - 1; i++) {
+            Propertyset connection = context.findPropertyset(UUID.randomUUID());
+            connection.addAspect(relationshipAspect);
+
+            connection.setReferenceProperty("origin", nodes.get(i).asReference());
+            connection.setReferenceProperty("target", nodes.get(i + 1).asReference());
+            connections.add(connection);
+        }
+
+        model.setListProperty("objects", nodes);
+        model.setListProperty("relationships", connections);
+
+        JsonFactory jsonFactory = new JsonFactory();
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
+        File propertysetsFile = folder.newFile("testmodel.json");
         persister.persist(propertysetsFile, context);
         String contents = new String(Files.readAllBytes(propertysetsFile.toPath()));
         System.out.println(contents);
