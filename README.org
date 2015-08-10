@@ -79,7 +79,8 @@ Having "property" in the name doesn't make sense for the list of values, and mak
  - Let Modelstore inherit this interface
  - Try the following implementation: create a class implementing this interface and let ModelstoreBase inherit it, as well as implementing the Modelstore
  - Can use the same approach for value creation if of interest
-** TODO Make merge operation thread safe
+** TODO Connect a minimal hardcoded model to eclipse GEF
+** TODO Implement JSON storage for eclipse GEF models
 ** TODO Split ModelContext objects
  - Separate out a propertyset and all the propertysets it depends on to a separate ModelContext
  - Should be thread safe before it is set to complete
@@ -111,8 +112,6 @@ Having "property" in the name doesn't make sense for the list of values, and mak
    - It would be nice if the actual application of the aspect could "pass through" to the proxied propertyset
    - The graphical information (position, symbol) should be added to the proxy
 ** TODO Test serialization/deserialization using YAML (YAML has object id and object reference)
-** TODO Connect a minimal hardcoded model to eclipse GEF
-** TODO Implement JSON storage for eclipse GEF models
 ** TODO Storage based on SQL for relationships and references and individual JSON files
 *** TODO Individual Propertyset files git versioned
 *** TODO Metatada into the RDBMS
@@ -139,6 +138,8 @@ Having "property" in the name doesn't make sense for the list of values, and mak
 Maybe actually two separate:
  - S-expression directly on jackson
  - sxml on top of the existing XML serialization/deserialization
+** TODO Make merge operation thread safe
+ - <2015-07-25 lør 15:44> Not doing this for now, too hard to be certain with the current implementation
 ** TODO Add propertyvalue creation methods on the ModelStore interface, to make them accessible to the world
  - Not sure if this is necessary with the primitive value setters in place for both Propertyset and Valuelist?
 ** TODO Decide if the PropertysetRecordingSaveTime should compare equal to a PropertysetRecordingSaveTime from a different ModelContext
