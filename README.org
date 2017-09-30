@@ -1,0 +1,51 @@
+* What's this
+
+This is a very simple file upload web application that can be used to create a web based file share.
+
+The application can provide a directory listing of a file area on the server, where everyone can browse and download files, and logged in users can upload new version of files and delete existing files.
+
+This web application is intended to be run in apache karaf.
+
+The web application is built using vaadin 8.1.5.
+
+
+* Status
+
+travis-ci and coveralls will go here.
+
+
+* How to install
+
+The instructions are suitable for a debian 9 ("stretch") GNU/linux system:
+ 1. Install the prerequisites (commands done as root):
+    #+BEGIN_EXAMPLE
+    e
+    #+END_EXAMPLE
+ 2. Build and install karaf 4.1.2 as a debian packaged systemd service, running as user karaf (commands done as root)
+    #+BEGIN_EXAMPLE
+    e
+    #+END_EXAMPLE
+ 3. Log in to the karaf console as users karaf (password is "karaf" without the quotes)
+    #+BEGIN_EXAMPLE
+    e
+    #+END_EXAMPLE
+ 4. In the karaf console:
+    1. Install the fildele application
+       #+BEGIN_EXAMPLE
+       e
+       #+END_EXAMPLE
+    2. Configure a file share area
+       #+BEGIN_EXAMPLE
+       e
+       #+END_EXAMPLE
+    3. Configure user access to the file share area
+       #+BEGIN_EXAMPLE
+       e
+       #+END_EXAMPLE
+ 5. Configure nginx reverse proxy to the web application
+
+* License
+
+This web application is licensed under Apache Public License v 2.0.
+
+See the LICENSE file for full details on this license.
