@@ -1,7 +1,6 @@
 package no.priv.bang.fildele.tests;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
@@ -12,10 +11,8 @@ import java.net.URL;
 
 import javax.inject.Inject;
 import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -25,6 +22,11 @@ import org.ops4j.pax.exam.karaf.options.LogLevelOption.LogLevel;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+
+import no.priv.bang.fildele.tests.mocks.MockHttpServletRequest;
+import no.priv.bang.fildele.tests.mocks.MockHttpServletResponse;
+import no.priv.bang.fildele.tests.mocks.MockServletConfig;
+import no.priv.bang.fildele.tests.mocks.MockServletContext;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -41,7 +43,6 @@ public class FildeleIntegrationTest {
         final String httpPort = freePortAsString();
         final String httpsPort = freePortAsString();
         final MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal").type("zip").versionAsInProject();
-        final MavenArtifactUrlReference mockitoFeatureRepo = maven().groupId("no.priv.bang.fildele").artifactId("karaf.mockito").versionAsInProject().type("xml").classifier("features");
         final MavenArtifactUrlReference fildeleFeatureRepo = maven().groupId("no.priv.bang.fildele").artifactId("fildele.application").versionAsInProject().type("xml").classifier("features");
         return options(
             karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
@@ -57,16 +58,26 @@ public class FildeleIntegrationTest {
             frameworkProperty("felix.bootdelegation.implicit").value("false"),
             systemProperty("org.ops4j.pax.logging.DefaultSer‌​viceLog.level").value("DEBUG"),
             vmOptions("-Dtest-jmx-port=" + jmxPort),
-            features(mockitoFeatureRepo, "mockito"),
             junitBundles(),
             features(fildeleFeatureRepo, "fildele"));
     }
 
     @Test
     public void testServlet() throws ServletException, IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
+        servlet.init(createMockServletConfig());
+
+        String requestURI = "http://localhost:8181/fildele/jad";
+        String servletPath = "/fildele";
+        MockHttpServletRequest request = new MockHttpServletRequest(requestURI, servletPath);
+        MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.service(request, response);
+        assertEquals(200, response.getStatus());
+    }
+
+    private ServletConfig createMockServletConfig() {
+        MockServletContext context = new MockServletContext();
+        MockServletConfig config = new MockServletConfig(context);
+        return config;
     }
 
     public File getConfigFile(String path) {

@@ -22,10 +22,6 @@
     <artifactId>fildele.tests</artifactId>
     <name>filedele pax exam integration tests</name>
 
-    <properties>
-        <karaf-feature-name>mockito</karaf-feature-name>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -46,14 +42,6 @@
             <artifactId>fildele.application</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.fildele</groupId>
-            <artifactId>karaf.mockito</artifactId>
-            <version>${project.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
@@ -81,15 +69,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner-servlet</artifactId>
         </dependency>
     </dependencies>
 

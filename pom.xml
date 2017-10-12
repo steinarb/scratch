@@ -35,7 +35,6 @@
 
     <modules>
         <module>fildele.application</module>
-        <module>karaf.mockito</module>
         <module>fildele.tests</module>
     </modules>
 
