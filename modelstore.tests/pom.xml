@@ -16,22 +16,36 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>apache-karaf-minimal</artifactId>
+            <version>${karaf.version}</version>
+            <type>zip</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ops4j.pax.logging</groupId>
+                    <artifactId>pax-logging-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>org.apache.felix.framework</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.platform</groupId>
+                    <artifactId>org.eclipse.osgi</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-karaf</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-link-mvn</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
@@ -42,113 +56,21 @@
             <artifactId>org.osgi.core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.modeling.modelstore</groupId>
+            <artifactId>modelstore.services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.modeling.modelstore</groupId>
             <artifactId>modelstore.backend</artifactId>
             <version>${project.version}</version>
-            <type>bundle</type>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>felix</id>
-            <activation>
-            </activation>
-            <properties>
-                <pax.exam.framework>felix</pax.exam.framework>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>org.apache.felix.framework</artifactId>
-                    <version>4.0.2</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>equinox</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <pax.exam.framework>equinox</pax.exam.framework>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>org.eclipse.osgi</artifactId>
-                    <version>3.7.0.v20110613</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>knopflerfish</id>
-            <activation>
-            </activation>
-            <properties>
-                <pax.exam.framework>knopflerfish</pax.exam.framework>
-            </properties>
-            <repositories>
-                <repository>
-                    <id>knopflerfish-releases</id>
-                    <url>http://www.knopflerfish.org/maven2</url>
-                </repository>
-            </repositories>
-            <dependencies>
-                <dependency>
-                    <groupId>org.knopflerfish</groupId>
-                    <artifactId>framework</artifactId>
-                    <version>6.0.4</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>native</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <pax.exam.container>native</pax.exam.container>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.ops4j.pax.exam</groupId>
-                    <artifactId>pax-exam-container-native</artifactId>
-                    <version>${pax.exam.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>forked</id>
-            <activation>
-            </activation>
-            <properties>
-                <pax.exam.container>forked</pax.exam.container>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.ops4j.pax.exam</groupId>
-                    <artifactId>pax-exam-container-forked</artifactId>
-                    <version>${pax.exam.version}</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.ops4j.pax.url</groupId>
-                    <artifactId>pax-url-reference</artifactId>
-                    <version>${pax.url.version}</version>
-                </dependency>
-
-            </dependencies>
-        </profile>
-
-    </profiles>
-
 
     <build>
         <testResources>
@@ -157,5 +79,21 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+        <plugins>
+            <!-- generate dependencies versions for use by asInProject() in pax exam tests -->
+            <plugin>
+                <groupId>org.apache.servicemix.tooling</groupId>
+                <artifactId>depends-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-depends-file</id>
+                        <goals>
+                            <goal>generate-depends-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
