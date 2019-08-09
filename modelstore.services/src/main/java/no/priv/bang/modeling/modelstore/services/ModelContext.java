@@ -9,9 +9,9 @@ import java.util.UUID;
  * {@link Propertyset} instances forming a model or several models.
  *
  * A ModelContext can be persisted with
- * {@link JsonPropertysetPersister#persist(java.io.File, ModelContext)} and
+ * JsonPropertysetPersister#persist(java.io.File, ModelContext) and
  * restored with
- * {@link JsonPropertysetPersister#restore(java.io.File, ModelContext)}.
+ * JsonPropertysetPersister#restore(java.io.File, ModelContext).
  *
  * A {@link ModelContext} will keep track of the last modification
  * time of each {@link Propertyset} and when merging two ModelContexts

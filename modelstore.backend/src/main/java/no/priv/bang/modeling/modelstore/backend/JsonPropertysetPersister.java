@@ -23,7 +23,7 @@ import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
 /**
- * This persist and restore the contents of a {@link Modelstore} to/from a
+ * This persist and restore the contents of a Modelstore to/from a
  * JSON {@link File}.
  *
  * @author Steinar Bang

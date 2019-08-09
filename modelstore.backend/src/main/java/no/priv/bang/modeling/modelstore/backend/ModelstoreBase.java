@@ -14,8 +14,8 @@ import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
 
 /**
- * Class implementing {@link Modelstore} for use as a base
- * class for {@link Provider} classes for {@link Modelstore}
+ * Class implementing Modelstore for use as a base
+ * class for Provider classes for Modelstore.
  *
  * @author Steinar Bang
  *

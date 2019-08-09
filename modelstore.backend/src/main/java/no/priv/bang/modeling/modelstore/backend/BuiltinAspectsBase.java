@@ -6,11 +6,11 @@ import no.priv.bang.modeling.modelstore.services.BuiltinAspects;
 
 /**
  * Return the IDs of the aspects that are always present in the
- * {@link ModelContext} objects.
+ * ModelContext objects.
  *
  * This class implements {@link BuiltinAspects} and is intended to
  * be used either as an OSGi service alone or as a base class
- * for the {@link Modelstore} implementation.
+ * for the Modelstore implementation.
  *
  * @author Steinar Bang
  *
