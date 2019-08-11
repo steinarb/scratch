@@ -256,16 +256,13 @@ public class JsonPropertysetPersisterTest {
 
         // Read the contents of the file into memory
         persister.persist((OutputStream)null, context);
-        Date now = new Date(); // Will be within 1ms of the stream close error
 
         // Check that the exception has been logged
         List<ErrorBean> errors = modelstore.getErrors();
         assertEquals(2, errors.size());
-        assertEquals(now, errors.get(0).getDate());
         assertEquals("Caught exception outputting stream", errors.get(0).getMessage());
         assertNull(errors.get(0).getFileOrStream());
         assertEquals(NullPointerException.class, errors.get(0).getException().getClass());
-        assertEquals(now, errors.get(1).getDate());
         assertEquals("Caught exception closing output stream", errors.get(1).getMessage());
         assertNull(errors.get(1).getFileOrStream());
         assertEquals(NullPointerException.class, errors.get(1).getException().getClass());
