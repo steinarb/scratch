@@ -36,7 +36,7 @@ The modelstore can't be used for anything, yet.  But it can be installed on apac
       feature:install modelstore.backend
     #+END_EXAMPLE
 
-* Roadmap [18/45]
+* Roadmap [18/55]
 ** DONE Fix the test coverage of all property values (hashCode, equals and toString ruined coverage)
 ** DONE Put javadoc from travis builds on the web
 ** TODO Add javadocs to everything
@@ -98,6 +98,70 @@ Having "property" in the name doesn't make sense for the list of values, and mak
 ** DONE Switch from Jsr330Activator to OSGi Declarative Service (DS)
  - <2019-08-12 man. 11:54> The single jar was split into modelstore.services defining the OSGi services and a modelstore.backend containing the DS component
  - <2019-08-12 man. 11:56> The gogoshell stuff was deleted and karaf features were created instead
+** TODO Replace logging to ErrorBean with the OSGi LogService
+** TODO Separate the modelstore implementation holding model in memory into an OSGi library bundle (maybe)
+ - <2019-08-12 man. 20:54> modelstore.backend is to become a DS component that initially saves to and restores from disk
+ - <2019-08-12 man. 20:56> need a good name for the model-in-memory library before I can create the model
+ - <2019-08-12 man. 21:02> The serialization/deserialization code doesn't need to be part of this library
+ - <2019-08-12 man. 21:03> modelstore.model is probably a good name for the library,
+ - <2019-08-12 man. 21:20> classes that should be migrated to modelstore.model, are:
+   1. Aspects
+   2. BooleanValue
+   3. BuiltinAspectsBase
+   4. ComplexValue
+   5. DoubleValue
+   6. EmptyValue
+   7. EmptyValueList
+   8. IdValue
+   9. ListValue
+   10. LongValue
+   11. NilValue
+   12. PropertysetImpl
+   13. PropertysetNil
+   14. Propertysets
+   15. PropertysetValueBase
+   16. ReferenceValue
+   17. StringValue
+   18. ValueArrayList
+   19. ValueBase
+   20. Values
+ - <2019-08-12 man. 21:21> classes that should not be migrated to modelstore.model, are:
+   1. JsonGeneratorWithReferences
+   2. JsonPropertysetPersister
+   3. ModelstoreProvider (this is the DS component)
+ - <2019-08-12 man. 21:24> classes I'm unsure of should be migrated to modelstore.model, are:
+   1. ModelContextImpl
+   2. ModelContextRecordingMetadata
+   3. ModelContexts
+   4. ModelstoreBase
+   5. PropertysetRecordingSaveTime
+ - <2019-08-12 man. 21:38> Looks like not all classes in modelstore.model should be visible
+ - <2019-08-12 man. 21:39> A static creator class and/or singleton is not a good pattern for OSGi: then it's better to create a DS component
+ - <2019-08-12 man. 21:49> What should the inteface exposed by the DS component be called?
+   - <2019-08-12 man. 21:50> Some name candidates for the interface:
+     1. Model (probably wrong. Model should be a parent object containing other objects)
+     2. ModelFactory (more correct, but suffixing with "Factory" is overused, and suffixing is bad practice anyway)
+     3. ObjectFactory (most correct. However, maybe too "overused"...?)
+     4. ModelBuilder (sounds good, but might make people expect the builder pattern...?)
+     5. ModelProducer
+     6. ObjectProducer
+** TODO create an OSGi bundle modelstore.client
+ - <2019-08-12 man. 21:27> This is a to be a convenient starting point for using modelstore
+ - <2019-08-12 man. 21:30> Design:
+   1. Create an interface in modelstore.services called ModelstoreClient (maybe just a subtype of Modelstore?)
+   2. in modelstore.client create a DS component that receives a Modelstore service and exposes a ModelstoreClient service
+   3. This allows for having an in-process modelstore or a modelstore accessed through a REST API
+   4. For an in-process modelstore this should be a thin wrapper
+   5. For a remote modelstore this library should maintain the in-memory model
+** TODO Create modelstore.db.liquibase bundle to define the JDBC schema
+ - <2019-08-12 man. 22:14> The objects themselves should be stored to disk and/or a git blob store
+ - <2019-08-12 man. 22:15> The schema should define object interconnection and metadata (but I don't have clear vision of how it should look)
+** TODO use the Modelstore DatabaseService in modelstore.backend
+** TODO create a modelstore.web.security OSGi bundle (connect with shiro and authservice)
+** TODO create a modelstore.web.api OSGi bundle providing a REST API
+** TODO Create a modelstore-specific DatabaseService interface in modelstore.services
+** TODO Create modelstore.db.derbytest OSGi bundle
+** TODO Create modelstore.db.postgresql OSGi bundle
 ** TODO Connect a minimal hardcoded model to eclipse GEF
 ** TODO Implement JSON storage for eclipse GEF models
 ** TODO Split ModelContext objects
