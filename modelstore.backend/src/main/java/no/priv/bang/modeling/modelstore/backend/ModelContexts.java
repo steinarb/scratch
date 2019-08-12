@@ -56,10 +56,10 @@ public class ModelContexts {
      * @param otherContext the context that is merged into the other context, this context is unchanged after the merge
      */
     static public void merge(ModelContext context, ModelContext otherContext) {
-        if (otherContext == null) {
-            // No point in testing for null in the first comment, because this
+    	if (otherContext == null) {
+            // No point in testing for null in the first argument, because this
             // will always be "this" when called from a ModelContext implementation
-            // and if used in a differen way, must be done from inside this package
+            // and if used in a different way, must be done from inside this package
             // and it will be best to throw the exception during development
             return; // nothing to merge with, context is unchanged
         }

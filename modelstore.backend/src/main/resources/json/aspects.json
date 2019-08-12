@@ -1,86 +1,81 @@
 [
-    {
-        "id": "ad7ac2e9-70ee-4b1d-8529-d3ed78806714",
-        "title": "metadata",
-        "aspect": "object",
-        "properties": {
-            "lastmodifiedtimes": {
-                "aspect": "object"
-            }
-        }
-    },
-    {
-        "id": "06cee83c-2ca8-44b8-8035-c79586665532",
-        "title": "general object",
-        "aspect": "object",
-        "properties": {
-            "name": {
-                "aspect": "string"
-            },
-            "description": {
-                "aspect": "string"
-            }
-        }
-    },
-    {
-        "id": "8ecdaddb-7452-4eb1-82e9-451d2b6b9b5c",
-        "title": "relationship",
-        "aspect": "relationship",
-        "properties": {
-            "origin": {
-                "aspect": "reference"
-            },
-            "description": {
-                "target": "reference"
-            }
-        }
-    },
-    {
-        "id": "d01a2f8a-6a09-4d5d-bf5d-c29df62761ca",
-        "title": "general relationship",
-        "aspect": "relationship",
-        "inherits": {
-            "ref": "8ecdaddb-7452-4eb1-82e9-451d2b6b9b5c"
-        },
-        "properties": {
-            "name": {
-                "aspect": "string"
-            },
-            "description": {
-                "aspect": "string"
-            }
-        }
-    },
-    {
-        "id": "dae363e5-4757-4be7-b5d6-c3e7409c472c",
-        "title": "model",
-        "aspect": "object",
-        "inherits": {
-            "ref": "06cee83c-2ca8-44b8-8035-c79586665532"
-        },
-        "properties": {
-            "objects": {
-                "aspect": "list"
-            },
-            "relationships": {
-                "aspect": "list"
-            }
-        }
-    },
-    {
-        "id": "48168b6e-808b-4fe7-9997-c4eadeda2c6d",
-        "title": "aspect container",
-        "aspect": "object",
-        "inherits": {
-            "ref": "06cee83c-2ca8-44b8-8035-c79586665532"
-        },
-        "properties": {
-            "aspect": {
-                "aspect": "reference"
-            },
-            "items": {
-                "aspect": "list"
-            }
-        }
+  {
+    "id" : "ad7ac2e9-70ee-4b1d-8529-d3ed78806714",
+    "title": "metadata",
+    "type": "object",
+    "properties": {
+      "lastmodifiedtimes": {
+        "type": "object"
+      }
     }
+  },
+  {
+    "id" : "06cee83c-2ca8-44b8-8035-c79586665532",
+    "title": "general object",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    }
+  },
+  {
+    "id" : "8ecdaddb-7452-4eb1-82e9-451d2b6b9b5c",
+    "title": "relationship",
+    "type": "relationship",
+    "properties": {
+      "origin": {
+        "type": "reference"
+      },
+      "description": {
+        "target": "reference"
+      }
+    }
+  },
+  {
+    "id" : "d01a2f8a-6a09-4d5d-bf5d-c29df62761ca",
+    "title": "general relationship",
+    "type": "relationship",
+    "inherits": {"ref": "8ecdaddb-7452-4eb1-82e9-451d2b6b9b5c"},
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    }
+  },
+  {
+    "id" : "dae363e5-4757-4be7-b5d6-c3e7409c472c",
+    "title": "model",
+    "type": "object",
+    "inherits": {"ref": "06cee83c-2ca8-44b8-8035-c79586665532"},
+    "properties": {
+      "objects": {
+        "type": "list"
+      },
+      "relationships": {
+        "type": "list"
+      }
+    }
+  },
+  {
+    "id" : "48168b6e-808b-4fe7-9997-c4eadeda2c6d",
+    "title": "aspect container",
+    "type": "object",
+    "inherits": {"ref": "06cee83c-2ca8-44b8-8035-c79586665532"},
+    "properties": {
+      "type": {
+        "type": "reference"
+      },
+      "items": {
+        "type": "list"
+      }
+    }
+  }
 ]
+

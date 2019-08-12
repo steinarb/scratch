@@ -98,28 +98,8 @@ Having "property" in the name doesn't make sense for the list of values, and mak
 ** DONE Switch from Jsr330Activator to OSGi Declarative Service (DS)
  - <2019-08-12 man. 11:54> The single jar was split into modelstore.services defining the OSGi services and a modelstore.backend containing the DS component
  - <2019-08-12 man. 11:56> The gogoshell stuff was deleted and karaf features were created instead
-** TODO Wrap the propertysets and aspects returned from the metadata-setting ModelContext
-** TODO Switch to defensive copy on read for list and complex properties (have to think about this)
- - This is the only (practical) way to track changes to list and complex properties
-   - Wrap the complex properties and the lists will be just too much work
-** TODO Create a read-only propertyset wrapper with defensive copy-on-read for complex properties and lists
- - Use this with the built-in aspects
-** TODO Decide if the PropertysetRecordingSaveTime should compare equal to a PropertysetRecordingSaveTime from a different ModelContext
- - <2015-07-14 tir 17:49> I couldn't compare two propertsets that should have been equal with assertEquals() in a test
-   - I can't decide what's the correct thing to do here, so I compared the unwrapped propertysets instead
-** TODO Create a proxy aspect
- - Contains a single property that is a reference to a different propertyset
- - Think about how a proxy should be handled in an aspect container
-   - It would be nice if the actual application of the aspect could "pass through" to the proxied propertyset
-   - The graphical information (position, symbol) should be added to the proxy
-** TODO Order propertysets by dependency when serializing
- - Aspects should come before propertysets referencing them
- - Base aspects should come before aspects inheriting them
- - Propertysets being referenced should come before propertysets referencing them
-   - Contents of a container should come before the container
-   - Endpoints of a relationship should come before the
-   - Propertyset fronted by graphical proxy propertyset should come before the proxies
-** TODO Make merge operation thread safe
+** TODO Connect a minimal hardcoded model to eclipse GEF
+** TODO Implement JSON storage for eclipse GEF models
 ** TODO Split ModelContext objects
  - Separate out a propertyset and all the propertysets it depends on to a separate ModelContext
  - Should be thread safe before it is set to complete
@@ -127,6 +107,13 @@ Having "property" in the name doesn't make sense for the list of values, and mak
  - Since the metadata object will be first in all files, it is a good place to put machine and human readable version information
 ** TODO Add local and modified flags to the metadata object
  - The idea is that objects that aren't created locally, and have been locally modified are the ones that needs to be saved back to a remote server
+** TODO Order propertysets by dependency when serializing
+ - Aspects should come before propertysets referencing them
+ - Base aspects should come before aspects inheriting them
+ - Propertysets being referenced should come before propertysets referencing them
+   - Contents of a container should come before the container
+   - Endpoints of a relationship should come before the
+   - Propertyset fronted by graphical proxy propertyset should come before the proxies
 ** TODO Introduce a DateTime primitive type in value
  - Not so easy, since JSON doesn't have a syntactic marker for this
  - The metadata object stores and restores Date objects with millisecond accuracy, but the values are stored as JSON strings with a custom format (human readable)
@@ -135,10 +122,15 @@ Having "property" in the name doesn't make sense for the list of values, and mak
 ** TODO Add verification code for aspects
  - Check a propertyset to see if it has the required propertysets for an aspect
  - Check the propertyset to see if it brings anything meaningful to the table (ie. property definitions)
-** TODO Test serialization/deserialization using YAML (YAML has object id and object reference)
 ** TODO Add AspectViwer (connected to aspect container and used as a filter)
-** TODO Connect a minimal hardcoded model to eclipse GEF
-** TODO Implement JSON storage for eclipse GEF models
+** TODO Create a read-only propertyset wrapper with defensive copy-on-read for complex properties and lists
+ - Use this with the built-in aspects
+** TODO Create a proxy aspect
+ - Contains a single property that is a reference to a different propertyset
+ - Think about how a proxy should be handled in an aspect container
+   - It would be nice if the actual application of the aspect could "pass through" to the proxied propertyset
+   - The graphical information (position, symbol) should be added to the proxy
+** TODO Test serialization/deserialization using YAML (YAML has object id and object reference)
 ** TODO Storage based on SQL for relationships and references and individual JSON files
 *** TODO Individual Propertyset files git versioned
 *** TODO Metatada into the RDBMS
@@ -165,7 +157,17 @@ Having "property" in the name doesn't make sense for the list of values, and mak
 Maybe actually two separate:
  - S-expression directly on jackson
  - sxml on top of the existing XML serialization/deserialization
+** TODO Make merge operation thread safe
+ - <2015-07-25 lør 15:44> Not doing this for now, too hard to be certain with the current implementation
 ** TODO Add propertyvalue creation methods on the ModelStore interface, to make them accessible to the world
  - Not sure if this is necessary with the primitive value setters in place for both Propertyset and Valuelist?
+** TODO Decide if the PropertysetRecordingSaveTime should compare equal to a PropertysetRecordingSaveTime from a different ModelContext
+ - <2015-07-14 tir 17:49> I couldn't compare two propertsets that should have been equal with assertEquals() in a test
+   - I can't decide what's the correct thing to do here, so I compared the unwrapped propertysets instead
+** TODO Switch to defensive copy on read for list and complex properties (have to think about this)
+ - This is the only (practical) way to track changes to list and complex properties
+   - Wrap the complex properties and the lists will be just too much work
 ** TODO Rename Propertyset to Valueset
  - Don't know if I will go through with this...?
+** TODO Wrap the propertysets and aspects returned from the metadata-setting ModelContext
+ - What was this about?  Is this something other than the current wrapping?
