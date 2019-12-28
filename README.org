@@ -1,0 +1,75 @@
+* Java bean support code
+
+Common code for Java beans, used in my other projects. Having this code in a library cuts down on boilerplate.
+
+** Status of the project
+
+[[https://travis-ci.org/steinarb/beans][file:https://travis-ci.org/steinarb/beans.svg?branch=master]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=alert_status#.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.beans/beans][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.beans/beans/badge.svg]] [[https://www.javadoc.io/doc/no.priv.bang.beans/beans][file:https://www.javadoc.io/badge/no.priv.bang.beans/beans.svg]]
+
+*** Sonarqube
+
+[[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=coverage#.svg]]
+
+** Release history
+
+** Overview of the project
+
+*** Immutable
+
+This is an OSGi bundle that contains the class Immutable which serves as a base class for immutable Java beans and provides the beans with implementations of hashCode() and equals().
+
+The Object.hashCode() and Object.equals() methods must be overriden from their default Object implmentations in data objects, if those data objects are to work properly in maps and sets. However, writing hashCode() and equals() methods manually is boring. It consists of creating a lot of boilerplate code, and that boilerplate needs to have tests written if I don't wish to have sonar complain about test coverage, increasing the code that has to be modified when the bean changes.
+
+IDEs like eclipse and IntelliJ can create hashCode() and equals() methods, but the auto-generated code may need a little tinkering, and the tests needs to be handwritten, or your code coverage will become low enough for sonar to complain. And if the beans change the IDE can recreate the methods, but the tests still needs to be changed manually
+
+The apache [[https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/builder/HashCodeBuilder.html][commons-lang3 HashCodeBuilder]] has methods to create hashCode() using reflection, but using reflections means there is a performance cost. However, since the beans used in my jackson/jersey REST APIs are invariably immutable, it is possible to create the hashCode() lazily and then cache it.  And that's what the Immutable bean base class found in this library does.
+
+The equals() method also depends on the hashCode(), so it may not be entirely comparison proof, but for the first version I'm trying it out.
+
+To use the latest version of the OSGi bundle in a maven project, or just use it as a plain JAR file, add the following dependencies (commons-lang3 is a provided dependency in the beans.immutable pom, so won't become a transitive dependency and must be added explicitly to a project using beans.immutable, even if the project is just using beans.immutable as a plain JAR file):
+#+begin_src xml
+  <dependencies>
+      <dependency>
+          <groupId>no.priv.bang.beans</groupId>
+          <artifactId>beans.immutable</artifactId>
+          <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+          <version>3.9</version>
+      </dependency>
+  </dependencies>
+#+end_src
+
+To use the latest version of the OSGi bundle in a maven project, building an OSGi bundle intended for use in [[https://karaf.apache.org][apache karaf]]:
+ 1. Add a provided dependency to beans.immutable (to make things compile) and a test dependency to commons-lang3 (to prevent tests from failing in startup. If you already have a dependency to commons-lang3 you don't need this test dependency):
+    #+begin_src xml
+      <dependencies>
+          <dependency>
+              <groupId>no.priv.bang.beans</groupId>
+              <artifactId>beans.immutable</artifactId>
+              <version>1.0.0-SNAPSHOT</version>
+              <scope>provided</scope>
+          </dependency>
+          <dependency>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-lang3</artifactId>
+              <version>3.9</version>
+              <scope>test</scope>
+          </dependency>
+      </dependencies>
+    #+end_src
+ 2. Add a load of the feature repository containing beans.immutable and depend on the beans-immutable feature from your projects template feature.xml (src/main/feature/feature.xml):
+    #+begin_src xml
+      <features>
+          <repository>mvn:no.priv.bang.beans/beans/1.0.0-SNAPSHOT/xml/features</repository>
+          <feature name="my-feature">
+              <feature>beans-immutable</feature>
+          </feature>
+      </features>
+    #+end_src
+
+** License
+
+This code is licensed under the Apache license v. 2.  See the LICENSE file for details.
