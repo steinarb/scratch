@@ -15,10 +15,12 @@
  */
 package no.priv.bang.osgiservice.users;
 
+import no.priv.bang.beans.immutable.Immutable;
+
 /**
  * Bean used represent user roles in {@link UserManagementService} operations.
  */
-public class Role {
+public class Role extends Immutable {
 
     private int id;
     private String rolename;
@@ -45,31 +47,6 @@ public class Role {
 
     public String getDescription() {
         return description;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((rolename == null) ? 0 : rolename.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Role other = (Role) obj;
-        if (rolename == null) {
-            if (other.rolename != null)
-                return false;
-        } else if (!rolename.equals(other.rolename))
-            return false;
-        return true;
     }
 
 }

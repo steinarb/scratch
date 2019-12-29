@@ -46,26 +46,4 @@ class UserTest {
         assertNull(user.getLastname());
     }
 
-    @Test
-    void testHashCodeAndEquals() {
-        User userWithNullUsername = new User();
-        assertEquals(31, userWithNullUsername.hashCode());
-
-        // Verify that two users with the same username are equal
-        User user1 = new User(1, "jod", "jod123@gmail.com", "Jon", "Dow");
-        User user2 = new User(2, "jod", "john@cymbals.com", "John", "Doe");
-        assertEquals(user1.hashCode(), user2.hashCode());
-        assertEquals(user1, user2);
-        assertEquals(user1, user1);
-        assertEquals(new User(), new User());
-
-        // Verify that two users with different usernames are not equal
-        User user3 = new User(1, "jdo", "jod123@gmail.com", "Jon", "Dow");
-        assertNotEquals(user1, user3);
-        assertNotEquals(user1, null); // NOSONAR Argument  order is to test all corners of User.equals()
-        assertNotEquals(user1, new User());
-        assertNotEquals(user1, new Role());
-        assertNotEquals(new User(), user1);
-    }
-
 }

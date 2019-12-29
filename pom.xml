@@ -40,6 +40,7 @@
         <pax.jdbc.version>1.0.1</pax.jdbc.version>
         <pax.jdbc.version>1.0.1</pax.jdbc.version>
         <osgi-service-adaptors.version>1.0.1</osgi-service-adaptors.version>
+        <beans.version>1.0.0</beans.version>
     </properties>
 
     <dependencyManagement>
@@ -131,6 +132,17 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.beans</groupId>
+                <artifactId>beans.immutable</artifactId>
+                <version>${beans.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.9</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

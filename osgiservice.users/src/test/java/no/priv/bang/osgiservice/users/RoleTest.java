@@ -41,26 +41,4 @@ class RoleTest {
         assertNull(bean.getDescription());
     }
 
-    @Test
-    void testHashCodeAndEquals() {
-        Role roleWithNullRolename = new Role();
-        assertEquals(31, roleWithNullRolename.hashCode());
-
-        // Verify that two role objects with the same rolename returns the same hashcode
-        Role adminRole1 = new Role(1, "admin", "dummy");
-        Role adminRole2 = new Role(2, "admin", "dummy");
-        assertEquals(adminRole1.hashCode(), adminRole2.hashCode());
-        assertEquals(adminRole1, adminRole2);
-        assertEquals(adminRole1, adminRole1);
-        assertEquals(new Role(), new Role());
-
-        // Verify that a different role name has a different hashcode
-        Role userRole = new Role(3, "user", "dummy");
-        assertNotEquals(adminRole1.hashCode(), userRole.hashCode());
-        assertNotEquals(adminRole1, userRole);
-        assertNotEquals(adminRole1, null); // NOSONAR Argument  order is to test all corners of Role.equals()
-        assertNotEquals(adminRole1, new User());
-        assertNotEquals(new Role(), adminRole1);
-    }
-
 }

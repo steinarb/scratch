@@ -15,10 +15,12 @@
  */
 package no.priv.bang.osgiservice.users;
 
+import no.priv.bang.beans.immutable.Immutable;
+
 /**
  * Bean used to in {@link UserManagementService} operations to represent a user in the database.
  */
-public class User {
+public class User extends Immutable {
 
     private int userid;
     private String username;
@@ -57,31 +59,6 @@ public class User {
 
     public String getLastname() {
         return lastname;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        User other = (User) obj;
-        if (username == null) {
-            if (other.username != null)
-                return false;
-        } else if (!username.equals(other.username))
-            return false;
-        return true;
     }
 
 }
