@@ -23,7 +23,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * should extend this class.
  */
 public class Immutable {
-    int _cachedHash = 0; // NOSONAR This field has a non-standard name on purpose to not conflict with any actual field 
+    private int _cachedHash = 0; // NOSONAR This field has a non-standard name on purpose to not conflict with any actual field 
 
     /**
      * Uses {@link HashCodeBuilder#reflectionHashCode(Object, String...)} to
