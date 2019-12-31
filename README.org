@@ -12,6 +12,10 @@ Common code for Java beans, used in my other projects. Having this code in a lib
 
 ** Release history
 
+| Date                   | Version | Comment                                                             |
+|------------------------+---------+---------------------------------------------------------------------|
+| <2019-12-31 Tue 00:47> |   1.0.0 | Adds bean base class Immutable implementing hashCode() and equals() |
+
 ** Overview of the project
 
 *** Immutable
@@ -32,7 +36,7 @@ To use the latest version of the OSGi bundle in a maven project, or just use it 
       <dependency>
           <groupId>no.priv.bang.beans</groupId>
           <artifactId>beans.immutable</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.0.0</version>
       </dependency>
       <dependency>
           <groupId>org.apache.commons</groupId>
@@ -49,7 +53,7 @@ To use the latest version of the OSGi bundle in a maven project, building an OSG
           <dependency>
               <groupId>no.priv.bang.beans</groupId>
               <artifactId>beans.immutable</artifactId>
-              <version>1.0.0-SNAPSHOT</version>
+              <version>1.0.0</version>
               <scope>provided</scope>
           </dependency>
           <dependency>
@@ -63,7 +67,7 @@ To use the latest version of the OSGi bundle in a maven project, building an OSG
  2. Add a load of the feature repository containing beans.immutable and depend on the beans-immutable feature from your projects template feature.xml (src/main/feature/feature.xml):
     #+begin_src xml
       <features>
-          <repository>mvn:no.priv.bang.beans/beans/1.0.0-SNAPSHOT/xml/features</repository>
+          <repository>mvn:no.priv.bang.beans/beans/1.0.0/xml/features</repository>
           <feature name="my-feature">
               <feature>beans-immutable</feature>
           </feature>
