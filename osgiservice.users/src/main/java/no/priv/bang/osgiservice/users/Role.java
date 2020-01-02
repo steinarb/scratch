@@ -20,7 +20,7 @@ import no.priv.bang.beans.immutable.Immutable;
 /**
  * Bean used represent user roles in {@link UserManagementService} operations.
  */
-public class Role extends Immutable {
+public class Role extends Immutable { // NOSONAR Immutable handles added fields
 
     private int id;
     private String rolename;

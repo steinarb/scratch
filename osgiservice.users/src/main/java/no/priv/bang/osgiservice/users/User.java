@@ -20,7 +20,7 @@ import no.priv.bang.beans.immutable.Immutable;
 /**
  * Bean used to in {@link UserManagementService} operations to represent a user in the database.
  */
-public class User extends Immutable {
+public class User extends Immutable { // NOSONAR Immutable handles added fields
 
     private int userid;
     private String username;
