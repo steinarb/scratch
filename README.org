@@ -12,15 +12,34 @@ Common code related to JDBC.
 
 ** Release history
 
-| Date | Version | Comment |
-|------+---------+---------|
-|      |         |         |
+| Date                   | Version | Comment                  |
+|------------------------+---------+--------------------------|
+| <2020-01-03 Fri 23:55> |   1.0.0 | Add JDBC DataSourceProxy |
 
 ** Overview of the project
 
 *** DataSourceProxy
 
 This is an implementation of the [[https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html][DataSource]] interface that has a different DataSource as a property and delegates all methods to the wrapped DataSource object.
+
+To use this in an OSGi maven project add the following dependencies:
+#+begin_src xml
+  <dependencies>
+      <dependency>
+          <groupId>no.priv.bang.jdbc</groupId>
+          <artifactId>jdbc.datasourceproxy</artifactId>
+          <version>1.0.0</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>no.priv.bang.jdbc</groupId>
+          <artifactId>jdbc.datasourceproxy</artifactId>
+          <version>1.0.0</version>
+          <type>xml</type>
+          <classifier>features</classifier>
+      </dependency>
+  </dependencies>
+#+end_src
 
 ** License
 
