@@ -1,0 +1,27 @@
+* JDBC common code.
+
+Common code related to JDBC.
+
+** Status of the project
+
+[[https://travis-ci.org/steinarb/jdbc][file:https://travis-ci.org/steinarb/jdbc.svg?branch=master]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.jdbc%3Ajdbc][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.jdbc%3Ajdbc&metric=alert_status#.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.jdbc/jdbc][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.jdbc/jdbc/badge.svg]] [[https://www.javadoc.io/doc/no.priv.bang.jdbc/jdbc][file:https://www.javadoc.io/badge/no.priv.bang.jdbc/jdbc.svg]]
+
+*** Sonarqube
+
+[[https://sonarcloud.io/dashboard?id=no.priv.bang.jdbc%3Ajdbc][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.jdbc%3Ajdbc&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.jdbc%3Ajdbc][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.jdbc%3Ajdbc&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.jdbc%3Ajdbc][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.jdbc%3Ajdbc&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.jdbc%3Ajdbc][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.jdbc%3Ajdbc&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.jdbc%3Ajdbc][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.jdbc%3Ajdbc&metric=coverage#.svg]]
+
+** Release history
+
+| Date | Version | Comment |
+|------+---------+---------|
+|      |         |         |
+
+** Overview of the project
+
+*** DataSourceProxy
+
+This is an implementation of the [[https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html][DataSource]] interface that has a different DataSource as a property and delegates all methods to the wrapped DataSource object.
+
+** License
+
+This code is licensed under the Apache license v. 2.  See the LICENSE file for details.
