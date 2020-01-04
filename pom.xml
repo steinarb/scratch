@@ -20,6 +20,11 @@
     <packaging>pom</packaging>
     <name>filedele file sharing application parent pom</name>
 
+    <modules>
+        <module>fildele.application</module>
+        <module>fildele.tests</module>
+    </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.bundle.plugin.version>2.5.3</maven.bundle.plugin.version>
@@ -32,11 +37,6 @@
         <gentyref.version>1.2.0.vaadin1</gentyref.version>
         <mockrunner.version>1.1.2</mockrunner.version>
     </properties>
-
-    <modules>
-        <module>fildele.application</module>
-        <module>fildele.tests</module>
-    </modules>
 
     <dependencyManagement>
         <dependencies>
