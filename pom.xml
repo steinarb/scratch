@@ -19,6 +19,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>File sharing web application</name>
+    <description>This is a "CMS light", it provides a way to upload and share files and control access to files</description>
 
     <modules>
     </modules>
@@ -85,7 +86,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.8.1</version>
                     <configuration>
                         <source>1.8</source>
                         <target>1.8</target>
@@ -94,7 +95,30 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <version>${maven.bundle.plugin.version}</version>
+                    <configuration>
+                        <supportedProjectTypes>
+                            <supportedProjectType>jar</supportedProjectType>
+                            <supportedProjectType>bundle</supportedProjectType>
+                            <supportedProjectType>war</supportedProjectType>
+                        </supportedProjectTypes>
+                        <instructions>
+                            <!-- Enable processing of OSGI DS component annotations -->
+                            <_dsannotations>*</_dsannotations>
+                            <!-- Inherit service injections from base class -->
+                            <_dsannotations-options>inherit</_dsannotations-options>
+                            <!-- Enable processing of OSGI metatype annotations -->
+                            <_metatypeannotations>*</_metatypeannotations>
+                        </instructions>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>bundle</id>
+                            <goals>
+                                <goal>bundle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
@@ -102,54 +126,21 @@
                     <version>${karaf.version}</version>
                     <extensions>true</extensions>
                     <configuration>
-                        <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                         <startLevel>80</startLevel>
                         <includeTransitiveDependency>false</includeTransitiveDependency>
                         <aggregateFeatures>false</aggregateFeatures>
                         <includeProjectArtifact>true</includeProjectArtifact>
+                        <primaryFeatureName>${karaf-feature-name}</primaryFeatureName>
                     </configuration>
                     <executions>
                         <execution>
                             <id>generate-features-file</id>
-                            <phase>process-resources</phase>
+                            <phase>package</phase>
                             <goals>
                                 <goal>features-generate-descriptor</goal>
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.apache.karaf.tooling
-                                        </groupId>
-                                        <artifactId>
-                                            karaf-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [4.1.2,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>
-                                                features-generate-descriptor
-                                            </goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
