@@ -56,18 +56,6 @@
                 <version>1.10.19</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>com.mockrunner</groupId>
-                <artifactId>mockrunner-servlet</artifactId>
-                <version>${mockrunner.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.core</artifactId>
-                <version>${dependency.osgi.version}</version>
-                <scope>provided</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
