@@ -21,7 +21,6 @@
     <name>filedele file sharing application parent pom</name>
 
     <modules>
-        <module>fildele.tests</module>
     </modules>
 
     <properties>
