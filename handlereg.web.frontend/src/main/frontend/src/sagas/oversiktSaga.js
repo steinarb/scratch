@@ -2,6 +2,8 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import oversikt, { OVERSIKT_HENT } from '../reducers/oversikt';
 import { HANDLINGER_HENT } from '../reducers/handlinger';
+import nyhandling from '../reducers/nyhandling';
+const { NYHANDLING_LAGRET } = nyhandling.actions;
 const { OVERSIKT_MOTTA } = oversikt.actions;
 import errors from '../reducers/errors';
 const { OVERSIKT_ERROR } = errors.actions;
@@ -24,4 +26,5 @@ function* mottaOversikt(action) {
 
 export default function* oversiktSaga() {
     yield takeLatest(OVERSIKT_HENT, mottaOversikt);
+    yield takeLatest(NYHANDLING_LAGRET, mottaOversikt);
 }
