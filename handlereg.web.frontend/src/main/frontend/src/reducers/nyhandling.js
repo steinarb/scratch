@@ -28,7 +28,7 @@ const nyhandling = createSlice({
         NYHANDLING_LAGRET: (state, action) => ({ ...state, belop: 0, handletidspunkt: moment() }),
     },
     extraReducers: {
-        HANDLINGER_MOTTA: (state, action) => {
+        [HANDLINGER_MOTTA]: (state, action) => {
             const sistebutikk = [...action.payload].pop();
             const storeId = sistebutikk.storeId;
             return { ...state, storeId };
