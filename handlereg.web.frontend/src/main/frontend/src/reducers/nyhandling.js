@@ -25,7 +25,7 @@ const nyhandling = createSlice({
             const handletidspunkt = action.payload;
             return { ...state, handletidspunkt };
         },
-        NYHANDLING_LAGRET: (state, action) => ({ ...defaultState, handletidspunkt: moment() }),
+        NYHANDLING_LAGRET: (state, action) => ({ ...state, belop: 0, handletidspunkt: moment() }),
     },
     extraReducers: {
         HANDLINGER_MOTTA: (state, action) => {
