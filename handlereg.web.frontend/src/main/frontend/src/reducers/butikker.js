@@ -25,8 +25,8 @@ const butikker = createSlice({
         BUTIKKER_MOTTA: (state, action) => leggPaaTomButikkIStarten(action),
     },
     extraReducers: {
-        NYBUTIKK_LAGRET: (state, action) => leggPaaTomButikkIStarten(action),
-        BUTIKK_LAGRET: (state, action) => leggPaaTomButikkIStarten(action),
+        [NYBUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
+        [BUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
     },
 });
 
