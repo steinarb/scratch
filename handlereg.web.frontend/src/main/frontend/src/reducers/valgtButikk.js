@@ -9,7 +9,7 @@ const valgtButikk = createSlice({
     name: 'valgtButikk',
     initialState: defaultState,
     extraReducers: {
-        VELG_BUTIKK: (state, action) => {
+        [VELG_BUTIKK]: (state, action) => {
             const { indeks } = action.payload;
             return indeks;
         },
