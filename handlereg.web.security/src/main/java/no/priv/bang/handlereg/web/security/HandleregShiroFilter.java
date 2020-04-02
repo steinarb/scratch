@@ -16,12 +16,11 @@
 package no.priv.bang.handlereg.web.security;
 
 import javax.servlet.Filter;
+
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
-import org.apache.shiro.web.config.IniFilterChainResolverFactory;
-import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
-import org.apache.shiro.web.filter.mgt.FilterChainResolver;
+import org.apache.shiro.web.env.IniWebEnvironment;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
@@ -64,19 +63,21 @@ public class HandleregShiroFilter extends AbstractShiroFilter { // NOSONAR
 
     @Activate
     public void activate() {
-        WebIniSecurityManagerFactory securityManagerFactory = new WebIniSecurityManagerFactory(INI_FILE);
-        DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) securityManagerFactory.createInstance();
+        IniWebEnvironment environment = new IniWebEnvironment();
+        environment.setIni(INI_FILE);
+        environment.setServletContext(getServletContext());
+        environment.init();
+
         DefaultWebSessionManager sessionmanager = new DefaultWebSessionManager();
         sessionmanager.setSessionDAO(session);
         sessionmanager.setSessionIdUrlRewritingEnabled(false);
-        securityManager.setSessionManager(sessionmanager);
-        setSecurityManager(securityManager);
 
+        DefaultWebSecurityManager securityManager = DefaultWebSecurityManager.class.cast(environment.getWebSecurityManager());
+        securityManager.setSessionManager(sessionmanager);
         securityManager.setRealm(realm);
 
-        IniFilterChainResolverFactory filterChainResolverFactory = new IniFilterChainResolverFactory(INI_FILE, securityManagerFactory.getBeans());
-        FilterChainResolver resolver = filterChainResolverFactory.createInstance();
-        setFilterChainResolver(resolver);
+        setSecurityManager(securityManager);
+        setFilterChainResolver(environment.getFilterChainResolver());
     }
 
 }

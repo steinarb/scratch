@@ -28,7 +28,7 @@ import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
-import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
+import org.apache.shiro.web.env.IniWebEnvironment;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -57,8 +57,10 @@ class HandleregShiroFilterTest {
     }
 
     private static Realm getRealmFromIniFile() {
-        WebIniSecurityManagerFactory securityManagerFactory = new WebIniSecurityManagerFactory(Ini.fromResourcePath("classpath:test.shiro.ini"));
-        RealmSecurityManager securitymanager = (RealmSecurityManager) securityManagerFactory.getInstance();
+        IniWebEnvironment environment = new IniWebEnvironment();
+        environment.setIni(Ini.fromResourcePath("classpath:test.shiro.ini"));
+        environment.init();
+        RealmSecurityManager securitymanager = RealmSecurityManager.class.cast(environment.getWebSecurityManager());
         Collection<Realm> realms = securitymanager.getRealms();
         return (SimpleAccountRealm) realms.iterator().next();
     }
