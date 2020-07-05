@@ -1,0 +1,20 @@
+* Oldalbum
+
+This is an application to display old image archives in a more attractive and modern way.
+
+I have some old albums from the 90ies that I occasionally would like to link to.  Since the images lack OpenGraph tags, linkning to them from social media doesn't look to hot.  
+
+I first thought about changing the perl script that generates the albums, to add a wrapper to the main jpeg, with the OpenGraph headers.
+
+But then the thought struck me: I can just leave the old JPEGs where they are and create a completely separate webapp that provides a navigation and metadata framework and just uses an <img> tag to display the images from the location where they are today.
+
+And this is the webapp, called "oldalbum", because it is more a way to display existing old albums than yet another album application
+
+** Status
+
+** License
+
+This software is licensed under Apache Public License v 2.0.
+
+See the LICENSE file for the full details.
+
