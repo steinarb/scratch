@@ -21,7 +21,6 @@
     <packaging>pom</packaging>
 
     <name>Oldalbum picture archive wrapper</name>
-    <description></description>
     <description>Displaying albums from the 90-ies in a modern way</description>
 
     <modules>
