@@ -3,6 +3,7 @@ namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace ns_1 = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace rng = "http://relaxng.org/ns/structure/1.0"
 namespace xsd = "http://www.w3.org/2001/XMLSchema"
+namespace xsi = "http://www.w3.org/2001/XMLSchema-instance"
 
 propertyExpression = xsd:string { pattern = "$\{[\w\.]+\}" }
 [
@@ -98,8 +99,7 @@ databaseChangeLog =
          attribute labels { xsd:string }?,
          attribute applyToRollback { booleanExp }?
        }*,
-       changeSetAttributes,
-       attribute * { text }
+       changeSetAttributes
      }*
      | # include
        element include {
@@ -110,8 +110,7 @@ databaseChangeLog =
          attribute context { xsd:string }?,
          attribute labels { xsd:string }?,
          attribute ignore { xsd:string }?,
-         attribute created { xsd:string }?,
-         attribute * { text }
+         attribute created { xsd:string }?
        }*
      | element includeAll {
          attribute path { xsd:string },
@@ -120,11 +119,9 @@ databaseChangeLog =
          attribute relativeToChangelogFile { booleanExp }?,
          attribute resourceComparator { xsd:string }?,
          attribute filter { xsd:string }?,
-         attribute context { xsd:string }?,
-         attribute * { text }
+         attribute context { xsd:string }?
        }*)*,
-    changeLogAttributes,
-    attribute * { text }
+    changeLogAttributes
   }
 modifySqlChildren =
   element replace {
@@ -156,7 +153,8 @@ changeLogAttributes =
   attribute logicalFilePath { xsd:string }?,
   attribute context { xsd:string }?,
   [ ns_1:defaultValue = "LEGACY" ]
-  attribute objectQuotingStrategy { objectQuotingStrategy }?
+  attribute objectQuotingStrategy { objectQuotingStrategy }?,
+  attribute xsi:schemaLocation { xsd:string }?
 # Attributes for changeSet
 changeSetAttributes =
   attribute id { xsd:string },
@@ -176,7 +174,7 @@ changeSetAttributes =
   attribute runOrder { xsd:string }?,
   attribute ignore { booleanExp }?
 # Attributes for changes
-changeAttributes = attribute * { text }
+changeAttributes = empty
 # Attributes for constraints
 constraintsAttributes =
   attribute nullable { booleanExp }?,
@@ -200,7 +198,7 @@ constraintsAttributes =
   attribute validateUnique { booleanExp }?,
   attribute validatePrimaryKey { booleanExp }?,
   attribute validateForeignKey { booleanExp }?
-column =
+columnAttributes =
   attribute name { xsd:string }?,
   attribute computed { booleanExp }?,
   attribute descending { booleanExp }?,
@@ -245,14 +243,12 @@ column =
       ]
     ]
     xsd:string
-  }?,
-  attribute * { text }
+  }?
 columnType =
   constraints?,
   element * { text }*,
-  column,
-  attribute * { text }
-param =
+  column
+paramAttributes =
   attribute name { xsd:string }?,
   attribute value { xsd:string }?,
   attribute valueNumeric { xsd:string }?,
@@ -314,7 +310,7 @@ renameSequenceAttributes =
   attribute oldSequenceName { xsd:string },
   attribute newSequenceName { xsd:string }
 indexName = attribute indexName { xsd:string }
-createIndex =
+createIndexAttributes =
   tableNameAttribute,
   indexName,
   attribute associatedWith { xsd:string }?,
@@ -677,11 +673,10 @@ start |= column
 column =
   element column {
     constraints?,
-    column,
-    attribute * { text }
+    columnAttributes
   }
 start |= param
-param = element param { param }
+param = element param { paramAttributes, param }
 # Children for createTable
 start |= createTable
 createTable =
@@ -691,8 +686,7 @@ createTable =
     changeAttributes,
     tableNameAttribute,
     attribute tablespace { xsd:string }?,
-    attribute remarks { xsd:string }?,
-    attribute * { text }
+    attribute remarks { xsd:string }?
   }
 # Children for createView
 start |= createView
@@ -814,8 +808,7 @@ start |= tagDatabase
 tagDatabase =
   element tagDatabase {
     changeAttributes,
-    attribute tag { xsd:string },
-    attribute * { text }
+    attribute tag { xsd:string }
   }
 start |= stop
 stop = element stop { changeAttributes }
