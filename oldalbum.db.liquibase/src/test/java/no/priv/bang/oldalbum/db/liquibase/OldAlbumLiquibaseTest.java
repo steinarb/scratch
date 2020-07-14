@@ -41,22 +41,23 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntries(Connection connection) throws Exception {
-        assertAlbumEntry(connection, 1, "/album/", true, "Album", "This is an album", null, null);
-        assertAlbumEntry(connection, 2, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
+        assertAlbumEntry(connection, 1, 0, "/album/", true, "Album", "This is an album", null, null);
+        assertAlbumEntry(connection, 2, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
     }
 
-    private void assertAlbumEntry(Connection connection, int id, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) throws Exception {
+    private void assertAlbumEntry(Connection connection, int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) throws Exception {
         String sql = "select * from albumentries where albumentry_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try(ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    assertEquals(path, result.getString(2));
-                    assertEquals(album, result.getBoolean(3));
-                    assertEquals(title, result.getString(4));
-                    assertEquals(description, result.getString(5));
-                    assertEquals(imageUrl, result.getString(6));
-                    assertEquals(thumbnailUrl, result.getString(7));
+                    assertEquals(parent, result.getInt(2));
+                    assertEquals(path, result.getString(3));
+                    assertEquals(album, result.getBoolean(4));
+                    assertEquals(title, result.getString(5));
+                    assertEquals(description, result.getString(6));
+                    assertEquals(imageUrl, result.getString(7));
+                    assertEquals(thumbnailUrl, result.getString(8));
                 } else {
                     fail(String.format("Didn't find albumentry with id=d", id));
                 }
@@ -65,19 +66,20 @@ class OldAlbumLiquibaseTest {
     }
 
     private void addAlbumEntries(Connection connection) throws Exception {
-        addAlbumEntry(connection, "/album/", true, "Album", "This is an album", null, null);
-        addAlbumEntry(connection, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
+        addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null);
+        addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
     }
 
-    private void addAlbumEntry(Connection connection, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) throws Exception {
-        String sql = "insert into albumentries (localpath, album, title, description, imageurl, thumbnailurl) values (?, ?, ?, ?, ?, ?)";
+    private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) throws Exception {
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl) values (?, ?, ?, ?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, path);
-            statement.setBoolean(2, album);
-            statement.setString(3, title);
-            statement.setString(4, description);
-            statement.setString(5, imageUrl);
-            statement.setString(6, thumbnailUrl);
+            statement.setInt(1, parent);
+            statement.setString(2, path);
+            statement.setBoolean(3, album);
+            statement.setString(4, title);
+            statement.setString(5, description);
+            statement.setString(6, imageUrl);
+            statement.setString(7, thumbnailUrl);
             statement.executeUpdate();
         }
     }

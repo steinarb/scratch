@@ -24,6 +24,7 @@
             <column autoIncrement="true" name="albumentry_id" type="INTEGER">
                 <constraints primaryKey="true" primaryKeyName="account_primary_key"/>
             </column>
+            <column name="parent" type="INTEGER" />
             <column name="localpath" type="VARCHAR(256)" />
             <column name="album" type="boolean" />
             <column name="title" type="VARCHAR(256)" />
