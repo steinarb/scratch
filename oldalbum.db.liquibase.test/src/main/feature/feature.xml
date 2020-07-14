@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="handlereg">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="handlereg.db.liquibase.test">
 
     <!-- Copyright 2020 Steinar Bang                                                     -->
     <!--                                                                                 -->
@@ -13,10 +13,22 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <repository>mvn:no.priv.bang.oldalbum/oldalbum.services/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase/${project.version}/xml/features</repository>
-    <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase.test/${project.version}/xml/features</repository>
-    <feature name="oldalbum-with-derby" description="oldalbum webapp with derby database" version="${project.version}">
-        <feature>oldalbum-db-test</feature>
+    <feature name="${karaf-feature-name}">
+        <feature>scr</feature>
+        <feature>pax-jdbc-derby</feature>
+        <feature>oldalbum-db-liquibase</feature>
+    </feature>
+    <feature name="oldalbum-db-test" description="oldalbum test DataSource" version="${project.version}">
+        <config name="org.ops4j.datasource-oldalbum-test">
+            osgi.jdbc.driver.name=derby
+            dataSourceName=jdbc/oldalbum
+            url=jdbc:derby:memory:oldalbum;create=true
+            ops4j.preHook=oldalbum
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/oldalbum
+        </capability>
+        <feature>${karaf-feature-name}</feature>
+        <feature>pax-jdbc-config</feature>
     </feature>
 </features>
