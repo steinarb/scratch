@@ -34,6 +34,11 @@
             <artifactId>oldalbum.db.liquibase</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.priv.bang.oldalbum</groupId>
+            <artifactId>oldalbum.db.liquibase.test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
