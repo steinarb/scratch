@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <!-- Copyright 2020 Steinar Bang                                                     -->
+    <!--                                                                                 -->
+    <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
+    <!-- you may not use this file except in compliance with the License.                -->
+    <!-- You may obtain a copy of the License at                                         -->
+    <!--   http://www.apache.org/licenses/LICENSE-2.0                                    -->
+    <!-- Unless required by applicable law or agreed to in writing,                      -->
+    <!-- software distributed under the License is distributed on an "AS IS" BASIS,      -->
+    <!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.        -->
+    <!-- See the License for the specific language governing permissions and limitations -->
+    <!-- under the License.                                                              -->
+
+    <changeSet author="sb" id="oldalbum-1.0.0-albumentries">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="albumentries" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="albumentries">
+            <column autoIncrement="true" name="albumentry_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="account_primary_key"/>
+            </column>
+            <column name="localpath" type="VARCHAR(256)" />
+            <column name="album" type="boolean" />
+            <column name="title" type="VARCHAR(256)" />
+            <column name="description" type="VARCHAR(2048)" />
+            <column name="imageurl" type="VARCHAR(256)" />
+            <column name="thumbnailurl" type="VARCHAR(256)" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
