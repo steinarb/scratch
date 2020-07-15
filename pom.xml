@@ -27,6 +27,7 @@
         <module>oldalbum.services</module>
         <module>oldalbum.db.liquibase</module>
         <module>oldalbum.db.liquibase.test</module>
+        <module>oldalbum.backend</module>
         <module>jacoco-coverage-report</module>
     </modules>
 
