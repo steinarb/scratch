@@ -48,21 +48,29 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
+        createInitialSchema(datasource);
+        insertMockData(datasource);
+    }
+
+    void createInitialSchema(DataSource datasource) throws SQLException {
         try (Connection connect = datasource.getConnection()) {
             OldAlbumLiquibase handleregLiquibase = new OldAlbumLiquibase();
             handleregLiquibase.createInitialSchema(connect);
-            insertMockData(connect);
         } catch (LiquibaseException e) {
             logservice.log(LogService.LOG_ERROR, "Error creating handlreg test database", e);
         }
     }
 
-    @SuppressWarnings("resource")
-    private void insertMockData(Connection connect) throws LiquibaseException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
+    void insertMockData(DataSource datasource) throws SQLException {
+        DatabaseConnection databaseConnection = new JdbcConnection(datasource.getConnection());
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection); // NOSONAR try-with-resources here breaks try-with-resources on the connection in the outer scope
-        liquibase.update("");
+        try (Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+            liquibase.update("");
+        } catch (LiquibaseException e) {
+            logservice.log(LogService.LOG_ERROR, "Error populating dummy data database", e);
+        } catch (Exception e) {
+            logservice.log(LogService.LOG_ERROR, "Error closing connection when populating dummy data database", e);
+        }
     }
 
 }
