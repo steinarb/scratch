@@ -24,14 +24,16 @@ class AlbumEntryTest {
     @Test
     void testAlbumEntry() {
         int id = 1;
+        int parent = 2;
         String path = "/album/bilde01";
         boolean album = true;
         String title = "Album";
         String description = "This is an album";
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
         String thumbnailUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif";
-        AlbumEntry bean = new AlbumEntry(id, path, album, title, description, imageUrl, thumbnailUrl);
+        AlbumEntry bean = new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl);
         assertEquals(id, bean.getId());
+        assertEquals(parent, bean.getParent());
         assertEquals(path, bean.getPath());
         assertEquals(album, bean.isAlbum());
         assertEquals(title, bean.getTitle());

@@ -18,6 +18,7 @@ package no.priv.bang.oldalbum.services.bean;
 public class AlbumEntry {
 
     private int id;
+    private int parent;
     private String path;
     private boolean album;
     private String title;
@@ -25,8 +26,9 @@ public class AlbumEntry {
     private String imageUrl;
     private String thumbnailUrl;
 
-    public AlbumEntry(int id, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) {
+    public AlbumEntry(int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) { // NOSONAR
         this.id = id;
+        this.parent = parent;
         this.path = path;
         this.album = album;
         this.title = title;
@@ -42,6 +44,10 @@ public class AlbumEntry {
 
     public int getId() {
         return id;
+    }
+
+    public int getParent() {
+        return parent;
     }
 
     public String getPath() {
