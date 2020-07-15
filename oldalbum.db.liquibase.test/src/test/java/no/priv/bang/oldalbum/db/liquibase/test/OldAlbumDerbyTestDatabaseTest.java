@@ -38,7 +38,7 @@ class OldAlbumDerbyTestDatabaseTest {
 
     @Test
     void testPrepare() throws Exception {
-        DataSource datasource = createDataSource();
+        DataSource datasource = createDataSource("oldalbum");
         MockLogService logservice = new MockLogService();
         OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
         hook.setLogService(logservice);
@@ -49,14 +49,36 @@ class OldAlbumDerbyTestDatabaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void testPrepareWithLiquibaseException() throws Exception {
+    void testCreateInitialSchemaWithLiquibaseException() throws Exception {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(LiquibaseException.class);
         MockLogService logservice = new MockLogService();
         OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
         hook.setLogService(logservice);
         hook.activate();
-        hook.prepare(datasource);
+        hook.createInitialSchema(datasource);
+        assertEquals(1, logservice.getLogmessages().size());
+    }
+
+    @Test
+    void testInsertMockDataWithLiquibaseException() throws Exception {
+        DataSource datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
+        MockLogService logservice = new MockLogService();
+        OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
+        hook.setLogService(logservice);
+        hook.insertMockData(datasource);
+        assertEquals(1, logservice.getLogmessages().size());
+    }
+
+    @Test
+    void testInsertMockDataWithOtherException() throws Exception {
+        DataSource datasource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
+        when(datasource.getConnection()).thenReturn(connection);
+        MockLogService logservice = new MockLogService();
+        OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
+        hook.setLogService(logservice);
+        hook.insertMockData(datasource);
         assertEquals(1, logservice.getLogmessages().size());
     }
 
@@ -75,9 +97,9 @@ class OldAlbumDerbyTestDatabaseTest {
         }
     }
 
-    private DataSource createDataSource() throws Exception {
+    private DataSource createDataSource(String dbname) throws Exception {
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:handlereg;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return derbyDataSourceFactory.createDataSource(properties);
     }
 
