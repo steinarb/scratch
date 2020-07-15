@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.db.liquibase.test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import liquibase.exception.LiquibaseException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumDerbyTestDatabaseTest {
@@ -43,6 +45,19 @@ class OldAlbumDerbyTestDatabaseTest {
         hook.activate();
         hook.prepare(datasource);
         assertDummyDataAsExpected(datasource);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testPrepareWithLiquibaseException() throws Exception {
+        DataSource datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenThrow(LiquibaseException.class);
+        MockLogService logservice = new MockLogService();
+        OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
+        hook.setLogService(logservice);
+        hook.activate();
+        hook.prepare(datasource);
+        assertEquals(1, logservice.getLogmessages().size());
     }
 
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
