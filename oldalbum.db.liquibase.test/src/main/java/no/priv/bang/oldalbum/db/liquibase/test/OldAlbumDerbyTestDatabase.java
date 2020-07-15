@@ -52,20 +52,17 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
             OldAlbumLiquibase handleregLiquibase = new OldAlbumLiquibase();
             handleregLiquibase.createInitialSchema(connect);
             insertMockData(connect);
-            handleregLiquibase.createInitialSchema(connect);
         } catch (LiquibaseException e) {
             logservice.log(LogService.LOG_ERROR, "Error creating handlreg test database", e);
         }
     }
 
-    private void insertMockData(Connection connect) throws LiquibaseException, SQLException {
+    @SuppressWarnings("resource")
+    private void insertMockData(Connection connect) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        try (Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
-            liquibase.update("");
-        } catch (Exception e) {
-            throw new SQLException("Error closing liquibase after loading dummy data", e);
-        }
+        Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection); // NOSONAR try-with-resources here breaks try-with-resources on the connection in the outer scope
+        liquibase.update("");
     }
 
 }
