@@ -28,12 +28,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumServiceProviderTest {
 
+	static ObjectMapper mapper = new ObjectMapper();
     private static DataSource datasource;
 
     @BeforeAll
@@ -50,13 +55,14 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testFetchRoutes() {
+    void testFetchRoutes() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
         List<AlbumEntry> allroutes = provider.fetchRoutes();
+        System.err.println(mapper.writeValueAsString(allroutes));
         assertEquals(21, allroutes.size());
     }
 
