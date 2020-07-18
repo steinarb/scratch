@@ -64,14 +64,13 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
     }
 
     void insertMockData(DataSource datasource) throws SQLException {
-        DatabaseConnection databaseConnection = new JdbcConnection(datasource.getConnection());
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        try (Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+        try (Connection connect = datasource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+            Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
         } catch (LiquibaseException e) {
             logservice.log(LogService.LOG_ERROR, "Error populating dummy data database", e);
-        } catch (Exception e) {
-            logservice.log(LogService.LOG_ERROR, "Error closing connection when populating dummy data database", e);
         }
     }
 
