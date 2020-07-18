@@ -24,5 +24,6 @@
         <feature>oldalbum-backend</feature>
         <feature>oldalbum-web-security</feature>
         <feature>authservice-with-testdb</feature>
+        <feature>oldalbum-web-api</feature>
     </feature>
 </features>
