@@ -70,18 +70,6 @@ class OldAlbumDerbyTestDatabaseTest {
         assertEquals(1, logservice.getLogmessages().size());
     }
 
-    @Test
-    void testInsertMockDataWithOtherException() throws Exception {
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
-        when(datasource.getConnection()).thenReturn(connection);
-        MockLogService logservice = new MockLogService();
-        OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
-        hook.setLogService(logservice);
-        hook.insertMockData(datasource);
-        assertEquals(1, logservice.getLogmessages().size());
-    }
-
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
         Connection connection = datasource.getConnection();
         String countSql = "select count(*) from albumentries";
