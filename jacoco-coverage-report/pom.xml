@@ -49,6 +49,11 @@
             <artifactId>oldalbum.web.security</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.priv.bang.oldalbum</groupId>
+            <artifactId>oldalbum.web.api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
