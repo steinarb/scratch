@@ -18,12 +18,15 @@ class SampleLiquibaseTest {
 
     @Test
     void testCreateSchema() throws Exception {
-        Connection connection = createConnection();
+    	DataSource datasource = createDataSource("liquibasesample");
         SampleLiquibase liquibase = new SampleLiquibase();
+        liquibase.activate();
 
-        liquibase.createSchema(connection);
-        addAlbumEntries(connection);
-        assertAlbumEntries(connection);
+        liquibase.prepare(datasource);
+        try(Connection connection = datasource.getConnection()) {
+            addAlbumEntries(connection);
+            assertAlbumEntries(connection);
+        }
     }
 
     private void assertAlbumEntries(Connection connection) throws Exception {
@@ -70,11 +73,10 @@ class SampleLiquibaseTest {
         }
     }
 
-    private Connection createConnection() throws Exception {
+    private DataSource createDataSource(String dbname) throws Exception {
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:liquibasesample;create=true");
-        DataSource dataSource = derbyDataSourceFactory.createDataSource(properties);
-        return dataSource.getConnection();
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
+        return derbyDataSourceFactory.createDataSource(properties);
     }
 
 }

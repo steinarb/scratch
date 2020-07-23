@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="handlereg.db.liquibase.test">
+
+    <feature name="${karaf-feature-name}">
+        <feature>scr</feature>
+        <feature>pax-jdbc-derby</feature>
+    </feature>
+    <feature name="liquibase-sample" description="liquibase-sample DataSource" version="${project.version}">
+        <config name="org.ops4j.datasource-oldalbum-test">
+            osgi.jdbc.driver.name=derby
+            dataSourceName=jdbc/liquibasesample
+            url=jdbc:derby:memory:liquibasesample;create=true
+            ops4j.preHook=liquibasesampledb
+        </config>
+        <capability>
+            osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/oldalbum
+        </capability>
+        <feature>${karaf-feature-name}</feature>
+        <feature>pax-jdbc-config</feature>
+    </feature>
+</features>
