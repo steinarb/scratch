@@ -1,0 +1,981 @@
+default namespace = "http://www.liquibase.org/xml/ns/dbchangelog"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace ns_1 = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace rng = "http://relaxng.org/ns/structure/1.0"
+namespace xsd = "http://www.w3.org/2001/XMLSchema"
+namespace xsi = "http://www.w3.org/2001/XMLSchema-instance"
+
+propertyExpression = xsd:string { pattern = "$\{[\w\.]+\}" }
+[
+  a:documentation [
+    "\x{a}" ~
+    "\x{a}" ~
+    "                "
+    xsd:documentation [
+      "Extension to standard XSD boolean type to allow ${} parameters"
+    ]
+    "\x{a}" ~
+    "\x{a}" ~
+    "        "
+  ]
+]
+booleanExp = xsd:boolean | propertyExpression
+[
+  a:documentation [
+    "\x{a}" ~
+    "\x{a}" ~
+    "                "
+    xsd:documentation [
+      "Extension to standard XSD integer type to allow ${} parameters"
+    ]
+    "\x{a}" ~
+    "\x{a}" ~
+    "        "
+  ]
+]
+integerExp = xsd:integer | propertyExpression
+onChangeSetPreconditionErrorOrFail =
+  "HALT" | "WARN" | "CONTINUE" | "MARK_RAN"
+onChangeLogPreconditionErrorOrFail = "HALT" | "WARN"
+onChangeLogPreconditionOnSqlOutput = "TEST" | "FAIL" | "IGNORE"
+onChangeSetValidationFail = "HALT" | "MARK_RAN"
+objectQuotingStrategy =
+  "LEGACY" | "QUOTE_ALL_OBJECTS" | "QUOTE_ONLY_RESERVED_WORDS"
+# This is the main (root) part of the xsd
+start |= databaseChangeLog
+databaseChangeLog =
+  element databaseChangeLog {
+    element property {
+      attribute file { xsd:string }?,
+      attribute name { xsd:string }?,
+      attribute value { xsd:string }?,
+      attribute dbms { xsd:string }?,
+      attribute context { xsd:string }?,
+      attribute labels { xsd:string }?,
+      attribute global { xsd:boolean }?,
+      attribute target { xsd:string }?,
+      attribute * { text }
+    }*,
+    element preConditions {
+      (PreConditionChildren+),
+      attribute onFailMessage { xsd:string }?,
+      attribute onErrorMessage { xsd:string }?,
+      attribute onFail { onChangeLogPreconditionErrorOrFail }?,
+      attribute onError { onChangeLogPreconditionErrorOrFail }?,
+      attribute onSqlOutput { onChangeLogPreconditionOnSqlOutput }?
+    }?,
+    (element changeSet {
+       element validCheckSum { comment? }*,
+       [
+         a:documentation [
+           "\x{a}" ~
+           "\x{a}" ~
+           "                                            "
+           xsd:documentation [
+             "onChangeLogPreconditionOnSqlOutput determines what should\x{a}" ~
+             "                                                happen when evaluating this precondition in updateSQL mode. TEST: Run\x{a}" ~
+             "                                                precondition, FAIL: Fail precondition, IGNORE: Skip precondition check\x{a}" ~
+             "                                                [DEFAULT]\x{a}" ~
+             "                                            "
+           ]
+           "\x{a}" ~
+           "\x{a}" ~
+           "                                    "
+         ]
+       ]
+       element preConditions {
+         (PreConditionChildren+),
+         attribute onFailMessage { xsd:string }?,
+         attribute onErrorMessage { xsd:string }?,
+         attribute onFail { onChangeSetPreconditionErrorOrFail }?,
+         attribute onError { onChangeSetPreconditionErrorOrFail }?,
+         attribute onSqlOutput { onChangeLogPreconditionOnSqlOutput }?
+       }?,
+       (tagDatabase | changeSetChildren*),
+       element modifySql {
+         (modifySqlChildren+),
+         attribute dbms { xsd:string }?,
+         attribute context { xsd:string }?,
+         attribute labels { xsd:string }?,
+         attribute applyToRollback { booleanExp }?
+       }*,
+       changeSetAttributes
+     }*
+     | # include
+       element include {
+         attribute id { xsd:string }?,
+         attribute author { xsd:string }?,
+         attribute file { xsd:string },
+         attribute relativeToChangelogFile { booleanExp }?,
+         attribute context { xsd:string }?,
+         attribute labels { xsd:string }?,
+         attribute ignore { xsd:string }?,
+         attribute created { xsd:string }?
+       }*
+     | element includeAll {
+         attribute path { xsd:string },
+         [ ns_1:defaultValue = "false" ]
+         attribute errorIfMissingOrEmpty { booleanExp }?,
+         attribute relativeToChangelogFile { booleanExp }?,
+         attribute resourceComparator { xsd:string }?,
+         attribute filter { xsd:string }?,
+         attribute context { xsd:string }?
+       }*)*,
+    changeLogAttributes
+  }
+modifySqlChildren =
+  element replace {
+    attribute replace { xsd:string },
+    attribute with { xsd:string }
+  }*
+  | element regExpReplace {
+      attribute replace { xsd:string },
+      attribute with { xsd:string }
+    }*
+  | element prepend {
+      attribute value { xsd:string }
+    }*
+  | element append {
+      attribute value { xsd:string }
+    }*
+# Attributes for DatabaseInfo
+DatabaseInfoAttributes =
+  attribute type { xsd:string }?,
+  attribute version { xsd:string }?,
+  attribute username { xsd:string }?,
+  attribute password { xsd:string }?,
+  attribute port { integerExp }?,
+  attribute host { xsd:string }?,
+  attribute schemaName { xsd:string }?,
+  attribute driverName { xsd:string }?
+# Attributes for changeSet
+changeLogAttributes =
+  attribute logicalFilePath { xsd:string }?,
+  attribute context { xsd:string }?,
+  [ ns_1:defaultValue = "LEGACY" ]
+  attribute objectQuotingStrategy { objectQuotingStrategy }?,
+  attribute xsi:schemaLocation { xsd:string }?
+# Attributes for changeSet
+changeSetAttributes =
+  attribute id { xsd:string },
+  attribute author { xsd:string },
+  attribute context { xsd:string }?,
+  attribute labels { xsd:string }?,
+  attribute dbms { xsd:string }?,
+  attribute runOnChange { booleanExp }?,
+  attribute runAlways { booleanExp }?,
+  attribute failOnError { booleanExp }?,
+  attribute onValidationFail { onChangeSetValidationFail }?,
+  [ ns_1:defaultValue = "true" ]
+  attribute runInTransaction { booleanExp }?,
+  attribute logicalFilePath { xsd:string }?,
+  attribute objectQuotingStrategy { objectQuotingStrategy }?,
+  attribute created { xsd:string }?,
+  attribute runOrder { xsd:string }?,
+  attribute ignore { booleanExp }?
+# Attributes for changes
+changeAttributes = empty
+# Attributes for constraints
+constraintsAttributes =
+  attribute nullable { booleanExp }?,
+  attribute notNullConstraintName { xsd:string }?,
+  attribute primaryKey { booleanExp }?,
+  attribute primaryKeyName { xsd:string }?,
+  attribute primaryKeyTablespace { xsd:string }?,
+  attribute unique { booleanExp }?,
+  attribute uniqueConstraintName { xsd:string }?,
+  attribute references { xsd:string }?,
+  attribute referencedTableCatalogName { xsd:string }?,
+  attribute referencedTableSchemaName { xsd:string }?,
+  attribute referencedTableName { xsd:string }?,
+  attribute referencedColumnNames { xsd:string }?,
+  attribute foreignKeyName { xsd:string }?,
+  attribute deleteCascade { booleanExp }?,
+  attribute deferrable { booleanExp }?,
+  attribute initiallyDeferred { booleanExp }?,
+  attribute checkConstraint { xsd:string }?,
+  attribute validateNullable { booleanExp }?,
+  attribute validateUnique { booleanExp }?,
+  attribute validatePrimaryKey { booleanExp }?,
+  attribute validateForeignKey { booleanExp }?
+columnAttributes =
+  attribute name { xsd:string }?,
+  attribute computed { booleanExp }?,
+  attribute descending { booleanExp }?,
+  attribute type { xsd:string }?,
+  attribute value { xsd:string }?,
+  attribute valueNumeric { xsd:string }?,
+  attribute valueBoolean { xsd:string }?,
+  attribute valueDate { xsd:string }?,
+  attribute valueComputed { xsd:string }?,
+  attribute valueSequenceCurrent { xsd:string }?,
+  attribute valueSequenceNext { xsd:string }?,
+  attribute valueBlobFile { xsd:string }?,
+  attribute valueClobFile { xsd:string }?,
+  attribute defaultValue { xsd:string }?,
+  attribute defaultValueNumeric { xsd:string }?,
+  attribute defaultValueDate { xsd:string }?,
+  attribute defaultValueBoolean { booleanExp }?,
+  attribute defaultValueComputed { xsd:string }?,
+  attribute defaultValueSequenceCurrent { xsd:string }?,
+  attribute defaultValueSequenceNext { xsd:string }?,
+  attribute defaultValueConstraintName { xsd:string }?,
+  attribute autoIncrement { booleanExp }?,
+  attribute startWith { xsd:long }?,
+  attribute incrementBy { xsd:long }?,
+  attribute generationType { xsd:string }?,
+  attribute defaultOnNull { booleanExp }?,
+  attribute remarks { xsd:string }?,
+  attribute encoding {
+    [
+      a:documentation [
+        "\x{a}" ~
+        "\x{a}" ~
+        "                    "
+        xsd:documentation [
+          "\x{a}" ~
+          "                        Used with valueClobFile to specify file encoding explicitly.\x{a}" ~
+          "                    "
+        ]
+        "\x{a}" ~
+        "\x{a}" ~
+        "            "
+      ]
+    ]
+    xsd:string
+  }?
+columnType =
+  constraints?,
+  element * { text }*,
+  column
+paramAttributes =
+  attribute name { xsd:string }?,
+  attribute value { xsd:string }?,
+  attribute valueNumeric { xsd:string }?,
+  attribute valueBoolean { xsd:string }?,
+  attribute valueDate { xsd:string }?,
+  attribute valueComputed { xsd:string }?,
+  attribute valueSequenceNext { xsd:string }?,
+  attribute valueSequenceCurrent { xsd:string }?
+tableNameAttribute =
+  attribute catalogName { xsd:string }?,
+  attribute schemaName { xsd:string }?,
+  attribute tableName { xsd:string }
+dropTableAttributes =
+  tableNameAttribute,
+  attribute cascadeConstraints { booleanExp }?
+renameTableAttributes =
+  attribute catalogName { xsd:string }?,
+  attribute schemaName { xsd:string }?,
+  attribute oldTableName { xsd:string },
+  attribute newTableName { xsd:string }
+renameViewAttributes =
+  attribute catalogName { xsd:string }?,
+  attribute schemaName { xsd:string }?,
+  attribute oldViewName { xsd:string },
+  attribute newViewName { xsd:string }
+renameColumnAttributes =
+  tableNameAttribute,
+  attribute oldColumnName { xsd:string },
+  attribute newColumnName { xsd:string },
+  attribute columnDataType { xsd:string }?,
+  attribute remarks { xsd:string }?
+dropColumnAttributes =
+  tableNameAttribute,
+  attribute columnName { xsd:string }?
+sequenceAttributes =
+  attribute catalogName { xsd:string }?,
+  attribute schemaName { xsd:string }?,
+  attribute sequenceName { xsd:string },
+  attribute startValue { xsd:string }?,
+  attribute incrementBy { xsd:string }?,
+  attribute maxValue { xsd:string }?,
+  attribute minValue { xsd:string }?,
+  attribute ordered { xsd:string }?,
+  attribute cacheSize { xsd:string }?,
+  attribute dataType { xsd:string }?,
+  attribute cycle {
+
+    ##
+    ##
+    ##                     true for a cycling sequence, false for a non-cycling sequence.
+    ##                     Default is false.
+    ##
+    ##
+    xsd:string
+  }?
+renameSequenceAttributes =
+  attribute catalogName { xsd:string }?,
+  attribute schemaName { xsd:string }?,
+  attribute oldSequenceName { xsd:string },
+  attribute newSequenceName { xsd:string }
+indexName = attribute indexName { xsd:string }
+createIndexAttributes =
+  tableNameAttribute,
+  indexName,
+  attribute associatedWith { xsd:string }?,
+  attribute unique { booleanExp }?,
+  attribute clustered { booleanExp }?,
+  attribute tablespace { xsd:string }?,
+  attribute * { text }
+start |= addPrimaryKey
+addPrimaryKey =
+  element addPrimaryKey {
+    (element * { text }*)+,
+    changeAttributes,
+    tableNameAttribute,
+    attribute columnNames { xsd:string },
+    attribute constraintName { xsd:string }?,
+    attribute tablespace { xsd:string }?,
+    attribute clustered { booleanExp }?,
+    attribute forIndexCatalogName { xsd:string }?,
+    attribute forIndexSchemaName { xsd:string }?,
+    attribute forIndexName { xsd:string }?,
+    attribute validate { booleanExp }?,
+    attribute * { text }
+  }
+start |= dropPrimaryKey
+dropPrimaryKey =
+  element dropPrimaryKey {
+    changeAttributes,
+    tableNameAttribute,
+    attribute constraintName { xsd:string }?
+  }
+start |= addUniqueConstraint
+addUniqueConstraint =
+  element addUniqueConstraint {
+    (element * { text }*)+,
+    changeAttributes,
+    tableNameAttribute,
+    attribute columnNames { xsd:string },
+    attribute constraintName { xsd:string }?,
+    attribute tablespace { xsd:string }?,
+    attribute disabled { booleanExp }?,
+    attribute deferrable { booleanExp }?,
+    attribute initiallyDeferred { booleanExp }?,
+    attribute forIndexCatalogName { xsd:string }?,
+    attribute forIndexSchemaName { xsd:string }?,
+    attribute forIndexName { xsd:string }?,
+    attribute clustered { booleanExp }?,
+    attribute validate { booleanExp }?,
+    attribute * { text }
+  }
+start |= dropUniqueConstraint
+dropUniqueConstraint =
+  element dropUniqueConstraint {
+    changeAttributes,
+    tableNameAttribute,
+    attribute constraintName { xsd:string }?,
+    attribute uniqueColumns { xsd:string }?
+  }
+start |= modifyDataType
+modifyDataType =
+  element modifyDataType {
+    changeAttributes,
+    tableNameAttribute,
+    attribute columnName { xsd:string },
+    attribute newDataType { xsd:string }
+  }
+start |= addLookupTable
+addLookupTable =
+  element addLookupTable {
+    changeAttributes,
+    attribute existingTableCatalogName { xsd:string }?,
+    attribute existingTableSchemaName { xsd:string }?,
+    attribute existingTableName { xsd:string },
+    attribute existingColumnName { xsd:string },
+    attribute newTableCatalogName { xsd:string }?,
+    attribute newTableSchemaName { xsd:string }?,
+    attribute newTableName { xsd:string },
+    attribute newColumnName { xsd:string },
+    attribute newColumnDataType { xsd:string }?,
+    attribute constraintName { xsd:string }?
+  }
+start |= addAutoIncrement
+addAutoIncrement =
+  element addAutoIncrement {
+    changeAttributes,
+    tableNameAttribute,
+    attribute columnName { xsd:string },
+    attribute columnDataType { xsd:string }?,
+    attribute startWith { xsd:long }?,
+    attribute incrementBy { xsd:long }?
+  }
+start |= addDefaultValue
+addDefaultValue =
+  element addDefaultValue {
+    changeAttributes,
+    tableNameAttribute,
+    attribute columnName { xsd:string },
+    attribute columnDataType { xsd:string }?,
+    attribute defaultValue { xsd:string }?,
+    attribute defaultValueNumeric { xsd:string }?,
+    attribute defaultValueDate { xsd:string }?,
+    attribute defaultValueBoolean { xsd:string }?,
+    attribute defaultValueComputed { xsd:string }?,
+    attribute defaultValueSequenceNext { xsd:string }?,
+    attribute defaultValueConstraintName { xsd:string }?
+  }
+start |= dropDefaultValue
+dropDefaultValue =
+  element dropDefaultValue {
+    changeAttributes,
+    tableNameAttribute,
+    attribute columnName { xsd:string },
+    attribute columnDataType { xsd:string }?
+  }
+start |= loadData
+loadData =
+  element loadData {
+    element column {
+      attribute index { integerExp }?,
+      attribute header { xsd:string }?,
+      attribute name { xsd:string }?,
+      attribute type { xsd:string }?,
+      attribute defaultValue { xsd:string }?,
+      attribute defaultValueNumeric { xsd:string }?,
+      attribute defaultValueDate { xsd:string }?,
+      attribute defaultValueBoolean { booleanExp }?,
+      attribute defaultValueComputed { xsd:string }?
+    }*,
+    changeAttributes,
+    tableNameAttribute,
+    attribute file { xsd:string }?,
+    attribute relativeToChangelogFile { booleanExp }?,
+    attribute usePreparedStatements { booleanExp }?,
+    [ ns_1:defaultValue = "UTF-8" ] attribute encoding { xsd:string }?,
+    [ ns_1:defaultValue = "," ] attribute separator { xsd:string }?,
+    [ ns_1:defaultValue = '"' ] attribute quotchar { xsd:string }?,
+    [ ns_1:defaultValue = "#" ]
+    attribute commentLineStartsWith { xsd:string }?
+  }
+start |= loadUpdateData
+loadUpdateData =
+  element loadUpdateData {
+    element column {
+      attribute index { integerExp }?,
+      attribute header { xsd:string }?,
+      attribute name { xsd:string }?,
+      attribute type { xsd:string }?,
+      attribute defaultValue { xsd:string }?,
+      attribute defaultValueNumeric { xsd:string }?,
+      attribute defaultValueDate { xsd:string }?,
+      attribute defaultValueBoolean { booleanExp }?,
+      attribute defaultValueComputed { xsd:string }?
+    }*,
+    tableNameAttribute,
+    attribute file { xsd:string }?,
+    attribute relativeToChangelogFile { booleanExp }?,
+    [ ns_1:defaultValue = "UTF-8" ] attribute encoding { xsd:string }?,
+    attribute primaryKey { xsd:string },
+    [ ns_1:defaultValue = "false" ]
+    attribute onlyUpdate { xsd:boolean }?,
+    [ ns_1:defaultValue = "," ] attribute separator { xsd:string }?,
+    [ ns_1:defaultValue = '"' ] attribute quotchar { xsd:string }?
+  }
+fkCascadeActionOptions =
+  "CASCADE" | "SET NULL" | "SET DEFAULT" | "RESTRICT" | "NO ACTION"
+addForeignKeyConstraintAttrib =
+  attribute baseTableCatalogName { xsd:string }?,
+  attribute baseTableSchemaName { xsd:string }?,
+  attribute baseTableName { xsd:string },
+  attribute baseColumnNames { xsd:string },
+  attribute constraintName { xsd:string },
+  attribute referencedTableCatalogName { xsd:string }?,
+  attribute referencedTableSchemaName { xsd:string }?,
+  attribute referencedTableName { xsd:string },
+  attribute referencedColumnNames { xsd:string },
+  attribute deferrable { booleanExp }?,
+  attribute initiallyDeferred { booleanExp }?,
+  attribute deleteCascade { booleanExp }?,
+  attribute onDelete { fkCascadeActionOptions }?,
+  attribute onUpdate { fkCascadeActionOptions }?,
+  attribute referencesUniqueColumn { booleanExp }?,
+  attribute validate { booleanExp }?
+addNotNullConstraintAttrib =
+  tableNameAttribute,
+  attribute columnName { xsd:string },
+  attribute defaultNullValue { xsd:string }?,
+  attribute columnDataType { xsd:string }?,
+  attribute constraintName { xsd:string }?,
+  attribute validate { booleanExp }?
+start |= addNotNullConstraint
+addNotNullConstraint =
+  element addNotNullConstraint {
+    changeAttributes, addNotNullConstraintAttrib
+  }
+start |= addForeignKeyConstraint
+addForeignKeyConstraint =
+  element addForeignKeyConstraint {
+    changeAttributes, addForeignKeyConstraintAttrib
+  }
+dbmsAttrib = attribute type { xsd:string }
+start |= dbms
+dbms = element dbms { dbmsAttrib }
+start |= changeSetExecuted
+changeSetExecuted =
+  element changeSetExecuted {
+    attribute id { xsd:string },
+    attribute author { xsd:string },
+    attribute changeLogFile { xsd:string }?
+  }
+start |= tableExists
+tableExists =
+  element tableExists {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute tableName { xsd:string }
+  }
+start |= columnExists
+columnExists =
+  element columnExists {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute tableName { xsd:string },
+    attribute columnName { xsd:string }
+  }
+start |= sequenceExists
+sequenceExists =
+  element sequenceExists {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute sequenceName { xsd:string }
+  }
+start |= foreignKeyConstraintExists
+foreignKeyConstraintExists =
+  element foreignKeyConstraintExists {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute foreignKeyTableName { xsd:string }?,
+    attribute foreignKeyName { xsd:string }
+  }
+start |= indexExists
+indexExists =
+  element indexExists {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute indexName { xsd:string }?,
+    attribute tableName { xsd:string }?,
+    attribute columnNames { xsd:string }?
+  }
+start |= rowCount
+rowCount =
+  element rowCount {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute tableName { xsd:string }?,
+    attribute expectedRows { xsd:int }?
+  }
+start |= tableIsEmpty
+tableIsEmpty =
+  element tableIsEmpty {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute tableName { xsd:string }?
+  }
+start |= changeLogPropertyDefined
+changeLogPropertyDefined =
+  element changeLogPropertyDefined {
+    attribute property { xsd:string },
+    attribute value { xsd:string }?
+  }
+start |= primaryKeyExists
+primaryKeyExists =
+  element primaryKeyExists {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute primaryKeyName { xsd:string }?,
+    attribute tableName { xsd:string }?
+  }
+start |= viewExists
+viewExists =
+  element viewExists {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute viewName { xsd:string }
+  }
+start |= sqlCheck
+sqlCheck =
+  element sqlCheck {
+    attribute expectedResult { xsd:string }
+  }
+start |= customPrecondition
+customPrecondition =
+  element customPrecondition {
+    element param {
+      attribute name { xsd:string },
+      attribute value { xsd:string }
+    }*,
+    attribute className { xsd:string }
+  }
+start |= and
+and = element and { PreConditionChildren+ }
+start |= or
+or = element or { PreConditionChildren+ }
+start |= not
+not = element not { PreConditionChildren+ }
+runningAsAttrib = attribute username { xsd:string }
+start |= runningAs
+runningAs = element runningAs { runningAsAttrib }
+objectQuotingStrategyAttrib = attribute strategy { xsd:string }
+start |= expectedQuotingStrategy
+expectedQuotingStrategy =
+  element expectedQuotingStrategy { objectQuotingStrategyAttrib }
+dropForeignKeyConstraintAttrib =
+  attribute baseTableCatalogName { xsd:string }?,
+  attribute baseTableSchemaName { xsd:string }?,
+  attribute baseTableName { xsd:string },
+  attribute constraintName { xsd:string }?
+start |= dropForeignKeyConstraint
+dropForeignKeyConstraint =
+  element dropForeignKeyConstraint {
+    changeAttributes, dropForeignKeyConstraintAttrib
+  }
+dropAllForeignKeyConstraintsAttrib =
+  attribute baseTableCatalogName { xsd:string }?,
+  attribute baseTableSchemaName { xsd:string }?,
+  attribute baseTableName { xsd:string }
+start |= dropAllForeignKeyConstraints
+dropAllForeignKeyConstraints =
+  element dropAllForeignKeyConstraints {
+    changeAttributes, dropAllForeignKeyConstraintsAttrib
+  }
+start |= dropNotNullConstraint
+dropNotNullConstraint =
+  element dropNotNullConstraint {
+    changeAttributes,
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute tableName { xsd:string },
+    attribute columnName { xsd:string },
+    attribute columnDataType { xsd:string }?
+  }
+start |= setTableRemarks
+setTableRemarks =
+  element setTableRemarks {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute tableName { xsd:string },
+    attribute remarks { xsd:string }?
+  }
+start |= setColumnRemarks
+setColumnRemarks =
+  element setColumnRemarks {
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute tableName { xsd:string },
+    attribute columnName { xsd:string },
+    attribute remarks { xsd:string }?
+  }
+start |= constraints
+constraints = element constraints { constraintsAttributes }
+start |= column
+column =
+  element column {
+    constraints?,
+    columnAttributes
+  }
+start |= param
+param = element param { paramAttributes, param }
+# Children for createTable
+start |= createTable
+createTable =
+  element createTable {
+    (column+
+     | element * { text }*)+,
+    changeAttributes,
+    tableNameAttribute,
+    attribute tablespace { xsd:string }?,
+    attribute remarks { xsd:string }?
+  }
+# Children for createView
+start |= createView
+createView =
+  element createView {
+    changeAttributes,
+    attribute catalogName { xsd:string },
+    attribute schemaName { xsd:string },
+    attribute viewName { xsd:string },
+    attribute remarks { xsd:string },
+    attribute replaceIfExists { booleanExp },
+    attribute fullDefinition { booleanExp },
+    attribute path { xsd:string },
+    attribute encoding { xsd:string },
+    attribute relativeToChangelogFile { booleanExp },
+    attribute * { text }
+  }
+# Children for insert
+start |= insert
+insert =
+  element insert {
+    column+,
+    changeAttributes,
+    tableNameAttribute,
+    attribute dbms { xsd:string }?
+  }
+start |= update
+update =
+  element update {
+    column+,
+    element where { xsd:string }?,
+    whereParams?,
+    changeAttributes,
+    tableNameAttribute
+  }
+start |= whereParams
+whereParams = element whereParams { param+ }
+start |= delete
+delete =
+  element delete {
+    element where { empty }?,
+    whereParams?,
+    tableNameAttribute
+  }
+# Children for addColum
+start |= addColumn
+addColumn =
+  element addColumn {
+    element column {
+      columnType,
+      attribute beforeColumn { xsd:string }?,
+      attribute afterColumn { xsd:string }?,
+      attribute position { xsd:integer }?
+    }+,
+    changeAttributes,
+    tableNameAttribute
+  }
+start |= rollback
+rollback =
+  element rollback {
+    (changeSetChildren*),
+    attribute changeSetPath { xsd:string }?,
+    attribute changeSetAuthor { xsd:string }?,
+    attribute changeSetId { xsd:string }?
+  }
+# comment
+start |= comment
+comment = element comment { xsd:string }
+# sql
+start |= sql
+sql =
+  element sql {
+    comment?,
+    changeAttributes,
+    attribute stripComments { booleanExp }?,
+    attribute splitStatements { booleanExp }?,
+    attribute endDelimiter { xsd:string }?,
+    attribute dbms { xsd:string }?
+  }
+start |= createProcedure
+createProcedure =
+  element createProcedure {
+    comment?,
+    changeAttributes,
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?,
+    attribute procedureName { xsd:string }?,
+    attribute path { xsd:string }?,
+    attribute encoding { xsd:string }?,
+    attribute relativeToChangelogFile { booleanExp }?,
+    attribute dbms { xsd:string }?,
+    attribute replaceIfExists { xsd:boolean }?
+  }
+start |= executeCommand
+executeCommand =
+  element executeCommand {
+    element arg {
+      attribute value { xsd:string }
+    }*,
+    changeAttributes,
+    attribute executable { xsd:string },
+    attribute os { xsd:string }?,
+    attribute timeout { xsd:string }?
+  }
+start |= sqlFile
+sqlFile =
+  element sqlFile {
+    changeAttributes,
+    attribute path { xsd:string },
+    attribute stripComments { booleanExp }?,
+    attribute splitStatements { booleanExp }?,
+    [ ns_1:defaultValue = "UTF-8" ] attribute encoding { xsd:string }?,
+    attribute endDelimiter { xsd:string }?,
+    attribute relativeToChangelogFile { booleanExp }?,
+    attribute dbms { xsd:string }?,
+    attribute * { text }
+  }
+start |= tagDatabase
+tagDatabase =
+  element tagDatabase {
+    changeAttributes,
+    attribute tag { xsd:string }
+  }
+start |= stop
+stop = element stop { changeAttributes }
+start |= \empty
+\empty = element empty { changeAttributes }
+start |= output
+output =
+  element output {
+    attribute target { xsd:string }?
+  }
+# renameTable
+start |= renameTable
+renameTable =
+  element renameTable { changeAttributes, renameTableAttributes }
+start |= renameView
+renameView =
+  element renameView { changeAttributes, renameViewAttributes }
+# dropTable
+start |= dropTable
+dropTable = element dropTable { changeAttributes, dropTableAttributes }
+start |= dropView
+dropView =
+  element dropView {
+    changeAttributes,
+    attribute viewName { xsd:string },
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?
+  }
+start |= dropProcedure
+dropProcedure =
+  element dropProcedure {
+    changeAttributes,
+    attribute procedureName { xsd:string },
+    attribute catalogName { xsd:string }?,
+    attribute schemaName { xsd:string }?
+  }
+# renameColumn
+start |= renameColumn
+renameColumn =
+  element renameColumn { changeAttributes, renameColumnAttributes }
+start |= dropColumn
+dropColumn =
+  element dropColumn {
+    element column { columnType }*,
+    changeAttributes,
+    dropColumnAttributes
+  }
+start |= mergeColumns
+mergeColumns =
+  element mergeColumns {
+    changeAttributes,
+    tableNameAttribute,
+    attribute column1Name { xsd:string },
+    attribute joinString { xsd:string },
+    attribute column2Name { xsd:string },
+    attribute finalColumnName { xsd:string },
+    attribute finalColumnType { xsd:string }
+  }
+start |= createSequence
+createSequence =
+  element createSequence { changeAttributes, sequenceAttributes }
+start |= alterSequence
+alterSequence =
+  element alterSequence { changeAttributes, sequenceAttributes }
+start |= dropSequence
+dropSequence =
+  element dropSequence { changeAttributes, sequenceAttributes }
+start |= renameSequence
+renameSequence =
+  element renameSequence { changeAttributes, renameSequenceAttributes }
+start |= createIndex
+createIndex =
+  element createIndex {
+    (column+
+     | element * { text }*)+,
+    changeAttributes,
+    createIndex
+  }
+start |= dropIndex
+dropIndex =
+  element dropIndex {
+    changeAttributes,
+    tableNameAttribute,
+    indexName,
+    attribute associatedWith { xsd:string }?
+  }
+start |= customChange
+customChange =
+  element customChange {
+    element param {
+      attribute name { xsd:string },
+      attribute value { xsd:string }?
+    }*,
+    changeAttributes,
+    attribute class { xsd:string },
+    attribute * { text }
+  }
+# Children for changeSet
+changeSetChildren =
+  comment
+  | createTable+
+  | dropTable+
+  | createView+
+  | renameView+
+  | dropView+
+  | insert+
+  | addColumn+
+  | sql+
+  | createProcedure+
+  | dropProcedure+
+  | sqlFile+
+  | renameTable+
+  | renameColumn+
+  | dropColumn+
+  | mergeColumns+
+  | modifyDataType+
+  | createSequence+
+  | alterSequence+
+  | dropSequence+
+  | renameSequence+
+  | createIndex+
+  | dropIndex+
+  | addNotNullConstraint+
+  | dropNotNullConstraint+
+  | addForeignKeyConstraint+
+  | dropForeignKeyConstraint+
+  | dropAllForeignKeyConstraints+
+  | addPrimaryKey+
+  | dropPrimaryKey+
+  | addLookupTable+
+  | addAutoIncrement+
+  | addDefaultValue+
+  | dropDefaultValue+
+  | addUniqueConstraint+
+  | dropUniqueConstraint+
+  | setTableRemarks+
+  | setColumnRemarks+
+  | customChange+
+  | update+
+  | delete+
+  | loadData+
+  | loadUpdateData+
+  | executeCommand+
+  | stop+
+  | output+
+  | \empty+
+  | rollback
+  | element * { text }*
+# Children for Precondition
+PreConditionChildren =
+  and+
+  | or+
+  | not+
+  | dbms+
+  | runningAs+
+  | changeSetExecuted+
+  | tableExists+
+  | columnExists+
+  | sequenceExists+
+  | foreignKeyConstraintExists+
+  | indexExists+
+  | primaryKeyExists+
+  | viewExists+
+  | tableIsEmpty+
+  | rowCount+
+  | sqlCheck+
+  | changeLogPropertyDefined+
+  | expectedQuotingStrategy+
+  | customPrecondition+
+  | element * { text }*

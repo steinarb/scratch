@@ -1,0 +1,23 @@
+* Liqubase sample
+
+This project contains an OSGi bundle sample project using liquibase.
+
+The purpose of this project is to test if a particular version of the [[https://github.com/steinarb/liquibase-karaf-feature#a-karaf-feature-for-liquibase-core][liquibase karaf feature]] can be loaded in apache karaf.
+
+What the project does is to create a derby database with a liquibase schema.  The project (or the created database), doesn't actually do anything useful.
+
+** Usage
+
+ 1. Build this project with "mvn clean install"
+ 2. From the karaf console load the bundle:
+    #+begin_example
+      feature:repo-add mvn:no.priv.bang.karaf.liquibase/liquibase.sample/LATEST/xml/features
+      feature:install liquibase-sample
+    #+end_example
+ 3. If the bundle loads without problem the feature probably works
+ 4. Check the data/logs/karaf.log file for liquibase output (because that means that the log redirecto of
+
+** License
+The license of this karaf feature, is Apache Public License v 2.0
+
+See the LICENSE file for details.

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="sb" id="liquibasesample-1.0.0-albumentries">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="albumentries" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="albumentries">
+            <column autoIncrement="true" name="albumentry_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="account_primary_key"/>
+            </column>
+            <column name="parent" type="INTEGER" />
+            <column name="localpath" type="VARCHAR(256)" />
+            <column name="album" type="boolean" />
+            <column name="title" type="VARCHAR(256)" />
+            <column name="description" type="VARCHAR(2048)" />
+            <column name="imageurl" type="VARCHAR(256)" />
+            <column name="thumbnailurl" type="VARCHAR(256)" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
