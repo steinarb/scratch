@@ -16,5 +16,6 @@
         <bundle>mvn:org.yaml/snakeyaml/${snakeyaml.version}</bundle>
         <bundle>mvn:org.liquibase/liquibase-core/${liquibase.version}</bundle>
         <bundle start-level="35">mvn:no.priv.bang.karaf/liquibase-slf4j-osgi/${project.version}</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/2.9.0</bundle>
     </feature>
 </features>
