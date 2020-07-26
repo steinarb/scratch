@@ -86,7 +86,7 @@ class OldAlbumLiquibaseTest {
 
     private Connection createConnection() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:handlereg;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:oldalbum;create=true");
         DataSource dataSource = derbyDataSourceFactory.createDataSource(properties);
         return dataSource.getConnection();
     }
