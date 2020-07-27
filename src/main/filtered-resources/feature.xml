@@ -20,11 +20,13 @@
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.backend/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.api/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.frontend/${project.version}/xml/features</repository>
     <feature name="oldalbum-with-derby" description="oldalbum webapp with derby database" version="${project.version}">
         <feature>oldalbum-db-test</feature>
         <feature>oldalbum-backend</feature>
         <feature>oldalbum-web-security</feature>
         <feature>authservice-with-testdb-dbrealm-and-session</feature>
         <feature>oldalbum-web-api</feature>
+        <feature>oldalbum-web-frontend</feature>
     </feature>
 </features>

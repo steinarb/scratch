@@ -30,6 +30,7 @@
         <module>oldalbum.backend</module>
         <module>oldalbum.web.security</module>
         <module>oldalbum.web.api</module>
+        <module>oldalbum.web.frontend</module>
         <module>jacoco-coverage-report</module>
     </modules>
 
