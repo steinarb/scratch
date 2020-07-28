@@ -6,16 +6,31 @@ import logo from './logo.svg';
 import './App.css';
 import Home from './components/Home';
 import Album from './components/Album';
+import DynamicComponentsData from './DynamicComponentsData';
+import DynamicComponent from './DynamicComponent';
 
 class App extends Component {
     render() {
         const { history, allroutes } = this.props;
+        let dynamicComponents = DynamicComponentsData;
 
         return (
             <Router history={history}>
                 <div>
-                    <Route exact key="355" path="/oldalbum/" component={Home} />
-                    { allroutes.map( (item, index) => <Route exact key={index} path={item.path} component={() => <Album id={item.id}/>}/> )}
+                    <div>
+                        {
+                            dynamicComponents.map((item, index) => {
+                                return <div key={index}><NavLink exact activeClassName="selected" to={item.route}>{item.title}</NavLink></div>;
+                            })
+                        }
+                    </div>
+                    <div>
+                        {
+                            dynamicComponents.map((item, index) => {
+                                return <Route exact key={index} path={item.route} component={() => <DynamicComponent title={item.title} content={item.content} />} />;
+                            })
+                        }
+                    </div>
                 </div>
             </Router>
         );
