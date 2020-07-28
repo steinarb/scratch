@@ -31,6 +31,8 @@ class OldAlbumServiceTest {
         OldAlbumService service = mock(OldAlbumService.class);
         List<AlbumEntry> routes = service.fetchAllRoutes();
         assertEquals(0, routes.size());
+        List<String> paths = service.getPaths();
+        assertEquals(0, paths.size());
     }
 
 }

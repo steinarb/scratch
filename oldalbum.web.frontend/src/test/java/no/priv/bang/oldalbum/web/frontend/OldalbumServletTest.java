@@ -21,11 +21,13 @@ import org.junit.Test;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
+import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
@@ -35,29 +37,33 @@ public class OldalbumServletTest {
 
     @Test
     public void testGet() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();
         ServletConfig servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
         servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
         servlet.activate();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/useradmin/");
-        when(request.getPathInfo()).thenReturn("/");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
+        when(request.getPathInfo()).thenReturn("/moto/");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         servlet.service(request, response);
 
-        assertEquals("text/html", response.getContentType());
         assertEquals(200, response.getStatus());
-        assertThat(response.getBufferSize()).isGreaterThan(0);
+        assertEquals("text/html", response.getContentType());
+        assertThat(response.getBufferSize()).isPositive();
     }
 
 
     @Test
     public void testDoGetAddTrailingSlash() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -67,6 +73,7 @@ public class OldalbumServletTest {
 
         OldalbumServlet servlet = new OldalbumServlet();
         servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
         servlet.service(request, response);
@@ -76,11 +83,13 @@ public class OldalbumServletTest {
 
     @Test
     public void testDoGetResponseThrowsIOException() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/useradmin/");
-        when(request.getPathInfo()).thenReturn("/");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
+        when(request.getPathInfo()).thenReturn("/moto/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
         response.resetAll();
         ServletOutputStream streamThrowingIOException = mock(ServletOutputStream.class);
@@ -89,6 +98,7 @@ public class OldalbumServletTest {
 
         OldalbumServlet servlet = new OldalbumServlet();
         servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
         servlet.service(request, response);
@@ -99,6 +109,7 @@ public class OldalbumServletTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -110,6 +121,7 @@ public class OldalbumServletTest {
 
         OldalbumServlet servlet = new OldalbumServlet();
         servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
         servlet.service(request, response);
@@ -119,6 +131,7 @@ public class OldalbumServletTest {
 
     @Test
     public void testDoGetResourceNotFound() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -128,6 +141,7 @@ public class OldalbumServletTest {
 
         OldalbumServlet servlet = new OldalbumServlet();
         servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
         servlet.service(request, response);

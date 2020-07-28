@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +86,24 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             logservice.log(LogService.LOG_ERROR, "Failed to find the list of all routes", e);
         }
         return allroutes;
+    }
+
+    @Override
+    public List<String> getPaths() {
+        List<String> paths = new ArrayList<>();
+        String sql = "select localpath from albumentries order by localpath";
+        try (Connection connection = datasource.getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                try (ResultSet results = statement.executeQuery(sql)) {
+                    while(results.next()) {
+                        paths.add(results.getString(1));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, "Failed to find the list of paths the app can be entered in", e);
+        }
+        return paths;
     }
 
     private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {

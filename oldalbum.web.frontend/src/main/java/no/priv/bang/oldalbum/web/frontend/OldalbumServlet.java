@@ -21,8 +21,10 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
-import org.osgi.service.log.LogService;
 
+import java.util.List;
+
+import org.osgi.service.log.LogService;import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.servlet.frontend.FrontendServlet;
 
 @Component(
@@ -35,11 +37,10 @@ import no.priv.bang.servlet.frontend.FrontendServlet;
 )
 public class OldalbumServlet extends FrontendServlet {
     private static final long serialVersionUID = -2378206477575636399L;
+    private OldAlbumService oldalbum; // NOSONAR set by OSGi dependency injection and not touched after that
 
     public OldalbumServlet() {
         super();
-        // The paths used by the react router
-        setRoutes("/");
     }
 
     @Override
@@ -48,8 +49,19 @@ public class OldalbumServlet extends FrontendServlet {
         super.setLogService(logservice);
     }
 
+    @Reference
+    public void setOldalbumService(OldAlbumService oldalbum) {
+        this.oldalbum = oldalbum;
+    }
+
     @Activate
     public void activate() {
         // Called when the DS component is activated
     }
+
+    @Override
+    public List<String> getRoutes() {
+        return oldalbum.getPaths();
+    }
+
 }

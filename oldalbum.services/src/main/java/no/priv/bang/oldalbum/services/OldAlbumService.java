@@ -23,4 +23,6 @@ public interface OldAlbumService {
 
     List<AlbumEntry> fetchAllRoutes();
 
+    List<String> getPaths();
+
 }

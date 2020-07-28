@@ -75,4 +75,30 @@ class OldAlbumServiceProviderTest {
         assertEquals(0, allroutes.size());
     }
 
+    @Test
+    void testGetPaths() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        List<String> paths = provider.getPaths();
+        assertEquals(21, paths.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testGetPathsWithDatabaseFailure() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate();
+        List<String> paths = provider.getPaths();
+        assertEquals(1, logservice.getLogmessages().size());
+        assertEquals(0, paths.size());
+    }
+
 }
