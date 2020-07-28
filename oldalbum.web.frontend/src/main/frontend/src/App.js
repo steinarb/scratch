@@ -18,18 +18,10 @@ class App extends Component {
             <Router history={history}>
                 <div>
                     <div>
-                        {
-                            dynamicComponents.map((item, index) => {
-                                return <div key={index}><NavLink exact activeClassName="selected" to={item.route}>{item.title}</NavLink></div>;
-                            })
-                        }
+                        { dynamicComponents.map((item, index) => <div key={index}><NavLink exact activeClassName="selected" to={item.route}>{item.title}</NavLink></div>) }
                     </div>
                     <div>
-                        {
-                            dynamicComponents.map((item, index) => {
-                                return <Route exact key={index} path={item.route} component={() => <DynamicComponent title={item.title} content={item.content} />} />;
-                            })
-                        }
+                        { dynamicComponents.map((item, index) => <Route exact key={index} path={item.route} component={() => <DynamicComponent title={item.title} content={item.content} />} />) }
                     </div>
                 </div>
             </Router>
