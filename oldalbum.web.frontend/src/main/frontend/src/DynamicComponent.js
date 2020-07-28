@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 function DynamicComponent(props) {
     const {title, content} = props;
     return (
@@ -8,4 +9,9 @@ function DynamicComponent(props) {
         </div>
     );
 }
-export default DynamicComponent;
+
+function mapStateToProps(state) {
+    return {};
+}
+
+export default connect(mapStateToProps)(DynamicComponent);
