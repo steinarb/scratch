@@ -33,6 +33,12 @@ class OldAlbumServiceTest {
         assertEquals(0, routes.size());
         List<String> paths = service.getPaths();
         assertEquals(0, paths.size());
+        String path = "/moto/grava";
+        AlbumEntry entry = service.getAlbumEntryFromPath(path);
+        assertNull(entry);
+        int parent = 2;
+        List<AlbumEntry> children = service.getChildren(parent);
+        assertEquals(0, children.size());
     }
 
 }

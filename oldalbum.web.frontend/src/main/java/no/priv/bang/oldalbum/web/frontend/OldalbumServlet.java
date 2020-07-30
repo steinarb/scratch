@@ -16,15 +16,24 @@
 package no.priv.bang.oldalbum.web.frontend;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import static javax.servlet.http.HttpServletResponse.*;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.osgi.service.log.LogService;import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.servlet.frontend.FrontendServlet;
 
 @Component(
@@ -62,6 +71,57 @@ public class OldalbumServlet extends FrontendServlet {
     @Override
     public List<String> getRoutes() {
         return oldalbum.getPaths();
+    }
+
+    @Override
+    protected boolean thisIsAResourceThatShouldBeProcessed(HttpServletRequest request, String pathInfo, String resource, String contentType) {
+        return "index.html".equals(resource);
+    }
+
+    @Override
+    protected void processResource(HttpServletResponse response, HttpServletRequest request, String pathInfo, String resource, String contentType) throws IOException {
+        Document html = loadHtmlFile(resource);
+        addMetaTagIfNotEmpty(html, "og:url", request.getRequestURL().toString());
+        addOpenGraphHeaderElements(html, pathInfo);
+        try(ServletOutputStream body = response.getOutputStream()) {
+            body.print(html.outerHtml());
+        }
+        response.setStatus(SC_OK);
+        response.setContentType(contentType);
+    }
+
+    void addOpenGraphHeaderElements(Document html, String pathInfo) {
+        AlbumEntry entry = oldalbum.getAlbumEntryFromPath(pathInfo);
+        if (entry != null) {
+            addMetaTagIfNotEmpty(html, "og:title", entry.getTitle());
+            addMetaTagIfNotEmpty(html, "og:description", entry.getDescription());
+            addMetaTagIfNotEmpty(html, "og:image", entry.getImageUrl());
+            if (entry.isAlbum()) {
+                List<AlbumEntry> children = oldalbum.getChildren(entry.getId());
+                if (!children.isEmpty()) {
+                    for(AlbumEntry child : children) {
+                        addMetaTagIfNotEmpty(html, "og:image", child.getImageUrl());
+                    }
+                }
+            }
+        }
+
+    }
+
+    protected void addMetaTagIfNotEmpty(Document html, String property, String content) {
+        if (content != null && !content.isEmpty()) {
+            html.head().appendElement("meta").attr("property", property).attr("content", content);
+        }
+    }
+
+    protected Document loadHtmlFile(String htmlFile) throws IOException {
+        try (InputStream body = getClasspathResource(htmlFile)) {
+            return Jsoup.parse(body, "UTF-8", "");
+        }
+    }
+
+    InputStream getClasspathResource(String resource) {
+        return getClass().getClassLoader().getResourceAsStream(resource);
     }
 
 }

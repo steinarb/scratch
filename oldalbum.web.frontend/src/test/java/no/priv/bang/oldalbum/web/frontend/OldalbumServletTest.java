@@ -22,12 +22,14 @@ import org.junit.Test;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
@@ -37,7 +39,142 @@ import static javax.servlet.http.HttpServletResponse.*;
 public class OldalbumServletTest {
 
     @Test
-    public void testGet() throws Exception {
+    public void testGetAlbum() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "Motorcyle meeting places", "Places motorcylists meet", null, null);
+        when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
+        AlbumEntry grava1 = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+        AlbumEntry grava2 = new AlbumEntry(4, 2, "/moto/places/grava2", false, "Tyrigrava south view", "View from the south", "https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava2.gif");
+        AlbumEntry grava3 = new AlbumEntry(5, 2, "/moto/places/grava3", false, "Tyrigrava Wednesday", "Huge number of motorcyles on Wednesdays", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif");
+        AlbumEntry hove1 = new AlbumEntry(6, 2, "/moto/places/hove1", false, "Hove fjellgaard", "Meeting place in Ål in Hallingdal", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif");
+        AlbumEntry album1 = new AlbumEntry(7, 2, "/moto/places/album1", true, "Sub album", "In another album resides other pictures", null, null);
+        List<AlbumEntry> children = Arrays.asList(grava1, grava2, grava3, album1, hove1);
+        when(oldalbum.getChildren(anyInt())).thenReturn(children);
+        MockLogService logservice = new MockLogService();
+        OldalbumServlet servlet = new OldalbumServlet();
+        ServletConfig servletConfig = mock(ServletConfig.class);
+        when(servletConfig.getInitParameter("from")).thenReturn("to");
+        servlet.init(servletConfig);
+        servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
+        servlet.activate();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
+        when(request.getPathInfo()).thenReturn("/moto/");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        servlet.service(request, response);
+
+        assertEquals(SC_OK, response.getStatus());
+        assertEquals("text/html", response.getContentType());
+        assertThat(response.getBufferSize()).isPositive();
+        assertThat(response.getOutputStreamContent()).contains("og:url");
+        assertThat(response.getOutputStreamContent()).contains("og:title");
+        assertThat(response.getOutputStreamContent()).contains("og:description");
+        assertThat(response.getOutputStreamContent()).contains("og:image");
+    }
+
+    @Test
+    public void testGetPicture() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        AlbumEntry entry = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+        when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
+        MockLogService logservice = new MockLogService();
+        OldalbumServlet servlet = new OldalbumServlet();
+        ServletConfig servletConfig = mock(ServletConfig.class);
+        when(servletConfig.getInitParameter("from")).thenReturn("to");
+        servlet.init(servletConfig);
+        servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
+        servlet.activate();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
+        when(request.getPathInfo()).thenReturn("/moto/");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        servlet.service(request, response);
+
+        assertEquals(SC_OK, response.getStatus());
+        assertEquals("text/html", response.getContentType());
+        assertThat(response.getBufferSize()).isPositive();
+        assertThat(response.getOutputStreamContent()).contains("og:url");
+        assertThat(response.getOutputStreamContent()).contains("og:title");
+        assertThat(response.getOutputStreamContent()).contains("og:description");
+        assertThat(response.getOutputStreamContent()).contains("og:image");
+    }
+
+    @Test
+    public void testGetEmptyAlbum() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, null, null, null, null);
+        when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
+        MockLogService logservice = new MockLogService();
+        OldalbumServlet servlet = new OldalbumServlet();
+        ServletConfig servletConfig = mock(ServletConfig.class);
+        when(servletConfig.getInitParameter("from")).thenReturn("to");
+        servlet.init(servletConfig);
+        servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
+        servlet.activate();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
+        when(request.getPathInfo()).thenReturn("/moto/");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        servlet.service(request, response);
+
+        assertEquals(SC_OK, response.getStatus());
+        assertEquals("text/html", response.getContentType());
+        assertThat(response.getBufferSize()).isPositive();
+        assertThat(response.getOutputStreamContent()).contains("og:url");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:title");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:description");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:image");
+    }
+
+    @Test
+    public void testGetAlbumWithEmptyValues() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "", "", "", "");
+        when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
+        MockLogService logservice = new MockLogService();
+        OldalbumServlet servlet = new OldalbumServlet();
+        ServletConfig servletConfig = mock(ServletConfig.class);
+        when(servletConfig.getInitParameter("from")).thenReturn("to");
+        servlet.init(servletConfig);
+        servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
+        servlet.activate();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
+        when(request.getPathInfo()).thenReturn("/moto/");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        servlet.service(request, response);
+
+        assertEquals(SC_OK, response.getStatus());
+        assertEquals("text/html", response.getContentType());
+        assertThat(response.getBufferSize()).isPositive();
+        assertThat(response.getOutputStreamContent()).contains("og:url");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:title");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:description");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:image");
+    }
+
+    @Test
+    public void testGetNullAlbumEntry() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         MockLogService logservice = new MockLogService();
@@ -51,6 +188,7 @@ public class OldalbumServletTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
         when(request.getPathInfo()).thenReturn("/moto/");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -59,8 +197,11 @@ public class OldalbumServletTest {
         assertEquals(SC_OK, response.getStatus());
         assertEquals("text/html", response.getContentType());
         assertThat(response.getBufferSize()).isPositive();
+        assertThat(response.getOutputStreamContent()).contains("og:url");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:title");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:description");
+        assertThat(response.getOutputStreamContent()).doesNotContain("og:image");
     }
-
 
     @Test
     public void testDoGetAddTrailingSlash() throws Exception {
@@ -85,12 +226,11 @@ public class OldalbumServletTest {
     @Test
     public void testDoGetResponseThrowsIOException() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
-        when(request.getPathInfo()).thenReturn("/moto/");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/favicon.ico");
+        when(request.getPathInfo()).thenReturn("favicon.ico");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
         response.resetAll();
         ServletOutputStream streamThrowingIOException = mock(ServletOutputStream.class);

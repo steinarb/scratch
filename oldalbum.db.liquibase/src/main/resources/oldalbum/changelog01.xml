@@ -32,6 +32,14 @@
             <column name="imageurl" type="VARCHAR(256)" />
             <column name="thumbnailurl" type="VARCHAR(256)" />
         </createTable>
+
+        <createIndex indexName="parent_index" tableName="albumentries">
+            <column name="parent"/>
+        </createIndex>
+
+        <createIndex indexName="localpath_index" tableName="albumentries">
+            <column name="localpath"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>

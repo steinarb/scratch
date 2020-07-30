@@ -25,4 +25,8 @@ public interface OldAlbumService {
 
     List<String> getPaths();
 
+    AlbumEntry getAlbumEntryFromPath(String path);
+
+    List<AlbumEntry> getChildren(int parent);
+
 }

@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.backend;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.sql.SQLException;
@@ -99,6 +100,72 @@ class OldAlbumServiceProviderTest {
         List<String> paths = provider.getPaths();
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, paths.size());
+    }
+
+    @Test
+    void testGetAlbumEntryFromPath() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        AlbumEntry entry = provider.getAlbumEntryFromPath("/moto/places/");
+        assertEquals(3, entry.getId());
+    }
+
+    @Test
+    void testGetAlbumEntryFromPathWithPathNotMatching() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        AlbumEntry entry = provider.getAlbumEntryFromPath("/path/not/matching/");
+        assertNull(entry);
+        assertEquals(1, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages().get(0)).contains("Found no albumentry matching path");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testGetAlbumEntryFromPathWithDatabaseFailure() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate();
+        AlbumEntry entry = provider.getAlbumEntryFromPath("/moto/places/");
+        assertNull(entry);
+        assertEquals(1, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages().get(0)).contains("Failed to find albumentry with path");
+    }
+
+    @Test
+    void testFetchChildren() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        List<AlbumEntry> children = provider.getChildren(3);
+        assertEquals(4, children.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testFetchChildrenWithDatabaseFailure() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate();
+        List<AlbumEntry> children = provider.getChildren(3);
+        assertEquals(0, children.size());
+        assertEquals(1, logservice.getLogmessages().size());
     }
 
 }

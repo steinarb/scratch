@@ -106,7 +106,47 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return paths;
     }
 
-    private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
+    @Override
+    public AlbumEntry getAlbumEntryFromPath(String path) {
+        String sql = "select * from albumentries where localpath=?";
+        try (Connection connection = datasource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, path);
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        return unpackAlbumEntry(results);
+                    }
+                    logservice.log(LogService.LOG_WARNING, String.format("Found no albumentry matching path \"%s\"", path));
+                }
+            }
+        } catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to find albumentry with path \"%s\"", path), e);
+        }
+
+        return null;
+    }
+
+    @Override
+	public List<AlbumEntry> getChildren(int parent) {
+		List<AlbumEntry> children = new ArrayList<>();
+		String sql = "select * from albumentries where parent=?";
+		try(Connection connection = datasource.getConnection()) {
+			try(PreparedStatement statement = connection.prepareStatement(sql)) {
+				statement.setInt(1, parent);
+				try(ResultSet results = statement.executeQuery()) {
+					while(results.next()) {
+	                    AlbumEntry child = unpackAlbumEntry(results);
+	                    children.add(child);
+					}
+				}
+			}
+		} catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to get list of children for id \"%d\"", parent), e);
+		}
+		return children;
+	}
+
+	private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
         int id = results.getInt(1);
         int parent = results.getInt(2);
         String path = results.getString(3);
