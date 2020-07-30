@@ -32,6 +32,7 @@ import java.util.Arrays;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import static javax.servlet.http.HttpServletResponse.*;
 
 public class OldalbumServletTest {
 
@@ -55,7 +56,7 @@ public class OldalbumServletTest {
 
         servlet.service(request, response);
 
-        assertEquals(200, response.getStatus());
+        assertEquals(SC_OK, response.getStatus());
         assertEquals("text/html", response.getContentType());
         assertThat(response.getBufferSize()).isPositive();
     }
@@ -78,7 +79,7 @@ public class OldalbumServletTest {
 
         servlet.service(request, response);
 
-        assertEquals(302, response.getStatus());
+        assertEquals(SC_FOUND, response.getStatus());
     }
 
     @Test
@@ -103,7 +104,7 @@ public class OldalbumServletTest {
 
         servlet.service(request, response);
 
-        assertEquals(500, response.getStatus());
+        assertEquals(SC_INTERNAL_SERVER_ERROR, response.getStatus());
     }
 
     @SuppressWarnings("unchecked")
@@ -126,7 +127,7 @@ public class OldalbumServletTest {
 
         servlet.service(request, response);
 
-        assertEquals(500, response.getStatus());
+        assertEquals(SC_INTERNAL_SERVER_ERROR, response.getStatus());
     }
 
     @Test
@@ -146,7 +147,7 @@ public class OldalbumServletTest {
 
         servlet.service(request, response);
 
-        assertEquals(404, response.getErrorCode());
+        assertEquals(SC_NOT_FOUND, response.getErrorCode());
     }
 
 }
