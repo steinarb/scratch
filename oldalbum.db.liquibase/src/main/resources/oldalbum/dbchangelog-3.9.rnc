@@ -885,7 +885,7 @@ createIndex =
     (column+
      | element * { text }*)+,
     changeAttributes,
-    createIndex
+    createIndexAttributes,
   }
 start |= dropIndex
 dropIndex =
