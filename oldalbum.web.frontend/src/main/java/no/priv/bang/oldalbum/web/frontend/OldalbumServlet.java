@@ -96,6 +96,9 @@ public class OldalbumServlet extends FrontendServlet {
             addMetaTagIfNotEmpty(html, "og:title", entry.getTitle());
             addMetaTagIfNotEmpty(html, "og:description", entry.getDescription());
             addMetaTagIfNotEmpty(html, "og:image", entry.getImageUrl());
+            addMetaTagIfNotEmpty(html, "twitter:title", entry.getTitle());
+            addMetaTagIfNotEmpty(html, "twitter:description", entry.getDescription());
+            addMetaTagIfNotEmpty(html, "twitter:image", entry.getImageUrl());
             if (entry.isAlbum()) {
                 List<AlbumEntry> children = oldalbum.getChildren(entry.getId());
                 if (!children.isEmpty()) {
@@ -109,8 +112,9 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     protected void addMetaTagIfNotEmpty(Document html, String property, String content) {
+        String propertyAttribute = property.startsWith("twitter:") ? "name" : "property";
         if (content != null && !content.isEmpty()) {
-            html.head().appendElement("meta").attr("property", property).attr("content", content);
+            html.head().appendElement("meta").attr(propertyAttribute, property).attr("content", content);
         }
     }
 

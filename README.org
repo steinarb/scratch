@@ -2,7 +2,7 @@
 
 This is an application to display old image archives in a more attractive and modern way.
 
-I have some old albums from the 90ies that I occasionally would like to link to.  Since the images lack OpenGraph tags, linkning to them from social media doesn't look to hot.
+I have some old albums from the 90ies that I occasionally would like to link to.  Since the images lack [[https://ogp.me][Open Graph]] or [[https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards][twitter card]] tags, linking to the images from social media doesn't look to hot.
 
 I first thought about changing the perl script that generates the albums, to add a wrapper to the main jpeg, with the OpenGraph headers.
 
