@@ -60,7 +60,7 @@ class HandleregLiquibaseTest {
 
     @Disabled("Pseudo-test that imports legacy data and turns them into SQL files that can be imported into an SQL database")
     @Test
-    public void createSqlFromOriginalData() throws Exception {
+    void createSqlFromOriginalData() throws Exception {
         Connection connection = createConnection();
         HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
         handleregLiquibase.createInitialSchema(connection);
