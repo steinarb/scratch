@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,8 +71,7 @@ class HandlingResourceTest {
         resource.handlereg = handlereg;
 
         assertThrows(InternalServerErrorException.class, () -> {
-                List<Transaction> handlinger = resource.getHandlinger(1);
-                assertEquals(0, handlinger.size());
+                resource.getHandlinger(1);
             });
     }
 
@@ -101,8 +100,7 @@ class HandlingResourceTest {
         resource.handlereg = handlereg;
         NyHandling handling = new NyHandling("jd", 1, 1, 510, new Date());
         assertThrows(InternalServerErrorException.class, () -> {
-                Oversikt oppdatertOversikt = resource.nyhandling(handling);
-                assertEquals(0, oppdatertOversikt.getBalanse());
+                resource.nyhandling(handling);
             });
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,8 +100,7 @@ class HandleregServiceProviderTest {
 
         assertEquals(0, logservice.getLogmessages().size());
         assertThrows(HandleregException.class, () -> {
-                Oversikt jd = handlereg.finnOversikt("jd");
-                assertNotNull(jd, "Should never get here");
+                handlereg.finnOversikt("jd");
             });
         assertEquals(1, logservice.getLogmessages().size());
     }
@@ -157,8 +156,7 @@ class HandleregServiceProviderTest {
 
         assertEquals(0, logservice.getLogmessages().size());
         assertThrows(HandleregException.class, () -> {
-                List<Transaction> handlinger = handlereg.findLastTransactions(1);
-                assertNull(handlinger, "Should never get here");
+                handlereg.findLastTransactions(1);
             });
         assertEquals(1, logservice.getLogmessages().size());
     }
@@ -217,8 +215,7 @@ class HandleregServiceProviderTest {
         Date now = new Date();
         NyHandling nyHandling = new NyHandling("jd", 1, 1, nyttBelop, now);
         assertThrows(HandleregException.class, () -> {
-                Oversikt nyOversikt = handlereg.registrerHandling(nyHandling);
-                assertNull(nyOversikt, "Should never get here");
+                handlereg.registrerHandling(nyHandling);
             });
     }
 
@@ -249,8 +246,7 @@ class HandleregServiceProviderTest {
 
         assertEquals(0, logservice.getLogmessages().size());
         assertThrows(HandleregException.class, () -> {
-                List<Butikk> butikker = handlereg.finnButikker();
-                assertNull(butikker, "Should never get here");
+                handlereg.finnButikker();
             });
         assertEquals(1, logservice.getLogmessages().size());
     }
@@ -284,8 +280,7 @@ class HandleregServiceProviderTest {
 
         Butikk nybutikk = new Butikk("Spar fjellheimen", 2, 1500);
         assertThrows(HandleregException.class, () -> {
-                List<Butikk> butikker = handlereg.leggTilButikk(nybutikk);
-                assertEquals(0, butikker.size());
+                handlereg.leggTilButikk(nybutikk);
             });
     }
 
@@ -374,8 +369,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         assertThrows(HandleregException.class, () -> {
-                int nesteLedigeRekkefolge = handlereg.finnNesteLedigeRekkefolgeForGruppe(1);
-                assertEquals(0, nesteLedigeRekkefolge, "Should never get here");
+                handlereg.finnNesteLedigeRekkefolgeForGruppe(1);
             });
     }
 

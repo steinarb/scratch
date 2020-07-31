@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,7 @@ class OversiktResourceTest extends ShiroTestBase {
         removeWebSubjectFromThread();
 
         assertThrows(InternalServerErrorException.class, () -> {
-                Oversikt oversikt = resource.get();
-                assertEquals("jd", oversikt.getBrukernavn());
+                resource.get();
             });
     }
 

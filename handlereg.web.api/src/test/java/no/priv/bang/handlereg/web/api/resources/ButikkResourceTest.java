@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,8 +58,7 @@ class ButikkResourceTest {
         resource.handlereg = handlereg;
 
         assertThrows(InternalServerErrorException.class, () -> {
-                List<Butikk> butikker = resource.getButikker();
-                assertThat(butikker.size()).isGreaterThan(0);
+                resource.getButikker();
             });
     }
 
@@ -87,9 +86,9 @@ class ButikkResourceTest {
         resource.logservice = logservice;
         resource.handlereg = handlereg;
 
+        Butikk butikk = new Butikk();
         assertThrows(InternalServerErrorException.class, () -> {
-                List<Butikk> butikker = resource.leggTilButikk(new Butikk());
-                assertThat(butikker.size()).isGreaterThan(0);
+                resource.leggTilButikk(butikk);
             });
     }
 
@@ -117,9 +116,9 @@ class ButikkResourceTest {
         resource.logservice = logservice;
         resource.handlereg = handlereg;
 
+        Butikk butikk = new Butikk();
         assertThrows(InternalServerErrorException.class, () -> {
-                List<Butikk> butikker = resource.endreButikk(new Butikk());
-                assertThat(butikker.size()).isGreaterThan(0);
+                resource.endreButikk(butikk);
             });
     }
 
