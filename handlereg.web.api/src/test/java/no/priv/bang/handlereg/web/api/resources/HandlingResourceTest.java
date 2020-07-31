@@ -46,7 +46,7 @@ class HandlingResourceTest {
         resource.logservice = logservice;
         resource.handlereg = handlereg;
         List<Transaction> handlinger = resource.getHandlinger(1);
-        assertThat(handlinger.size()).isGreaterThan(0);
+        assertThat(handlinger.size()).isPositive();
     }
 
     @Test

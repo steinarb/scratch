@@ -384,7 +384,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<ButikkSum> sumOverButikk = handlereg.sumOverButikk();
-        assertThat(sumOverButikk.size()).isGreaterThan(0);
+        assertThat(sumOverButikk.size()).isPositive();
     }
 
     @Test
@@ -398,7 +398,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<ButikkCount> antallHandlerIButikk = handlereg.antallHandlingerIButikk();
-        assertThat(antallHandlerIButikk.size()).isGreaterThan(0);
+        assertThat(antallHandlerIButikk.size()).isPositive();
     }
 
     @Test
@@ -412,7 +412,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<ButikkDate> sisteHandelIButikk = handlereg.sisteHandelIButikk();
-        assertThat(sisteHandelIButikk.size()).isGreaterThan(0);
+        assertThat(sisteHandelIButikk.size()).isPositive();
     }
 
     @Test
@@ -426,7 +426,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<SumYear> totaltHandlebelopPrAar = handlereg.totaltHandlebelopPrAar();
-        assertThat(totaltHandlebelopPrAar.size()).isGreaterThan(0);
+        assertThat(totaltHandlebelopPrAar.size()).isPositive();
     }
 
     @Test
@@ -440,7 +440,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<SumYearMonth> totaltHandlebelopPrAarOgMaaned = handlereg.totaltHandlebelopPrAarOgMaaned();
-        assertThat(totaltHandlebelopPrAarOgMaaned.size()).isGreaterThan(0);
+        assertThat(totaltHandlebelopPrAarOgMaaned.size()).isPositive();
     }
 
     private DataSource createMockDbWithEmptyResultset() throws SQLException {

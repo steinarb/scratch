@@ -44,7 +44,7 @@ class ButikkResourceTest {
         resource.handlereg = handlereg;
 
         List<Butikk> butikker = resource.getButikker();
-        assertThat(butikker.size()).isGreaterThan(0);
+        assertThat(butikker.size()).isPositive();
     }
 
     @SuppressWarnings("unchecked")

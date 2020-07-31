@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ class HandleregTestdataTest {
 
         assertEquals(0, useradmin.getUserRoles().size()); // Verify preconditions
         testdata.activate();
-        assertThat(useradmin.getUserRoles().size()).isGreaterThan(0);
+        assertThat(useradmin.getUserRoles().size()).isPositive();
     }
 
     abstract class MockUserManagementService implements UserManagementService {
