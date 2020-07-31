@@ -61,8 +61,9 @@
         <jersey.version>2.30.1</jersey.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
-            **/HandleregDerbyTestDatabase.java,
-            **/HandleregPostgresqlDatabase.java,
+            **/HandleregServiceProvider.java,
+            **/HandleregTestDbLiquibaseRunner.java,
+            **/HandleregProductionDbLiquibaseRunner.java,
         </sonar.cpd.exclusions>
     </properties>
 
