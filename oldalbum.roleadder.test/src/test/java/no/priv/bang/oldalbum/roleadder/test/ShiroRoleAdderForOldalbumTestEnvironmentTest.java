@@ -22,7 +22,9 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgiservice.users.Role;
+import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
+import no.priv.bang.osgiservice.users.UserRoles;
 
 class ShiroRoleAdderForOldalbumTestEnvironmentTest {
 
@@ -33,6 +35,7 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         roleadder.addUseradmin(useradmin);
         roleadder.activate();
         verify(useradmin, times(1)).getRoles();
+        verify(useradmin, times(1)).getUser(anyString());
     }
 
     @Test
@@ -55,6 +58,28 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         Role role = roleadder.addOldalbumadminRole();
         assertEquals("oldalbumadmin", role.getRolename());
         assertEquals("Already exists", role.getDescription());
+    }
+
+    @Test
+    void testGiveUserAdminOldalbumRole() {
+        UserManagementService useradmin = mock(UserManagementService.class);
+        User admin = new User(0, "admin", "admin@admin.com", "Admin", "Istrator");
+        when(useradmin.getUser(anyString())).thenReturn(admin);
+        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        roleadder.addUseradmin(useradmin);
+        Role role = roleadder.addOldalbumadminRole();
+        UserRoles adminroles = roleadder.addRoleToAdmin(role);
+        assertNotNull(adminroles);
+    }
+
+    @Test
+    void testGiveUserAdminOldalbumRoleWhenUserAdminNotPresent() {
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        roleadder.addUseradmin(useradmin);
+        Role role = roleadder.addOldalbumadminRole();
+        UserRoles adminroles = roleadder.addRoleToAdmin(role);
+        assertNull(adminroles);
     }
 
 }
