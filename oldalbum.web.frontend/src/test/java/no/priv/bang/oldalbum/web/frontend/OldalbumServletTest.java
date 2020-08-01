@@ -270,6 +270,7 @@ public class OldalbumServletTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/useradmin/");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/useradmin/"));
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
         response.resetAll();

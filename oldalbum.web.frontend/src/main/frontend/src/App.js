@@ -7,6 +7,7 @@ import './App.css';
 import Home from './components/Home';
 import Album from './components/Album';
 import Picture from './components/Picture';
+import Login from './components/Login';
 
 class App extends Component {
     render() {
@@ -18,6 +19,7 @@ class App extends Component {
                 <div>
                     <div>
                         { allroutes.map((item, index) => <Route exact key={index} path={item.path} component={() => albumOrPicture(item)} />) }
+                        <Route exact key={'login'} path='/oldalbum/login' component={Login} />
                     </div>
                 </div>
             </Router>

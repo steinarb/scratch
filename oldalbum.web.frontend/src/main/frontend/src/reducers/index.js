@@ -4,6 +4,7 @@ import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
 import childentries from './childentriesReducer';
 import errors from './errorsReducer';
+import login from './loginReducer';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
@@ -11,4 +12,5 @@ export default (history) => combineReducers({
     albumentries,
     childentries,
     errors,
+    login,
 });

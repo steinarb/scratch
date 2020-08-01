@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import LoginLogoutButton from './LoginLogoutButton';
 
 function Album(props) {
     const { item, parent, children } = props;
@@ -8,6 +9,7 @@ function Album(props) {
     return (
         <div>
             { parent ? <NavLink to={parent}>Up</NavLink> : <a href="..">Up</a> }
+            <br/><LoginLogoutButton/>
             <h1>Album: {item.title}</h1>
             { children.map(renderChild) }
         </div>

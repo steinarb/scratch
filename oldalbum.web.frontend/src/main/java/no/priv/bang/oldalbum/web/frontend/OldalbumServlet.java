@@ -30,6 +30,7 @@ import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.log.LogService;import no.priv.bang.oldalbum.services.OldAlbumService;
@@ -50,6 +51,7 @@ public class OldalbumServlet extends FrontendServlet {
 
     public OldalbumServlet() {
         super();
+        setRoutes("/login");
     }
 
     @Override
@@ -70,7 +72,17 @@ public class OldalbumServlet extends FrontendServlet {
 
     @Override
     public List<String> getRoutes() {
-        return oldalbum.getPaths();
+        return combineDynamicAndStaticRoutes();
+    }
+
+    private List<String> combineDynamicAndStaticRoutes() {
+        List<String> dynamicroutes = oldalbum.getPaths();
+        List<String> staticroutes = super.getRoutes();
+        int numberOfRoutes = dynamicroutes.size() + staticroutes.size();
+        List<String> allroutes = new ArrayList<>(numberOfRoutes);
+        allroutes.addAll(dynamicroutes);
+        allroutes.addAll(staticroutes);
+        return allroutes;
     }
 
     @Override
