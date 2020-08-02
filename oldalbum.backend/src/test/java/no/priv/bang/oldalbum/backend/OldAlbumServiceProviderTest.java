@@ -168,4 +168,35 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, logservice.getLogmessages().size());
     }
 
+    @Test
+    void testUpdateEntry() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null);
+        List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
+        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
+        assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testUpdateEntryWithDataSourceFailure() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate();
+        AlbumEntry modifiedAlbum = new AlbumEntry(357, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null);
+        List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
+        assertEquals(0, allroutes.size());
+        assertEquals(2, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages().get(0)).contains("Failed to update album entry for id");
+    }
+
 }

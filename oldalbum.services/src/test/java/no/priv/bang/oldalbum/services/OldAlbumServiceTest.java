@@ -39,6 +39,9 @@ class OldAlbumServiceTest {
         int parent = 2;
         List<AlbumEntry> children = service.getChildren(parent);
         assertEquals(0, children.size());
+        AlbumEntry modifiedEntry = new AlbumEntry();
+        List<AlbumEntry> updatedRoutesOnModifiedEntry = service.updateEntry(modifiedEntry);
+        assertEquals(0, updatedRoutesOnModifiedEntry.size());
     }
 
 }

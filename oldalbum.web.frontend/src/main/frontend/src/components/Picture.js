@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import LoginLogoutButton from './LoginLogoutButton';
+import ModifyButton from './ModifyButton';
 
 function Picture(props) {
     const { item, parent } = props;
@@ -10,6 +11,7 @@ function Picture(props) {
         <div>
             { parent ? <NavLink to={parent}>Up</NavLink> : <a href="..">Up</a> }
             <br/><LoginLogoutButton/>
+            <ModifyButton item={item} />
             <div>
                 <img src={item.imageUrl} />
                 <p><i>{item.description}</i></p>

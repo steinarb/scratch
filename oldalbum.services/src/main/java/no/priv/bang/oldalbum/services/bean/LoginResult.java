@@ -18,11 +18,15 @@ package no.priv.bang.oldalbum.services.bean;
 public class LoginResult {
 
     private boolean success;
+    private String username;
     private String errormessage;
+    private boolean canModifyAlbum;
 
-    public LoginResult(boolean success, String errormessage) {
+    public LoginResult(boolean success, String username, String errormessage, boolean canModifyAlbum) {
         this.success = success;
+        this.username = username;
         this.errormessage = errormessage;
+        this.canModifyAlbum = canModifyAlbum;
     }
 
     public LoginResult() {
@@ -33,8 +37,16 @@ public class LoginResult {
         return success;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public String getErrormessage() {
         return errormessage;
+    }
+
+    public boolean isCanModifyAlbum() {
+        return canModifyAlbum;
     }
 
 }

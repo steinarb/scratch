@@ -16,8 +16,10 @@
 package no.priv.bang.oldalbum.web.api;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static javax.ws.rs.core.MediaType.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,6 +66,30 @@ class OldAlbumWebApiServletTest {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
         assertThat(routes.size()).isPositive();
+    }
+
+    @Test
+    void testModifyalbum() throws Exception {
+        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null);
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice);
+        HttpServletRequest request = buildPostUrl("/modifyalbum", modifiedAlbum);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
+        assertThat(routes.size()).isPositive();
+    }
+
+    private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {
+        MockHttpServletRequest request = buildRequest(resource);
+        request.setMethod("POST");
+        request.setContentType(APPLICATION_JSON);
+        request.setHeader("content-type", APPLICATION_JSON);
+        request.setBodyContent(mapper.writeValueAsString(body));
+        return request;
     }
 
     private HttpServletRequest buildGetUrl(String resource) {

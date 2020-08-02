@@ -29,4 +29,6 @@ public interface OldAlbumService {
 
     List<AlbumEntry> getChildren(int parent);
 
+    List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry);
+
 }

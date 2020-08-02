@@ -30,6 +30,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
 
@@ -46,6 +47,15 @@ public class LoginResource {
     @Inject
     LogService logservice;
 
+    @GET
+    @Path("/login")
+    public LoginResult loginCheck() {
+        Subject subject = SecurityUtils.getSubject();
+        boolean remembered = subject.isAuthenticated();
+        boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
+        return new LoginResult(remembered, (String) subject.getPrincipal(), "", canModifyAlbum);
+    }
+
     @POST
     @Path("/login")
     public LoginResult login(Credentials credentials) {
@@ -54,20 +64,20 @@ public class LoginResource {
         UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
         try {
             subject.login(token);
-
-            return new LoginResult(true, "");
+            boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
+            return new LoginResult(true, (String) subject.getPrincipal(), "", canModifyAlbum);
         } catch(UnknownAccountException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: unknown account", e);
-            return new LoginResult(false, "Unknown account");
+            return new LoginResult(false, null, "Unknown account", false);
         } catch (IncorrectCredentialsException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: wrong password", e);
-            return new LoginResult(false, "Wrong password");
+            return new LoginResult(false, null, "Wrong password", false);
         } catch (LockedAccountException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
-            return new LoginResult(false, "Locked account");
+            return new LoginResult(false, null, "Locked account", false);
         } catch (AuthenticationException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
-            return new LoginResult(false, "Unknown login error");
+            return new LoginResult(false, null, "Unknown login error", false);
         } catch (Exception e) {
             logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
             throw new InternalServerErrorException();
@@ -82,7 +92,17 @@ public class LoginResource {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
 
-        return new LoginResult(false, "Logget ut");
+        return new LoginResult(false, null, "Logget ut", false);
+    }
+
+    private boolean checkIfUserCanModifyAlbum(Subject subject) {
+        try {
+            subject.checkRole("oldalbumadmin");
+            return true;
+        } catch (AuthorizationException e) {
+            // Skip and continue
+        }
+        return false;
     }
 
 }

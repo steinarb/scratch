@@ -24,17 +24,23 @@ class LoginResultTest {
     @Test
     void testCreate() {
         boolean success = true;
+        String username = "admin";
         String errormessage = "Wrong password";
-        LoginResult bean = new LoginResult(success, errormessage);
+        boolean canModifyAlbum = true;
+        LoginResult bean = new LoginResult(success, username, errormessage, canModifyAlbum);
         assertTrue(bean.getSuccess());
+        assertEquals(username, bean.getUsername());
         assertEquals(errormessage, bean.getErrormessage());
+        assertTrue(bean.isCanModifyAlbum());
     }
 
     @Test
     void testNoargsConstructor() {
         LoginResult bean = new LoginResult();
         assertFalse(bean.getSuccess());
+        assertNull(bean.getUsername());
         assertNull(bean.getErrormessage());
+        assertFalse(bean.isCanModifyAlbum());
     }
 
 }

@@ -35,7 +35,43 @@ import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 class LoginResourceTest extends ShiroTestBase {
 
     @Test
+    void testLoginCheck() {
+        LoginResource resource = new LoginResource();
+        String username = "admin";
+        String password = "admin";
+        createSubjectAndBindItToThread();
+        Credentials credentials = new Credentials(username, password);
+        resource.login(credentials); // Ensure user is logged in
+
+        LoginResult result = resource.loginCheck();
+        assertTrue(result.getSuccess());
+        assertTrue(result.isCanModifyAlbum());
+    }
+
+    @Test
+    void testLoginCheckWhenNotLoggedIn() {
+        LoginResource resource = new LoginResource();
+        createSubjectAndBindItToThread();
+
+        LoginResult result = resource.loginCheck();
+        assertFalse(result.getSuccess());
+        assertFalse(result.isCanModifyAlbum());
+    }
+
+    @Test
     void testLogin() {
+        LoginResource resource = new LoginResource();
+        String username = "admin";
+        String password = "admin";
+        createSubjectAndBindItToThread();
+        Credentials credentials = new Credentials(username, password);
+        LoginResult result = resource.login(credentials);
+        assertTrue(result.getSuccess());
+        assertTrue(result.isCanModifyAlbum());
+    }
+
+    @Test
+    void testLoginModifyNotAllowed() {
         LoginResource resource = new LoginResource();
         String username = "jd";
         String password = "johnnyBoi";
@@ -43,6 +79,7 @@ class LoginResourceTest extends ShiroTestBase {
         Credentials credentials = new Credentials(username, password);
         LoginResult result = resource.login(credentials);
         assertTrue(result.getSuccess());
+        assertFalse(result.isCanModifyAlbum());
     }
 
     @Test

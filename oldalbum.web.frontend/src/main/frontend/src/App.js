@@ -8,6 +8,8 @@ import Home from './components/Home';
 import Album from './components/Album';
 import Picture from './components/Picture';
 import Login from './components/Login';
+import ModifyAlbum from './components/ModifyAlbum';
+import ModifyPicture from './components/ModifyPicture';
 
 class App extends Component {
     render() {
@@ -19,7 +21,9 @@ class App extends Component {
                 <div>
                     <div>
                         { allroutes.map((item, index) => <Route exact key={index} path={item.path} component={() => albumOrPicture(item)} />) }
-                        <Route exact key={'login'} path='/oldalbum/login' component={Login} />
+                        <Route exact key="login" path="/oldalbum/login" component={Login} />
+                        <Route key="modifyalbum" path='/oldalbum/modifyalbum' component={ModifyAlbum} />
+                        <Route key="modifypicture" path='/oldalbum/modifypicture' component={ModifyPicture} />
                     </div>
                 </div>
             </Router>

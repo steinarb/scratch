@@ -127,26 +127,47 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
-	public List<AlbumEntry> getChildren(int parent) {
-		List<AlbumEntry> children = new ArrayList<>();
-		String sql = "select * from albumentries where parent=?";
-		try(Connection connection = datasource.getConnection()) {
-			try(PreparedStatement statement = connection.prepareStatement(sql)) {
-				statement.setInt(1, parent);
-				try(ResultSet results = statement.executeQuery()) {
-					while(results.next()) {
-	                    AlbumEntry child = unpackAlbumEntry(results);
-	                    children.add(child);
-					}
-				}
-			}
-		} catch (SQLException e) {
+    public List<AlbumEntry> getChildren(int parent) {
+        List<AlbumEntry> children = new ArrayList<>();
+        String sql = "select * from albumentries where parent=?";
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, parent);
+                try(ResultSet results = statement.executeQuery()) {
+                    while(results.next()) {
+                        AlbumEntry child = unpackAlbumEntry(results);
+                        children.add(child);
+                    }
+                }
+            }
+        } catch (SQLException e) {
             logservice.log(LogService.LOG_ERROR, String.format("Failed to get list of children for id \"%d\"", parent), e);
-		}
-		return children;
-	}
+        }
+        return children;
+    }
 
-	private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
+    @Override
+    public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
+        int id = modifiedEntry.getId();
+        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=? where albumentry_id=?";
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, modifiedEntry.getParent());
+                statement.setString(2, modifiedEntry.getPath());
+                statement.setString(3, modifiedEntry.getTitle());
+                statement.setString(4, modifiedEntry.getDescription());
+                statement.setString(5, modifiedEntry.getImageUrl());
+                statement.setString(6, modifiedEntry.getThumbnailUrl());
+                statement.setInt(7, id);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to update album entry for id \"%d\"", id), e);
+        }
+        return fetchAllRoutes();
+    }
+
+    private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
         int id = results.getInt(1);
         int parent = results.getInt(2);
         String path = results.getString(3);
