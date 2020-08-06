@@ -92,7 +92,7 @@ public class LoginResource {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
 
-        return new LoginResult(false, null, "Logget ut", false);
+        return new LoginResult(false, null, "Logged out", false);
     }
 
     private boolean checkIfUserCanModifyAlbum(Subject subject) {
