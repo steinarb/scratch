@@ -167,6 +167,27 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return fetchAllRoutes();
     }
 
+    @Override
+    public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl) values (?, ?, ?, ?, ?, ?, ?)";
+        String path = addedEntry.getPath();
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, addedEntry.getParent());
+                statement.setString(2, path);
+                statement.setBoolean(3, addedEntry.isAlbum());
+                statement.setString(4, addedEntry.getTitle());
+                statement.setString(5, addedEntry.getDescription());
+                statement.setString(6, addedEntry.getImageUrl());
+                statement.setString(7, addedEntry.getThumbnailUrl());
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to add album entry with path \"%s\"", path), e);
+        }
+        return fetchAllRoutes();
+    }
+
     private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
         int id = results.getInt(1);
         int parent = results.getInt(2);

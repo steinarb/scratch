@@ -42,6 +42,19 @@ class AlbumentryResourceTest {
     }
 
     @Test
+    void testAddalbum() {
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null);
+        AlbumentryResource resource = new AlbumentryResource();
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.addalbum(albumToAdd);
+        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
+        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
+        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+    }
+
+    @Test
     void testModifypicture() {
         AlbumEntry modifiedPicture = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", true, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
         AlbumentryResource resource = new AlbumentryResource();

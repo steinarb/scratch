@@ -199,4 +199,39 @@ class OldAlbumServiceProviderTest {
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to update album entry for id");
     }
 
+    @Test
+    void testAddEntry() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null);
+        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
+        assertNotEquals(0, addedAlbum.getId());
+        assertEquals(1, addedAlbum.getParent());
+        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
+        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testAddEntryWithDataSourceFailure() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate();
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null);
+        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        assertEquals(0, allroutes.size());
+        assertEquals(2, logservice.getLogmessages().size());
+        assertThat(logservice.getLogmessages().get(0)).contains("Failed to add album entry with path");
+    }
+
 }

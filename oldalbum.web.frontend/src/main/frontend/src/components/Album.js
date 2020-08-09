@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
+import AddAlbumButton from './AddAlbumButton';
 
 function Album(props) {
     const { item, parent, children } = props;
@@ -14,6 +15,7 @@ function Album(props) {
             <ModifyButton item={item} />
             <h1>Album: {item.title}</h1>
             { children.map(renderChild) }
+            <AddAlbumButton item={item} />
         </div>
     );
 }

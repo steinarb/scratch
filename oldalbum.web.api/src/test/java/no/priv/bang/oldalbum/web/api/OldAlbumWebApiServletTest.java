@@ -83,6 +83,21 @@ class OldAlbumWebApiServletTest {
         assertThat(routes.size()).isPositive();
     }
 
+    @Test
+    void testAddAlbum() throws Exception {
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null);
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice);
+        HttpServletRequest request = buildPostUrl("/addalbum", albumToAdd);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
+        assertThat(routes.size()).isPositive();
+    }
+
     private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {
         MockHttpServletRequest request = buildRequest(resource);
         request.setMethod("POST");
