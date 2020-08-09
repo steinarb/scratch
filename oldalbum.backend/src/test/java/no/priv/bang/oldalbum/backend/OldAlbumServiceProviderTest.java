@@ -58,7 +58,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         List<AlbumEntry> allroutes = provider.fetchAllRoutes();
-        assertEquals(21, allroutes.size());
+        assertThat(allroutes.size()).isGreaterThan(20);
     }
 
     @SuppressWarnings("unchecked")
@@ -84,7 +84,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         List<String> paths = provider.getPaths();
-        assertEquals(21, paths.size());
+        assertThat(paths.size()).isGreaterThan(20);
     }
 
     @SuppressWarnings("unchecked")
