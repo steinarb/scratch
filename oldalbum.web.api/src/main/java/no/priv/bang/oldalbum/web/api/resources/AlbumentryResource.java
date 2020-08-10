@@ -56,4 +56,11 @@ public class AlbumentryResource {
         return oldalbum.updateEntry(modifiedPicture);
     }
 
+    @Path("addpicture")
+    @POST
+    @Consumes(APPLICATION_JSON)
+    public List<AlbumEntry> addpicture(AlbumEntry pictureToAdd) {
+        return oldalbum.addEntry(pictureToAdd);
+    }
+
 }

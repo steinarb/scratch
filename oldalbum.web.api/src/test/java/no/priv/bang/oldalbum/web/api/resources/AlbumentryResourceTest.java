@@ -56,15 +56,28 @@ class AlbumentryResourceTest {
 
     @Test
     void testModifypicture() {
-        AlbumEntry modifiedPicture = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", true, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
+        AlbumEntry modifiedPicture = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedPicture));
         resource.oldalbum = oldalbum;
         List<AlbumEntry> allroutes = resource.modifypicture(modifiedPicture);
-        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertEquals(modifiedPicture.getTitle(), updatedAlbum.getTitle());
-        assertEquals(modifiedPicture.getDescription(), updatedAlbum.getDescription());
+        AlbumEntry updatedPicture = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        assertEquals(modifiedPicture.getTitle(), updatedPicture.getTitle());
+        assertEquals(modifiedPicture.getDescription(), updatedPicture.getDescription());
+    }
+
+    @Test
+    void testAddpicture() {
+        AlbumEntry pictureToAdd = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
+        AlbumentryResource resource = new AlbumentryResource();
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.addpicture(pictureToAdd);
+        AlbumEntry updatedPicture = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
+        assertEquals(pictureToAdd.getTitle(), updatedPicture.getTitle());
+        assertEquals(pictureToAdd.getDescription(), updatedPicture.getDescription());
     }
 
 }
