@@ -23,6 +23,7 @@ const store = configureStore({
         sagaMiddleware,
         routerMiddleware(history),
     ],
+    devTools: { serialize: { options: true } },
 });
 sagaMiddleware.run(rootSaga);
 
