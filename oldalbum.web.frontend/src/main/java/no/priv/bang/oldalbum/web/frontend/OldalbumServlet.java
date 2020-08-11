@@ -55,7 +55,8 @@ public class OldalbumServlet extends FrontendServlet {
                 "/login",
                 "/modifyalbum",
                 "/addalbum",
-                "/modifypicture"
+                "/modifypicture",
+                "/addpicture"
                 );
     }
 

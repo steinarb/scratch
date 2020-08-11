@@ -6,6 +6,7 @@ import childentries from './childentriesReducer';
 import modifyalbum from './modifyalbumReducer';
 import addalbum from './addalbumReducer';
 import modifypicture from './modifypictureReducer';
+import addpicture from './addpictureReducer';
 import errors from './errorsReducer';
 import login from './loginReducer';
 
@@ -17,6 +18,7 @@ export default (history) => combineReducers({
     modifyalbum,
     addalbum,
     modifypicture,
+    addpicture,
     errors,
     login,
 });

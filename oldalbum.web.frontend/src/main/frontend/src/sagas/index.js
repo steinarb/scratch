@@ -4,6 +4,7 @@ import allroutes from './allroutesSaga';
 import modifyalbum from './modifyalbumSaga';
 import addalbum from './addalbumSaga';
 import modifypicture from './modifypictureSaga';
+import addpicture from './addpictureSaga';
 import login from './loginSaga';
 import logout from './logoutSaga';
 import location from './locationSaga';
@@ -14,6 +15,7 @@ export default function* rootSaga() {
         fork(modifyalbum),
         fork(addalbum),
         fork(modifypicture),
+        fork(addpicture),
         fork(login),
         fork(logout),
         fork(location),

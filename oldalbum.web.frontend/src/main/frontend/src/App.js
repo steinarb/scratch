@@ -11,6 +11,7 @@ import Login from './components/Login';
 import ModifyAlbum from './components/ModifyAlbum';
 import AddAlbum from './components/AddAlbum';
 import ModifyPicture from './components/ModifyPicture';
+import AddPicture from './components/AddPicture';
 
 class App extends Component {
     render() {
@@ -26,6 +27,7 @@ class App extends Component {
                         <Route key="modifyalbum" path='/oldalbum/modifyalbum' component={ModifyAlbum} />
                         <Route key="addalbum" path='/oldalbum/addalbum' component={AddAlbum} />
                         <Route key="modifypicture" path='/oldalbum/modifypicture' component={ModifyPicture} />
+                        <Route key="addpicture" path='/oldalbum/addpicture' component={AddPicture} />
                     </div>
                 </div>
             </Router>

@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
+import AddPictureButton from './AddPictureButton';
 
 function Album(props) {
     const { item, parent, children } = props;
@@ -16,6 +17,7 @@ function Album(props) {
             <h1>Album: {item.title}</h1>
             { children.map(renderChild) }
             <AddAlbumButton item={item} />
+            <AddPictureButton item={item} />
         </div>
     );
 }

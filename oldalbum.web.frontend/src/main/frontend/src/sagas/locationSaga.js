@@ -5,6 +5,7 @@ import {
     MODIFY_ALBUM,
     ADD_ALBUM,
     MODIFY_PICTURE,
+    ADD_PICTURE,
 } from '../reduxactions';
 
 function* locationChange(action) {
@@ -43,6 +44,22 @@ function* locationChange(action) {
         const picture = albumentries.get(idInt);
 
         yield put(MODIFY_PICTURE(picture || { id: idInt } ));
+    }
+
+    if (pathname === '/oldalbum/addpicture') {
+        const queryParams = parse(location.search, { ignoreQueryPrefix: true });
+        const { parent } = queryParams;
+        const albumentries = yield select(findAlbumentries);
+        const parentId = parseInt(parent, 10);
+        const parentalbum = albumentries.get(parentId);
+        const path = parentalbum.path || '';
+        const basename = '';
+        const title = '';
+        const description = '';
+        const imageUrl = '';
+        const thumbnailUrl = '';
+
+        yield put(ADD_PICTURE({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl }));
     }
 }
 
