@@ -21,7 +21,7 @@ function Picture(props) {
 }
 
 function mapStateToProps(state, ownProps) {
-    const parentEntry = state.albumentries.get(ownProps.item.parent) || {};
+    const parentEntry = state.albumentries[ownProps.item.parent] || {};
     const parent = parentEntry.path;
     return {
         parent,

@@ -3,18 +3,23 @@ import { ALLROUTES_RECEIVE } from '../reduxactions';
 import { addWebcontextToPath } from '../common';
 
 // Creates a map from id to array of children
-const childentriesReducer = createReducer(new Map(), {
-    [ALLROUTES_RECEIVE]: (state, action) => action.payload.map(addWebcontextToPath).reduce(addChildToParent, new Map()),
+const childentriesReducer = createReducer({}, {
+    [ALLROUTES_RECEIVE]: (state, action) => {
+        const children = {};
+        action.payload.map(addWebcontextToPath).forEach(e => addChildToParent(children, e));
+        return children;
+    },
 });
 
 export default childentriesReducer;
 
-function addChildToParent(accumulator, item) {
+function addChildToParent(state, item) {
     const { parent } = item;
     if (parent) {
-        if (!accumulator.has(parent)) { accumulator.set(parent, []); }
-        accumulator.get(parent).push(item);
+        if (parent in state) {
+            state[parent].push({ ...item });
+        } else {
+            state[parent] = [{ ...item }];
+        }
     }
-
-    return accumulator;
 }

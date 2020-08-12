@@ -24,9 +24,9 @@ function Album(props) {
 
 function mapStateToProps(state, ownProps) {
     const { item } = ownProps;
-    const parentEntry = state.albumentries.get(item.parent) || {};
+    const parentEntry = state.albumentries[item.parent] || {};
     const parent = parentEntry.path;
-    const children = state.childentries.get(item.id) || [];
+    const children = state.childentries[item.id] || [];
     return {
         parent,
         children,
