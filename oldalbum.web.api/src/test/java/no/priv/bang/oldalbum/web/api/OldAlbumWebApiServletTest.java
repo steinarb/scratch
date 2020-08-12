@@ -113,6 +113,20 @@ class OldAlbumWebApiServletTest {
         assertThat(routes.size()).isPositive();
     }
 
+    @Test
+    void testDeleteEntry() throws Exception {
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif");
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice);
+        HttpServletRequest request = buildPostUrl("/deleteentry", pictureToDelete);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
+        assertEquals(0, routes.size());
+    }
+
     private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {
         MockHttpServletRequest request = buildRequest(resource);
         request.setMethod("POST");

@@ -188,6 +188,21 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return fetchAllRoutes();
     }
 
+    @Override
+    public List<AlbumEntry> deleteEntry(AlbumEntry deletedEntry) {
+        String sql = "delete from albumentries where albumentry_id=?";
+        int id = deletedEntry.getId();
+        try(Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, id);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to delete album entry with id \"%d\"", id), e);
+        }
+        return fetchAllRoutes();
+    }
+
     private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
         int id = results.getInt(1);
         int parent = results.getInt(2);

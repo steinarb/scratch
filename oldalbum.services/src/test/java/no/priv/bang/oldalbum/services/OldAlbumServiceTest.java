@@ -45,6 +45,9 @@ class OldAlbumServiceTest {
         AlbumEntry addedEntry = new AlbumEntry();
         List<AlbumEntry> updatedRoutesOnAddedEntry = service.addEntry(addedEntry);
         assertEquals(0, updatedRoutesOnAddedEntry.size());
+        AlbumEntry deletedEntry = new AlbumEntry();
+        List<AlbumEntry> updatedRoutesOnDelete = service.deleteEntry(deletedEntry);
+        assertEquals(0, updatedRoutesOnDelete.size());
     }
 
 }

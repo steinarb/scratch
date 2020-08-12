@@ -33,4 +33,6 @@ public interface OldAlbumService {
 
     List<AlbumEntry> addEntry(AlbumEntry addedEntry);
 
+    List<AlbumEntry> deleteEntry(AlbumEntry deletedEntry);
+
 }

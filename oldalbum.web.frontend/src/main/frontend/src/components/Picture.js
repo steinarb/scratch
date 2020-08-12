@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
+import DeleteButton from './DeleteButton';
 
 function Picture(props) {
     const { item, parent } = props;
@@ -16,6 +17,7 @@ function Picture(props) {
                 <img src={item.imageUrl} />
                 <p><i>{item.description}</i></p>
             </div>
+            <DeleteButton item={item} />
         </div>
     );
 }

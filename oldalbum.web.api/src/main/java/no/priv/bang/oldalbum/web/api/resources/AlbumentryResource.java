@@ -63,4 +63,11 @@ public class AlbumentryResource {
         return oldalbum.addEntry(pictureToAdd);
     }
 
+    @Path("deleteentry")
+    @POST
+    @Consumes(APPLICATION_JSON)
+    public List<AlbumEntry> deleteEntry(AlbumEntry entryToDelete) {
+        return oldalbum.deleteEntry(entryToDelete);
+    }
+
 }

@@ -80,4 +80,14 @@ class AlbumentryResourceTest {
         assertEquals(pictureToAdd.getDescription(), updatedPicture.getDescription());
     }
 
+    @Test
+    void testDeleteEntry() {
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif");
+        AlbumentryResource resource = new AlbumentryResource();
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.deleteEntry(pictureToDelete);
+        assertEquals(0, allroutes.size());
+    }
+
 }

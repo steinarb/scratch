@@ -5,6 +5,7 @@ import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
 import AddPictureButton from './AddPictureButton';
+import DeleteButton from './DeleteButton';
 
 function Album(props) {
     const { item, parent, children } = props;
@@ -18,6 +19,7 @@ function Album(props) {
             { children.map(renderChild) }
             <AddAlbumButton item={item} />
             <AddPictureButton item={item} />
+            <DeleteButton item={item} />
         </div>
     );
 }

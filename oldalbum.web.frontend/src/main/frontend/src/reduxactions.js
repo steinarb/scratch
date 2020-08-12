@@ -46,3 +46,5 @@ export const ADD_PICTURE_TITLE = createAction('ADD_PICTURE_TITLE');
 export const ADD_PICTURE_DESCRIPTION = createAction('ADD_PICTURE_DESCRIPTION');
 export const ADD_PICTURE_IMAGEURL = createAction('ADD_PICTURE_IMAGEURL');
 export const ADD_PICTURE_THUMBNAILURL = createAction('ADD_PICTURE_THUMBNAILURL');
+export const DELETE_ITEM = createAction('DELETE_ITEM');
+export const DELETE_ITEM_ERROR = createAction('DELETE_ITEM_ERROR');
