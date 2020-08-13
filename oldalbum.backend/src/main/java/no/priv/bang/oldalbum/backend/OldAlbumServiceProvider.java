@@ -212,7 +212,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         String description = results.getString(6);
         String imageUrl = results.getString(7);
         String thumbnailUrl = results.getString(8);
-        return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl);
+        int sort = results.getInt(9);
+        return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort);
     }
 
 }

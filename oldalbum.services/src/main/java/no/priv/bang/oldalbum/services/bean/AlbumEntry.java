@@ -25,8 +25,9 @@ public class AlbumEntry {
     private String description;
     private String imageUrl;
     private String thumbnailUrl;
+    private int sort;
 
-    public AlbumEntry(int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) { // NOSONAR
+    public AlbumEntry(int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort) { // NOSONAR
         this.id = id;
         this.parent = parent;
         this.path = path;
@@ -35,6 +36,7 @@ public class AlbumEntry {
         this.description = description;
         this.imageUrl = imageUrl;
         this.thumbnailUrl = thumbnailUrl;
+        this.sort  = sort;
     }
 
     public AlbumEntry() {
@@ -72,6 +74,10 @@ public class AlbumEntry {
 
     public String getThumbnailUrl() {
         return thumbnailUrl;
+    }
+
+    public int getSort() {
+        return sort;
     }
 
 }

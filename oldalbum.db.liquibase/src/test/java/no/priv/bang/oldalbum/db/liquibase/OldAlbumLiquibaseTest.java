@@ -41,11 +41,11 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntries(Connection connection) throws Exception {
-        assertAlbumEntry(connection, 1, 0, "/album/", true, "Album", "This is an album", null, null);
-        assertAlbumEntry(connection, 2, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
+        assertAlbumEntry(connection, 1, 0, "/album/", true, "Album", "This is an album", null, null, 1);
+        assertAlbumEntry(connection, 2, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2);
     }
 
-    private void assertAlbumEntry(Connection connection, int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) throws Exception {
+    private void assertAlbumEntry(Connection connection, int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort) throws Exception {
         String sql = "select * from albumentries where albumentry_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
@@ -58,6 +58,7 @@ class OldAlbumLiquibaseTest {
                     assertEquals(description, result.getString(6));
                     assertEquals(imageUrl, result.getString(7));
                     assertEquals(thumbnailUrl, result.getString(8));
+                    assertEquals(sort, result.getInt(9));
                 } else {
                     fail(String.format("Didn't find albumentry with id=d", id));
                 }
@@ -66,12 +67,12 @@ class OldAlbumLiquibaseTest {
     }
 
     private void addAlbumEntries(Connection connection) throws Exception {
-        addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null);
-        addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif");
+        addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1);
+        addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2);
     }
 
-    private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl) throws Exception {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl) values (?, ?, ?, ?, ?, ?, ?)";
+    private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort) throws Exception {
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort) values (?, ?, ?, ?, ?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, parent);
             statement.setString(2, path);
@@ -80,6 +81,7 @@ class OldAlbumLiquibaseTest {
             statement.setString(5, description);
             statement.setString(6, imageUrl);
             statement.setString(7, thumbnailUrl);
+            statement.setInt(8, sort);
             statement.executeUpdate();
         }
     }

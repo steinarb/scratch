@@ -31,6 +31,7 @@
             <column name="description" type="VARCHAR(2048)" />
             <column name="imageurl" type="VARCHAR(256)" />
             <column name="thumbnailurl" type="VARCHAR(256)" />
+            <column name="sort" type="INTEGER" />
         </createTable>
 
         <createIndex indexName="parent_index" tableName="albumentries">

@@ -16,7 +16,7 @@ function Album(props) {
             <br/><LoginLogoutButton/>
             <ModifyButton item={item} />
             <h1>Album: {item.title}</h1>
-            { children.map(renderChild) }
+            { children.sort((a,b) => a.sort - b.sort).map(renderChild) }
             <AddAlbumButton item={item} />
             <AddPictureButton item={item} />
             <DeleteButton item={item} />

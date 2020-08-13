@@ -31,7 +31,8 @@ class AlbumEntryTest {
         String description = "This is an album";
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
         String thumbnailUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif";
-        AlbumEntry bean = new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl);
+        int sort = 1;
+        AlbumEntry bean = new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort);
         assertEquals(id, bean.getId());
         assertEquals(parent, bean.getParent());
         assertEquals(path, bean.getPath());
@@ -40,6 +41,7 @@ class AlbumEntryTest {
         assertEquals(description, bean.getDescription());
         assertEquals(imageUrl, bean.getImageUrl());
         assertEquals(thumbnailUrl, bean.getThumbnailUrl());
+        assertEquals(sort, bean.getSort());
     }
 
     @Test
@@ -52,6 +54,7 @@ class AlbumEntryTest {
         assertNull(bean.getDescription());
         assertNull(bean.getImageUrl());
         assertNull(bean.getThumbnailUrl());
+        assertEquals(0, bean.getSort());
     }
 
 }
