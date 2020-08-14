@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.web.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -88,6 +89,32 @@ class AlbumentryResourceTest {
         resource.oldalbum = oldalbum;
         List<AlbumEntry> allroutes = resource.deleteEntry(pictureToDelete);
         assertEquals(0, allroutes.size());
+    }
+
+    @Test
+    void testMoveEntryUp() {
+        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, 2);
+        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        AlbumentryResource resource = new AlbumentryResource();
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.moveEntryUp(albumToMove);
+        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        assertThat(albumToMove.getSort()).isGreaterThan(updatedAlbum.getSort());
+    }
+
+    @Test
+    void testMoveEntryDown() {
+        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, 2);
+        AlbumentryResource resource = new AlbumentryResource();
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.moveEntryDown(albumToMove);
+        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        assertThat(albumToMove.getSort()).isLessThan(updatedAlbum.getSort());
     }
 
 }

@@ -6,6 +6,8 @@ import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
 import AddPictureButton from './AddPictureButton';
 import DeleteButton from './DeleteButton';
+import UpButton from './UpButton';
+import DownButton from './DownButton';
 
 function Album(props) {
     const { item, parent, children } = props;
@@ -39,8 +41,8 @@ export default connect(mapStateToProps)(Album);
 
 function renderChild(child, index) {
     if (child.album) {
-        return <div key={index}><NavLink to={child.path}>Album: {child.title}</NavLink></div>;
+        return <div key={index}><NavLink to={child.path}>Album: {child.title}</NavLink><span><UpButton item={child} /><DownButton item={child} /></span></div>;
     }
 
-    return <div key={index}><NavLink to={child.path}><img src={child.thumbnailUrl}/></NavLink></div>;
+    return <div key={index}><NavLink to={child.path}><img src={child.thumbnailUrl}/></NavLink><span><UpButton item={child} /><DownButton item={child} /></span></div>;
 }

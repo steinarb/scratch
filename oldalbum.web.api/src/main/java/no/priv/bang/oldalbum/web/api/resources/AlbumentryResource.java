@@ -70,4 +70,18 @@ public class AlbumentryResource {
         return oldalbum.deleteEntry(entryToDelete);
     }
 
+    @Path("movealbumentryup")
+    @POST
+    @Consumes(APPLICATION_JSON)
+    public List<AlbumEntry> moveEntryUp(AlbumEntry entryToMove) {
+        return oldalbum.moveEntryUp(entryToMove);
+    }
+
+    @Path("movealbumentrydown")
+    @POST
+    @Consumes(APPLICATION_JSON)
+    public List<AlbumEntry> moveEntryDown(AlbumEntry entryToMove) {
+        return oldalbum.moveEntryDown(entryToMove);
+    }
+
 }

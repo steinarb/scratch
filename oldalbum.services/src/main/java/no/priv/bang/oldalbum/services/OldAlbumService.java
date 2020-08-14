@@ -35,4 +35,8 @@ public interface OldAlbumService {
 
     List<AlbumEntry> deleteEntry(AlbumEntry deletedEntry);
 
+    List<AlbumEntry> moveEntryUp(AlbumEntry movedEntry);
+
+    List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry);
+
 }

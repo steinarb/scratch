@@ -212,6 +212,95 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return fetchAllRoutes();
     }
 
+    @Override
+    public List<AlbumEntry> moveEntryUp(AlbumEntry movedEntry) {
+        int sort = movedEntry.getSort();
+        if (sort > 1) {
+            int entryId = movedEntry.getId();
+            try(Connection connection = datasource.getConnection()) {
+                int previousEntryId = findPreviousEntryInTheSameAlbum(connection, movedEntry, sort);
+                swapSortValues(connection, entryId, sort - 1, previousEntryId, sort);
+            } catch (SQLException e) {
+                logservice.log(LogService.LOG_ERROR, String.format("Failed to move album entry with id \"%d\"", entryId), e);
+            }
+        }
+        return fetchAllRoutes();
+    }
+
+    @Override
+    public List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry) {
+        int sort = movedEntry.getSort();
+        int entryId = movedEntry.getId();
+        try(Connection connection = datasource.getConnection()) {
+            int numberOfEntriesInAlbum = findNumberOfEntriesInCurrentAlbum(connection, movedEntry);
+            if (sort < numberOfEntriesInAlbum) {
+                int nextEntryId = findNextEntryInTheSameAlbum(connection, movedEntry, sort);
+                swapSortValues(connection, entryId, sort + 1, nextEntryId, sort);
+            }
+        } catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, String.format("Failed to move album entry with id \"%d\"", entryId), e);
+        }
+        return fetchAllRoutes();
+    }
+
+    int findNumberOfEntriesInCurrentAlbum(Connection connection, AlbumEntry movedEntry) throws SQLException {
+        int numberOfEntriesInAlbum = 0;
+        String findPreviousEntrySql = "select count(albumentry_id) from albumentries where parent=?";
+        try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
+            statement.setInt(1, movedEntry.getParent());
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    numberOfEntriesInAlbum = result.getInt(1);
+                }
+            }
+        }
+        return numberOfEntriesInAlbum;
+    }
+
+    int findPreviousEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
+        int previousEntryId = 0;
+        String findPreviousEntrySql = "select albumentry_id from albumentries where sort=? and parent=?";
+        try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
+            statement.setInt(1, sort - 1);
+            statement.setInt(2, movedEntry.getParent());
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    previousEntryId = result.getInt(1);
+                }
+            }
+        }
+        return previousEntryId;
+    }
+
+    int findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
+        int nextEntryId = 0;
+        String findPreviousEntrySql = "select albumentry_id from albumentries where sort=? and parent=?";
+        try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
+            statement.setInt(1, sort + 1);
+            statement.setInt(2, movedEntry.getParent());
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    nextEntryId = result.getInt(1);
+                }
+            }
+        }
+        return nextEntryId;
+    }
+
+    private void swapSortValues(Connection connection, int entryId, int newIndex, int previousEntryId, int newIndexOfPreviousEntry) throws SQLException {
+        String sql = "update albumentries set sort=? where albumentry_id=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, newIndex);
+            statement.setInt(2, entryId);
+            statement.executeUpdate();
+        }
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, newIndexOfPreviousEntry);
+            statement.setInt(2, previousEntryId);
+            statement.executeUpdate();
+        }
+    }
+
     private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
         int id = results.getInt(1);
         int parent = results.getInt(2);

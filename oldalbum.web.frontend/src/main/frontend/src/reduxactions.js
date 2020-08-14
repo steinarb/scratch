@@ -48,3 +48,6 @@ export const ADD_PICTURE_IMAGEURL = createAction('ADD_PICTURE_IMAGEURL');
 export const ADD_PICTURE_THUMBNAILURL = createAction('ADD_PICTURE_THUMBNAILURL');
 export const DELETE_ITEM = createAction('DELETE_ITEM');
 export const DELETE_ITEM_ERROR = createAction('DELETE_ITEM_ERROR');
+export const MOVE_ALBUMENTRY_UP = createAction('MOVE_ALBUMENTRY_UP');
+export const MOVE_ALBUMENTRY_DOWN = createAction('MOVE_ALBUMENTRY_DOWN');
+export const MOVE_ALBUMENTRY_ERROR = createAction('MOVE_ALBUMENTRY_ERROR');

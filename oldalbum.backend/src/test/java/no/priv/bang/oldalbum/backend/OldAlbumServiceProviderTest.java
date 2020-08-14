@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -266,6 +269,149 @@ class OldAlbumServiceProviderTest {
         assertEquals(numberOfEntriesBeforeDelete, allroutes.size());
         assertEquals(3, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(1)).contains("Failed to delete album entry with id");
+    }
+
+    @Test
+    void testMoveAlbumEntriesUp() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        // Find the first and second entries of the "vfr" album
+        AlbumEntry originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
+        assertEquals(1, originalFirstEntry.getSort());
+        AlbumEntry secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
+        assertEquals(2, secondEntry.getSort());
+
+        // Move from second to first
+        allroutes = provider.moveEntryUp(secondEntry);
+        secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
+        assertEquals(1, secondEntry.getSort());
+        originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
+        assertEquals(2, originalFirstEntry.getSort());
+
+        // Corner case test: Trying to move up from the first entry of the album
+        // This should have no effect (and should not crash)
+        allroutes = provider.moveEntryUp(secondEntry);
+        secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
+        assertEquals(1, secondEntry.getSort());
+        originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
+        assertEquals(2, originalFirstEntry.getSort());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testMoveAlbumEntriesUpWithDatabaseFailure() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        DataSource datasourceThrowsException = mock(DataSource.class);
+        when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsException);
+        provider.activate();
+
+        // Try moving an album and failing
+        List<AlbumEntry> allroutes = provider.moveEntryUp(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, 10));
+        assertEquals(0, allroutes.size());
+        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
+    }
+
+    @Test
+    void testMoveAlbumEntriesDown() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        // Find the last and second to last entries of the "vfr" album
+        int numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
+        AlbumEntry originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum, originalLastEntry.getSort());
+        AlbumEntry secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum - 1, secondToLastEntry.getSort());
+
+        // Move from second to last position to last position
+        allroutes = provider.moveEntryDown(secondToLastEntry);
+        secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.getSort());
+        originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.getSort());
+
+        // Corner case test: Trying to move down from the last entry of the album
+        // This should have no effect (and should not crash)
+        allroutes = provider.moveEntryDown(secondToLastEntry);
+        secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.getSort());
+        originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.getSort());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testMoveAlbumEntriesDownWithDatabaseFailure() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        DataSource datasourceThrowsException = mock(DataSource.class);
+        when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsException);
+        provider.activate();
+
+        List<AlbumEntry> allroutes = provider.moveEntryDown(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, 10));
+        assertEquals(0, allroutes.size());
+        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
+    }
+
+    @Test
+    void testFindNumberOfEntriesInCurrentAlbumEmptyResultSet() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        int entryCount = provider.findNumberOfEntriesInCurrentAlbum(connection, new AlbumEntry());
+        assertEquals(0, entryCount);
+    }
+
+    @Test
+    void testFindPreviousEntryInTheSameAlbumEmptyResultSet() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        int entryCount = provider.findPreviousEntryInTheSameAlbum(connection, new AlbumEntry(), 2);
+        assertEquals(0, entryCount);
+    }
+
+    @Test
+    void testFindNextEntryInTheSameAlbumResultSet() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        int entryCount = provider.findNextEntryInTheSameAlbum(connection, new AlbumEntry(), 2);
+        assertEquals(0, entryCount);
     }
 
 }

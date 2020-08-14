@@ -127,6 +127,40 @@ class OldAlbumWebApiServletTest {
         assertEquals(0, routes.size());
     }
 
+    @Test
+    void testMoveEntryUp() throws Exception {
+        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, 2);
+        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice);
+        HttpServletRequest request = buildPostUrl("/movealbumentryup", albumToMove);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
+        AlbumEntry updatedAlbum = routes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        assertThat(albumToMove.getSort()).isGreaterThan(updatedAlbum.getSort());
+    }
+
+    @Test
+    void testMoveEntryDown() throws Exception {
+        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, 2);
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice);
+        HttpServletRequest request = buildPostUrl("/movealbumentrydown", albumToMove);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
+        AlbumEntry updatedAlbum = routes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        assertThat(albumToMove.getSort()).isLessThan(updatedAlbum.getSort());
+    }
+
     private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {
         MockHttpServletRequest request = buildRequest(resource);
         request.setMethod("POST");
