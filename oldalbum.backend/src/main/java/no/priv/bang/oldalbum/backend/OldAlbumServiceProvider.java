@@ -192,11 +192,19 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> deleteEntry(AlbumEntry deletedEntry) {
         String sql = "delete from albumentries where albumentry_id=?";
+        String updateSortSql = "update albumentries set sort=sort-1 where parent=? and sort > ?";
         int id = deletedEntry.getId();
+        int parentOfDeleted = deletedEntry.getParent();
+        int sortOfDeleted = deletedEntry.getSort();
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, id);
                 statement.executeUpdate();
+            }
+            try(PreparedStatement updateSortStatement = connection.prepareStatement(updateSortSql)) {
+                updateSortStatement.setInt(1, parentOfDeleted);
+                updateSortStatement.setInt(2, sortOfDeleted);
+                updateSortStatement.executeUpdate();
             }
         } catch (SQLException e) {
             logservice.log(LogService.LOG_ERROR, String.format("Failed to delete album entry with id \"%d\"", id), e);
