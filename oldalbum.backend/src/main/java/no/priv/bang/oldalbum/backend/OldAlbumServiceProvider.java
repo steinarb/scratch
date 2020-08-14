@@ -59,7 +59,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         List<AlbumEntry> allroutes = new ArrayList<>();
 
         List<AlbumEntry> albums = new ArrayList<>();
-        String sql = "select * from albumentries where album=true order by localpath";
+        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort  order by a.localpath";
         try (Connection connection = datasource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet results = statement.executeQuery()) {
@@ -213,7 +213,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         String imageUrl = results.getString(7);
         String thumbnailUrl = results.getString(8);
         int sort = results.getInt(9);
-        return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort);
+        int columncount = results.getMetaData().getColumnCount();
+        int childcount = columncount > 9 ? results.getInt(10) : 0;
+        return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, childcount);
     }
 
 }

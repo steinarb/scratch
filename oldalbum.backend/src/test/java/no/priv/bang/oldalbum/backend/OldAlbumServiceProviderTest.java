@@ -176,7 +176,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1);
+        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
@@ -193,7 +193,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        AlbumEntry modifiedAlbum = new AlbumEntry(357, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1);
+        AlbumEntry modifiedAlbum = new AlbumEntry(357, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
@@ -208,7 +208,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2);
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, 0);
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
@@ -228,7 +228,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2);
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, 0);
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
@@ -243,7 +243,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1);
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, 0);
         List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
         assertThat(allroutes.size()).isLessThan(numberOfEntriesBeforeDelete);
         Optional<AlbumEntry> deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
@@ -261,7 +261,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1);
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, 0);
         List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
         assertEquals(numberOfEntriesBeforeDelete, allroutes.size());
         assertEquals(3, logservice.getLogmessages().size());

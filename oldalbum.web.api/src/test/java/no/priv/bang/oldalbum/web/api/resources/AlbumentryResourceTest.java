@@ -30,7 +30,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testModifyalbum() {
-        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1);
+        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
@@ -43,7 +43,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testAddalbum() {
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2);
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, 0);
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
@@ -56,7 +56,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testModifypicture() {
-        AlbumEntry modifiedPicture = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 1);
+        AlbumEntry modifiedPicture = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 1, 0);
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedPicture));
@@ -69,7 +69,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testAddpicture() {
-        AlbumEntry pictureToAdd = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 1);
+        AlbumEntry pictureToAdd = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 1, 0);
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
@@ -82,7 +82,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testDeleteEntry() {
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1);
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, 0);
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         resource.oldalbum = oldalbum;

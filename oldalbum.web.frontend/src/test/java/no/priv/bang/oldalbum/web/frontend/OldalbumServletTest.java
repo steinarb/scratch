@@ -42,13 +42,13 @@ public class OldalbumServletTest {
     public void testGetAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "Motorcyle meeting places", "Places motorcylists meet", null, null, 1);
+        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "Motorcyle meeting places", "Places motorcylists meet", null, null, 1, 4);
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
-        AlbumEntry grava1 = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif", 1);
-        AlbumEntry grava2 = new AlbumEntry(4, 2, "/moto/places/grava2", false, "Tyrigrava south view", "View from the south", "https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava2.gif", 2);
-        AlbumEntry grava3 = new AlbumEntry(5, 2, "/moto/places/grava3", false, "Tyrigrava Wednesday", "Huge number of motorcyles on Wednesdays", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 3);
-        AlbumEntry hove1 = new AlbumEntry(6, 2, "/moto/places/hove1", false, "Hove fjellgaard", "Meeting place in Ål in Hallingdal", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 4);
-        AlbumEntry album1 = new AlbumEntry(7, 2, "/moto/places/album1", true, "Sub album", "In another album resides other pictures", null, null, 5);
+        AlbumEntry grava1 = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif", 1, 0);
+        AlbumEntry grava2 = new AlbumEntry(4, 2, "/moto/places/grava2", false, "Tyrigrava south view", "View from the south", "https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava2.gif", 2, 0);
+        AlbumEntry grava3 = new AlbumEntry(5, 2, "/moto/places/grava3", false, "Tyrigrava Wednesday", "Huge number of motorcyles on Wednesdays", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 3, 0);
+        AlbumEntry hove1 = new AlbumEntry(6, 2, "/moto/places/hove1", false, "Hove fjellgaard", "Meeting place in Ål in Hallingdal", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 4, 0);
+        AlbumEntry album1 = new AlbumEntry(7, 2, "/moto/places/album1", true, "Sub album", "In another album resides other pictures", null, null, 5, 0);
         List<AlbumEntry> children = Arrays.asList(grava1, grava2, grava3, album1, hove1);
         when(oldalbum.getChildren(anyInt())).thenReturn(children);
         MockLogService logservice = new MockLogService();
@@ -84,7 +84,7 @@ public class OldalbumServletTest {
     public void testGetPicture() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif", 1);
+        AlbumEntry entry = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif", 1, 0);
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();
@@ -119,7 +119,7 @@ public class OldalbumServletTest {
     public void testGetEmptyAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, null, null, null, null, 1);
+        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, null, null, null, null, 1, 4);
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();
@@ -154,7 +154,7 @@ public class OldalbumServletTest {
     public void testGetAlbumWithEmptyValues() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "", "", "", "", 1);
+        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "", "", "", "", 1, 4);
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();
