@@ -169,7 +169,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl) values (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort) values (?, ?, ?, ?, ?, ?, ?, ?)";
         String path = addedEntry.getPath();
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -180,6 +180,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(5, addedEntry.getDescription());
                 statement.setString(6, addedEntry.getImageUrl());
                 statement.setString(7, addedEntry.getThumbnailUrl());
+                statement.setInt(8, addedEntry.getSort());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {

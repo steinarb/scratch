@@ -29,11 +29,12 @@ function* locationChange(action) {
         const parentId = parseInt(parent, 10);
         const parentalbum = albumentries.get(parentId);
         const path = parentalbum.path || '';
+        const sort = (parentalbum.childcount || 0) + 1;
         const basename = '';
         const title = '';
         const description = '';
 
-        yield put(ADD_ALBUM({ parent: parentId, path, album: true, basename, title, description }));
+        yield put(ADD_ALBUM({ parent: parentId, path, album: true, basename, title, description, sort }));
     }
 
     if (pathname === '/oldalbum/modifypicture') {
@@ -53,13 +54,14 @@ function* locationChange(action) {
         const parentId = parseInt(parent, 10);
         const parentalbum = albumentries.get(parentId);
         const path = parentalbum.path || '';
+        const sort = (parentalbum.childcount || 0) + 1;
         const basename = '';
         const title = '';
         const description = '';
         const imageUrl = '';
         const thumbnailUrl = '';
 
-        yield put(ADD_PICTURE({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl }));
+        yield put(ADD_PICTURE({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort }));
     }
 }
 
