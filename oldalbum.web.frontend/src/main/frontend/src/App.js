@@ -4,7 +4,6 @@ import { Switch, Route, NavLink } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'connected-react-router';
 import logo from './logo.svg';
 import './App.css';
-import Home from './components/Home';
 import Album from './components/Album';
 import Picture from './components/Picture';
 import Login from './components/Login';
