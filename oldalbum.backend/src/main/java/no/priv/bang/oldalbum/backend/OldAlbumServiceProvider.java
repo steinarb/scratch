@@ -149,8 +149,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
         int id = modifiedEntry.getId();
-        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=? where albumentry_id=?";
+        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, sort=? where albumentry_id=?";
         try(Connection connection = datasource.getConnection()) {
+            int sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, modifiedEntry.getParent());
                 statement.setString(2, modifiedEntry.getPath());
@@ -158,7 +159,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(4, modifiedEntry.getDescription());
                 statement.setString(5, modifiedEntry.getImageUrl());
                 statement.setString(6, modifiedEntry.getThumbnailUrl());
-                statement.setInt(7, id);
+                statement.setInt(7, sort);
+                statement.setInt(8, id);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -192,7 +194,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> deleteEntry(AlbumEntry deletedEntry) {
         String sql = "delete from albumentries where albumentry_id=?";
-        String updateSortSql = "update albumentries set sort=sort-1 where parent=? and sort > ?";
         int id = deletedEntry.getId();
         int parentOfDeleted = deletedEntry.getParent();
         int sortOfDeleted = deletedEntry.getSort();
@@ -201,11 +202,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setInt(1, id);
                 statement.executeUpdate();
             }
-            try(PreparedStatement updateSortStatement = connection.prepareStatement(updateSortSql)) {
-                updateSortStatement.setInt(1, parentOfDeleted);
-                updateSortStatement.setInt(2, sortOfDeleted);
-                updateSortStatement.executeUpdate();
-            }
+            adjustSortValuesAfterEntryIsRemoved(connection, parentOfDeleted, sortOfDeleted);
         } catch (SQLException e) {
             logservice.log(LogService.LOG_ERROR, String.format("Failed to delete album entry with id \"%d\"", id), e);
         }
@@ -232,7 +229,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         int sort = movedEntry.getSort();
         int entryId = movedEntry.getId();
         try(Connection connection = datasource.getConnection()) {
-            int numberOfEntriesInAlbum = findNumberOfEntriesInCurrentAlbum(connection, movedEntry);
+            int numberOfEntriesInAlbum = findNumberOfEntriesInAlbum(connection, movedEntry.getParent());
             if (sort < numberOfEntriesInAlbum) {
                 int nextEntryId = findNextEntryInTheSameAlbum(connection, movedEntry, sort);
                 swapSortValues(connection, entryId, sort + 1, nextEntryId, sort);
@@ -243,11 +240,24 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return fetchAllRoutes();
     }
 
-    int findNumberOfEntriesInCurrentAlbum(Connection connection, AlbumEntry movedEntry) throws SQLException {
+    int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) throws SQLException {
+        AlbumEntry entryBeforeUpdate = getEntry(connection, modifiedEntry.getId());
+        int sort = modifiedEntry.getSort();
+        int originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.getParent() : 0;
+        if (modifiedEntry.getParent() != originalParent) {
+            int originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.getSort() : 0;
+            adjustSortValuesAfterEntryIsRemoved(connection, originalParent, originalSort);
+            int destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.getParent());
+            sort = destinationChildCount + 1;
+        }
+        return sort;
+    }
+
+    int findNumberOfEntriesInAlbum(Connection connection, int parentid) throws SQLException {
         int numberOfEntriesInAlbum = 0;
         String findPreviousEntrySql = "select count(albumentry_id) from albumentries where parent=?";
         try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
-            statement.setInt(1, movedEntry.getParent());
+            statement.setInt(1, parentid);
             try(ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
                     numberOfEntriesInAlbum = result.getInt(1);
@@ -285,6 +295,28 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
         }
         return nextEntryId;
+    }
+
+    AlbumEntry getEntry(Connection connection, int id) throws SQLException {
+        String sql = "select * from albumentries where albumentry_id=?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    return unpackAlbumEntry(result);
+                }
+            }
+        }
+        return null;
+    }
+
+    private void adjustSortValuesAfterEntryIsRemoved(Connection connection, int parentOfRemovedEntry, int sortOfRemovedEntry) throws SQLException {
+        String updateSortSql = "update albumentries set sort=sort-1 where parent=? and sort > ?";
+        try(PreparedStatement updateSortStatement = connection.prepareStatement(updateSortSql)) {
+            updateSortStatement.setInt(1, parentOfRemovedEntry);
+            updateSortStatement.setInt(2, sortOfRemovedEntry);
+            updateSortStatement.executeUpdate();
+        }
     }
 
     private void swapSortValues(Connection connection, int entryId, int newIndex, int previousEntryId, int newIndexOfPreviousEntry) throws SQLException {

@@ -186,6 +186,34 @@ class OldAlbumServiceProviderTest {
         assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
     }
 
+    @Test()
+    void testSwitchEntryParent() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        // Verify that sort values are updated correctly when an album
+        // entry is moved to a different album
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        AlbumEntry destinationAlbum = allroutes.stream().filter(r -> "/moto/places/".equals(r.getPath())).findFirst().get();
+        AlbumEntry imageToMove = allroutes.stream().filter(r -> "/moto/vfr96/acirc3".equals(r.getPath())).findFirst().get();
+        int sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
+        int sortValueOfLastItemInDestinationAlbum = allroutes.stream().filter(r -> "/moto/places/hove".equals(r.getPath())).findFirst().get().getSort();
+
+        AlbumEntry movedImage = new AlbumEntry(imageToMove.getId(), destinationAlbum.getId(), "/moto/places/acirc3", false, imageToMove.getTitle(), imageToMove.getDescription(), imageToMove.getImageUrl(), imageToMove.getThumbnailUrl(), imageToMove.getSort(), 0);
+        allroutes = provider.updateEntry(movedImage);
+
+        // Verify that sort values in the original album have been adjusted
+        int sortValueOfNextImageInOriginalAlbumAfterMove = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
+        assertThat(sortValueOfNextImageInOriginalAlbum).isGreaterThan(sortValueOfNextImageInOriginalAlbumAfterMove);
+
+        // Verify that image is sorted last in the destination album
+        AlbumEntry imageInDestination = allroutes.stream().filter(r -> r.getId() == imageToMove.getId()).findFirst().get();
+        assertThat(imageInDestination.getSort()).isGreaterThan(sortValueOfLastItemInDestinationAlbum);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     void testUpdateEntryWithDataSourceFailure() throws Exception {
@@ -370,7 +398,7 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testFindNumberOfEntriesInCurrentAlbumEmptyResultSet() throws Exception {
+    void testAdjustSortValuesWhenMovingToDifferentAlbumNoExistingParent() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
@@ -380,7 +408,23 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        int entryCount = provider.findNumberOfEntriesInCurrentAlbum(connection, new AlbumEntry());
+        AlbumEntry updatedEntry = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, 0);
+        int sort = provider.adjustSortValuesWhenMovingToDifferentAlbum(connection, updatedEntry);
+        assertEquals(updatedEntry.getSort(), sort);
+    }
+
+    @Test
+    void testFindNumberOfEntriesInAlbumEmptyResultSet() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        int entryCount = provider.findNumberOfEntriesInAlbum(connection, 0);
         assertEquals(0, entryCount);
     }
 
@@ -412,6 +456,21 @@ class OldAlbumServiceProviderTest {
 
         int entryCount = provider.findNextEntryInTheSameAlbum(connection, new AlbumEntry(), 2);
         assertEquals(0, entryCount);
+    }
+
+    @Test
+    void testGetEntryWhenEntryNotFound() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        AlbumEntry entry = provider.getEntry(connection, 0);
+        assertNull(entry);
     }
 
 }
