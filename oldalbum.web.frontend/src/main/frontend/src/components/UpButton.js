@@ -12,7 +12,7 @@ function UpButton(props) {
         return null;
     }
 
-    return(<button className="btn btn-default" type="button" onClick={() => onMoveUp(item)}>Move up</button>);
+    return(<button type="button" onClick={() => onMoveUp(item)}><span className="oi oi-chevron-top" title="chevron top" aria-hidden="true"></span></button>);
 }
 
 function mapStateToProps(state, ownProps) {

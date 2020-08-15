@@ -28,46 +28,54 @@ function AddAlbum(props) {
     const { parent } = queryParams;
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
+    const uplocation = parentalbum.path || webcontext;
     if (!loginresult.canModifyAlbum) {
-        if (parentalbum.path) {
-            return <Redirect to={parentalbum.path} />;
-        }
-
-        return <Redirect to={webcontext} />;
+        return <Redirect to={uplocation} />;
     }
 
     return(
         <div>
-            <h1>Add album to "{parentalbum.title}"</h1>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <NavLink to={uplocation}><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up</NavLink>
+                <h1>Add album to "{parentalbum.title}"</h1>
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <div>
-                    <label htmlFor="path">Path</label>
-                    <input id="path" type="text" value={addalbum.path} readOnly={true} />
-                </div>
-                <div>
-                    <label htmlFor="basename">Base file name</label>
-                    <input id="basename" type="text" value={addalbum.basename} onChange={(event) => onBasenameChange(event.target.value, parentalbum)}/>
-                </div>
-                <div>
-                    <label htmlFor="title">Title</label>
-                    <input id="title" type="text" value={addalbum.title} onChange={(event) => onTitleChange(event.target.value)}/>
-                </div>
-                <div>
-                    <label htmlFor="description">Description</label>
-                    <input id="description" type="text" value={addalbum.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
-                </div>
-                <div>
-                    <button className="btn btn-default" type="button" onClick={() => onUpdate(addalbum.path)}>Add</button>
-                </div>
-                <div>
-                    <button className="btn btn-default" type="button" onClick={() => onCancel(addalbum.path)}>Cancel</button>
+                <div className="container">
+                    <div className="form-group row">
+                        <label htmlFor="path" className="col-form-label col-5">Path</label>
+                        <div className="col-7">
+                            <input id="path" className="form-control" type="text" value={addalbum.path} readOnly={true} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="basename" className="col-form-label col-5">Base file name</label>
+                        <div className="col-7">
+                            <input id="basename" className="form-control" type="text" value={addalbum.basename} onChange={(event) => onBasenameChange(event.target.value, parentalbum)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="title" className="col-form-label col-5">Title</label>
+                        <div className="col-7">
+                            <input id="title" className="form-control" type="text" value={addalbum.title} onChange={(event) => onTitleChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="description" className="col-form-label col-5">Description</label>
+                        <div className="col-7">
+                            <input id="description" className="form-control" type="text" value={addalbum.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div>
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onUpdate(addalbum.path)}>Add</button>
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(addalbum.path)}>Cancel</button>
+                    </div>
                 </div>
             </form>
         </div>
     );
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const addalbum = state.addalbum;

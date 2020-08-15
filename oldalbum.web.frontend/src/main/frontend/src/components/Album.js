@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { pictureTitle } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
@@ -14,14 +15,32 @@ function Album(props) {
 
     return (
         <div>
-            { parent ? <NavLink to={parent}>Up</NavLink> : <a href="..">Up</a> }
-            <br/><LoginLogoutButton/>
-            <ModifyButton item={item} />
-            <h1>Album: {item.title}</h1>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                { parent ? (
+                    <NavLink to={parent}>
+                        <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
+                    </NavLink>
+                ) : (
+                    <a href="..">
+                        <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
+                    </a>
+                ) }
+                <h1>{item.title}</h1>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNavDropdown">
+                    <div className="navbar-nav">
+                        <LoginLogoutButton className="nav-item"/>
+                        <ModifyButton className="nav-item nav-link" item={item} />
+                        <AddAlbumButton className="nav-item nav-link" item={item} />
+                        <AddPictureButton className="nav-item nav-lin" item={item} />
+                        <DeleteButton className="nav-item nav-link" item={item} />
+                    </div>
+                </div>
+            </nav>
+            {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             { children.sort((a,b) => a.sort - b.sort).map(renderChild) }
-            <AddAlbumButton item={item} />
-            <AddPictureButton item={item} />
-            <DeleteButton item={item} />
         </div>
     );
 }
@@ -40,9 +59,28 @@ function mapStateToProps(state, ownProps) {
 export default connect(mapStateToProps)(Album);
 
 function renderChild(child, index) {
+    const title = pictureTitle(child);
     if (child.album) {
-        return <div key={index}><NavLink to={child.path}>Album: {child.title}</NavLink><span><UpButton item={child} /><DownButton item={child} /></span></div>;
+        return (
+            <div key={index} className="btn btn-block btn-primary left-align-cell">
+                <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>Album: {title}</NavLink>
+                <span className="right-align-cell">
+                    <UpButton item={child} />
+                    <DownButton item={child} />
+                </span>
+            </div>
+        );
     }
 
-    return <div key={index}><NavLink to={child.path}><img src={child.thumbnailUrl}/></NavLink><span><UpButton item={child} /><DownButton item={child} /></span></div>;
+    return (
+        <div key={index} className="btn btn-block btn-primary left-align-cell">
+            <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>
+                <img src={child.thumbnailUrl}/>&nbsp;{title}
+            </NavLink>
+            <span>
+                <UpButton item={child} />
+                <DownButton item={child} />
+            </span>
+        </div>
+    );
 }

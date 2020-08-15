@@ -32,47 +32,59 @@ function AddPicture(props) {
     const { parent } = queryParams;
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
+    const uplocation = parentalbum.path || webcontext;
     if (!loginresult.canModifyAlbum) {
-        if (parentalbum.path) {
-            return <Redirect to={parentalbum.path} />;
-        }
-
-        return <Redirect to={webcontext} />;
+        return <Redirect to={uplocation} />;
     }
 
     return(
         <div>
-            <h1>Add picture to "{parentalbum.title}"</h1>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <NavLink to={uplocation}><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up</NavLink>
+                <h1>Add picture to "{parentalbum.title}"</h1>
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <div>
-                    <label htmlFor="path">Path</label>
-                    <input id="path" type="text" value={addpicture.path} readOnly={true} />
-                </div>
-                <div>
-                    <label htmlFor="basename">Base file name</label>
-                    <input id="basename" type="text" value={addpicture.basename} onChange={(event) => onBasenameChange(event.target.value, parentalbum)}/>
-                </div>
-                <div>
-                    <label htmlFor="title">Title</label>
-                    <input id="title" type="text" value={addpicture.title} onChange={(event) => onTitleChange(event.target.value)}/>
-                </div>
-                <div>
-                    <label htmlFor="description">Description</label>
-                    <input id="description" type="text" value={addpicture.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
-                </div>
-                <div>
-                    <label htmlFor="imageUrl">Image URL</label>
-                    <input id="imageUrl" type="text" value={addpicture.imageUrl} onChange={(event) => onImageUrlChange(event.target.value)}/>
-                </div>
-                <div>
-                    <label htmlFor="thumbnailUrl">Thumbnail URL</label>
-                    <input id="thumbnailUrl" type="text" value={addpicture.thumbnailUrl} onChange={(event) => onThumbnailUrlChange(event.target.value)}/>
-                </div>
-                <div>
-                    <button className="btn btn-default" type="button" onClick={() => onUpdate(addpicture.path)}>Add</button>
-                </div>
-                <div>
-                    <button className="btn btn-default" type="button" onClick={() => onCancel(addpicture.path)}>Cancel</button>
+                <div className="container">
+                    <div className="form-group row">
+                        <label htmlFor="path" className="col-form-label col-5">Path</label>
+                        <div className="col-7">
+                            <input id="path" className="form-control" type="text" value={addpicture.path} readOnly={true} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="basename" className="col-form-label col-5">Base file name</label>
+                        <div className="col-7">
+                            <input id="basename" className="form-control" type="text" value={addpicture.basename} onChange={(event) => onBasenameChange(event.target.value, parentalbum)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="title" className="col-form-label col-5">Title</label>
+                        <div className="col-7">
+                            <input id="title" className="form-control" type="text" value={addpicture.title} onChange={(event) => onTitleChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="description" className="col-form-label col-5">Description</label>
+                        <div className="col-7">
+                            <input id="description" className="form-control" type="text" value={addpicture.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="imageUrl" className="col-form-label col-5">Image URL</label>
+                        <div className="col-7">
+                            <input id="imageUrl" className="form-control" type="text" value={addpicture.imageUrl} onChange={(event) => onImageUrlChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="thumbnailUrl">Thumbnail URL</label>
+                        <div className="col-7">
+                            <input id="thumbnailUrl" className="form-control" type="text" value={addpicture.thumbnailUrl} onChange={(event) => onThumbnailUrlChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div>
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onUpdate(addpicture.path)}>Add</button>
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(addpicture.path)}>Cancel</button>
+                    </div>
                 </div>
             </form>
         </div>

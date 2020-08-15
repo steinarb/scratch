@@ -6,10 +6,10 @@ import { LOGOUT_REQUEST } from '../reduxactions';
 function LoginLogoutButton(props) {
     const { loginresult, onLogout } = props;
     if (loginresult.success) {
-        return (<div>Logged in as {loginresult.username} <button className="btn btn-default" onClick={() => onLogout()}>Logout</button></div>);
+        return (<span className="{props.styleName} alert alert-primary" role="alert">Logged in as {loginresult.username} <span className="alert-link" onClick={() => onLogout()}>Logout</span></span>);
     }
 
-    return(<div>Not logged in <NavLink className="btn btn-default" to='/oldalbum/login'>Log in</NavLink></div>);
+    return(<span className="alert alert-primary" role="alert">Not logged in <NavLink className="alert-link" to='/oldalbum/login'>Log in</NavLink></span>);
 }
 
 function mapStateToProps(state) {

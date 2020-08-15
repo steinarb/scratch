@@ -15,7 +15,7 @@ function AddPictureButton(props) {
     const parent = id; // The new picture will have this as a parent
     const addpicture = webcontext + '/addpicture?' + stringify({ parent });
 
-    return(<NavLink className="btn btn-default" to={addpicture} >Add picture</NavLink>);
+    return(<NavLink className="{props.styleName} btn btn-primary" to={addpicture} >Add picture</NavLink>);
 }
 
 function mapStateToProps(state) {

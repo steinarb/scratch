@@ -15,7 +15,7 @@ function AddAlbumButton(props) {
     const parent = id; // The new album will have this as a parent
     const addalbum = webcontext + '/addalbum?' + stringify({ parent });
 
-    return(<NavLink className="btn btn-default" to={addalbum} >Add album</NavLink>);
+    return(<NavLink className="{props.styleName} btn btn-primary" to={addalbum} >Add album</NavLink>);
 }
 
 function mapStateToProps(state) {

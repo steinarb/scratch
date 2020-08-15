@@ -15,7 +15,7 @@ function ModifyButton(props) {
     const { id } = item;
     const modifyitem = webcontext + (item.album ? '/modifyalbum' : '/modifypicture') + '?' + stringify({ id });
 
-    return(<NavLink className="btn btn-default" to={modifyitem} >Modify</NavLink>);
+    return(<NavLink className="{props.styleName} btn btn-primary" to={modifyitem} >Modify</NavLink>);
 }
 
 function mapStateToProps(state) {

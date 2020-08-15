@@ -18,6 +18,7 @@ function ModifyAlbum(props) {
         loginresult,
         modifyalbum,
         albums,
+        uplocation,
         onParentChange,
         onBasenameChange,
         onTitleChange,
@@ -35,35 +36,48 @@ function ModifyAlbum(props) {
 
     return(
         <div>
-            <h1>Modify album</h1>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <NavLink to={uplocation}><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up</NavLink>
+                <h1>Modify album</h1>
+            </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <div>
-                    <label htmlFor="parent">Parent</label>
-                    <select id="parent" value={modifyalbum.parent} onChange={(event) => onParentChange(parseInt(event.target.value, 10), albums)}>
-                        { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="path">Path</label>
-                    <input id="path" type="text" value={modifyalbum.path} readOnly={true} />
-                </div>
-                <div>
-                    <label htmlFor="basename">Base file name</label>
-                    <input id="basename" type="text" value={modifyalbum.basename} onChange={(event) => onBasenameChange(event.target.value, albums.find(a => a.id === modifyalbum.parent))}/>
-                </div>
-                <div>
-                    <label htmlFor="title">Title</label>
-                    <input id="title" type="text" value={modifyalbum.title} onChange={(event) => onTitleChange(event.target.value)}/>
-                </div>
-                <div>
-                    <label htmlFor="description">Description</label>
-                    <input id="description" type="text" value={modifyalbum.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
-                </div>
-                <div>
-                    <button className="btn btn-default" type="button" onClick={() => onUpdate(modifyalbum.path)}>Update</button>
-                </div>
-                <div>
-                    <button className="btn btn-default" type="button" onClick={() => onCancel(modifyalbum.path)}>Cancel</button>
+                <div className="container">
+                    <div className="form-group row">
+                        <label htmlFor="parent" className="col-form-label col-5">Parent</label>
+                        <div className="col-7">
+                            <select id="parent" className="form-control" value={modifyalbum.parent} onChange={(event) => onParentChange(parseInt(event.target.value, 10), albums)}>
+                                { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
+                            </select>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="path" className="col-form-label col-5">Path</label>
+                        <div className="col-7">
+                            <input id="path" className="form-control" type="text" value={modifyalbum.path} readOnly={true} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="basename" className="col-form-label col-5">Base file name</label>
+                        <div className="col-7">
+                            <input id="basename" className="form-control" type="text" value={modifyalbum.basename} onChange={(event) => onBasenameChange(event.target.value, albums.find(a => a.id === modifyalbum.parent))}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="title" className="col-form-label col-5">Title</label>
+                        <div className="col-7">
+                            <input id="title" className="form-control" type="text" value={modifyalbum.title} onChange={(event) => onTitleChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="description" className="col-form-label col-5">Description</label>
+                        <div className="col-7">
+                            <input id="description" className="form-control" type="text" value={modifyalbum.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
+                        </div>
+                    </div>
+                    <div className="container">
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onUpdate(modifyalbum.path)}>Update</button>
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(modifyalbum.path)}>Cancel</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -75,10 +89,14 @@ function mapStateToProps(state) {
     const loginresult = login.loginresult || { success: false };
     const modifyalbum = state.modifyalbum;
     const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifyalbum.id) || [];
+    const albumentries = state.albumentries || {};
+    const originalalbum = albumentries[modifyalbum.id] || {};
+    const uplocation = originalalbum.path || webcontext;
     return {
         loginresult,
         modifyalbum,
         albums,
+        uplocation,
     };
 }
 

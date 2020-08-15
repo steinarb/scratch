@@ -12,7 +12,7 @@ function DeleteButton(props) {
         return null;
     }
 
-    return(<button className="btn btn-default" type="button" onClick={() => onDelete(item, parentpath)}>Delete</button>);
+    return(<button className="{props.styleName} btn btn-default" type="button" onClick={() => onDelete(item, parentpath)}>Delete</button>);
 }
 
 function mapStateToProps(state, ownProps) {

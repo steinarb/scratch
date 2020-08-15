@@ -12,7 +12,7 @@ function DownButton(props) {
         return null;
     }
 
-    return(<button className="btn btn-default" type="button" onClick={() => onMoveDown(item)}>Move down</button>);
+    return(<button type="button" onClick={() => onMoveDown(item)}><span className="oi oi-chevron-bottom" title="chevron top" aria-hidden="true"></span></button>);
 }
 
 function mapStateToProps(state, ownProps) {
