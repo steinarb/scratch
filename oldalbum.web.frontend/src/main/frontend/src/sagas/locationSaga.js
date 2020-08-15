@@ -17,7 +17,7 @@ function* locationChange(action) {
         const { id } = queryParams;
         const albumentries = yield select(findAlbumentries);
         const idInt = parseInt(id, 10);
-        const album = albumentries.get(idInt);
+        const album = albumentries[idInt];
 
         yield put(MODIFY_ALBUM(album || { id: idInt } ));
     }
@@ -27,7 +27,7 @@ function* locationChange(action) {
         const { parent } = queryParams;
         const albumentries = yield select(findAlbumentries);
         const parentId = parseInt(parent, 10);
-        const parentalbum = albumentries.get(parentId);
+        const parentalbum = albumentries[parentId];
         const path = parentalbum.path || '';
         const sort = (parentalbum.childcount || 0) + 1;
         const basename = '';
@@ -42,7 +42,7 @@ function* locationChange(action) {
         const { id } = queryParams;
         const albumentries = yield select(findAlbumentries);
         const idInt = parseInt(id, 10);
-        const picture = albumentries.get(idInt);
+        const picture = albumentries[idInt];
 
         yield put(MODIFY_PICTURE(picture || { id: idInt } ));
     }
@@ -52,7 +52,7 @@ function* locationChange(action) {
         const { parent } = queryParams;
         const albumentries = yield select(findAlbumentries);
         const parentId = parseInt(parent, 10);
-        const parentalbum = albumentries.get(parentId);
+        const parentalbum = albumentries[parentId];
         const path = parentalbum.path || '';
         const sort = (parentalbum.childcount || 0) + 1;
         const basename = '';
