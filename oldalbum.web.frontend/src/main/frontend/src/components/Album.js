@@ -16,14 +16,10 @@ function Album(props) {
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                { parent ? (
+                { parent && (
                     <NavLink to={parent}>
                         <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
                     </NavLink>
-                ) : (
-                    <a href="..">
-                        <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
-                    </a>
                 ) }
                 <h1>{item.title}</h1>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
