@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
+import { Redirect, NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
     LOGIN_REQUEST,
@@ -38,10 +38,9 @@ function Login(props) {
                             <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => onPasswordEndre(e.target.value)}/>
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <div className="offset-xs-3 col-xs-9">
-                            <input className="btn btn-primary" type="submit" value="Login" onClick={() => onSendLogin(username, password)}/>
-                        </div>
+                    <div className="btn-group row right-align-cell">
+                        <input className="btn btn-primary mx-2" type="submit" value="Login" onClick={() => onSendLogin(username, password)}/>
+                        <NavLink className="btn btn-primary mx-2" to={returnpath}>Cancel</NavLink>
                     </div>
                 </form>
             </div>
