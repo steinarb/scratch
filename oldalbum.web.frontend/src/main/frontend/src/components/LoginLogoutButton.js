@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
 import { LOGOUT_REQUEST } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function LoginLogoutButton(props) {
-    const { loginresult, item, onLogout } = props;
+    const { webcontext, loginresult, item, onLogout } = props;
     if (loginresult.success) {
         return (<span className="{props.styleName} alert alert-primary" role="alert">Logged in as {loginresult.username} <span className="alert-link" onClick={() => onLogout()}>Logout</span></span>);
     }
@@ -17,9 +16,11 @@ function LoginLogoutButton(props) {
 }
 
 function mapStateToProps(state) {
+    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     return {
+        webcontext,
         loginresult,
     };
 }

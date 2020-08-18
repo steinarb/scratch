@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { stringify } from 'qs';
 import { DELETE_ITEM } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function DeleteButton(props) {
     const { loginresult, parentpath, children, item, onDelete } = props;

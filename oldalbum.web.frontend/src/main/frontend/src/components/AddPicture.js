@@ -12,10 +12,10 @@ import {
     ADD_PICTURE_UPDATE,
     ADD_PICTURE_CLEAR,
 } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function AddPicture(props) {
     const {
+        webcontext,
         loginresult,
         addpicture,
         albums,
@@ -92,11 +92,13 @@ function AddPicture(props) {
 }
 
 function mapStateToProps(state) {
+    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const addpicture = state.addpicture;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
+        webcontext,
         loginresult,
         addpicture,
         albums,

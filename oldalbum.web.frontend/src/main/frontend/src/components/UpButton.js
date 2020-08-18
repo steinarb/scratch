@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { stringify } from 'qs';
 import { MOVE_ALBUMENTRY_UP } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function UpButton(props) {
     const { loginresult, item, onMoveUp } = props;

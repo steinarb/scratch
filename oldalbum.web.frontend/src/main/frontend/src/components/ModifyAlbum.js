@@ -11,10 +11,10 @@ import {
     MODIFY_ALBUM_UPDATE,
     MODIFY_ALBUM_CLEAR,
 } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function ModifyAlbum(props) {
     const {
+        webcontext,
         loginresult,
         modifyalbum,
         albums,
@@ -85,6 +85,7 @@ function ModifyAlbum(props) {
 }
 
 function mapStateToProps(state) {
+    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const modifyalbum = state.modifyalbum;
@@ -93,6 +94,7 @@ function mapStateToProps(state) {
     const originalalbum = albumentries[modifyalbum.id] || {};
     const uplocation = originalalbum.path || webcontext;
     return {
+        webcontext,
         loginresult,
         modifyalbum,
         albums,
