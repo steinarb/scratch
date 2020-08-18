@@ -12,7 +12,7 @@ function Picture(props) {
 
     return (
         <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <nav className="navbar navbar-light bg-light">
                 <NavLink to={parent}>
                     <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
                 </NavLink>
@@ -23,11 +23,13 @@ function Picture(props) {
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
                         <LoginLogoutButton className="nav-item"/>
-                        <ModifyButton className="nav-item nav-link" item={item} />
-                        <DeleteButton className="nav-item nav-link" item={item} />
                     </div>
                 </div>
             </nav>
+            <div className="btn-group" role="group" aria-label="Modify album">
+                <ModifyButton className="mx-1 my-1" item={item} />
+                <DeleteButton className="mx-1 my-1" item={item} />
+            </div>
             <div>
                 <img src={item.imageUrl} />
                 {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }

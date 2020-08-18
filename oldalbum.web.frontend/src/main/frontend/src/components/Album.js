@@ -15,7 +15,7 @@ function Album(props) {
 
     return (
         <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <nav className="navbar navbar-light bg-light">
                 { parent && (
                     <NavLink to={parent}>
                         <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
@@ -28,13 +28,15 @@ function Album(props) {
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
                         <LoginLogoutButton className="nav-item"/>
-                        <ModifyButton className="nav-item nav-link" item={item} />
-                        <AddAlbumButton className="nav-item nav-link" item={item} />
-                        <AddPictureButton className="nav-item nav-lin" item={item} />
-                        <DeleteButton className="nav-item nav-link" item={item} />
                     </div>
                 </div>
             </nav>
+            <div className="btn-group" role="group" aria-label="Modify album">
+                <ModifyButton className="mx-1 my-1" item={item} />
+                <AddAlbumButton className="mx-1 my-1" item={item} />
+                <AddPictureButton className="mx-1 my-1" item={item} />
+                <DeleteButton className="mx-1 my-1" item={item} />
+            </div>
             {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             { children.sort((a,b) => a.sort - b.sort).map(renderChild) }
         </div>
