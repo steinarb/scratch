@@ -31,7 +31,7 @@ function Picture(props) {
                 <DeleteButton className="mx-1 my-1" item={item} />
             </div>
             <div>
-                <img src={item.imageUrl} />
+                <img className="img-fluid" src={item.imageUrl} />
                 {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             </div>
         </div>
