@@ -73,7 +73,7 @@ function renderChild(child, index) {
     return (
         <div key={index} className="btn btn-block btn-primary left-align-cell">
             <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>
-                <img src={child.thumbnailUrl}/>&nbsp;{title}
+                <img className="img-thumbnail" src={child.thumbnailUrl}/>&nbsp;{title}
             </NavLink>
             <div className="btn-group-vertical">
                 <UpButton item={child} />
