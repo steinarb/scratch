@@ -62,10 +62,10 @@ function renderChild(child, index) {
         return (
             <div key={index} className="btn btn-block btn-primary left-align-cell">
                 <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>Album: {title}</NavLink>
-                <span className="right-align-cell">
+                <div className="btn-group-vertical">
                     <UpButton item={child} />
                     <DownButton item={child} />
-                </span>
+                </div>
             </div>
         );
     }
@@ -75,10 +75,10 @@ function renderChild(child, index) {
             <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>
                 <img src={child.thumbnailUrl}/>&nbsp;{title}
             </NavLink>
-            <span>
+            <div className="btn-group-vertical">
                 <UpButton item={child} />
                 <DownButton item={child} />
-            </span>
+            </div>
         </div>
     );
 }
