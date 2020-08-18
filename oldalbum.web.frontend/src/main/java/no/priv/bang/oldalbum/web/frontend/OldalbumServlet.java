@@ -98,14 +98,14 @@ public class OldalbumServlet extends FrontendServlet {
 
     @Override
     protected void processResource(HttpServletResponse response, HttpServletRequest request, String pathInfo, String resource, String contentType) throws IOException {
+        response.setStatus(SC_OK);
+        response.setContentType(contentType);
         Document html = loadHtmlFile(resource);
         addMetaTagIfNotEmpty(html, "og:url", request.getRequestURL().toString());
         addOpenGraphHeaderElements(html, pathInfo);
         try(ServletOutputStream body = response.getOutputStream()) {
             body.print(html.outerHtml());
         }
-        response.setStatus(SC_OK);
-        response.setContentType(contentType);
     }
 
     void addOpenGraphHeaderElements(Document html, String pathInfo) {
