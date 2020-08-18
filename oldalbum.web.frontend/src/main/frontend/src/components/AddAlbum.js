@@ -10,10 +10,10 @@ import {
     ADD_ALBUM_UPDATE,
     ADD_ALBUM_CLEAR,
 } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function AddAlbum(props) {
     const {
+        webcontext,
         loginresult,
         addalbum,
         albums,
@@ -76,11 +76,13 @@ function AddAlbum(props) {
 }
 
 function mapStateToProps(state, ownProps) {
+    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const addalbum = state.addalbum;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
+        webcontext,
         loginresult,
         addalbum,
         albums,

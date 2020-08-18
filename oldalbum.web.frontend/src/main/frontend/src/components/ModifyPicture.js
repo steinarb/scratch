@@ -13,10 +13,10 @@ import {
     MODIFY_PICTURE_UPDATE,
     MODIFY_PICTURE_CLEAR,
 } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function ModifyPicture(props) {
     const {
+        webcontext,
         loginresult,
         modifypicture,
         albums,
@@ -101,6 +101,7 @@ function ModifyPicture(props) {
 }
 
 function mapStateToProps(state) {
+    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const modifypicture = state.modifypicture;

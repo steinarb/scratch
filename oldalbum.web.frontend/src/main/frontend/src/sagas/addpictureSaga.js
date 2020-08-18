@@ -8,15 +8,16 @@ import {
 import { removeWebcontextFromPath } from '../common';
 import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
-function updateAddedPicture(picture) {
-    const body = removeWebcontextFromPath(stripFieldsNotInAlbumEntryJavaBean(picture));
+function updateAddedPicture(picture, webcontext) {
+    const body = removeWebcontextFromPath(stripFieldsNotInAlbumEntryJavaBean(picture), webcontext);
     return axios.post('/oldalbum/api/addpicture', body);
 }
 
 function* updatePictureAndReceiveRoutes(action) {
     try {
+        const webcontext = yield select(state => state.webcontext);
         const addpicture = yield select(state => state.addpicture);
-        const response = yield call(updateAddedPicture, addpicture);
+        const response = yield call(updateAddedPicture, addpicture, webcontext);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(ALLROUTES_RECEIVE(routes));
     } catch (error) {

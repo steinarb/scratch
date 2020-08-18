@@ -1,12 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { ALLROUTES_RECEIVE } from '../reduxactions';
-import { addWebcontextToPath } from '../common';
 
 // Creates a map from id to array of children
 const childentriesReducer = createReducer({}, {
     [ALLROUTES_RECEIVE]: (state, action) => {
         const children = {};
-        action.payload.map(addWebcontextToPath).forEach(e => addChildToParent(children, e));
+        action.payload.forEach(e => addChildToParent(children, e));
         return children;
     },
 });

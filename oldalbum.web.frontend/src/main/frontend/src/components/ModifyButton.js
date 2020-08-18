@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
 import { LOGOUT_REQUEST } from '../reduxactions';
-import { webcontext } from '../constants';
 
 function ModifyButton(props) {
-    const { loginresult, item } = props;
+    const { webcontext, loginresult, item } = props;
     if (!loginresult.canModifyAlbum) {
         return null;
     }
@@ -19,6 +18,7 @@ function ModifyButton(props) {
 }
 
 function mapStateToProps(state) {
+    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     return {

@@ -15,7 +15,6 @@ import AddPicture from './components/AddPicture';
 class App extends Component {
     render() {
         const { history, allroutes } = this.props;
-        const webcontext = '/oldalbum';
 
         return (
             <Router history={history}>
