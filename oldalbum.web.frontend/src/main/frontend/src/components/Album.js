@@ -27,7 +27,7 @@ function Album(props) {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
-                        <LoginLogoutButton className="nav-item"/>
+                        <LoginLogoutButton className="nav-item" item={item}/>
                     </div>
                 </div>
             </nav>

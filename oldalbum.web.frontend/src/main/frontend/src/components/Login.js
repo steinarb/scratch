@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import { parse } from 'qs';
 import {
     LOGIN_REQUEST,
     USERNAME_MODIFY,
@@ -8,9 +9,11 @@ import {
 } from '../reduxactions';
 
 function Login(props) {
-    const { username, password, loginresult, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
+    const { username, password, loginresult, location, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
+    const queryParams = parse(location.search, { ignoreQueryPrefix: true });
+    const { returnpath } = queryParams;
     if (loginresult.success) {
-        return (<Redirect to="/oldalbum/" />);
+        return (<Redirect to={returnpath} />);
     }
 
     return (
