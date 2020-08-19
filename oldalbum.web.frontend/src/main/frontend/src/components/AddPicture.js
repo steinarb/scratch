@@ -15,7 +15,6 @@ import {
 
 function AddPicture(props) {
     const {
-        webcontext,
         loginresult,
         addpicture,
         albums,
@@ -32,7 +31,7 @@ function AddPicture(props) {
     const { parent } = queryParams;
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
-    const uplocation = parentalbum.path || webcontext;
+    const uplocation = parentalbum.path || '/';
     if (!loginresult.canModifyAlbum) {
         return <Redirect to={uplocation} />;
     }
@@ -92,13 +91,11 @@ function AddPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const addpicture = state.addpicture;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
-        webcontext,
         loginresult,
         addpicture,
         albums,

@@ -5,22 +5,20 @@ import { stringify } from 'qs';
 import { LOGOUT_REQUEST } from '../reduxactions';
 
 function LoginLogoutButton(props) {
-    const { webcontext, loginresult, item, onLogout } = props;
+    const { loginresult, item, onLogout } = props;
     if (loginresult.success) {
         return (<span className="{props.styleName} alert alert-primary" role="alert">Logged in as {loginresult.username} <span className="alert-link" onClick={() => onLogout()}>Logout</span></span>);
     }
 
-    const returnpath = item.path || webcontext;
-    const loginpath = webcontext + '/login?' + stringify({ returnpath });
+    const returnpath = item.path || '/';
+    const loginpath = '/login?' + stringify({ returnpath });
     return(<span className="alert alert-primary" role="alert">Not logged in <NavLink className="alert-link" to={loginpath}>Log in</NavLink></span>);
 }
 
 function mapStateToProps(state) {
-    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     return {
-        webcontext,
         loginresult,
     };
 }

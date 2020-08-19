@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
 
 function AddAlbumButton(props) {
-    const { webcontext, loginresult, item } = props;
+    const { loginresult, item } = props;
     if (!loginresult.canModifyAlbum) {
         return null;
     }
@@ -12,17 +12,15 @@ function AddAlbumButton(props) {
 
     const { id } = item;
     const parent = id; // The new album will have this as a parent
-    const addalbum = webcontext + '/addalbum?' + stringify({ parent });
+    const addalbum = '/addalbum?' + stringify({ parent });
 
     return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={addalbum} >Add album</NavLink>);
 }
 
 function mapStateToProps(state) {
-    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     return {
-        webcontext,
         loginresult,
     };
 }

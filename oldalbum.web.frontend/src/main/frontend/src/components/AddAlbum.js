@@ -13,7 +13,6 @@ import {
 
 function AddAlbum(props) {
     const {
-        webcontext,
         loginresult,
         addalbum,
         albums,
@@ -28,7 +27,7 @@ function AddAlbum(props) {
     const { parent } = queryParams;
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
-    const uplocation = parentalbum.path || webcontext;
+    const uplocation = parentalbum.path || '/';
     if (!loginresult.canModifyAlbum) {
         return <Redirect to={uplocation} />;
     }
@@ -76,13 +75,11 @@ function AddAlbum(props) {
 }
 
 function mapStateToProps(state, ownProps) {
-    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const addalbum = state.addalbum;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
-        webcontext,
         loginresult,
         addalbum,
         albums,

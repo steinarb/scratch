@@ -14,7 +14,6 @@ import {
 
 function ModifyAlbum(props) {
     const {
-        webcontext,
         loginresult,
         modifyalbum,
         albums,
@@ -31,7 +30,7 @@ function ModifyAlbum(props) {
             return <Redirect to={modifyalbum.path} />;
         }
 
-        return <Redirect to={webcontext} />;
+        return <Redirect to="/" />;
     }
 
     return(
@@ -85,16 +84,14 @@ function ModifyAlbum(props) {
 }
 
 function mapStateToProps(state) {
-    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const modifyalbum = state.modifyalbum;
     const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifyalbum.id) || [];
     const albumentries = state.albumentries || {};
     const originalalbum = albumentries[modifyalbum.id] || {};
-    const uplocation = originalalbum.path || webcontext;
+    const uplocation = originalalbum.path || '/';
     return {
-        webcontext,
         loginresult,
         modifyalbum,
         albums,

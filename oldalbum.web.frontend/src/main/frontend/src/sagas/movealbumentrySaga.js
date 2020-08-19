@@ -6,18 +6,16 @@ import {
     ALLROUTES_RECEIVE,
     MOVE_ALBUMENTRY_ERROR,
 } from '../reduxactions';
-import { removeWebcontextFromPath } from '../common';
 import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
-function moveAlbumentryUp(albumentry, webcontext) {
-    const body = removeWebcontextFromPath(stripFieldsNotInAlbumEntryJavaBean(albumentry), webcontext);
+function moveAlbumentryUp(albumentry) {
+    const body = stripFieldsNotInAlbumEntryJavaBean(albumentry);
     return axios.post('/oldalbum/api/movealbumentryup', body);
 }
 
 function* moveAlbumentryUpAndReceiveRoutes(action) {
     try {
-        const webcontext = yield select(state => state.webcontext);
-        const response = yield call(moveAlbumentryUp, action.payload, webcontext);
+        const response = yield call(moveAlbumentryUp, action.payload);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(ALLROUTES_RECEIVE(routes));
     } catch (error) {
@@ -25,15 +23,14 @@ function* moveAlbumentryUpAndReceiveRoutes(action) {
     }
 }
 
-function moveAlbumentryDown(albumentry, webcontext) {
-    const body = removeWebcontextFromPath(stripFieldsNotInAlbumEntryJavaBean(albumentry), webcontext);
+function moveAlbumentryDown(albumentry) {
+    const body = stripFieldsNotInAlbumEntryJavaBean(albumentry);
     return axios.post('/oldalbum/api/movealbumentrydown', body);
 }
 
 function* moveAlbumentryDownAndReceiveRoutes(action) {
     try {
-        const webcontext = yield select(state => state.webcontext);
-        const response = yield call(moveAlbumentryDown, action.payload, webcontext);
+        const response = yield call(moveAlbumentryDown, action.payload);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(ALLROUTES_RECEIVE(routes));
     } catch (error) {

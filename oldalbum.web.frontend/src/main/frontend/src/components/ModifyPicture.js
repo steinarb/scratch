@@ -16,7 +16,6 @@ import {
 
 function ModifyPicture(props) {
     const {
-        webcontext,
         loginresult,
         modifypicture,
         albums,
@@ -35,7 +34,7 @@ function ModifyPicture(props) {
             return <Redirect to={modifypicture.path} />;
         }
 
-        return <Redirect to={webcontext} />;
+        return <Redirect to="/" />;
     }
 
     return(
@@ -101,16 +100,14 @@ function ModifyPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const webcontext = state.webcontext || '';
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const modifypicture = state.modifypicture;
     const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifypicture.id) || [];
     const albumentries = state.albumentries || {};
     const originalalbum = albumentries[modifypicture.id] || {};
-    const uplocation = originalalbum.path || webcontext;
+    const uplocation = originalalbum.path || '/';
     return {
-        webcontext,
         loginresult,
         modifypicture,
         albums,

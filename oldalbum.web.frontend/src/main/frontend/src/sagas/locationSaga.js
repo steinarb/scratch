@@ -12,7 +12,7 @@ function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const { pathname = '', search = '' } = location;
 
-    if (pathname === '/oldalbum/modifyalbum') {
+    if (pathname === '/modifyalbum') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
         const { id } = queryParams;
         const albumentries = yield select(findAlbumentries);
@@ -22,7 +22,7 @@ function* locationChange(action) {
         yield put(MODIFY_ALBUM(album || { id: idInt } ));
     }
 
-    if (pathname === '/oldalbum/addalbum') {
+    if (pathname === '/addalbum') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
         const { parent } = queryParams;
         const albumentries = yield select(findAlbumentries);
@@ -37,7 +37,7 @@ function* locationChange(action) {
         yield put(ADD_ALBUM({ parent: parentId, path, album: true, basename, title, description, sort }));
     }
 
-    if (pathname === '/oldalbum/modifypicture') {
+    if (pathname === '/modifypicture') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
         const { id } = queryParams;
         const albumentries = yield select(findAlbumentries);
@@ -47,7 +47,7 @@ function* locationChange(action) {
         yield put(MODIFY_PICTURE(picture || { id: idInt } ));
     }
 
-    if (pathname === '/oldalbum/addpicture') {
+    if (pathname === '/addpicture') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
         const { parent } = queryParams;
         const albumentries = yield select(findAlbumentries);

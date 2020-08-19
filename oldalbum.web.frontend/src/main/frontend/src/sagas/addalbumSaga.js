@@ -5,11 +5,10 @@ import {
     ALLROUTES_RECEIVE,
     ADD_ALBUM_ERROR,
 } from '../reduxactions';
-import { removeWebcontextFromPath } from '../common';
 import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
-function updateAddedAlbum(album, webcontext) {
-    const body = removeWebcontextFromPath(stripFieldsNotInAlbumEntryJavaBean(album), webcontext);
+function updateAddedAlbum(album) {
+    const body = stripFieldsNotInAlbumEntryJavaBean(album);
     return axios.post('/oldalbum/api/addalbum', body);
 }
 

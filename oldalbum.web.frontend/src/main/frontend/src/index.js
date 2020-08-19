@@ -16,7 +16,7 @@ import {
 } from './reduxactions';
 
 const sagaMiddleware = createSagaMiddleware();
-const history = createBrowserHistory();
+const history = createBrowserHistory({ basename: '/oldalbum' });
 const store = configureStore({
     reducer: createRootReducer(history),
     middleware: [
