@@ -21,11 +21,11 @@ class App extends Component {
                 <div>
                     <div>
                         { allroutes.map((item, index) => <Route exact key={index} path={item.path} component={() => albumOrPicture(item)} />) }
-                        <Route exact key="login" path="/oldalbum/login" component={Login} />
-                        <Route key="modifyalbum" path='/oldalbum/modifyalbum' component={ModifyAlbum} />
-                        <Route key="addalbum" path='/oldalbum/addalbum' component={AddAlbum} />
-                        <Route key="modifypicture" path='/oldalbum/modifypicture' component={ModifyPicture} />
-                        <Route key="addpicture" path='/oldalbum/addpicture' component={AddPicture} />
+                        <Route exact key="login" path="./login" component={Login} />
+                        <Route key="modifyalbum" path='./modifyalbum' component={ModifyAlbum} />
+                        <Route key="addalbum" path='./addalbum' component={AddAlbum} />
+                        <Route key="modifypicture" path='./modifypicture' component={ModifyPicture} />
+                        <Route key="addpicture" path='./addpicture' component={AddPicture} />
                     </div>
                 </div>
             </Router>

@@ -12,7 +12,7 @@ function* receiveRoutes(action) {
         const response = yield call(fetchAllRoutes);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         const webcontext = yield select(state => state.webcontext);
-        const routesWithWebcontext = routes.map(r => addWebcontextToPath(r, webcontext));
+        const routesWithWebcontext = routes.map(r => addWebcontextToPath(r, '.'));
         yield put(ALLROUTES_RECEIVE(routesWithWebcontext));
     } catch (error) {
         yield put(ALLROUTES_ERROR(error));
