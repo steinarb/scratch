@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ALLROUTES_REQUEST, ALLROUTES_RECEIVE, ALLROUTES_ERROR } from '../reduxactions';
 
 function fetchAllRoutes() {
-    return axios.get('/oldalbum/api/allroutes');
+    return axios.get('/api/allroutes');
 }
 
 function* receiveRoutes(action) {

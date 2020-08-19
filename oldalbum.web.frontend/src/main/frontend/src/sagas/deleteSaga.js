@@ -7,7 +7,7 @@ import {
 } from '../reduxactions';
 
 function deleteAlbumItem(item) {
-    return axios.post('/oldalbum/api/deleteentry', item);
+    return axios.post('/api/deleteentry', item);
 }
 
 function* deleteItemAndReceiveRoutes(action) {

@@ -8,11 +8,11 @@ import {
 } from '../reduxactions';
 
 function checkLogin(credentials) {
-    return axios.get('/oldalbum/api/login');
+    return axios.get('/api/login');
 }
 
 function sendLogin(credentials) {
-    return axios.post('/oldalbum/api/login', credentials);
+    return axios.post('/api/login', credentials);
 }
 
 function* receiveCheckLoginResult(action) {

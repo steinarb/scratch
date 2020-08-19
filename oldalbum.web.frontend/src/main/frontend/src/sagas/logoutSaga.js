@@ -7,7 +7,7 @@ import {
 } from '../reduxactions';
 
 function sendLogout(credentials) {
-    return axios.get('/oldalbum/api/logout');
+    return axios.get('/api/logout');
 }
 
 function* receiveLogoutResult(action) {

@@ -5,12 +5,11 @@ import {
     ALLROUTES_RECEIVE,
     ADD_PICTURE_ERROR,
 } from '../reduxactions';
-import { removeWebcontextFromPath } from '../common';
 import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
 function updateAddedPicture(picture, webcontext) {
-    const body = removeWebcontextFromPath(stripFieldsNotInAlbumEntryJavaBean(picture), webcontext);
-    return axios.post('/oldalbum/api/addpicture', body);
+    const body = stripFieldsNotInAlbumEntryJavaBean(picture);
+    return axios.post('/api/addpicture', body);
 }
 
 function* updatePictureAndReceiveRoutes(action) {

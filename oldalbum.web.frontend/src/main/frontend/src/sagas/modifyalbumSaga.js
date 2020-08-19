@@ -9,7 +9,7 @@ import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
 function updateModifiedAlbum(album) {
     const body = stripFieldsNotInAlbumEntryJavaBean(album);
-    return axios.post('/oldalbum/api/modifyalbum', body);
+    return axios.post('/api/modifyalbum', body);
 }
 
 function* updateAlbumAndReceiveRoutes(action) {

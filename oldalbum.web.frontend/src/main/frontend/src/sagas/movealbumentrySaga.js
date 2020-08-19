@@ -10,7 +10,7 @@ import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
 function moveAlbumentryUp(albumentry) {
     const body = stripFieldsNotInAlbumEntryJavaBean(albumentry);
-    return axios.post('/oldalbum/api/movealbumentryup', body);
+    return axios.post('/api/movealbumentryup', body);
 }
 
 function* moveAlbumentryUpAndReceiveRoutes(action) {
@@ -25,7 +25,7 @@ function* moveAlbumentryUpAndReceiveRoutes(action) {
 
 function moveAlbumentryDown(albumentry) {
     const body = stripFieldsNotInAlbumEntryJavaBean(albumentry);
-    return axios.post('/oldalbum/api/movealbumentrydown', body);
+    return axios.post('/api/movealbumentrydown', body);
 }
 
 function* moveAlbumentryDownAndReceiveRoutes(action) {
