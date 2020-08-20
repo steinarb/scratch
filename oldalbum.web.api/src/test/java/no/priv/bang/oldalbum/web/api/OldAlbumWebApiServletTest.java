@@ -23,6 +23,7 @@ import static javax.ws.rs.core.MediaType.*;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
@@ -70,7 +71,7 @@ class OldAlbumWebApiServletTest {
 
     @Test
     void testModifyalbum() throws Exception {
-        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
@@ -85,7 +86,7 @@ class OldAlbumWebApiServletTest {
 
     @Test
     void testAddAlbum() throws Exception {
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, 0);
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
@@ -100,7 +101,7 @@ class OldAlbumWebApiServletTest {
 
     @Test
     void testAddPicture() throws Exception {
-        AlbumEntry pictureToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, 0);
+        AlbumEntry pictureToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
@@ -115,7 +116,7 @@ class OldAlbumWebApiServletTest {
 
     @Test
     void testDeleteEntry() throws Exception {
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 3, 0);
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 3, new Date(), "image/jpeg", 71072, 0);
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice);
@@ -129,8 +130,8 @@ class OldAlbumWebApiServletTest {
 
     @Test
     void testMoveEntryUp() throws Exception {
-        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, 2);
-        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, null, null, 0, 2);
+        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
@@ -146,8 +147,8 @@ class OldAlbumWebApiServletTest {
 
     @Test
     void testMoveEntryDown() throws Exception {
-        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
-        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, 2);
+        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
+        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, null, null, 0, 2);
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));

@@ -17,6 +17,8 @@ package no.priv.bang.oldalbum.services.bean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Date;
+
 import org.junit.jupiter.api.Test;
 
 class AlbumEntryTest {
@@ -33,7 +35,10 @@ class AlbumEntryTest {
         String thumbnailUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif";
         int sort = 1;
         int childcount = 4;
-        AlbumEntry bean = new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, childcount);
+        Date lastmodified = new Date(800275785000L);
+        String contenttype = "image/jpeg";
+        int contentlength = 128186;
+        AlbumEntry bean = new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, childcount);
         assertEquals(id, bean.getId());
         assertEquals(parent, bean.getParent());
         assertEquals(path, bean.getPath());
@@ -44,6 +49,9 @@ class AlbumEntryTest {
         assertEquals(thumbnailUrl, bean.getThumbnailUrl());
         assertEquals(sort, bean.getSort());
         assertEquals(childcount, bean.getChildcount());
+        assertEquals(lastmodified, bean.getLastmodified());
+        assertEquals(contenttype, bean.getContenttype());
+        assertEquals(contentlength, bean.getContentlength());
     }
 
     @Test
@@ -58,6 +66,9 @@ class AlbumEntryTest {
         assertNull(bean.getThumbnailUrl());
         assertEquals(0, bean.getSort());
         assertEquals(0, bean.getChildcount());
+        assertNull(bean.getLastmodified());
+        assertNull(bean.getContenttype());
+        assertEquals(0, bean.getContentlength());
     }
 
 }

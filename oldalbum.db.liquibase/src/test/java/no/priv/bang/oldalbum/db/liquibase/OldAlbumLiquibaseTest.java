@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -41,11 +44,11 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntries(Connection connection) throws Exception {
-        assertAlbumEntry(connection, 1, 0, "/album/", true, "Album", "This is an album", null, null, 1);
-        assertAlbumEntry(connection, 2, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2);
+        assertAlbumEntry(connection, 1, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
+        assertAlbumEntry(connection, 2, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2, new Date(800275785000L), "image/jpeg", 128186);
     }
 
-    private void assertAlbumEntry(Connection connection, int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort) throws Exception {
+    private void assertAlbumEntry(Connection connection, int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
         String sql = "select * from albumentries where albumentry_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
@@ -59,6 +62,9 @@ class OldAlbumLiquibaseTest {
                     assertEquals(imageUrl, result.getString(7));
                     assertEquals(thumbnailUrl, result.getString(8));
                     assertEquals(sort, result.getInt(9));
+                    assertEquals(lastmodified, result.getTimestamp(10) != null ? Date.from(result.getTimestamp(10).toInstant()) : null);
+                    assertEquals(contenttype, result.getString(11));
+                    assertEquals(size, result.getInt(12));
                 } else {
                     fail(String.format("Didn't find albumentry with id=d", id));
                 }
@@ -67,12 +73,12 @@ class OldAlbumLiquibaseTest {
     }
 
     private void addAlbumEntries(Connection connection) throws Exception {
-        addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1);
-        addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2);
+        addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
+        addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2, new Date(800275785000L), "image/jpeg", 128186);
     }
 
-    private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort) throws Exception {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort) values (?, ?, ?, ?, ?, ?, ?, ?)";
+    private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, parent);
             statement.setString(2, path);
@@ -82,6 +88,9 @@ class OldAlbumLiquibaseTest {
             statement.setString(6, imageUrl);
             statement.setString(7, thumbnailUrl);
             statement.setInt(8, sort);
+            statement.setTimestamp(9, lastmodified != null ? Timestamp.from(Instant.ofEpochMilli(lastmodified.getTime())) : null);
+            statement.setString(10, contenttype);
+            statement.setInt(11, size);
             statement.executeUpdate();
         }
     }

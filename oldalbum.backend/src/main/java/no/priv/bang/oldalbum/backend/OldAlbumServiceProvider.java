@@ -15,12 +15,18 @@
  */
 package no.priv.bang.oldalbum.backend;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -32,12 +38,14 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 
 @Component(immediate = true)
 public class OldAlbumServiceProvider implements OldAlbumService {
 
     private LogService logservice;
     private DataSource datasource;
+    private HttpConnectionFactory connectionFactory;
 
     @Reference
     public void setLogService(LogService logservice) {
@@ -59,7 +67,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         List<AlbumEntry> allroutes = new ArrayList<>();
 
         List<AlbumEntry> albums = new ArrayList<>();
-        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort  order by a.localpath";
+        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort, a.lastmodified, a.contenttype, a.contentlength  order by a.localpath";
         try (Connection connection = datasource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet results = statement.executeQuery()) {
@@ -171,7 +179,18 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort) values (?, ?, ?, ?, ?, ?, ?, ?)";
+        Timestamp lastmodified = null;
+        String contenttype = null;
+        int contentlength = 0;
+        if (!addedEntry.isAlbum()) {
+            ImageMetadata metadata = readMetadata(addedEntry.getImageUrl());
+            if (metadata != null && metadata.getStatus() == 200) {
+                lastmodified = Timestamp.from(Instant.ofEpochMilli(metadata.getLastModified().getTime()));
+                contenttype = metadata.getContentType();
+                contentlength = metadata.getContentLength();
+            }
+        }
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String path = addedEntry.getPath();
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -183,6 +202,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(6, addedEntry.getImageUrl());
                 statement.setString(7, addedEntry.getThumbnailUrl());
                 statement.setInt(8, addedEntry.getSort());
+                statement.setTimestamp(9, lastmodified);
+                statement.setString(10, contenttype);
+                statement.setInt(11, contentlength);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -343,9 +365,48 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         String imageUrl = results.getString(7);
         String thumbnailUrl = results.getString(8);
         int sort = results.getInt(9);
+        Timestamp lastmodifiedTimestamp = results.getTimestamp(10);
+        Date lastmodified = lastmodifiedTimestamp != null ? Date.from(lastmodifiedTimestamp.toInstant()) : null;
+        String contentype = results.getString(11);
+        int contentlength = results.getInt(12);
         int columncount = results.getMetaData().getColumnCount();
-        int childcount = columncount > 9 ? results.getInt(10) : 0;
-        return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, childcount);
+        int childcount = columncount > 12 ? results.getInt(13) : 0;
+        return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contentype, contentlength, childcount);
+    }
+
+    public ImageMetadata readMetadata(String imageUrl) {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            try {
+                HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
+                connection.setRequestMethod("GET");
+                int status = connection.getResponseCode();
+                Date lastModified = new Date(connection.getHeaderFieldDate("Last-Modified", 0));
+                String contentType = connection.getContentType();
+                String contentLengthHeader = connection.getHeaderField("Content-Length");
+                int contentLength = contentLengthHeader != null ? Integer.parseInt(contentLengthHeader) : 0;
+                return new ImageMetadata(status, lastModified, contentType, contentLength);
+            } catch (IOException e) {
+                logservice.log(LogService.LOG_WARNING, String.format("Error when reading metadata for %s",  imageUrl), e);
+            }
+        }
+        return null;
+    }
+
+    private HttpConnectionFactory getConnectionFactory() {
+        if (connectionFactory == null) {
+            connectionFactory = new HttpConnectionFactory() {
+
+                    @Override
+                    public HttpURLConnection connect(String url) throws IOException {
+                        return (HttpURLConnection) new URL(url).openConnection();
+                    }
+                };
+        }
+        return connectionFactory;
+    }
+
+    void setConnectionFactory(HttpConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
 }

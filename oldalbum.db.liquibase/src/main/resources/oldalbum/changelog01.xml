@@ -32,6 +32,9 @@
             <column name="imageurl" type="VARCHAR(256)" />
             <column name="thumbnailurl" type="VARCHAR(256)" />
             <column name="sort" type="INTEGER" />
+            <column name="lastmodified" type="TIMESTAMP" />
+            <column name="contenttype" type="VARCHAR(128)" />
+            <column name="contentlength" type="INTEGER" />
         </createTable>
 
         <createIndex indexName="parent_index" tableName="albumentries">

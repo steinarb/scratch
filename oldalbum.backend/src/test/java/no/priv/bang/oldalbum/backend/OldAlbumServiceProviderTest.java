@@ -19,10 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -35,6 +38,7 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumServiceProviderTest {
@@ -179,7 +183,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
@@ -202,7 +206,7 @@ class OldAlbumServiceProviderTest {
         int sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
         int sortValueOfLastItemInDestinationAlbum = allroutes.stream().filter(r -> "/moto/places/hove".equals(r.getPath())).findFirst().get().getSort();
 
-        AlbumEntry movedImage = new AlbumEntry(imageToMove.getId(), destinationAlbum.getId(), "/moto/places/acirc3", false, imageToMove.getTitle(), imageToMove.getDescription(), imageToMove.getImageUrl(), imageToMove.getThumbnailUrl(), imageToMove.getSort(), 0);
+        AlbumEntry movedImage = new AlbumEntry(imageToMove.getId(), destinationAlbum.getId(), "/moto/places/acirc3", false, imageToMove.getTitle(), imageToMove.getDescription(), imageToMove.getImageUrl(), imageToMove.getThumbnailUrl(), imageToMove.getSort(), new Date(), "image/jpeg", 71072, 0);
         allroutes = provider.updateEntry(movedImage);
 
         // Verify that sort values in the original album have been adjusted
@@ -224,7 +228,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        AlbumEntry modifiedAlbum = new AlbumEntry(357, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, 2);
+        AlbumEntry modifiedAlbum = new AlbumEntry(357, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, new Date(), "image/jpeg", 71072, 2);
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
@@ -232,14 +236,14 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testAddEntry() {
+    void testAddEntryWithAlbum() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, 0);
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
@@ -247,6 +251,92 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+    }
+
+    @Test
+    void testAddEntryWithPicture() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane4", false, "Sylane påsken 1995", "Fra Storerikvollen til Nedalshytta i kraftig vind", "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane4.gif", 3, null, null, 0, 0);
+        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
+        assertNotEquals(0, addedAlbum.getId());
+        assertEquals(1, addedAlbum.getParent());
+        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
+        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+        assertNotNull(addedAlbum.getLastmodified());
+        assertNotNull(addedAlbum.getContenttype());
+        assertThat(addedAlbum.getContentlength()).isPositive();
+    }
+
+    @Test
+    void testAddEntryWithPictureWhenPictureIs404() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane5", false, "Sylane påsken 1996", "Ut på ski, alltid blid", "https://www.bang.priv.no/sb/pics/misc/sylane5.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif", 4, null, null, 0, 0);
+        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        assertNotEquals(0, addedAlbum.getId());
+        assertEquals(1, addedAlbum.getParent());
+        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
+        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+        assertNull(addedAlbum.getLastmodified());
+    }
+
+    @Test
+    void testAddEntryWithPictureWhenPictureIs500() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        // Mocked HTTP request
+        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        HttpURLConnection connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(500);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane5", false, "Sylane påsken 1996", "Ut på ski, alltid blid", "https://www.bang.priv.no/sb/pics/misc/sylane5.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif", 4, null, null, 0, 0);
+        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        assertNotEquals(0, addedAlbum.getId());
+        assertEquals(1, addedAlbum.getParent());
+        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
+        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+        assertNull(addedAlbum.getLastmodified());
+    }
+
+    @Test
+    void testAddEntryWithPictureWhenPictureIsFoundButNotAnyMetadata() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane5", false, "Sylane påsken 1996", "Ut på ski, alltid blid", "https://www.bang.priv.no/sb/pics/misc/sylane5.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif", 4, null, null, 0, 0);
+        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        assertNotEquals(0, addedAlbum.getId());
+        assertEquals(1, addedAlbum.getParent());
+        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
+        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+        assertNull(addedAlbum.getLastmodified());
     }
 
     @SuppressWarnings("unchecked")
@@ -259,7 +349,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, 0);
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
@@ -274,7 +364,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, 0);
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, new Date(), "image/jpeg", 71072, 0);
         List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
         assertThat(allroutes.size()).isLessThan(numberOfEntriesBeforeDelete);
         Optional<AlbumEntry> deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
@@ -292,7 +382,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, 0);
+        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, new Date(), "image/jpeg", 71072, 0);
         List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
         assertEquals(numberOfEntriesBeforeDelete, allroutes.size());
         assertEquals(3, logservice.getLogmessages().size());
@@ -342,7 +432,7 @@ class OldAlbumServiceProviderTest {
         provider.activate();
 
         // Try moving an album and failing
-        List<AlbumEntry> allroutes = provider.moveEntryUp(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, 10));
+        List<AlbumEntry> allroutes = provider.moveEntryUp(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, null, null, 0, 10));
         assertEquals(0, allroutes.size());
         assertThat(logservice.getLogmessages().size()).isPositive();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
@@ -391,7 +481,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasourceThrowsException);
         provider.activate();
 
-        List<AlbumEntry> allroutes = provider.moveEntryDown(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, 10));
+        List<AlbumEntry> allroutes = provider.moveEntryDown(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, null, null, 0, 10));
         assertEquals(0, allroutes.size());
         assertThat(logservice.getLogmessages().size()).isPositive();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
@@ -408,7 +498,7 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        AlbumEntry updatedEntry = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, 0);
+        AlbumEntry updatedEntry = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, new Date(), "image/jpeg", 71072, 0);
         int sort = provider.adjustSortValuesWhenMovingToDifferentAlbum(connection, updatedEntry);
         assertEquals(updatedEntry.getSort(), sort);
     }
@@ -471,6 +561,67 @@ class OldAlbumServiceProviderTest {
 
         AlbumEntry entry = provider.getEntry(connection, 0);
         assertNull(entry);
+    }
+
+    @Test
+    void testReadImageMetadata() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        assertEquals(200, metadata.getStatus());
+        assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
+        assertEquals("image/jpeg", metadata.getContentType());
+        assertThat(metadata.getContentLength()).isPositive();
+    }
+
+    @Test
+    void testReadImageMetadataImageNotFound() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
+        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        assertEquals(404, metadata.getStatus());
+        assertEquals(Date.from(Instant.EPOCH), metadata.getLastModified());
+        assertEquals("text/html", metadata.getContentType());
+        assertThat(metadata.getContentLength()).isPositive();
+    }
+
+    @Test
+    void testReadImageMetadataServerNotFound() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
+        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        assertNull(metadata);
+        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages().get(0)).contains("Error when reading metadata");
+    }
+
+    @Test
+    void testReadImageMetadataWithNullImageUrl() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        ImageMetadata metadata = provider.readMetadata(null);
+        assertNull(metadata);
+    }
+
+    @Test
+    void testReadImageMetadataWithEmptyImageUrl() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        ImageMetadata metadata = provider.readMetadata("");
+        assertNull(metadata);
     }
 
 }

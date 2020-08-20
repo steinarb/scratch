@@ -15,6 +15,8 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
+import java.util.Date;
+
 public class AlbumEntry {
 
     private int id;
@@ -26,9 +28,13 @@ public class AlbumEntry {
     private String imageUrl;
     private String thumbnailUrl;
     private int sort;
+    private Date lastmodified;
+    private String contenttype;
+    private int contentlength;
+
     private int childcount;
 
-    public AlbumEntry(int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, int childcount) { // NOSONAR
+    public AlbumEntry(int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int contentlength, int childcount) { // NOSONAR
         this.id = id;
         this.parent = parent;
         this.path = path;
@@ -38,6 +44,9 @@ public class AlbumEntry {
         this.imageUrl = imageUrl;
         this.thumbnailUrl = thumbnailUrl;
         this.sort  = sort;
+        this.lastmodified = lastmodified;
+        this.contenttype = contenttype;
+        this.contentlength = contentlength;
         this.childcount = childcount;
     }
 
@@ -80,6 +89,18 @@ public class AlbumEntry {
 
     public int getSort() {
         return sort;
+    }
+
+    public Date getLastmodified() {
+        return lastmodified;
+    }
+
+    public String getContenttype() {
+        return contenttype;
+    }
+
+    public int getContentlength() {
+        return contentlength;
     }
 
     public int getChildcount() {
