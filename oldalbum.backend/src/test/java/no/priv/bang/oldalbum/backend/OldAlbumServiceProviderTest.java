@@ -35,6 +35,7 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumServiceProviderTest {
@@ -471,6 +472,47 @@ class OldAlbumServiceProviderTest {
 
         AlbumEntry entry = provider.getEntry(connection, 0);
         assertNull(entry);
+    }
+
+    @Test
+    void testReadImageMetadata() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        assertEquals(200, metadata.getStatus());
+        assertThat(metadata.getLastModified()).isPositive();
+        assertEquals("image/jpeg", metadata.getContentType());
+        assertThat(metadata.getContentLength()).isPositive();
+    }
+
+    @Test
+    void testReadImageMetadataImageNotFound() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
+        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        assertEquals(404, metadata.getStatus());
+        assertEquals(0L, metadata.getLastModified());
+        assertEquals("text/html", metadata.getContentType());
+        assertThat(metadata.getContentLength()).isPositive();
+    }
+
+    @Test
+    void testReadImageMetadataServerNotFound() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
+        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        assertNull(metadata);
+        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages().get(0)).contains("Error when reading metadata");
     }
 
 }

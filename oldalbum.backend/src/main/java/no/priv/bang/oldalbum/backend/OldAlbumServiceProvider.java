@@ -15,6 +15,9 @@
  */
 package no.priv.bang.oldalbum.backend;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +35,7 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 
 @Component(immediate = true)
 public class OldAlbumServiceProvider implements OldAlbumService {
@@ -346,6 +350,22 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         int columncount = results.getMetaData().getColumnCount();
         int childcount = columncount > 9 ? results.getInt(10) : 0;
         return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, childcount);
+    }
+
+    public ImageMetadata readMetadata(String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            int status = connection.getResponseCode();
+            long lastModified = connection.getHeaderFieldDate("Last-Modified", 0);
+            String contentType = connection.getContentType();
+            int contentLength = Integer.parseInt(connection.getHeaderField("Content-Length"));
+            return new ImageMetadata(status, lastModified, contentType, contentLength);
+        } catch (IOException e) {
+            logservice.log(LogService.LOG_WARNING, String.format("Error when reading metadata for %s",  imageUrl), e);
+        }
+        return null;
     }
 
 }
