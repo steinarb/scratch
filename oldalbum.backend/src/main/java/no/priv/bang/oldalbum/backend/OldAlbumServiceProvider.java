@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.backend;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
@@ -37,6 +38,11 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
@@ -430,7 +436,20 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 String contentType = connection.getContentType();
                 String contentLengthHeader = connection.getHeaderField("Content-Length");
                 int contentLength = contentLengthHeader != null ? Integer.parseInt(contentLengthHeader) : 0;
-                return new ImageMetadata(status, lastModified, contentType, contentLength);
+                String description = null;
+                try (InputStream body = connection.getInputStream()) {
+                    Metadata metadata = ImageMetadataReader.readMetadata(body);
+                    for (Directory directory : metadata.getDirectories()) {
+                        for (Tag tag : directory.getTags()) {
+                            if ("JPEG Comment".equals(tag.getTagName())) {
+                                description = tag.getDescription().strip();
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return new ImageMetadata(status, lastModified, contentType, contentLength, description);
             } catch (IOException e) {
                 logservice.log(LogService.LOG_WARNING, String.format("Error when reading metadata for %s",  imageUrl), e);
             }

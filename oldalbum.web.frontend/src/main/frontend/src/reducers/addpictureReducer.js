@@ -20,7 +20,7 @@ const addpictureReducer = createReducer({}, {
     [ADD_PICTURE_DESCRIPTION]: (state, action) => ({ ...state, description: action.payload }),
     [ADD_PICTURE_IMAGEURL]: (state, action) => setImageUrlAndSetBasenameIfEmpty(state, action),
     [ADD_PICTURE_THUMBNAILURL]: (state, action) => setThumbnailUrlAndSetBasenameIfEmpty(state, action),
-    [IMAGE_METADATA]: (state, action) => ({ ...state, ...action.payload }),
+    [IMAGE_METADATA]: (state, action) => ({ ...state, ...action.payload, description: state.description || action.payload.description }),
 });
 
 export default addpictureReducer;

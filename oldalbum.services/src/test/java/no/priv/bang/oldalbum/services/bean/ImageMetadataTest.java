@@ -29,11 +29,13 @@ class ImageMetadataTest {
         Date lastModified = new Date();
         String contentType = "image/jpeg";
         int contentLength = 128186;
-        ImageMetadata bean = new ImageMetadata(status, lastModified, contentType, contentLength);
+        String description = "VFR at the arctic circle";
+        ImageMetadata bean = new ImageMetadata(status, lastModified, contentType, contentLength, description);
         assertEquals(status, bean.getStatus());
         assertEquals(lastModified, bean.getLastModified());
         assertEquals(contentType, bean.getContentType());
         assertEquals(contentLength, bean.getContentLength());
+        assertEquals(description, bean.getDescription());
     }
 
     @Test
@@ -43,6 +45,7 @@ class ImageMetadataTest {
         assertNull(bean.getLastModified());
         assertNull(bean.getContentType());
         assertEquals(0, bean.getContentLength());
+        assertNull(bean.getDescription());
     }
 
 }

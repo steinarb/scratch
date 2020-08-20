@@ -237,7 +237,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     void testGetMetadata() throws Exception {
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
-        ImageMetadata mockMetadata = new ImageMetadata(200, new Date(), "image/jpeg", 128000);
+        ImageMetadata mockMetadata = new ImageMetadata(200, new Date(), "image/jpeg", 128000, "Tyrigrava kro en møteplass for motorsyklister");
         when(backendService.readMetadata(anyString())).thenReturn(mockMetadata);
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");

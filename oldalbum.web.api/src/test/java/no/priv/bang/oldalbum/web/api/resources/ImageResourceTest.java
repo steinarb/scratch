@@ -33,7 +33,7 @@ class ImageResourceTest {
     @Test
     void testGetMetadata() {
         OldAlbumService backendService = mock(OldAlbumService.class);
-        ImageMetadata mockMetadata = new ImageMetadata(200, new Date(), "image/jpeg", 128000);
+        ImageMetadata mockMetadata = new ImageMetadata(200, new Date(), "image/jpeg", 128000, "Tyrigrava kro en møteplass for motorsyklister");
         when(backendService.readMetadata(anyString())).thenReturn(mockMetadata);
         ImageResource resource = new ImageResource();
         resource.oldalbum = backendService;

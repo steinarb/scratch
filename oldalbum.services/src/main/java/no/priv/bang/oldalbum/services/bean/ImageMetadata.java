@@ -23,12 +23,14 @@ public class ImageMetadata {
     private Date lastModified;
     private String contentType;
     private int contentLength;
+    private String description;
 
-    public ImageMetadata(int status, Date lastModified, String contentType, int contentLength) {
+    public ImageMetadata(int status, Date lastModified, String contentType, int contentLength, String description) {
         this.status = status;
         this.lastModified = lastModified;
         this.contentType = contentType;
         this.contentLength = contentLength;
+        this.description = description;
     }
 
     public ImageMetadata() {
@@ -49,6 +51,10 @@ public class ImageMetadata {
 
     public int getContentLength() {
         return contentLength;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }

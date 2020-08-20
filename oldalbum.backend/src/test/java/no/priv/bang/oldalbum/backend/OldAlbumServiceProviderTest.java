@@ -580,12 +580,13 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
 
-        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         assertEquals(200, metadata.getStatus());
         assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
         assertEquals("image/jpeg", metadata.getContentType());
         assertThat(metadata.getContentLength()).isPositive();
+        assertThat(metadata.getDescription()).isNotEmpty();
     }
 
     @Test
