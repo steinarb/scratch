@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -513,6 +514,39 @@ class OldAlbumServiceProviderTest {
         assertNull(metadata);
         assertThat(logservice.getLogmessages().size()).isPositive();
         assertThat(logservice.getLogmessages().get(0)).contains("Error when reading metadata");
+    }
+
+    @Test
+    void testDumpImageMetadata() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        List<String> imageUrls = Arrays.asList(
+            "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/places/hove.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc2.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/dirtroad.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/enga1.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/enga2.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/fjell1.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/fjell2.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/hovevfr.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/rv306.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/vfr1.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/vfr2.jpg",
+            "https://www.bang.priv.no/sb/pics/moto/vfr96/wintervfr-ef.jpg"
+                                               );
+        for (String imageUrl : imageUrls) {
+            ImageMetadata metadata = provider.readMetadata(imageUrl);
+            System.out.println(imageUrl);
+            System.out.println(metadata.getLastModified());
+            System.out.println(metadata.getContentLength());
+        }
     }
 
 }
