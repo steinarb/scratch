@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -544,7 +545,7 @@ class OldAlbumServiceProviderTest {
         for (String imageUrl : imageUrls) {
             ImageMetadata metadata = provider.readMetadata(imageUrl);
             System.out.println(imageUrl);
-            System.out.println(metadata.getLastModified());
+            System.out.println(Instant.ofEpochMilli(metadata.getLastModified()));
             System.out.println(metadata.getContentLength());
         }
     }
