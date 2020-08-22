@@ -36,7 +36,14 @@ function ModifyAlbum(props) {
     return(
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <NavLink to={uplocation}><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up</NavLink>
+                <NavLink to={uplocation}>
+                    <div className="container">
+                        <div className="column">
+                            <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
+                            <div className="row">Up</div>
+                        </div>
+                    </div>
+                </NavLink>
                 <h1>Modify album</h1>
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>

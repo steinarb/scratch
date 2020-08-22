@@ -16,7 +16,12 @@ function Picture(props) {
         <div>
             <nav className="navbar navbar-light bg-light">
                 <NavLink to={parent}>
-                    <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
+                    <div className="container">
+                        <div className="column">
+                            <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
+                            <div className="row">Up</div>
+                        </div>
+                    </div>
                 </NavLink>
                 <h1>{title}</h1>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">

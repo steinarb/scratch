@@ -18,7 +18,12 @@ function Album(props) {
             <nav className="navbar navbar-light bg-light">
                 { parent && (
                     <NavLink to={parent}>
-                        <span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Up
+                        <div className="container">
+                            <div className="column">
+                                <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
+                                <div className="row">Up</div>
+                            </div>
+                        </div>
                     </NavLink>
                 ) }
                 <h1>{item.title}</h1>
