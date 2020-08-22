@@ -3,6 +3,8 @@ import { connectRouter } from 'connected-react-router';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
 import childentries from './childentriesReducer';
+import previousentry from './previousentryReducer';
+import nextentry from './nextentryReducer';
 import modifyalbum from './modifyalbumReducer';
 import addalbum from './addalbumReducer';
 import modifypicture from './modifypictureReducer';
@@ -15,6 +17,8 @@ export default (history) => combineReducers({
     allroutes,
     albumentries,
     childentries,
+    previousentry,
+    nextentry,
     modifyalbum,
     addalbum,
     modifypicture,

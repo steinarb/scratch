@@ -7,7 +7,7 @@ import ModifyButton from './ModifyButton';
 import DeleteButton from './DeleteButton';
 
 function Picture(props) {
-    const { item, parent } = props;
+    const { item, parent, previous, next } = props;
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
@@ -33,6 +33,10 @@ function Picture(props) {
                     </div>
                 </div>
             </nav>
+            <div className="btn-toolbar" role="toolbar">
+                {previous && <div className="btn-group"><NavLink className="btn" to={previous.path}><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span></NavLink></div> }
+                {next && <div className="btn-group ml-auto"><NavLink className="btn" to={next.path}><span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span></NavLink></div> }
+            </div>
             <div className="btn-group" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
@@ -46,10 +50,15 @@ function Picture(props) {
 }
 
 function mapStateToProps(state, ownProps) {
-    const parentEntry = state.albumentries[ownProps.item.parent] || {};
+    const { item } = ownProps;
+    const parentEntry = state.albumentries[item.parent] || {};
     const parent = parentEntry.path;
+    const previous = state.previousentry[item.id];
+    const next = state.nextentry[item.id];
     return {
         parent,
+        previous,
+        next,
     };
 }
 

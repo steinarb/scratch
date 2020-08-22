@@ -11,7 +11,7 @@ import UpButton from './UpButton';
 import DownButton from './DownButton';
 
 function Album(props) {
-    const { item, parent, children } = props;
+    const { item, parent, children, previous, next } = props;
 
     return (
         <div>
@@ -36,6 +36,10 @@ function Album(props) {
                     </div>
                 </div>
             </nav>
+            <div className="btn-toolbar" role="toolbar">
+                {previous && <div className="btn-group"><NavLink className="btn" to={previous.path}><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span></NavLink></div> }
+                {next && <div className="btn-group ml-auto"><NavLink className="btn" to={next.path}><span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span></NavLink></div> }
+            </div>
             <div className="btn-group" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <AddAlbumButton className="mx-1 my-1" item={item} />
@@ -53,9 +57,13 @@ function mapStateToProps(state, ownProps) {
     const parentEntry = state.albumentries[item.parent] || {};
     const parent = parentEntry.path;
     const children = state.childentries[item.id] || [];
+    const previous = state.previousentry[item.id];
+    const next = state.nextentry[item.id];
     return {
         parent,
         children,
+        previous,
+        next,
     };
 }
 
