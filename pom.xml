@@ -497,6 +497,25 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <releaseProfiles>release-sign-artifact</releaseProfiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
@@ -610,6 +629,41 @@
             <url>sftp://maven.bang.priv.no/repository</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License version 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Steinar Bang</name>
+            <email>sb@dod.no</email>
+            <url>https://steinar.bang.priv.no/</url>
+            <organization>steinarb-github</organization>
+            <organizationUrl>https://github.com/steinarb</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/steinarb/oldalbum</url>
+        <connection>scm:git:https://github.com/steinarb/oldalbum.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/steinarb/oldalbum/issues</url>
+        <system>Github issue tracker</system>
+    </issueManagement>
+
+    <ciManagement>
+        <url>https://travis-ci.org/steinarb/oldalbum</url>
+        <system>travis-ci</system>
+    </ciManagement>
+
+    <url>http://steinarb.github.io/oldalbum/</url>
 
     <profiles>
         <profile>
