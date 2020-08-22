@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { pictureTitle } from './commonComponentCode';
+import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import DeleteButton from './DeleteButton';
@@ -9,6 +9,8 @@ import DeleteButton from './DeleteButton';
 function Picture(props) {
     const { item, parent } = props;
     const title = pictureTitle(item);
+    const metadata = formatMetadata(item);
+    const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
 
     return (
         <div>
@@ -32,7 +34,7 @@ function Picture(props) {
             </div>
             <div>
                 <img className="img-fluid" src={item.imageUrl} />
-                {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
+                {description && <div className="alert alert-primary" role="alert">{description}</div> }
             </div>
         </div>
     );

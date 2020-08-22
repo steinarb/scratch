@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { pictureTitle } from './commonComponentCode';
+import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
@@ -70,10 +70,15 @@ function renderChild(child, index) {
         );
     }
 
+    const metadata = formatMetadata(child);
     return (
         <div key={index} className="btn btn-block btn-primary left-align-cell">
             <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>
-                <img className="img-thumbnail" src={child.thumbnailUrl}/>&nbsp;{title}
+                <img className="img-thumbnail" src={child.thumbnailUrl}/>
+                <div className="mx-1 container">
+                    <div className="row">{title}</div>
+                    <div className="row text-nowrap">{metadata}</div>
+                </div>
             </NavLink>
             <div className="btn-group-vertical">
                 <UpButton item={child} />
