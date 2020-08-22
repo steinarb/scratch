@@ -18,6 +18,12 @@ And this is the webapp, called "oldalbum", because it is more a way to display e
 
 [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=coverage#.svg]]
 
+*** Release history
+
+| Date                   | Version | Description   |
+|------------------------+---------+---------------|
+| <2020-08-23 Sun 00:29> |   1.0.0 | First release |
+
 ** Installation
 
 *** Installation with test database
