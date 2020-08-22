@@ -18,6 +18,7 @@
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.roleadder.test/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase.test/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase.production/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.backend/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.api/${project.version}/xml/features</repository>
