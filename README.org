@@ -19,13 +19,26 @@ And this is the webapp, called "oldalbum", because it is more a way to display e
 [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=coverage#.svg]]
 
 ** Installation
-Procedure:
- 1. Download and install apache karaf
- 2. From the karaf console, give the following commands:
-    #+BEGIN_EXAMPLE
-      feature:repo-add mvn:no.priv.bang.oldalbum/oldalbum/LATEST/xml/features
-      feature:install oldalbum-with-derby
-    #+END_EXAMPLE
+
+*** Installation with test database
+ Procedure:
+  1. Download and install apache karaf
+  2. From the karaf console, give the following commands:
+     #+BEGIN_EXAMPLE
+       feature:repo-add mvn:no.priv.bang.oldalbum/oldalbum/LATEST/xml/features
+       feature:install oldalbum-with-derby
+     #+END_EXAMPLE
+
+*** Installation with production database
+ Procedure:
+  1. Download and install apache karaf
+  2. From the karaf console, give the following commands:
+     #+BEGIN_EXAMPLE
+       feature:repo-add mvn:no.priv.bang.authservice/authservice/LATEST/xml/features
+       feature:install user-admin-with-productiondb
+       feature:repo-add mvn:no.priv.bang.oldalbum/oldalbum/LATEST/xml/features
+       feature:install oldalbum-with-postgresql-and-provided-authservice
+     #+END_EXAMPLE
 
 ** License
 

@@ -32,4 +32,11 @@
         <feature>oldalbum-web-api</feature>
         <feature>oldalbum-web-frontend</feature>
     </feature>
+    <feature name="oldalbum-with-postgresql-and-provided-authservice" description="oldalbum webapp with postgresql database. Expects authservice to be present" version="${project.version}">
+        <feature>oldalbum-db-production</feature>
+        <feature>oldalbum-backend</feature>
+        <feature>oldalbum-web-security</feature>
+        <feature>oldalbum-web-api</feature>
+        <feature>oldalbum-web-frontend</feature>
+    </feature>
 </features>
