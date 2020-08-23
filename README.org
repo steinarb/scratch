@@ -38,7 +38,15 @@ And this is the webapp, called "oldalbum", because it is more a way to display e
 *** Installation with production database
  Procedure:
   1. Download and install apache karaf
-  2. From the karaf console, give the following commands:
+  2. Create PosgreSQL user karaf, and give "karaf" (without the quotes) as the password (or pick a different password, and change the database password in the karaf config file =etc/org.ops4j.datasource-oldalbum-production.cfg=, note1: this is =etc/= inside karaf note2: the file is created after oldalbum installation, and you will have to restart karaf after changing the config file):
+     #+begin_example
+       /usr/bin/sudo -u postgres createuser karaf --pwprompt
+     #+end_example
+  3. Create a blank PostgreSQL database with user karaf as the owner
+     #+begin_example
+       /usr/bin/sudo -u postgres createdb -O karaf oldalbum
+     #+end_example
+  4. From the karaf console, give the following commands:
      #+BEGIN_EXAMPLE
        feature:repo-add mvn:no.priv.bang.authservice/authservice/LATEST/xml/features
        feature:install user-admin-with-productiondb
