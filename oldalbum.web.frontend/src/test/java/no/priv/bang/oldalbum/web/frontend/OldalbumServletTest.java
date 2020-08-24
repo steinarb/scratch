@@ -74,6 +74,7 @@ public class OldalbumServletTest {
         assertThat(response.getBufferSize()).isPositive();
         assertThat(response.getOutputStreamContent()).contains("og:url");
         assertThat(response.getOutputStreamContent()).contains("og:title");
+        assertThat(response.getOutputStreamContent()).contains("twitter:card");
         assertThat(response.getOutputStreamContent()).contains("twitter:title");
         assertThat(response.getOutputStreamContent()).contains("og:description");
         assertThat(response.getOutputStreamContent()).contains("twitter:description");
@@ -109,6 +110,7 @@ public class OldalbumServletTest {
         assertThat(response.getBufferSize()).isPositive();
         assertThat(response.getOutputStreamContent()).contains("og:url");
         assertThat(response.getOutputStreamContent()).contains("og:title");
+        assertThat(response.getOutputStreamContent()).contains("twitter:card");
         assertThat(response.getOutputStreamContent()).contains("twitter:title");
         assertThat(response.getOutputStreamContent()).contains("og:description");
         assertThat(response.getOutputStreamContent()).contains("twitter:description");
@@ -144,6 +146,7 @@ public class OldalbumServletTest {
         assertThat(response.getBufferSize()).isPositive();
         assertThat(response.getOutputStreamContent()).contains("og:url");
         assertThat(response.getOutputStreamContent()).doesNotContain("og:title");
+        assertThat(response.getOutputStreamContent()).contains("twitter:card");
         assertThat(response.getOutputStreamContent()).doesNotContain("twitter:title");
         assertThat(response.getOutputStreamContent()).doesNotContain("og:description");
         assertThat(response.getOutputStreamContent()).doesNotContain("twitter:description");

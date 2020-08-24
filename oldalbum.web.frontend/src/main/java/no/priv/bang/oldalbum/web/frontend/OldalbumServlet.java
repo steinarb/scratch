@@ -114,6 +114,7 @@ public class OldalbumServlet extends FrontendServlet {
             addMetaTagIfNotEmpty(html, "og:title", entry.getTitle());
             addMetaTagIfNotEmpty(html, "og:description", entry.getDescription());
             addMetaTagIfNotEmpty(html, "og:image", entry.getImageUrl());
+            addMetaTagIfNotEmpty(html, "twitter:card", "summary_large_image");
             addMetaTagIfNotEmpty(html, "twitter:title", entry.getTitle());
             addMetaTagIfNotEmpty(html, "twitter:description", entry.getDescription());
             addMetaTagIfNotEmpty(html, "twitter:image", entry.getImageUrl());
