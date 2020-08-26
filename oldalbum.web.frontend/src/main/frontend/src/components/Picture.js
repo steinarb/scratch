@@ -35,7 +35,7 @@ function Picture(props) {
                     </div>
                 </div>
             </nav>
-            <div className="btn-toolbar" role="toolbar">
+            <div className="btn-toolbar d-lg-none" role="toolbar">
                 <Previous previous={previous} />
                 <Next className="ml-auto" next={next} />
             </div>
