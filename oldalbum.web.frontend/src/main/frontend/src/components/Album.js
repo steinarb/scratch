@@ -9,6 +9,8 @@ import AddPictureButton from './AddPictureButton';
 import DeleteButton from './DeleteButton';
 import UpButton from './UpButton';
 import DownButton from './DownButton';
+import ChevronLeft from './bootstrap/ChevronLeft';
+import ChevronRight from './bootstrap/ChevronRight';
 
 function Album(props) {
     const { item, parent, children, previous, next } = props;
@@ -37,8 +39,8 @@ function Album(props) {
                 </div>
             </nav>
             <div className="btn-toolbar" role="toolbar">
-                {previous && <div className="btn-group"><NavLink className="btn" to={previous.path}><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span></NavLink></div> }
-                {next && <div className="btn-group ml-auto"><NavLink className="btn" to={next.path}><span className="oi oi-chevron-right" title="chevron right" aria-hidden="true"></span></NavLink></div> }
+                {previous && <div className="btn-group"><NavLink className="btn" to={previous.path}><ChevronLeft/></NavLink></div> }
+                {next && <div className="btn-group ml-auto"><NavLink className="btn" to={next.path}><ChevronRight/></NavLink></div> }
             </div>
             <div className="btn-group" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />
