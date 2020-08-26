@@ -5,8 +5,8 @@ import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import DeleteButton from './DeleteButton';
-import ChevronLeft from './bootstrap/ChevronLeft';
-import ChevronRight from './bootstrap/ChevronRight';
+import Previous from './Previous';
+import Next from './Next';
 
 function Picture(props) {
     const { item, parent, previous, next } = props;
@@ -36,8 +36,8 @@ function Picture(props) {
                 </div>
             </nav>
             <div className="btn-toolbar" role="toolbar">
-                {previous && <div className="btn-group"><NavLink className="btn" to={previous.path}><ChevronLeft/></NavLink></div> }
-                {next && <div className="btn-group ml-auto"><NavLink className="btn" to={next.path}><ChevronRight/></NavLink></div> }
+                <Previous previous={previous} />
+                <Next className="ml-auto" next={next} />
             </div>
             <div className="btn-group" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />
