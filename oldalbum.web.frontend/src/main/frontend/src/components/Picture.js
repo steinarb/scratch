@@ -43,10 +43,21 @@ function Picture(props) {
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
             </div>
-            <div>
-                <img className="img-fluid" src={item.imageUrl} />
-                {description && <div className="alert alert-primary" role="alert">{description}</div> }
+            <img className="img-fluid d-lg-none" src={item.imageUrl} />
+            <div className="d-none d-lg-block">
+                <div className="row align-items-center">
+                    <div className="col-auto">
+                        <Previous previous={previous} />
+                    </div>
+                    <div className="col-auto">
+                        <img className="img-fluid" src={item.imageUrl} />
+                    </div>
+                    <div className="col-auto">
+                        <Next className="ml-auto" next={next} />
+                    </div>
+                </div>
             </div>
+            {description && <div className="alert alert-primary" role="alert">{description}</div> }
         </div>
     );
 }
