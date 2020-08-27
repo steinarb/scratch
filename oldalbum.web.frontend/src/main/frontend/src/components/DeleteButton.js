@@ -11,7 +11,7 @@ function DeleteButton(props) {
         return null;
     }
 
-    return(<button className={(props.styleName || '') + ' btn btn-primary'} type="button" onClick={() => onDelete(item, parentpath)}>Delete</button>);
+    return(<button className={(props.className || '') + ' btn btn-primary'} type="button" onClick={() => onDelete(item, parentpath)}>Delete</button>);
 }
 
 function mapStateToProps(state, ownProps) {
