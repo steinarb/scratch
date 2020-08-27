@@ -78,13 +78,13 @@ function AddPicture(props) {
                     <div className="form-group row">
                         <label htmlFor="imageUrl" className="col-form-label col-5">Image URL</label>
                         <div className="col-7">
-                            <input id="imageUrl" className="form-control" type="text" value={addpicture.imageUrl} onChange={(event) => onImageUrlChange(event.target.value)}/>
+                            <input id="imageUrl" className="form-control" type="text" value={addpicture.imageUrl} onChange={(event) => onImageUrlChange(event.target.value, parentalbum)}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Thumbnail URL</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" className="form-control" type="text" value={addpicture.thumbnailUrl} onChange={(event) => onThumbnailUrlChange(event.target.value)}/>
+                            <input id="thumbnailUrl" className="form-control" type="text" value={addpicture.thumbnailUrl} onChange={(event) => onThumbnailUrlChange(event.target.value, parentalbum)}/>
                         </div>
                     </div>
                     <div>
@@ -114,8 +114,8 @@ function mapDispatchToProps(dispatch) {
         onBasenameChange: (basename, parentalbum) => dispatch(ADD_PICTURE_BASENAME({ basename, parentalbum })),
         onTitleChange: (title) => dispatch(ADD_PICTURE_TITLE(title)),
         onDescriptionChange: (description) => dispatch(ADD_PICTURE_DESCRIPTION(description)),
-        onImageUrlChange: (imageUrl) => dispatch(ADD_PICTURE_IMAGEURL(imageUrl)),
-        onThumbnailUrlChange: (thumbnailUrl) => dispatch(ADD_PICTURE_THUMBNAILURL(thumbnailUrl)),
+        onImageUrlChange: (imageUrl, parentalbum) => dispatch(ADD_PICTURE_IMAGEURL({ imageUrl, parentalbum })),
+        onThumbnailUrlChange: (thumbnailUrl, parentalbum) => dispatch(ADD_PICTURE_THUMBNAILURL({ thumbnailUrl, parentalbum })),
         onUpdate: (path) => { dispatch(ADD_PICTURE_UPDATE()); dispatch(push(path)); },
         onCancel: (path) => { dispatch(ADD_PICTURE_CLEAR()); dispatch(push(path)); },
     };
