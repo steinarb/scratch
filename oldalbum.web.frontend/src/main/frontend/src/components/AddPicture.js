@@ -82,7 +82,7 @@ function AddPicture(props) {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="thumbnailUrl">Thumbnail URL</label>
+                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">Thumbnail URL</label>
                         <div className="col-7">
                             <input id="thumbnailUrl" className="form-control" type="text" value={addpicture.thumbnailUrl} onChange={(event) => onThumbnailUrlChange(event.target.value)}/>
                         </div>
