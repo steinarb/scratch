@@ -22,8 +22,8 @@ And this is the webapp, called "oldalbum", because it is more a way to display e
 
 | Date                   | Version | Description                                                                       |
 |------------------------+---------+-----------------------------------------------------------------------------------|
-| <2020-08-23 Sun 00:29> |   1.0.0 | First release                                                                     |
 | <2020-08-26 Wed 23:41> |   1.1.0 | Make page preview work in twitter, show prev/next arrows better on large displays |
+| <2020-08-23 Sun 00:29> |   1.0.0 | First release                                                                     |
 
 ** Installation
 
