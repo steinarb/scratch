@@ -10,6 +10,7 @@ import {
 
 function Login(props) {
     const { username, password, loginresult, location, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
+    const errormessage = loginresult && loginresult.errormessage;
     const queryParams = parse(location.search, { ignoreQueryPrefix: true });
     const { returnpath } = queryParams;
     if (loginresult.success) {
@@ -43,6 +44,7 @@ function Login(props) {
                         <NavLink className="btn btn-primary mx-2" to={returnpath}>Cancel</NavLink>
                     </div>
                 </form>
+                { errormessage && <div className="alert alert-warning">{errormessage}</div> }
             </div>
         </div>
     );
