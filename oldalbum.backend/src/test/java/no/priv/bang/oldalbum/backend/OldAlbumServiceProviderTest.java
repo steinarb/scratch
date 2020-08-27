@@ -26,7 +26,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -36,6 +38,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
+
+import liquibase.Liquibase;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.sdk.resource.MockResourceAccessor;
+import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
@@ -622,6 +630,66 @@ class OldAlbumServiceProviderTest {
 
         ImageMetadata metadata = provider.readMetadata("");
         assertNull(metadata);
+    }
+
+    @Test
+    void testDumpDatabaseSql() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        int allroutesCount = provider.fetchAllRoutes().size();
+        String sql = provider.dumpDatabaseSql();
+        assertThat(sql)
+            .contains("insert into")
+            .hasLineCount(allroutesCount + 2);
+
+        // Create an empty database initialized with the oldalbum schema
+        // Then use liquibase to fill the database with the dumped content
+        DataSource emptybase = createEmptyBase();
+        int rowsBeforeInsert = findAlbumentriesRows(emptybase);
+        assertEquals(0, rowsBeforeInsert);
+        Map<String, String> contentByFileName = new HashMap<>();
+        contentByFileName.put("dumproutes.sql", sql);
+        MockResourceAccessor accessor = new MockResourceAccessor(contentByFileName);
+        try(Connection connection = emptybase.getConnection()) {
+            DatabaseConnection database = new JdbcConnection(connection);
+            Liquibase liquibase = new Liquibase("dumproutes.sql", accessor, database);
+            liquibase.update("");
+        }
+
+        // Check that the empty database now has the same number of rows as the original
+        int rowsInOriginal = findAlbumentriesRows(datasource);
+        int rowsAfterInsert = findAlbumentriesRows(emptybase);
+        assertEquals(rowsInOriginal, rowsAfterInsert);
+    }
+
+    private int findAlbumentriesRows(DataSource ds) throws SQLException {
+        String sql = "select count(albumentry_id) from albumentries";
+        try (Connection connection = ds.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                try (ResultSet results = statement.executeQuery()) {
+                    if (results.next()) {
+                        return results.getInt(1);
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    private DataSource createEmptyBase() throws Exception {
+        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+        Properties properties = new Properties();
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:emptyoldalbum;create=true");
+        DataSource emptyDatasource = derbyDataSourceFactory.createDataSource(properties);
+        try (Connection connection = emptyDatasource.getConnection()) {
+            OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+            oldAlbumLiquibase.createInitialSchema(connection);
+        }
+        return emptyDatasource;
     }
 
 }

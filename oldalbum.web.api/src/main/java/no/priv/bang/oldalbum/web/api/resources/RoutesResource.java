@@ -39,4 +39,11 @@ public class RoutesResource {
         return oldAlbumService.fetchAllRoutes();
     }
 
+    @Path("dumproutessql")
+    @GET
+    @Produces("application/sql")
+    public String dumpSql() {
+        return oldAlbumService.dumpDatabaseSql();
+    }
+
 }

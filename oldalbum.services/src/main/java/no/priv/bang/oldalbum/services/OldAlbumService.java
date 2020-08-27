@@ -39,4 +39,6 @@ public interface OldAlbumService {
 
     List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry);
 
+    String dumpDatabaseSql();
+
 }

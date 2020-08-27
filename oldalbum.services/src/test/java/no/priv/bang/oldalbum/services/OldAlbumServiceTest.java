@@ -53,6 +53,8 @@ class OldAlbumServiceTest {
         assertEquals(0, updatedRoutesOnEntryMovedUp.size());
         List<AlbumEntry> updatedRoutesOnEntryMovedDown = service.moveEntryDown(movedEntry);
         assertEquals(0, updatedRoutesOnEntryMovedDown.size());
+        String dumpedSql = service.dumpDatabaseSql();
+        assertNull(dumpedSql);
     }
 
 }

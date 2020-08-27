@@ -25,6 +25,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -262,6 +264,40 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return fetchAllRoutes();
     }
 
+    @Override
+    public String dumpDatabaseSql() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
+        StringBuilder builder = new StringBuilder();
+        builder.append("--liquibase formatted sql\n");
+        builder.append("--changeset sb:saved_albumentries\n");
+        String sql = "select * from albumentries order by albumentry_id";
+        try (Connection connection = datasource.getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                try (ResultSet results = statement.executeQuery(sql)) {
+                    while(results.next()) {
+                        int id = results.getInt(1);
+                        int parent = results.getInt(2);
+                        String path = quoteStringButNotNull(results.getString(3));
+                        boolean album = results.getBoolean(4);
+                        String title = quoteStringButNotNull(results.getString(5));
+                        String description = quoteStringButNotNull(results.getString(6));
+                        String imageUrl = quoteStringButNotNull(results.getString(7));
+                        String thumbnailUrl = quoteStringButNotNull(results.getString(8));
+                        int sort = results.getInt(9);
+                        Timestamp lastModifiedTimestamp = results.getTimestamp(10);
+                        String lastModified = lastModifiedTimestamp != null ? quoteStringButNotNull(formatter.format(lastModifiedTimestamp.toInstant())) : "null";
+                        String contentType = quoteStringButNotNull(results.getString(11));
+                        int contentLength = results.getInt(12);
+                        builder.append(String.format("insert into albumentries (albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (%d, %d, %s, %b, %s, %s, %s, %s, %d, %s, %s, %d);", id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastModified, contentType, contentLength)).append("\n");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logservice.log(LogService.LOG_ERROR, "Failed to find the list of paths the app can be entered in", e);
+        }
+        return builder.toString();
+    }
+
     int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) throws SQLException {
         AlbumEntry entryBeforeUpdate = getEntry(connection, modifiedEntry.getId());
         int sort = modifiedEntry.getSort();
@@ -330,6 +366,17 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
         }
         return null;
+    }
+
+    private String quoteStringButNotNull(String string) {
+        if (string != null) {
+            StringBuilder builder = new StringBuilder(string.length() + 10);
+            builder.append("'");
+            builder.append(string.replace("'", "''"));
+            builder.append("'");
+            return builder.toString();
+        }
+        return string;
     }
 
     private void adjustSortValuesAfterEntryIsRemoved(Connection connection, int parentOfRemovedEntry, int sortOfRemovedEntry) throws SQLException {

@@ -17,7 +17,14 @@ package no.priv.bang.oldalbum.web.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -32,6 +39,7 @@ import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 class RoutesResourceTest {
     final static ObjectMapper mapper = new ObjectMapper();
     private static List<AlbumEntry> allroutes;
+    static String dumpedroutes = loadClasspathResourceIntoString("dumproutes.sql");
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
@@ -46,6 +54,30 @@ class RoutesResourceTest {
         resource.oldAlbumService = backendService;
         List<AlbumEntry> routes = resource.allroutes();
         assertEquals(21, routes.size());
+    }
+
+    @Test
+    void testDumpSql() {
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.dumpDatabaseSql()).thenReturn(dumpedroutes);
+        RoutesResource resource = new RoutesResource();
+        resource.oldAlbumService = backendService;
+        String sql = resource.dumpSql();
+        assertThat(sql).contains("--liquibase formatted sql");
+    }
+
+    private static String loadClasspathResourceIntoString(String resource) {
+        InputStream resourceStream = RoutesResourceTest.class.getClassLoader().getResourceAsStream(resource);
+        StringBuilder builder = new StringBuilder();
+        try(Reader reader = new BufferedReader(new InputStreamReader(resourceStream, StandardCharsets.UTF_8))) {
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                builder.append((char) c);
+            }
+        } catch (IOException e) {
+            return "";
+        }
+        return builder.toString();
     }
 
 }

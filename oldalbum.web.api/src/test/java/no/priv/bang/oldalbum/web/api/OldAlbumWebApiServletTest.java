@@ -21,6 +21,12 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static javax.ws.rs.core.MediaType.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -49,6 +55,7 @@ import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 class OldAlbumWebApiServletTest {
     final static ObjectMapper mapper = new ObjectMapper();
     private static List<AlbumEntry> allroutes;
+    static String dumpedroutes = loadClasspathResourceIntoString("dumproutes.sql");
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
@@ -67,6 +74,21 @@ class OldAlbumWebApiServletTest {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
         assertThat(routes.size()).isPositive();
+    }
+
+    @Test
+    void testDumpRoutesSql() throws Exception {
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.dumpDatabaseSql()).thenReturn(dumpedroutes);
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice);
+        HttpServletRequest request = buildGetUrl("/dumproutessql");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals("application/sql", response.getContentType());
+        String sql = response.getOutputStreamContent();
+        assertThat(sql).contains("--liquibase formatted sql");
     }
 
     @Test
@@ -213,6 +235,20 @@ class OldAlbumWebApiServletTest {
     private byte[] getBinaryContent(MockHttpServletResponse response) throws Exception {
         MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
         return outputstream.getBinaryContent();
+    }
+
+    private static String loadClasspathResourceIntoString(String resource) {
+        InputStream resourceStream = OldAlbumWebApiServletTest.class.getClassLoader().getResourceAsStream(resource);
+        StringBuilder builder = new StringBuilder();
+        try(Reader reader = new BufferedReader(new InputStreamReader(resourceStream, StandardCharsets.UTF_8))) {
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                builder.append((char) c);
+            }
+        } catch (IOException e) {
+            return "";
+        }
+        return builder.toString();
     }
 
 }
