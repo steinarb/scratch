@@ -11,8 +11,8 @@ import {
 function Login(props) {
     const { username, password, loginresult, location, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
     const errormessage = loginresult && loginresult.errormessage;
-    const queryParams = parse(location.search, { ignoreQueryPrefix: true });
-    const { returnpath } = queryParams;
+    const queryParams = (location.search && parse(location.search, { ignoreQueryPrefix: true })) || {};
+    const { returnpath = '/' } = queryParams;
     if (loginresult.success) {
         return (<Redirect to={returnpath} />);
     }
