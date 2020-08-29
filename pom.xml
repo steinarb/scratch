@@ -32,6 +32,7 @@
         <module>oldalbum.web.security</module>
         <module>oldalbum.web.api</module>
         <module>oldalbum.web.frontend</module>
+        <module>oldalbum.db.liquibase.urlinit</module>
         <module>oldalbum.db.liquibase.production</module>
         <module>jacoco-coverage-report</module>
     </modules>

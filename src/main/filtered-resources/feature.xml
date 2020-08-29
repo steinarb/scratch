@@ -19,12 +19,22 @@
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase.test/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase.production/${project.version}/xml/features</repository>
+    <repository>mvn:no.priv.bang.oldalbum/oldalbum.db.liquibase.urlinit/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.backend/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.security/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.api/${project.version}/xml/features</repository>
     <repository>mvn:no.priv.bang.oldalbum/oldalbum.web.frontend/${project.version}/xml/features</repository>
     <feature name="oldalbum-with-derby" description="oldalbum webapp with derby database" version="${project.version}">
         <feature>oldalbum-db-test</feature>
+        <feature>oldalbum-backend</feature>
+        <feature>oldalbum-web-security</feature>
+        <feature>user-admin-with-testdb</feature>
+        <feature>oldalbum-roleadder-test</feature>
+        <feature>oldalbum-web-api</feature>
+        <feature>oldalbum-web-frontend</feature>
+    </feature>
+    <feature name="oldalbum-with-memory-db-with-url-init" description="oldalbum webapp with in-memory database filled with data fetched from URL" version="${project.version}">
+        <feature>oldalbum-db-urlinit</feature>
         <feature>oldalbum-backend</feature>
         <feature>oldalbum-web-security</feature>
         <feature>user-admin-with-testdb</feature>
