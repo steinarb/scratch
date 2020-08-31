@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -644,7 +645,7 @@ class OldAlbumServiceProviderTest {
         String sql = provider.dumpDatabaseSql();
         assertThat(sql)
             .contains("insert into")
-            .hasLineCount(allroutesCount + 2);
+            .hasLineCount(allroutesCount + 3);
 
         // Create an empty database initialized with the oldalbum schema
         // Then use liquibase to fill the database with the dumped content
@@ -664,6 +665,14 @@ class OldAlbumServiceProviderTest {
         int rowsInOriginal = findAlbumentriesRows(datasource);
         int rowsAfterInsert = findAlbumentriesRows(emptybase);
         assertEquals(rowsInOriginal, rowsAfterInsert);
+
+        // Try inserting a row to verify that the id autoincrement doesn't
+        // create duplicated
+        try(Connection connection = emptybase.getConnection()) {
+            addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
+        }
+        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase);
+        assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
     }
 
     private int findAlbumentriesRows(DataSource ds) throws SQLException {
@@ -690,6 +699,24 @@ class OldAlbumServiceProviderTest {
             oldAlbumLiquibase.createInitialSchema(connection);
         }
         return emptyDatasource;
+    }
+
+    private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, parent);
+            statement.setString(2, path);
+            statement.setBoolean(3, album);
+            statement.setString(4, title);
+            statement.setString(5, description);
+            statement.setString(6, imageUrl);
+            statement.setString(7, thumbnailUrl);
+            statement.setInt(8, sort);
+            statement.setTimestamp(9, lastmodified != null ? Timestamp.from(Instant.ofEpochMilli(lastmodified.getTime())) : null);
+            statement.setString(10, contenttype);
+            statement.setInt(11, size);
+            statement.executeUpdate();
+        }
     }
 
 }
