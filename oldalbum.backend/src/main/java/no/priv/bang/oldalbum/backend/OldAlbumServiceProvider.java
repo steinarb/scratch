@@ -291,6 +291,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                         builder.append(String.format("insert into albumentries (albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (%d, %d, %s, %b, %s, %s, %s, %s, %d, %s, %s, %d);", id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastModified, contentType, contentLength)).append("\n");
                     }
                 }
+                try (ResultSet results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
+                    while(results.next()) {
+                        int lastIdInDump = results.getInt(1);
+                        builder.append(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d", lastIdInDump + 1)).append("\n");
+                    }
+                }
             }
         } catch (SQLException e) {
             logservice.log(LogService.LOG_ERROR, "Failed to find the list of paths the app can be entered in", e);
