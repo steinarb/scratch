@@ -1,14 +1,23 @@
 * Oldalbum
 
-This is an application to display old image archives in a more attractive and modern way.
+If you have some old image archives from the web's baby years in the 90-ies and would like to link to the images from social media and have the linked images show up nicely, then this is the application you have waited for.
 
-I have some old albums from the 90ies that I occasionally would like to link to.  Since the images lack [[https://ogp.me][Open Graph]] or [[https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards][twitter card]] tags, linking to the images from social media doesn't look to hot.
+The application can be run in two ways:
+ 1. With a PostgreSQL database
+ 2. With an in-memory derby database that is provisioned from a file loaded from an URL (you need a web server that can serve the file)
 
-I first thought about changing the perl script that generates the albums, to add a wrapper to the main jpeg, with the OpenGraph headers.
+The application doesn't store the images.  You need to let the original image archive to keep running.  The application just points into the old image archive and serve up the images with open graph and twitter card meta tags added.
 
-But then the thought struck me: I can just leave the old JPEGs where they are and create a completely separate webapp that provides a navigation and metadata framework and just uses an <img> tag to display the images from the location where they are today.
+The images are served up in a bootstrap styled, responsive layout, and should appear nicely on both mobile devices and larger screens.
 
-And this is the webapp, called "oldalbum", because it is more a way to display existing old albums than yet another album application
+** The reason this application exists
+ The idea for the application comes from that I have some old albums from the 90ies that I occasionally would like to link to.  Since the images lack [[https://ogp.me][Open Graph]] or [[https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards][twitter card]] tags, linking to the images from social media doesn't look to hot.
+
+ I first thought about changing the perl script that generates the albums, to add a wrapper to the main jpeg, with the OpenGraph headers.
+
+ But then the thought struck me: I could just leave the old JPEGs where they are and create a completely separate webapp that provides a navigation and metadata framework and just uses an <img> tag to display the images from the location where they are today.
+
+ And this is the webapp, called "oldalbum", because it is more a way to display existing old albums than yet another album application
 
 ** Status
 
