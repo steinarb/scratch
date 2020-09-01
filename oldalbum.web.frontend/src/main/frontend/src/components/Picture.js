@@ -45,7 +45,7 @@ function Picture(props) {
             </div>
             <img className="img-fluid d-lg-none" src={item.imageUrl} />
             <div className="d-none d-lg-block">
-                <div className="row align-items-center">
+                <div className="row align-items-center d-flex justify-content-center">
                     <div className="col-auto">
                         <Previous previous={previous} />
                     </div>
@@ -57,7 +57,7 @@ function Picture(props) {
                     </div>
                 </div>
             </div>
-            {description && <div className="alert alert-primary" role="alert">{description}</div> }
+            {description && <div className="alert alert-primary d-flex justify-content-center" role="alert">{description}</div> }
         </div>
     );
 }
