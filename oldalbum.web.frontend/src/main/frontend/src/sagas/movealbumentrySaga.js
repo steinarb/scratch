@@ -2,7 +2,9 @@ import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     MOVE_ALBUMENTRY_UP,
+    MOVE_ALBUMENTRY_LEFT,
     MOVE_ALBUMENTRY_DOWN,
+    MOVE_ALBUMENTRY_RIGHT,
     ALLROUTES_RECEIVE,
     MOVE_ALBUMENTRY_ERROR,
 } from '../reduxactions';
@@ -40,5 +42,7 @@ function* moveAlbumentryDownAndReceiveRoutes(action) {
 
 export default function* allroutesSaga() {
     yield takeLatest(MOVE_ALBUMENTRY_UP, moveAlbumentryUpAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_LEFT, moveAlbumentryUpAndReceiveRoutes);
     yield takeLatest(MOVE_ALBUMENTRY_DOWN, moveAlbumentryDownAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_RIGHT, moveAlbumentryDownAndReceiveRoutes);
 }

@@ -51,4 +51,6 @@ export const DELETE_ITEM = createAction('DELETE_ITEM');
 export const DELETE_ITEM_ERROR = createAction('DELETE_ITEM_ERROR');
 export const MOVE_ALBUMENTRY_UP = createAction('MOVE_ALBUMENTRY_UP');
 export const MOVE_ALBUMENTRY_DOWN = createAction('MOVE_ALBUMENTRY_DOWN');
+export const MOVE_ALBUMENTRY_LEFT = createAction('MOVE_ALBUMENTRY_LEFT');
+export const MOVE_ALBUMENTRY_RIGHT = createAction('MOVE_ALBUMENTRY_RIGHT');
 export const MOVE_ALBUMENTRY_ERROR = createAction('MOVE_ALBUMENTRY_ERROR');

@@ -48,17 +48,19 @@ function Album(props) {
                 <DeleteButton className="mx-1 my-1" item={item} />
             </div>
             {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
-            { children.sort((a,b) => a.sort - b.sort).map(renderChild) }
+            <div className="row">
+                { children.sort((a,b) => a.sort - b.sort).map(renderChild) }
+            </div>
         </div>
     );
 }
 
 function renderChild(child, index) {
     if (child.album) {
-        return <AlbumEntryOfTypeAlbum key={index} entry={child} />;
+        return <AlbumEntryOfTypeAlbum className="col-2-sm mx-1 my-1" key={index} entry={child} />;
     }
 
-    return <AlbumEntryOfTypePicture key={index} entry={child} />;
+    return <AlbumEntryOfTypePicture className="col-2-sm mx-1 my-1" key={index} entry={child} />;
 }
 
 function mapStateToProps(state, ownProps) {
