@@ -1,16 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
 import AddPictureButton from './AddPictureButton';
 import DeleteButton from './DeleteButton';
-import UpButton from './UpButton';
-import DownButton from './DownButton';
 import Previous from './Previous';
 import Next from './Next';
+import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
+import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
 function Album(props) {
     const { item, parent, children, previous, next } = props;
@@ -54,6 +53,14 @@ function Album(props) {
     );
 }
 
+function renderChild(child, index) {
+    if (child.album) {
+        return <AlbumEntryOfTypeAlbum key={index} entry={child} />;
+    }
+
+    return <AlbumEntryOfTypePicture key={index} entry={child} />;
+}
+
 function mapStateToProps(state, ownProps) {
     const { item } = ownProps;
     const parentEntry = state.albumentries[item.parent] || {};
@@ -70,35 +77,3 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default connect(mapStateToProps)(Album);
-
-function renderChild(child, index) {
-    const title = pictureTitle(child);
-    if (child.album) {
-        return (
-            <div key={index} className="btn btn-block btn-primary left-align-cell">
-                <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>Album: {title}</NavLink>
-                <div className="btn-group-vertical">
-                    <UpButton item={child} />
-                    <DownButton item={child} />
-                </div>
-            </div>
-        );
-    }
-
-    const metadata = formatMetadata(child);
-    return (
-        <div key={index} className="btn btn-block btn-primary left-align-cell">
-            <NavLink className="btn btn-block btn-primary left-align-cell" to={child.path}>
-                <img className="img-thumbnail" src={child.thumbnailUrl}/>
-                <div className="mx-1 container">
-                    <div className="row">{title}</div>
-                    <div className="row text-nowrap">{metadata}</div>
-                </div>
-            </NavLink>
-            <div className="btn-group-vertical">
-                <UpButton item={child} />
-                <DownButton item={child} />
-            </div>
-        </div>
-    );
-}
