@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { pictureTitle } from './commonComponentCode';
+import { pictureTitle, viewSize } from './commonComponentCode';
 import UpButton from './UpButton';
 import LeftButton from './LeftButton';
 import DownButton from './DownButton';
@@ -9,8 +9,11 @@ import RightButton from './RightButton';
 function AlbumEntryOfTypeAlbum(props) {
     const { key, entry, className='' } = props;
     const title = pictureTitle(entry);
+    const viewportSize = viewSize();
+    const setWidth = (viewportSize === 'sm' || viewportSize === 'xs') ? ' w-100' : '';
+
     return (
-        <div key={key} className={className}>
+        <div key={key} className={className + setWidth}>
             <div className="d-sm-none">
                 <div className="btn btn-primary d-flex">
                     <NavLink className="btn-primary mr-auto text-left" to={entry.path}>Album: {title}</NavLink>
