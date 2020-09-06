@@ -20,3 +20,7 @@ export function formatMetadata(item) {
     }
     return lastmodified + imageType + imagesize;
 }
+
+export function viewSize() {
+    return $('#sizer').find('div:visible').data('size');
+}
