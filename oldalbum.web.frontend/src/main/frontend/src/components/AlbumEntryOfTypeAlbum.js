@@ -13,7 +13,8 @@ function AlbumEntryOfTypeAlbum(props) {
     const title = pictureTitle(entry);
     const viewportSize = viewSize();
     const setWidth = (viewportSize === 'sm' || viewportSize === 'xs') ? ' w-100' : '';
-    const childrenWithThumbnails = findChildrenThumbnails(entry, children, childentries).slice(0, 2);
+    const noOfThumbnails = title.length > 29 ? 3 : 2;
+    const childrenWithThumbnails = findChildrenThumbnails(entry, children, childentries).slice(0, noOfThumbnails);
 
     return (
         <div key={key} className={className + setWidth}>
