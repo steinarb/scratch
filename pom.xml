@@ -35,6 +35,7 @@
         <module>oldalbum.db.liquibase.urlinit</module>
         <module>oldalbum.db.liquibase.production</module>
         <module>jacoco-coverage-report</module>
+        <module>docker</module>
     </modules>
 
     <properties>
