@@ -65,6 +65,25 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
        feature:install oldalbum-with-postgresql-and-provided-authservice
      #+END_EXAMPLE
 
+*** Installation with in-memory database initialized from URL
+
+Procedure:
+ 1. Set the environment variable DATABASE_CONTENT_URL pointing to the raw content of a [[https://gist.github.com/steinarb/dba5f579774d04e69f3073d029622027][github gist containing a liquibase changeset setting up just an empty root album]] :
+    #+begin_example
+      export DATABASE_CONTENT_URL=https://git.io/JUnF4
+    #+end_example
+ 2. Start karaf from the shell where you've set the DATABASE_CONTENT_URL environment variable
+ 3. Install the oldalbum application :
+    #+begin_example
+      feature:repo-add mvn:no.priv.bang.oldalbum/oldalbum/LATEST/xml/features
+      feature:install oldalbum-with-memory-db-with-url-init
+    #+end_example
+ 4. Visit http://localhost:8181/oldalbum in a web browser:
+    1. Log in with username "admin" (without the quotes) and password "admin" (also without the quotes)
+    2. Add the albums and images you want to display
+ 5. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumpsql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
+ 6. Set the environment variable DATABASE_CONTENT_URL to the raw content of your github gist in the shell where you'll start the karaf hosting your production oldalbum instance
+
 ** License
 
 This software is licensed under Apache Public License v 2.0.
