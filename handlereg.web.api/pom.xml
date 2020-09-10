@@ -109,11 +109,6 @@
             <artifactId>service-mocks</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.servlet</groupId>
             <artifactId>servlet.jersey</artifactId>
         </dependency>
