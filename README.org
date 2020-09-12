@@ -84,6 +84,27 @@ Procedure:
  5. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumpsql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
  6. Set the environment variable DATABASE_CONTENT_URL to the raw content of your github gist in the shell where you'll start the karaf hosting your production oldalbum instance
 
+*** Installation using docker image
+
+Procedure:
+ 1. Pull the latest version of the image from docker hub
+    #+begin_example
+      docker pull steinarb/oldalbum:latest
+    #+end_example
+    (/Note/! The image provisions the latest released version of oldalbum from maven central on startup, so there is no need to get a new version of the image to get a new oldalbum release. A stop and start of the image will be sufficient)
+ 2. Start the docker image with a minimal database that only contains the top album
+    #+begin_example
+      docker run -p 8101:8101 -p 8181:8181  -e "DATABASE_CONTENT_URL=https://git.io/JUnF4" -d steinarb/oldalbum:latest
+    #+end_example
+ 3. Visit http://localhost:8181/oldalbum in a web browser:
+    1. Log in with username "admin" (without the quotes) and password "admin" (also without the quotes)
+    2. Add the albums and images you want to display
+ 4. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumpsql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
+ 5. Stop the image and restart it, this time with a DATABASE_CONTENT_URL pointing to a web server serving up the dumped file (as e.g. with this github gist):
+    #+begin_example
+      docker run -p 8101:8101 -p 8181:8181  -e "DATABASE_CONTENT_URL=https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql" -d steinarb/oldalbum:latest
+    #+end_example
+
 ** License
 
 This software is licensed under Apache Public License v 2.0.
