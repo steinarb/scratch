@@ -98,18 +98,25 @@ public class OldalbumServlet extends FrontendServlet {
 
     @Override
     protected void processResource(HttpServletResponse response, HttpServletRequest request, String pathInfo, String resource, String contentType) throws IOException {
+        AlbumEntry entry = oldalbum.getAlbumEntryFromPath(pathInfo);
         response.setStatus(SC_OK);
         response.setContentType(contentType);
+        setLastModifiedHeader(response, entry);
         Document html = loadHtmlFile(resource);
         addMetaTagIfNotEmpty(html, "og:url", request.getRequestURL().toString());
-        addOpenGraphHeaderElements(html, pathInfo);
+        addOpenGraphHeaderElements(html, entry);
         try(ServletOutputStream body = response.getOutputStream()) {
             body.print(html.outerHtml());
         }
     }
 
-    void addOpenGraphHeaderElements(Document html, String pathInfo) {
-        AlbumEntry entry = oldalbum.getAlbumEntryFromPath(pathInfo);
+    private void setLastModifiedHeader(HttpServletResponse response, AlbumEntry entry) {
+        if (entry != null && entry.getLastmodified() != null) {
+            response.setDateHeader("Last-Modified", entry.getLastmodified().toInstant().toEpochMilli());
+        }
+    }
+
+    void addOpenGraphHeaderElements(Document html, AlbumEntry entry) {
         if (entry != null) {
             addMetaTagIfNotEmpty(html, "og:title", entry.getTitle());
             addMetaTagIfNotEmpty(html, "og:description", entry.getDescription());
