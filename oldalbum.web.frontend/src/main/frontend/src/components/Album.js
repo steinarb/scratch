@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { Helmet } from "react-helmet";
+import { pictureTitle } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
@@ -13,9 +15,14 @@ import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
 function Album(props) {
     const { item, parent, children, previous, next } = props;
+    const title = pictureTitle(item);
 
     return (
         <div>
+            <Helmet>
+                <title>{title}</title>
+                <meta name="description" content={item.description}/>
+            </Helmet>
             <nav className="navbar navbar-light bg-light">
                 { parent && (
                     <NavLink to={parent}>
@@ -27,7 +34,7 @@ function Album(props) {
                         </div>
                     </NavLink>
                 ) }
-                <h1>{item.title}</h1>
+                <h1>{title}</h1>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>

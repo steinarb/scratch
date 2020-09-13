@@ -106,6 +106,7 @@ public class OldalbumServlet extends FrontendServlet {
         Document html = loadHtmlFile(resource);
         addMetaTagIfNotEmpty(html, "og:url", request.getRequestURL().toString());
         addOpenGraphHeaderElements(html, entry);
+        html.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         try(ServletOutputStream body = response.getOutputStream()) {
             body.print(html.outerHtml());
         }
@@ -149,7 +150,7 @@ public class OldalbumServlet extends FrontendServlet {
 
     private void setDescriptionIfNotEmpty(Document html, String description) {
         if (!nullOrEmpty(description)) {
-            html.head().appendElement("meta").attr("name", "description").attr("content", description);
+            html.head().appendElement("meta").attr("name", "description").attr("content", description).attr("data-react-helmet", "true");
         }
     }
 

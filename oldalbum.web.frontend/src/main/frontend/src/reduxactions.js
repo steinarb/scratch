@@ -54,3 +54,5 @@ export const MOVE_ALBUMENTRY_DOWN = createAction('MOVE_ALBUMENTRY_DOWN');
 export const MOVE_ALBUMENTRY_LEFT = createAction('MOVE_ALBUMENTRY_LEFT');
 export const MOVE_ALBUMENTRY_RIGHT = createAction('MOVE_ALBUMENTRY_RIGHT');
 export const MOVE_ALBUMENTRY_ERROR = createAction('MOVE_ALBUMENTRY_ERROR');
+export const SET_TITLE = createAction('SET_TITLE');
+export const SET_DESCRIPTION = createAction('SET_DESCRIPTION');

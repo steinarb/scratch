@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
@@ -16,6 +17,10 @@ function Picture(props) {
 
     return (
         <div>
+            <Helmet>
+                <title>{title}</title>
+                <meta name="description" content={description}/>
+            </Helmet>
             <nav className="navbar navbar-light bg-light">
                 <NavLink to={parent}>
                     <div className="container">
