@@ -23,6 +23,7 @@ import static javax.servlet.http.HttpServletResponse.*;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -118,6 +119,8 @@ public class OldalbumServlet extends FrontendServlet {
 
     void addOpenGraphHeaderElements(Document html, AlbumEntry entry) {
         if (entry != null) {
+            setTitleIfNotEmpty(html, entry.getTitle());
+            setDescriptionIfNotEmpty(html, entry.getDescription());
             addMetaTagIfNotEmpty(html, "og:title", entry.getTitle());
             addMetaTagIfNotEmpty(html, "og:description", entry.getDescription());
             addMetaTagIfNotEmpty(html, "og:image", entry.getImageUrl());
@@ -137,6 +140,19 @@ public class OldalbumServlet extends FrontendServlet {
 
     }
 
+    private void setTitleIfNotEmpty(Document html, String title) {
+        if (!nullOrEmpty(title)) {
+            Elements titles = html.head().getElementsByTag("title");
+            titles.first().text(title);
+        }
+    }
+
+    private void setDescriptionIfNotEmpty(Document html, String description) {
+        if (!nullOrEmpty(description)) {
+            html.head().appendElement("meta").attr("name", "description").attr("content", description);
+        }
+    }
+
     protected void addMetaTagIfNotEmpty(Document html, String property, String content) {
         String propertyAttribute = property.startsWith("twitter:") ? "name" : "property";
         if (content != null && !content.isEmpty()) {
@@ -152,6 +168,10 @@ public class OldalbumServlet extends FrontendServlet {
 
     InputStream getClasspathResource(String resource) {
         return getClass().getClassLoader().getResourceAsStream(resource);
+    }
+
+    static boolean nullOrEmpty(String s) {
+        return s == null || s.isBlank();
     }
 
 }
