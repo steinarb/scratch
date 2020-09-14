@@ -53,7 +53,7 @@ public class LoginResource {
         Subject subject = SecurityUtils.getSubject();
         boolean remembered = subject.isAuthenticated();
         boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
-        return new LoginResult(remembered, (String) subject.getPrincipal(), "", canModifyAlbum);
+        return new LoginResult(remembered, (String) subject.getPrincipal(), "", remembered && canModifyAlbum);
     }
 
     @POST
