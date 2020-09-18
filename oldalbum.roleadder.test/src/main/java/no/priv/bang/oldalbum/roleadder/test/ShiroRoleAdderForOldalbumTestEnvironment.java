@@ -16,14 +16,18 @@
 package no.priv.bang.oldalbum.roleadder.test;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
+import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.osgiservice.users.UserRoles;
 
@@ -38,9 +42,30 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
     }
 
     @Activate
-    public void activate() {
-        Role role = addOldalbumadminRole();
-        addRoleToAdmin(role);
+    public void activate(Map<String, Object> config) {
+        boolean allowModify = Boolean.parseBoolean((String) config.getOrDefault("allowModify", "true"));
+        if (allowModify) {
+            String adminusername = (String) config.getOrDefault("username", "admin");
+            String adminpassword = (String) config.getOrDefault("password", "admin"); // NOSONAR hard to do anything without saying the word
+            User adminuser = findAdminuser(adminusername, adminpassword);
+            Role role = addOldalbumadminRole();
+            addRoleToAdmin(adminuser, role);
+        }
+    }
+
+    User findAdminuser(String adminusername, String adminpassword) {
+        User admin = getUser(adminusername);
+        if (admin == null) {
+            User user = new User(0, adminusername, "admin@company.com", "Ad", "Min");
+            UserAndPasswords newUserWithPasswords = new UserAndPasswords(user, adminpassword, adminpassword, false);
+            List<User> users = useradmin.addUser(newUserWithPasswords);
+            Optional<User> adminOpt = users.isEmpty() ? Optional.empty() : users.stream().filter(u -> adminusername.equals(u.getUsername())).findFirst();
+            admin = adminOpt.isEmpty() ? null : adminOpt.get();
+        } else {
+            UserAndPasswords userAndPasswords = new UserAndPasswords(admin, adminpassword, adminpassword, false);
+            useradmin.updatePassword(userAndPasswords);
+        }
+        return admin;
     }
 
     public Role addOldalbumadminRole() {
@@ -54,14 +79,21 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
         return role;
     }
 
-    public UserRoles addRoleToAdmin(Role role) {
-        User admin = useradmin.getUser("admin");
+    public UserRoles addRoleToAdmin(User admin, Role role) {
         if (admin == null) {
             return null;
         }
         UserRoles adminroles = new UserRoles(admin, Arrays.asList(role));
         useradmin.addUserRoles(adminroles);
         return adminroles;
+    }
+
+    private User getUser(String adminusername) {
+        try {
+            return useradmin.getUser(adminusername);
+        } catch (AuthserviceException e) {
+            return null;
+        }
     }
 
 }
