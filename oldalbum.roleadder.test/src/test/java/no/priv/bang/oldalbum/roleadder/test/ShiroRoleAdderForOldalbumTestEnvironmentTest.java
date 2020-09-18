@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.osgiservice.users.Role;
@@ -33,7 +35,7 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         UserManagementService useradmin = mock(UserManagementService.class);
         ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        roleadder.activate();
+        roleadder.activate(Collections.emptyMap());
         verify(useradmin, times(1)).getRoles();
         verify(useradmin, times(1)).getUser(anyString());
     }

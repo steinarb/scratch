@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.roleadder.test;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
@@ -38,7 +39,7 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
     }
 
     @Activate
-    public void activate() {
+    public void activate(Map<String, Object> config) {
         Role role = addOldalbumadminRole();
         addRoleToAdmin(role);
     }
