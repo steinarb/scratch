@@ -8,7 +8,7 @@
         </config>
     </feature>
     <feature name="${karaf-feature-name}">
-        <feature>${karaf-feature-name}-config</feature>
+        <feature prerequisite="true">${karaf-feature-name}-config</feature>
         <feature>scr</feature>
     </feature>
 </features>
