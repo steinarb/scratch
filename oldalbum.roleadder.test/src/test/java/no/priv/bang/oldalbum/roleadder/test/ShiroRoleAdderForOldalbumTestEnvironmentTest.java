@@ -20,6 +20,8 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +40,18 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         roleadder.activate(Collections.emptyMap());
         verify(useradmin, times(1)).getRoles();
         verify(useradmin, times(1)).getUser(anyString());
+    }
+
+    @Test
+    void testActivateModifyNotAllowed() {
+        UserManagementService useradmin = mock(UserManagementService.class);
+        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        roleadder.addUseradmin(useradmin);
+        Map<String, Object> config = new HashMap<>();
+        config.put("allowModify", "false");
+        roleadder.activate(config );
+        verify(useradmin, times(0)).getRoles();
+        verify(useradmin, times(0)).getUser(anyString());
     }
 
     @Test
