@@ -40,8 +40,11 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
 
     @Activate
     public void activate(Map<String, Object> config) {
-        Role role = addOldalbumadminRole();
-        addRoleToAdmin(role);
+        boolean allowModify = Boolean.valueOf((String) config.getOrDefault("allowModify", "true"));
+        if (allowModify) {
+            Role role = addOldalbumadminRole();
+            addRoleToAdmin(role);
+        }
     }
 
     public Role addOldalbumadminRole() {
