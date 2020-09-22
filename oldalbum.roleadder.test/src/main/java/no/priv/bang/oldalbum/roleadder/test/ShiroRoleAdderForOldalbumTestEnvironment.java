@@ -42,10 +42,10 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
 
     @Activate
     public void activate(Map<String, Object> config) {
-        boolean allowModify = Boolean.valueOf((String) config.getOrDefault("allowModify", "true"));
+        boolean allowModify = Boolean.parseBoolean((String) config.getOrDefault("allowModify", "true"));
         if (allowModify) {
             String adminusername = (String) config.getOrDefault("username", "admin");
-            String adminpassword = (String) config.getOrDefault("password", "admin");
+            String adminpassword = (String) config.getOrDefault("password", "admin"); // NOSONAR hard to do anything without saying the word
             User adminuser = findAdminuser(adminusername, adminpassword);
             Role role = addOldalbumadminRole();
             addRoleToAdmin(adminuser, role);
