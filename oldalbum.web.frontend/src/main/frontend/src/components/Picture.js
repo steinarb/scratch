@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { push } from 'connected-react-router';
 import { Helmet } from "react-helmet";
+import { Swipeable } from 'react-swipeable';
 import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import ModifyButton from './ModifyButton';
@@ -10,7 +12,7 @@ import Previous from './Previous';
 import Next from './Next';
 
 function Picture(props) {
-    const { item, parent, previous, next, canLogin } = props;
+    const { item, parent, previous, next, canLogin, navigateTo } = props;
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
@@ -51,21 +53,23 @@ function Picture(props) {
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
             </div>
-            <img className="img-fluid d-lg-none" src={item.imageUrl} />
-            <div className="d-none d-lg-block">
-                <div className="row align-items-center d-flex justify-content-center">
-                    <div className="col-auto">
-                        <Previous previous={previous} />
-                    </div>
-                    <div className="col-auto">
-                        <img className="img-fluid" src={item.imageUrl} />
-                    </div>
-                    <div className="col-auto">
-                        <Next className="ml-auto" next={next} />
+            <Swipeable onSwipedLeft={() => navigateTo(next)} onSwipedRight={() => navigateTo(previous)}>
+                <img className="img-fluid d-lg-none" src={item.imageUrl} />
+                <div className="d-none d-lg-block">
+                    <div className="row align-items-center d-flex justify-content-center">
+                        <div className="col-auto">
+                            <Previous previous={previous} />
+                        </div>
+                        <div className="col-auto">
+                            <img className="img-fluid" src={item.imageUrl} />
+                        </div>
+                        <div className="col-auto">
+                            <Next className="ml-auto" next={next} />
+                        </div>
                     </div>
                 </div>
-            </div>
-            {description && <div className="alert alert-primary d-flex justify-content-center" role="alert">{description}</div> }
+                {description && <div className="alert alert-primary d-flex justify-content-center" role="alert">{description}</div> }
+            </Swipeable>
         </div>
     );
 }
@@ -87,4 +91,10 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps)(Picture);
+function mapDispatchToProps(dispatch) {
+    return {
+        navigateTo: (item) => item && dispatch(push(item.path)),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Picture);
