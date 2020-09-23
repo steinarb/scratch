@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="handlereg.db.liquibase.production">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="oldalbum.db.liquibase.production">
 
     <!-- Copyright 2020 Steinar Bang                                                     -->
     <!--                                                                                 -->

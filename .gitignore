@@ -3,6 +3,6 @@
 .project
 .settings/
 /README.md
-/handlereg.db.liquibase/src/test/resources/olddata
+/oldalbum.db.liquibase/src/test/resources/olddata
 node_modules/
 target/

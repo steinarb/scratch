@@ -56,8 +56,8 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
 
     void createInitialSchema(DataSource datasource) throws SQLException {
         try (Connection connect = datasource.getConnection()) {
-            OldAlbumLiquibase handleregLiquibase = new OldAlbumLiquibase();
-            handleregLiquibase.createInitialSchema(connect);
+            OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
+            oldalbumLiquibase.createInitialSchema(connect);
         } catch (LiquibaseException e) {
             logservice.log(LogService.LOG_ERROR, "Error creating handlreg test database", e);
         }
