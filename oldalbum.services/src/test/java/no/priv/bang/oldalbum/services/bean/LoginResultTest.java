@@ -27,11 +27,13 @@ class LoginResultTest {
         String username = "admin";
         String errormessage = "Wrong password";
         boolean canModifyAlbum = true;
-        LoginResult bean = new LoginResult(success, username, errormessage, canModifyAlbum);
+        boolean canLogin = true;
+        LoginResult bean = new LoginResult(success, username, errormessage, canModifyAlbum, canLogin);
         assertTrue(bean.getSuccess());
         assertEquals(username, bean.getUsername());
         assertEquals(errormessage, bean.getErrormessage());
         assertTrue(bean.isCanModifyAlbum());
+        assertTrue(bean.isCanLogin());
     }
 
     @Test
@@ -41,6 +43,7 @@ class LoginResultTest {
         assertNull(bean.getUsername());
         assertNull(bean.getErrormessage());
         assertFalse(bean.isCanModifyAlbum());
+        assertFalse(bean.isCanLogin());
     }
 
 }

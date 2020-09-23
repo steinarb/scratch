@@ -6,6 +6,10 @@ import { LOGOUT_REQUEST } from '../reduxactions';
 
 function LoginLogoutButton(props) {
     const { loginresult, item, onLogout } = props;
+    if (!loginresult.canLogin) {
+        return null;
+    }
+
     if (loginresult.success) {
         return (<span className="{props.styleName} alert alert-primary" role="alert">Logged in as {loginresult.username} <span className="alert-link" onClick={() => onLogout()}>Logout</span></span>);
     }
