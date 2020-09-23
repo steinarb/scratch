@@ -36,6 +36,7 @@ import org.osgi.service.log.LogService;
 
 import no.priv.bang.oldalbum.services.bean.Credentials;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
+import no.priv.bang.osgiservice.users.UserManagementService;
 
 
 
@@ -46,6 +47,9 @@ public class LoginResource {
 
     @Inject
     LogService logservice;
+
+    @Inject
+    public UserManagementService useradmin;
 
     @GET
     @Path("/login")
@@ -109,8 +113,7 @@ public class LoginResource {
     }
 
     private boolean shiroRoleOldalbumadminExists() {
-        // TODO Auto-generated method stub
-        return false;
+        return useradmin.getRoles().stream().anyMatch(r -> "oldalbumadmin".equals(r.getRolename()));
     }
 
 }
