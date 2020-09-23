@@ -59,7 +59,8 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
             User user = new User(0, adminusername, "admin@company.com", "Ad", "Min");
             UserAndPasswords newUserWithPasswords = new UserAndPasswords(user, adminpassword, adminpassword, false);
             List<User> users = useradmin.addUser(newUserWithPasswords);
-            admin = users.isEmpty() ? null : users.get(0);
+            Optional<User> adminOpt = users.isEmpty() ? Optional.empty() : users.stream().filter(u -> adminusername.equals(u.getUsername())).findFirst();
+            admin = adminOpt.isEmpty() ? null : adminOpt.get();
         } else {
             UserAndPasswords userAndPasswords = new UserAndPasswords(admin, adminpassword, adminpassword, false);
             useradmin.updatePassword(userAndPasswords);
