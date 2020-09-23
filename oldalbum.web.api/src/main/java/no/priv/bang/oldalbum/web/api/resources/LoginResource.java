@@ -53,7 +53,8 @@ public class LoginResource {
         Subject subject = SecurityUtils.getSubject();
         boolean remembered = subject.isAuthenticated();
         boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
-        return new LoginResult(remembered, (String) subject.getPrincipal(), "", remembered && canModifyAlbum);
+        boolean canLogin = shiroRoleOldalbumadminExists();
+        return new LoginResult(remembered, (String) subject.getPrincipal(), "", remembered && canModifyAlbum, canLogin);
     }
 
     @POST
@@ -62,22 +63,23 @@ public class LoginResource {
         Subject subject = SecurityUtils.getSubject();
 
         UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
+        boolean canLogin = shiroRoleOldalbumadminExists();
         try {
             subject.login(token);
             boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
-            return new LoginResult(true, (String) subject.getPrincipal(), "", canModifyAlbum);
+            return new LoginResult(true, (String) subject.getPrincipal(), "", canModifyAlbum, canLogin);
         } catch(UnknownAccountException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: unknown account", e);
-            return new LoginResult(false, null, "Unknown account", false);
+            return new LoginResult(false, null, "Unknown account", false, canLogin);
         } catch (IncorrectCredentialsException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: wrong password", e);
-            return new LoginResult(false, null, "Wrong password", false);
+            return new LoginResult(false, null, "Wrong password", false, canLogin);
         } catch (LockedAccountException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
-            return new LoginResult(false, null, "Locked account", false);
+            return new LoginResult(false, null, "Locked account", false, canLogin);
         } catch (AuthenticationException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
-            return new LoginResult(false, null, "Unknown login error", false);
+            return new LoginResult(false, null, "Unknown login error", false, canLogin);
         } catch (Exception e) {
             logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
             throw new InternalServerErrorException();
@@ -91,8 +93,9 @@ public class LoginResource {
     public LoginResult logout(Credentials credentials) {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
+        boolean canLogin = shiroRoleOldalbumadminExists();
 
-        return new LoginResult(false, null, "Logged out", false);
+        return new LoginResult(false, null, "Logged out", false, canLogin);
     }
 
     private boolean checkIfUserCanModifyAlbum(Subject subject) {
@@ -102,6 +105,11 @@ public class LoginResource {
         } catch (AuthorizationException e) {
             // Skip and continue
         }
+        return false;
+    }
+
+    private boolean shiroRoleOldalbumadminExists() {
+        // TODO Auto-generated method stub
         return false;
     }
 
