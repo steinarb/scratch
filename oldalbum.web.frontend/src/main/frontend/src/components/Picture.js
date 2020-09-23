@@ -10,7 +10,7 @@ import Previous from './Previous';
 import Next from './Next';
 
 function Picture(props) {
-    const { item, parent, previous, next } = props;
+    const { item, parent, previous, next, canLogin } = props;
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
@@ -31,9 +31,12 @@ function Picture(props) {
                     </div>
                 </NavLink>
                 <h1>{title}</h1>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
+                {canLogin && (
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                ) }
+                { !canLogin && <div>&nbsp;</div> }
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
                         <LoginLogoutButton className="nav-item" item={item}/>
@@ -73,10 +76,14 @@ function mapStateToProps(state, ownProps) {
     const parent = parentEntry.path;
     const previous = state.previousentry[item.id];
     const next = state.nextentry[item.id];
+    const login = state.login || {};
+    const loginresult = login.loginresult || {};
+    const canLogin = loginresult.canLogin;
     return {
         parent,
         previous,
         next,
+        canLogin,
     };
 }
 
