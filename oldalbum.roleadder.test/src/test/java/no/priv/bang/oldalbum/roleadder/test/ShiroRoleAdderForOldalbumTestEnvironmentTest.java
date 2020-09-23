@@ -23,9 +23,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
+import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
@@ -55,9 +55,11 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         verify(useradmin, times(0)).getUser(anyString());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testActivateChangeAdminUsername() {
         UserManagementService useradmin = mock(UserManagementService.class);
+        when(useradmin.getUser(anyString())).thenThrow(AuthserviceException.class);
         User newuser = new User(2, "imagemaster", "admin@company.com", "Ad", "Min");
         when(useradmin.addUser(any())).thenReturn(Collections.singletonList(newuser));
         ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
