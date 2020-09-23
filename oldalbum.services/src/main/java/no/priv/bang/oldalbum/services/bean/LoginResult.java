@@ -21,12 +21,14 @@ public class LoginResult {
     private String username;
     private String errormessage;
     private boolean canModifyAlbum;
+    private boolean canLogin;
 
-    public LoginResult(boolean success, String username, String errormessage, boolean canModifyAlbum) {
+    public LoginResult(boolean success, String username, String errormessage, boolean canModifyAlbum, boolean canLogin) {
         this.success = success;
         this.username = username;
         this.errormessage = errormessage;
         this.canModifyAlbum = canModifyAlbum;
+        this.canLogin = canLogin;
     }
 
     public LoginResult() {
@@ -47,6 +49,10 @@ public class LoginResult {
 
     public boolean isCanModifyAlbum() {
         return canModifyAlbum;
+    }
+
+    public boolean isCanLogin() {
+        return canLogin;
     }
 
 }
