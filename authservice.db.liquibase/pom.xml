@@ -88,7 +88,7 @@
         <dependency>
             <groupId>no.priv.bang.karaf</groupId>
             <artifactId>liquibase-core-karaf</artifactId>
-            <version>${liquibase.version}</version>
+            <version>3.8.1-SNAPSHOT</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
