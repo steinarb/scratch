@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                          |
 |------------------------+---------+--------------------------------------------------------------------------------------|
+| <2020-09-26 Sat 12:33> |   1.4.1 | Downgrade PostgreSQL JDBC driver to 42.2.12 because of karaf feature issue           |
 | <2020-09-23 Wed 23:05> |   1.4.0 | Added swipe between pictures, added environment variables for docker image config    |
 | <2020-09-13 Sun 23:11> |   1.3.0 | More large display improvements, webcrawler friendly title/description, docker image |
 | <2020-09-01 Tue 22:03> |   1.2.0 | Improved layout on large display. REST endpoint for dumping database                 |
