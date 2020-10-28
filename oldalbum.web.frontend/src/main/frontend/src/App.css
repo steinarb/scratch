@@ -24,6 +24,10 @@
 
 .hide-overflow { overflow-x: hidden; }
 
+.fullsize-img-thumbnail {
+    height: 75px;
+}
+
 .table-condensed {
     font-size: 11px;
 }

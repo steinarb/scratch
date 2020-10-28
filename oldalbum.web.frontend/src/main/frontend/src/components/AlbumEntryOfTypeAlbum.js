@@ -62,7 +62,7 @@ export default connect(mapStateToProps)(AlbumEntryOfTypeAlbum);
 
 function findChildrenThumbnails(entry, children, childitems) {
     // First try to find thumbnails of direct children of the album
-    const directChildren = children.filter(c => !c.album).filter(c => c.thumbnailUrl).sort((a,b) => a.sort - b.sort);
+    const directChildren = children.filter(c => !c.album).filter(c => c.thumbnailUrl || c.imageUrl).sort((a,b) => a.sort - b.sort);
     if (directChildren.length) { return directChildren; }
 
     // If the children of the album have no thumbnails, find the first thumbnail of each child
@@ -70,7 +70,7 @@ function findChildrenThumbnails(entry, children, childitems) {
     const indirectChildren = children
           .filter(c => c.album)
           .sort((a,b) => a.sort - b.sort)
-          .map(c => childitems[c.id].sort((a,b) => a.sort - b.sort).find(t => t.thumbnailUrl))
+          .map(c => childitems[c.id].sort((a,b) => a.sort - b.sort).find(t => t.thumbnailUrl || c.imageUrl))
           .map(c => ( { ...c, path: entry.path } ));
     return indirectChildren;
 }

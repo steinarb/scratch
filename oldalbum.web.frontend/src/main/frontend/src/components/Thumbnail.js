@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import ThumbnailImg from './ThumbnailImg';
 
 function Thumbnail(props) {
     const { entry, className='' } = props;
@@ -7,7 +8,7 @@ function Thumbnail(props) {
     return (
         <div className={className}>
             <NavLink to={entry.path}>
-                <img className="img-thumbnail" src={entry.thumbnailUrl}/>
+                <ThumbnailImg entry={entry} />
             </NavLink>
         </div>
     );

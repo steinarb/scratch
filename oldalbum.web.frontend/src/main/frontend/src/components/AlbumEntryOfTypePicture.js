@@ -5,6 +5,7 @@ import UpButton from './UpButton';
 import LeftButton from './LeftButton';
 import DownButton from './DownButton';
 import RightButton from './RightButton';
+import ThumbnailImg from './ThumbnailImg';
 
 
 function AlbumEntryOfTypePicture(props) {
@@ -16,7 +17,7 @@ function AlbumEntryOfTypePicture(props) {
             <div className="d-sm-none">
                 <div className="btn btn-primary left-align-cell">
                     <NavLink className="btn btn-block btn-primary left-align-cell" to={entry.path}>
-                        <img className="img-thumbnail" src={entry.thumbnailUrl}/>
+                        <ThumbnailImg entry={entry} />
                         <div className="mx-1 container">
                             <div className="row">{title}</div>
                             <div className="row text-nowrap">{metadata}</div>
@@ -36,7 +37,7 @@ function AlbumEntryOfTypePicture(props) {
                         </div>
                         <div className="col-auto">
                             <NavLink className="btn btn-block btn-primary left-align-cell" to={entry.path}>
-                                <img className="img-thumbnail" src={entry.thumbnailUrl}/>
+                                <ThumbnailImg entry={entry} />
                                 <div className="mx-1 container">
                                     <div className="row">{title}</div>
                                     <div className="row text-nowrap">{metadata}</div>
