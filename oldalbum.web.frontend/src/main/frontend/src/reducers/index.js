@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
+import alert from './alertReducer';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
 import childentries from './childentriesReducer';
@@ -14,6 +15,7 @@ import login from './loginReducer';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
+    alert,
     allroutes,
     albumentries,
     childentries,

@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { Helmet } from "react-helmet";
 import { pictureTitle } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
+import CopyLinkButton from './CopyLinkButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
 import AddPictureButton from './AddPictureButton';
@@ -14,7 +15,7 @@ import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
 import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
 function Album(props) {
-    const { item, parent, children, previous, next, canLogin } = props;
+    const { item, parent, children, previous, next } = props;
     const title = pictureTitle(item);
 
     return (
@@ -35,14 +36,12 @@ function Album(props) {
                     </NavLink>
                 ) }
                 <h1>{title}</h1>
-                {canLogin && (
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                ) }
-                { !canLogin && <div>&nbsp;</div> }
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
+                        <CopyLinkButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>
                     </div>
                 </div>
@@ -80,15 +79,11 @@ function mapStateToProps(state, ownProps) {
     const children = state.childentries[item.id] || [];
     const previous = state.previousentry[item.id];
     const next = state.nextentry[item.id];
-    const login = state.login || {};
-    const loginresult = login.loginresult || {};
-    const canLogin = loginresult.canLogin;
     return {
         parent,
         children,
         previous,
         next,
-        canLogin,
     };
 }
 

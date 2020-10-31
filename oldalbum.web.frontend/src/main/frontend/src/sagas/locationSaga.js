@@ -2,6 +2,7 @@ import { takeLatest, put, select } from 'redux-saga/effects';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import { parse } from 'qs';
 import {
+    CLEAR_ALERT,
     MODIFY_ALBUM,
     ADD_ALBUM,
     MODIFY_PICTURE,
@@ -11,6 +12,8 @@ import {
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const { pathname = '', search = '' } = location;
+
+    yield put(CLEAR_ALERT());
 
     if (pathname === '/modifyalbum') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });

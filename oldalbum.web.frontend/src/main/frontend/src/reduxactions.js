@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+export const SET_ALERT = createAction('SET_ALERT');
+export const CLEAR_ALERT = createAction('CLEAR_ALERT');
 export const WEBCONTEXT_SET = createAction('WEBCONTEXT_SET');
 export const ALLROUTES_REQUEST = createAction('ALLROUTES_REQUEST');
 export const ALLROUTES_RECEIVE = createAction('ALLROUTES_RECEIVE');

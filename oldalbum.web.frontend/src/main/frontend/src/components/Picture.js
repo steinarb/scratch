@@ -6,13 +6,14 @@ import { Helmet } from "react-helmet";
 import { Swipeable } from 'react-swipeable';
 import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
+import CopyLinkButton from './CopyLinkButton';
 import ModifyButton from './ModifyButton';
 import DeleteButton from './DeleteButton';
 import Previous from './Previous';
 import Next from './Next';
 
 function Picture(props) {
-    const { item, parent, previous, next, canLogin, navigateTo } = props;
+    const { item, parent, previous, next, navigateTo } = props;
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
@@ -33,14 +34,12 @@ function Picture(props) {
                     </div>
                 </NavLink>
                 <h1>{title}</h1>
-                {canLogin && (
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                ) }
-                { !canLogin && <div>&nbsp;</div> }
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
+                        <CopyLinkButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>
                     </div>
                 </div>
@@ -80,14 +79,10 @@ function mapStateToProps(state, ownProps) {
     const parent = parentEntry.path;
     const previous = state.previousentry[item.id];
     const next = state.nextentry[item.id];
-    const login = state.login || {};
-    const loginresult = login.loginresult || {};
-    const canLogin = loginresult.canLogin;
     return {
         parent,
         previous,
         next,
-        canLogin,
     };
 }
 
