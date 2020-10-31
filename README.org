@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                          |
 |------------------------+---------+--------------------------------------------------------------------------------------|
+| <2020-10-31 Sat 20:52> |   1.5.0 | Use image as thumbnail, when no thumbnail exists, add share link button              |
 | <2020-10-10 Sat 12:54> |   1.4.2 | User PostgreSQL 4.2.17 where [[https://github.com/pgjdbc/pgjdbc/issues/1891][the karaf feature issue]] is fixed                        |
 | <2020-09-26 Sat 12:33> |   1.4.1 | Downgrade PostgreSQL JDBC driver to 42.2.12 because of karaf feature issue           |
 | <2020-09-23 Wed 23:05> |   1.4.0 | Added swipe between pictures, added environment variables for docker image config    |
