@@ -103,7 +103,21 @@ Procedure:
     #+end_example
  3. Visit http://localhost:8181/oldalbum in a web browser:
     1. Log in with username "admin" (without the quotes) and password "admin" (also without the quotes)
-    2. Add the albums and images you want to display
+    2. Add the albums and images you want to display:
+       1. To add an album:
+          1. Click on the button "Add album"
+          2. At least add a unique local path for the album (the album will become a child of the album you clicked "Add album" in)
+          3. Optionally add a title and a description
+          4. Click on the "Add" button to add the new album
+       2. To add a picture:
+          1. Navigate to the album you want to add a picture to
+          2. Click on the button "Add picture"
+          3. At least provide the URL of the image you wish to add (the filename without extension will become the suggested local path)
+          4. Optionally add a the URL of a thumbnail (if you don't have a thumbnail, just leave this field open and a scaled down version of the image itself will be used as the thumbnail)
+          5. Optionally add a title and a description
+          6. Click on the button "Add" to add the image to the album
+       3. Pictures and albums will be displayed in the order they are added
+       4. Click on the arrows to move a picture or album up or down
  4. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumpsql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
  5. Stop the image and restart it, this time with a DATABASE_CONTENT_URL pointing to a web server serving up the dumped file (as e.g. with this github gist):
     #+begin_example
