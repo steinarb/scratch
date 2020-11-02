@@ -11,6 +11,7 @@ import {
     ADD_PICTURE_THUMBNAILURL,
     ADD_PICTURE_UPDATE,
     ADD_PICTURE_CLEAR,
+    IMAGE_LOADED,
 } from '../reduxactions';
 
 function AddPicture(props) {
@@ -23,6 +24,7 @@ function AddPicture(props) {
         onTitleChange,
         onDescriptionChange,
         onImageUrlChange,
+        onImageLoaded,
         onThumbnailUrlChange,
         onUpdate,
         onCancel,
@@ -32,6 +34,7 @@ function AddPicture(props) {
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';
+    const imageUrl = addpicture.imageUrl;
     if (!loginresult.canModifyAlbum) {
         return <Redirect to={uplocation} />;
     }
@@ -52,7 +55,7 @@ function AddPicture(props) {
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <img className="img-thumbnail fullsize-img-thumbnail" src={addpicture.imageUrl} />
+                        <img className="img-thumbnail fullsize-img-thumbnail" src={imageUrl} onLoad={() => onImageLoaded(imageUrl)} />
                     </div>
                     <div className="form-group row">
                         <label htmlFor="path" className="col-form-label col-5">Path</label>
@@ -118,6 +121,7 @@ function mapDispatchToProps(dispatch) {
         onTitleChange: (title) => dispatch(ADD_PICTURE_TITLE(title)),
         onDescriptionChange: (description) => dispatch(ADD_PICTURE_DESCRIPTION(description)),
         onImageUrlChange: (imageUrl, parentalbum) => dispatch(ADD_PICTURE_IMAGEURL({ imageUrl, parentalbum })),
+        onImageLoaded: (imageUrl) => dispatch(IMAGE_LOADED(imageUrl)),
         onThumbnailUrlChange: (thumbnailUrl, parentalbum) => dispatch(ADD_PICTURE_THUMBNAILURL({ thumbnailUrl, parentalbum })),
         onUpdate: (path) => { dispatch(ADD_PICTURE_UPDATE()); dispatch(push(path)); },
         onCancel: (path) => { dispatch(ADD_PICTURE_CLEAR()); dispatch(push(path)); },

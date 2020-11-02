@@ -17,6 +17,7 @@ package no.priv.bang.oldalbum.web.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static javax.ws.rs.core.MediaType.*;
@@ -27,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -50,7 +52,8 @@ import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
-import no.priv.bang.oldalbum.services.bean.Credentials;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata;
+import no.priv.bang.oldalbum.services.bean.ImageRequest;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
@@ -230,7 +233,27 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         assertThat(albumToMove.getSort()).isLessThan(updatedAlbum.getSort());
     }
 
-
+    @Test
+    void testGetMetadata() throws Exception {
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        ImageMetadata mockMetadata = new ImageMetadata(200, new Date(), "image/jpeg", 128000);
+        when(backendService.readMetadata(anyString())).thenReturn(mockMetadata);
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        String url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        HttpServletRequest request = buildPostUrl("/image/metadata", new ImageRequest(url));
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        ImageMetadata metadata = mapper.readValue(getBinaryContent(response), ImageMetadata.class);
+        assertEquals(200, metadata.getStatus());
+        assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
+        assertEquals("image/jpeg", metadata.getContentType());
+        assertThat(metadata.getContentLength()).isPositive();
+    }
 
     private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {
         MockHttpServletRequest request = buildRequest(resource);

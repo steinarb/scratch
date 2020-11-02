@@ -5,6 +5,7 @@ import modifyalbum from './modifyalbumSaga';
 import addalbum from './addalbumSaga';
 import modifypicture from './modifypictureSaga';
 import addpicture from './addpictureSaga';
+import imageMetadata from './imageMetadataSaga';
 import deleteSaga from './deleteSaga';
 import movealbumentry from './movealbumentrySaga';
 import login from './loginSaga';
@@ -18,6 +19,7 @@ export default function* rootSaga() {
         fork(addalbum),
         fork(modifypicture),
         fork(addpicture),
+        fork(imageMetadata),
         fork(deleteSaga),
         fork(movealbumentry),
         fork(login),

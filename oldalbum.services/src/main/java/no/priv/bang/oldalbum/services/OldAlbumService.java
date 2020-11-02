@@ -18,6 +18,7 @@ package no.priv.bang.oldalbum.services;
 import java.util.List;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 
 public interface OldAlbumService {
 
@@ -40,5 +41,7 @@ public interface OldAlbumService {
     List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry);
 
     String dumpDatabaseSql();
+
+    ImageMetadata readMetadata(String imageUrl);
 
 }

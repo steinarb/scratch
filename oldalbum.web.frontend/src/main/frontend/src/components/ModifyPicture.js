@@ -12,6 +12,7 @@ import {
     MODIFY_PICTURE_THUMBNAILURL,
     MODIFY_PICTURE_UPDATE,
     MODIFY_PICTURE_CLEAR,
+    IMAGE_LOADED,
 } from '../reduxactions';
 
 function ModifyPicture(props) {
@@ -25,10 +26,12 @@ function ModifyPicture(props) {
         onTitleChange,
         onDescriptionChange,
         onImageUrlChange,
+        onImageLoaded,
         onThumbnailUrlChange,
         onUpdate,
         onCancel,
     } = props;
+    const imageUrl = modifypicture.imageUrl;
     if (!loginresult.canModifyAlbum) {
         if (modifypicture.path) {
             return <Redirect to={modifypicture.path} />;
@@ -53,7 +56,7 @@ function ModifyPicture(props) {
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <img className="img-thumbnail fullsize-img-thumbnail" src={modifypicture.imageUrl} />
+                        <img className="img-thumbnail fullsize-img-thumbnail" src={imageUrl} onLoad={() => onImageLoaded(imageUrl)} />
                     </div>
                     <div className="form-group row">
                         <label htmlFor="parent" className="col-form-label col-5">Parent</label>
@@ -132,6 +135,7 @@ function mapDispatchToProps(dispatch) {
         onTitleChange: (title) => dispatch(MODIFY_PICTURE_TITLE(title)),
         onDescriptionChange: (description) => dispatch(MODIFY_PICTURE_DESCRIPTION(description)),
         onImageUrlChange: (imageUrl) => dispatch(MODIFY_PICTURE_IMAGEURL(imageUrl)),
+        onImageLoaded: (imageUrl) => dispatch(IMAGE_LOADED(imageUrl)),
         onThumbnailUrlChange: (thumbnailUrl) => dispatch(MODIFY_PICTURE_THUMBNAILURL(thumbnailUrl)),
         onUpdate: (path) => { dispatch(MODIFY_PICTURE_UPDATE()); dispatch(push(path)); },
         onCancel: (path) => { dispatch(MODIFY_PICTURE_CLEAR()); dispatch(push(path)); },
