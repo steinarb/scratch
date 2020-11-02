@@ -53,6 +53,9 @@ function ModifyPicture(props) {
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
+                        <img className="img-thumbnail fullsize-img-thumbnail" src={modifypicture.imageUrl} />
+                    </div>
+                    <div className="form-group row">
                         <label htmlFor="parent" className="col-form-label col-5">Parent</label>
                         <div className="col-7">
                             <select id="parent" className="form-control" value={modifypicture.parent} onChange={(event) => onParentChange(parseInt(event.target.value, 10), albums)}>

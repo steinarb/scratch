@@ -52,6 +52,9 @@ function AddPicture(props) {
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
+                        <img className="img-thumbnail fullsize-img-thumbnail" src={addpicture.imageUrl} />
+                    </div>
+                    <div className="form-group row">
                         <label htmlFor="path" className="col-form-label col-5">Path</label>
                         <div className="col-7">
                             <input id="path" className="form-control" type="text" value={addpicture.path} readOnly={true} />
