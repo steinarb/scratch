@@ -28,9 +28,9 @@ public class AlbumEntry {
     private String imageUrl;
     private String thumbnailUrl;
     private int sort;
-    private Date lastmodified;
-    private String contenttype;
-    private int contentlength;
+    private Date lastModified;
+    private String contentType;
+    private int contentLength;
 
     private int childcount;
 
@@ -44,9 +44,9 @@ public class AlbumEntry {
         this.imageUrl = imageUrl;
         this.thumbnailUrl = thumbnailUrl;
         this.sort  = sort;
-        this.lastmodified = lastmodified;
-        this.contenttype = contenttype;
-        this.contentlength = contentlength;
+        this.lastModified = lastmodified;
+        this.contentType = contenttype;
+        this.contentLength = contentlength;
         this.childcount = childcount;
     }
 
@@ -91,16 +91,16 @@ public class AlbumEntry {
         return sort;
     }
 
-    public Date getLastmodified() {
-        return lastmodified;
+    public Date getLastModified() {
+        return lastModified;
     }
 
-    public String getContenttype() {
-        return contenttype;
+    public String getContentType() {
+        return contentType;
     }
 
-    public int getContentlength() {
-        return contentlength;
+    public int getContentLength() {
+        return contentLength;
     }
 
     public int getChildcount() {

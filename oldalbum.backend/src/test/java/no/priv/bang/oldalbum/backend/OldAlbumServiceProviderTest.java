@@ -270,7 +270,9 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane4", false, "Sylane påsken 1995", "Fra Storerikvollen til Nedalshytta i kraftig vind", "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane4.gif", 3, null, null, 0, 0);
+        String imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
+        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane4", false, "Sylane påsken 1995", "Fra Storerikvollen til Nedalshytta i kraftig vind", imageUrl, "https://www.bang.priv.no/sb/pics/misc/.icons/sylane4.gif", 3, metadata.getLastModified(), metadata.getContentType(), metadata.getContentLength(), 0);
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
@@ -278,9 +280,9 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNotNull(addedAlbum.getLastmodified());
-        assertNotNull(addedAlbum.getContenttype());
-        assertThat(addedAlbum.getContentlength()).isPositive();
+        assertNotNull(addedAlbum.getLastModified());
+        assertNotNull(addedAlbum.getContentType());
+        assertThat(addedAlbum.getContentLength()).isPositive();
     }
 
     @Test
@@ -299,7 +301,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNull(addedAlbum.getLastmodified());
+        assertNull(addedAlbum.getLastModified());
     }
 
     @Test
@@ -326,7 +328,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNull(addedAlbum.getLastmodified());
+        assertNull(addedAlbum.getLastModified());
     }
 
     @Test
@@ -345,7 +347,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNull(addedAlbum.getLastmodified());
+        assertNull(addedAlbum.getLastModified());
     }
 
     @SuppressWarnings("unchecked")

@@ -182,15 +182,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
         Timestamp lastmodified = null;
-        String contenttype = null;
-        int contentlength = 0;
-        if (!addedEntry.isAlbum()) {
-            ImageMetadata metadata = readMetadata(addedEntry.getImageUrl());
-            if (metadata != null && metadata.getStatus() == 200) {
-                lastmodified = Timestamp.from(Instant.ofEpochMilli(metadata.getLastModified().getTime()));
-                contenttype = metadata.getContentType();
-                contentlength = metadata.getContentLength();
-            }
+        if (!addedEntry.isAlbum() && addedEntry.getLastModified() != null) {
+            lastmodified = Timestamp.from(Instant.ofEpochMilli(addedEntry.getLastModified().getTime()));
         }
         String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String path = addedEntry.getPath();
@@ -205,8 +198,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(7, addedEntry.getThumbnailUrl());
                 statement.setInt(8, addedEntry.getSort());
                 statement.setTimestamp(9, lastmodified);
-                statement.setString(10, contenttype);
-                statement.setInt(11, contentlength);
+                statement.setString(10, addedEntry.getContentType());
+                statement.setInt(11, addedEntry.getContentLength());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {

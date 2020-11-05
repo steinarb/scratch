@@ -49,9 +49,9 @@ class AlbumEntryTest {
         assertEquals(thumbnailUrl, bean.getThumbnailUrl());
         assertEquals(sort, bean.getSort());
         assertEquals(childcount, bean.getChildcount());
-        assertEquals(lastmodified, bean.getLastmodified());
-        assertEquals(contenttype, bean.getContenttype());
-        assertEquals(contentlength, bean.getContentlength());
+        assertEquals(lastmodified, bean.getLastModified());
+        assertEquals(contenttype, bean.getContentType());
+        assertEquals(contentlength, bean.getContentLength());
     }
 
     @Test
@@ -66,9 +66,9 @@ class AlbumEntryTest {
         assertNull(bean.getThumbnailUrl());
         assertEquals(0, bean.getSort());
         assertEquals(0, bean.getChildcount());
-        assertNull(bean.getLastmodified());
-        assertNull(bean.getContenttype());
-        assertEquals(0, bean.getContentlength());
+        assertNull(bean.getLastModified());
+        assertNull(bean.getContentType());
+        assertEquals(0, bean.getContentLength());
     }
 
 }

@@ -5,9 +5,9 @@ export function pictureTitle(item) {
 }
 
 export function formatMetadata(item) {
-    const lastmodified = item.lastmodified ? moment(item.lastmodified).format("YYYY-MM-DD ") : '';
+    const lastmodified = item.lastModified ? moment(item.lastModified).format("YYYY-MM-DD ") : '';
     const imageType = item.contenttype = 'image/jpeg' ? 'JPEG ' : '';
-    const contentlengthInt = parseInt(item.contentlength, 10);
+    const contentlengthInt = parseInt(item.contentLength, 10);
     let imagesize = '';
     if (contentlengthInt) {
         if (contentlengthInt / 1000000.0 > 1) {
