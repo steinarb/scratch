@@ -8,6 +8,7 @@ import {
     ADD_PICTURE_DESCRIPTION,
     ADD_PICTURE_IMAGEURL,
     ADD_PICTURE_THUMBNAILURL,
+    IMAGE_METADATA,
 } from '../reduxactions';
 import { updateParent, updateBasename } from './commonReducerCode';
 
@@ -19,6 +20,7 @@ const addpictureReducer = createReducer({}, {
     [ADD_PICTURE_DESCRIPTION]: (state, action) => ({ ...state, description: action.payload }),
     [ADD_PICTURE_IMAGEURL]: (state, action) => setImageUrlAndSetBasenameIfEmpty(state, action),
     [ADD_PICTURE_THUMBNAILURL]: (state, action) => setThumbnailUrlAndSetBasenameIfEmpty(state, action),
+    [IMAGE_METADATA]: (state, action) => ({ ...state, ...action.payload }),
 });
 
 export default addpictureReducer;

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Redirect, NavLink } from 'react-router-dom';
 import { parse } from 'qs';
+import moment from 'moment';
 import {
     ADD_PICTURE_BASENAME,
     ADD_PICTURE_TITLE,
@@ -35,6 +36,7 @@ function AddPicture(props) {
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';
     const imageUrl = addpicture.imageUrl;
+    const lastModified = addpicture.lastModified ? moment(addpicture.lastModified).format("YYYY-MM-DD hh:mm:ss") : '';
     if (!loginresult.canModifyAlbum) {
         return <Redirect to={uplocation} />;
     }
@@ -91,6 +93,24 @@ function AddPicture(props) {
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Thumbnail URL</label>
                         <div className="col-7">
                             <input id="thumbnailUrl" className="form-control" type="text" value={addpicture.thumbnailUrl} onChange={(event) => onThumbnailUrlChange(event.target.value, parentalbum)}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content length (bytes)</label>
+                        <div className="col-7">
+                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={addpicture.contentLength}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content type</label>
+                        <div className="col-7">
+                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={addpicture.contentType}/>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">Last modified</label>
+                        <div className="col-7">
+                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={lastModified}/>
                         </div>
                     </div>
                     <div>
