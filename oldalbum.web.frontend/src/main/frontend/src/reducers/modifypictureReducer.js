@@ -9,6 +9,7 @@ import {
     MODIFY_PICTURE_DESCRIPTION,
     MODIFY_PICTURE_IMAGEURL,
     MODIFY_PICTURE_THUMBNAILURL,
+    IMAGE_METADATA,
 } from '../reduxactions';
 import { prepareAlbumentryForEdit, updateParent, updateBasename } from './commonReducerCode';
 
@@ -22,6 +23,7 @@ const modifypictureReducer = createReducer({}, {
     [MODIFY_PICTURE_DESCRIPTION]: (state, action) => ({ ...state, description: action.payload }),
     [MODIFY_PICTURE_IMAGEURL]: (state, action) => ({ ...state, imageUrl: action.payload }),
     [MODIFY_PICTURE_THUMBNAILURL]: (state, action) => ({ ...state, thumbnailUrl: action.payload }),
+    [IMAGE_METADATA]: (state, action) => ({ ...state, ...action.payload }),
 });
 
 export default modifypictureReducer;
