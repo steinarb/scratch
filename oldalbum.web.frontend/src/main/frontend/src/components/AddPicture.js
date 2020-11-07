@@ -115,7 +115,7 @@ function AddPicture(props) {
                     </div>
                     <div>
                         <button className="btn btn-primary ml-1" type="button" onClick={() => onUpdate(addpicture.path)}>Add</button>
-                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(addpicture.path)}>Cancel</button>
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(uplocation)}>Cancel</button>
                     </div>
                 </div>
             </form>

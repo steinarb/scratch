@@ -73,7 +73,7 @@ function AddAlbum(props) {
                     </div>
                     <div>
                         <button className="btn btn-primary ml-1" type="button" onClick={() => onUpdate(addalbum.path)}>Add</button>
-                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(addalbum.path)}>Cancel</button>
+                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(uplocation)}>Cancel</button>
                     </div>
                 </div>
             </form>
