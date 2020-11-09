@@ -34,15 +34,14 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.common.GenericImageMetadata.GenericImageMetadataItem;
+import org.apache.commons.imaging.common.ImageMetadata.ImageMetadataItem;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
-
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
@@ -438,12 +437,22 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 int contentLength = contentLengthHeader != null ? Integer.parseInt(contentLengthHeader) : 0;
                 String description = null;
                 try (InputStream body = connection.getInputStream()) {
-                    Metadata metadata = ImageMetadataReader.readMetadata(body);
-                    for (Directory directory : metadata.getDirectories()) {
-                        for (Tag tag : directory.getTags()) {
-                            if ("JPEG Comment".equals(tag.getTagName())) {
-                                description = tag.getDescription().strip();
+                    org.apache.commons.imaging.common.ImageMetadata metadata = Imaging.getMetadata(body, imageUrl);
+                    System.out.println(metadata.toString());
+                    if (metadata instanceof JpegImageMetadata) {
+                        final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+                        for (ImageMetadataItem item : jpegMetadata.getItems()) {
+                            if (item instanceof GenericImageMetadataItem) {
+                                GenericImageMetadataItem gitem = (GenericImageMetadataItem) item;
+                                System.out.println(gitem.getKeyword());
+                                System.out.println(gitem.getText());
                             }
+/*                            for (Tag tag : item.) {
+                                if ("JPEG Comment".equals(tag.getTagName())) {
+                                    description = tag.getDescription().strip();
+                                }
+                            }
+ */
                         }
                     }
                 } catch (Exception e) {
