@@ -240,7 +240,7 @@ public class UkelonnServiceProviderTest {
         no.priv.bang.osgiservice.users.User createdUser = updatedUsers.stream().filter(u -> newUsername.equals(u.getUsername())).findFirst().get();
 
         // Add a new account to the database
-        User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname);
+        User userWithUserId = new User(createdUser.getUserid(), newUsername, newEmailaddress, newFirstname, newLastname, false);
         Account newAccount = ukelonn.addAccount(userWithUserId);
         assertThat(newAccount.getAccountId()).isPositive();
         assertEquals(0.0, newAccount.getBalance(), 0);
@@ -966,13 +966,13 @@ public class UkelonnServiceProviderTest {
     @Test
     public void testHasUserWithNonEmptyUsername() {
         PasswordsWithUser passwords = new PasswordsWithUser();
-        User userWithUsername = new User(1, "foo", null, null, null);
+        User userWithUsername = new User(1, "foo", null, null, null, false);
         passwords.setUser(userWithUsername);
         assertTrue(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
-        User userWithEmptyUsername = new User(1, "", null, null, null);
+        User userWithEmptyUsername = new User(1, "", null, null, null, false);
         passwords.setUser(userWithEmptyUsername);
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
-        User userWithNullUsername = new User(1, null, null, null, null);
+        User userWithNullUsername = new User(1, null, null, null, null, false);
         passwords.setUser(userWithNullUsername);
         assertFalse(UkelonnServiceProvider.hasUserWithNonEmptyUsername(passwords));
         passwords.setUser(null);

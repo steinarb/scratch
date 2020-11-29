@@ -49,8 +49,8 @@ import no.priv.bang.ukelonn.beans.User;
  */
 public class TestUtils {
 
-    private static User jadUser = new User(1, "jad", "jane1203@gmail.no", "Jane", "Doe");
-    private static User jodUser = new User(1, "jod", "john1203@gmail.no", "John", "Doe");
+    private static User jadUser = new User(1, "jad", "jane1203@gmail.no", "Jane", "Doe", false);
+    private static User jodUser = new User(1, "jod", "john1203@gmail.no", "John", "Doe", false);
     private static Account jadAccount = new Account(1, "jad", "Jane", "Doe", 673.0);
     private static Account jodAccount = new Account(1, "jod", "John", "Doe", 278.0);
     private static TransactionType jobtype1 = new TransactionType(1, "Støvsuging", 45.0, true, false);
@@ -137,7 +137,7 @@ public class TestUtils {
     }
 
     private static User copyUser(User user) {
-        return new User(user.getUserId(), user.getUsername(), user.getEmail(), user.getFirstname(), user.getLastname());
+        return new User(user.getUserId(), user.getUsername(), user.getEmail(), user.getFirstname(), user.getLastname(), false);
     }
 
     private static no.priv.bang.osgiservice.users.User copyUserForUserManagement(User user) {

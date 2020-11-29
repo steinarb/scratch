@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,16 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
     private String email;
     private String firstname;
     private String lastname;
+    private boolean administrator;
 
-    public User(int userId, String username, String email, String firstname, String lastname) {
+    public User(int userId, String username, String email, String firstname, String lastname, boolean administrator) {
         super();
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.administrator = administrator;
     }
 
     // No-arg consructor required by jackson
@@ -86,8 +88,13 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         return new StringBuilder(getFirstname()).append(" ").append(getLastname()).toString();
     }
 
+    public boolean isAdministrator() {
+        return administrator;
+    }
+
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+        return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", firstname=" + firstname
+            + ", lastname=" + lastname + ", administrator=" + administrator + "]";
     }
 }

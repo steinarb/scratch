@@ -77,7 +77,7 @@ public class AdminUserResource {
                 throw new UkelonnException(String.format("Found no user matching %s in the users table", username));
             }
 
-            no.priv.bang.ukelonn.beans.User user = new no.priv.bang.ukelonn.beans.User(createdUser.get().getUserid(), username, createdUser.get().getEmail(), createdUser.get().getFirstname(), createdUser.get().getLastname());
+            no.priv.bang.ukelonn.beans.User user = new no.priv.bang.ukelonn.beans.User(createdUser.get().getUserid(), username, createdUser.get().getEmail(), createdUser.get().getFirstname(), createdUser.get().getLastname(), false);
             ukelonn.addAccount(user);
 
             return users;

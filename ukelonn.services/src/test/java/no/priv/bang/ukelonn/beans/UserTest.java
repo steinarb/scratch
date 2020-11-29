@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,13 +39,15 @@ public class UserTest {
         String expectedEmail = "jane21@gmail.com";
         String expectedFirstname = "Jane";
         String expectedLastname = "Doe";
-        User user = new User(expectedUserId, expectedUsername, expectedEmail, expectedFirstname, expectedLastname);
+        boolean administrator = false;
+        User user = new User(expectedUserId, expectedUsername, expectedEmail, expectedFirstname, expectedLastname, administrator);
         assertEquals(expectedUserId, user.getUserId());
         assertEquals(expectedUsername, user.getUsername());
         assertEquals(expectedEmail, user.getEmail());
         assertEquals(expectedFirstname, user.getFirstname());
         assertEquals(expectedLastname, user.getLastname());
         assertEquals("Jane Doe", user.getFullname());
+        assertFalse(user.isAdministrator());
 
         String newUsername = "jadd";
         String newEmail = "jane2111@gmail.com";
@@ -65,21 +67,21 @@ public class UserTest {
 
     @Test
     public void testEquals() {
-        User user = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe");
-        User userDifferentUserId = new User(2, "jad", "jane21@gmail.com", "Jane", "Doe");
+        User user = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe", false);
+        User userDifferentUserId = new User(2, "jad", "jane21@gmail.com", "Jane", "Doe", false);
         assertNotEquals(user, userDifferentUserId);
-        User userDifferentUsername = new User(1, "jadd", "jane21@gmail.com", "Jane", "Doe");
+        User userDifferentUsername = new User(1, "jadd", "jane21@gmail.com", "Jane", "Doe", false);
         assertNotEquals(user, userDifferentUsername);
-        User userDifferentEmail = new User(1, "jad", "jane22@gmail.com", "Jane", "Doe");
+        User userDifferentEmail = new User(1, "jad", "jane22@gmail.com", "Jane", "Doe", false);
         assertNotEquals(user, userDifferentEmail);
-        User userDifferentFirstname = new User(1, "jad", "jane21@gmail.com", "Julie", "Doe");
+        User userDifferentFirstname = new User(1, "jad", "jane21@gmail.com", "Julie", "Doe", false);
         assertNotEquals(user, userDifferentFirstname);
-        User userDifferentLastname = new User(1, "jad", "jane21@gmail.com", "Jane", "Deer");
+        User userDifferentLastname = new User(1, "jad", "jane21@gmail.com", "Jane", "Deer", false);
         assertNotEquals(user, userDifferentLastname);
-        User equalUser = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe");
+        User equalUser = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe", false);
         assertEquals(user, equalUser);
         assertEquals(user, user);
-        User userWithNullStrings = new User(1, null, null, null, null);
+        User userWithNullStrings = new User(1, null, null, null, null, false);
         assertNotEquals(userWithNullStrings, user);
         assertNotEquals(user, null);
         assertNotEquals(user, "");
@@ -87,10 +89,10 @@ public class UserTest {
 
     @Test
     public void testToString() {
-        User user = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe");
-        assertEquals("User [userId=1, username=jad, email=jane21@gmail.com, firstname=Jane, lastname=Doe]", user.toString());
-        User userWithNullStrings = new User(1, null, null, null, null);
-        assertEquals("User [userId=1, username=null, email=null, firstname=null, lastname=null]", userWithNullStrings.toString());
+        User user = new User(1, "jad", "jane21@gmail.com", "Jane", "Doe", false);
+        assertEquals("User [userId=1, username=jad, email=jane21@gmail.com, firstname=Jane, lastname=Doe, administrator=false]", user.toString());
+        User userWithNullStrings = new User(1, null, null, null, null, false);
+        assertEquals("User [userId=1, username=null, email=null, firstname=null, lastname=null, administrator=false]", userWithNullStrings.toString());
     }
 
 }

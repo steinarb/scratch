@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2020 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class PasswordsWithUserTest {
         String expectedEmail = "jane21@gmail.com";
         String expectedFirstname = "Jane";
         String expectedLastname = "Doe";
-        User user = new User(expectedUserId, expectedUsername, expectedEmail, expectedFirstname, expectedLastname);
+        User user = new User(expectedUserId, expectedUsername, expectedEmail, expectedFirstname, expectedLastname, false);
         String password = "zecret";
         String password2 = "zecret2";
         PasswordsWithUser passwords = new PasswordsWithUser(user, password, password2);
