@@ -375,5 +375,4 @@ public class HandleregServiceProvider implements HandleregService {
         logservice.log(LogService.LOG_WARNING, message, e);
     }
 
-
 }
