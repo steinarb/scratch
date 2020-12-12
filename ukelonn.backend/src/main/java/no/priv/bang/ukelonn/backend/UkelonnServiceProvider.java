@@ -21,7 +21,13 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,12 +37,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
@@ -67,6 +80,7 @@ import static no.priv.bang.ukelonn.UkelonnConstants.*;
  */
 @Component(service=UkelonnService.class, immediate=true)
 public class UkelonnServiceProvider extends UkelonnServiceBase {
+    private static final String RESOURCES_BASENAME = "i18n.ApplicationResources";
     private DataSource datasource;
     private UserManagementService useradmin;
     private LogService logservice;
@@ -76,6 +90,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     static final String USERNAME = "username";
     static final int NUMBER_OF_TRANSACTIONS_TO_DISPLAY = 10;
     static final String USER_ID = "user_id";
+    private List<String> locales;
 
     @Activate
     public void activate() {
@@ -566,6 +581,33 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
         return getAllBonuses();
     }
 
+    @Override
+    public String defaultLocale() {
+        return "nb_NO";
+    }
+
+    @Override
+    public List<String> availableLocales() {
+        if (locales == null) {
+            List<String> resourceFiles = findResourceFilesInDirectory("i18n");
+            String basename = RESOURCES_BASENAME.replace("i18n.", "") + "_";
+            locales = resourceFiles
+                .stream()
+                .map(f -> Paths.get(f).getFileName().toString())
+                .map(f -> f.replace(basename, ""))
+                .map(f -> f.replace(".properties", ""))
+                .collect(Collectors.toList());
+        }
+
+        return locales;
+    }
+
+    @Override
+    public Map<String, String> displayTexts(String languageTag) {
+        Locale locale = Locale.forLanguageTag(languageTag.replace('_', '-'));
+        return transformResourceBundleToMap(locale);
+    }
+
     private ConcurrentLinkedQueue<Notification> getNotificationQueueForUser(String username) {
         return notificationQueues.computeIfAbsent(username, k-> new ConcurrentLinkedQueue<>());
     }
@@ -755,6 +797,59 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 resultset.getDouble("transaction_amount"),
                 resultset.getBoolean("transaction_is_work"),
                 resultset.getBoolean("transaction_is_wage_payment"));
+    }
+
+    private List<String> findResourceFilesInDirectory(String directoryName) {
+        List<String> filenames = new ArrayList<>();
+        URL url = getClass().getClassLoader().getResource(directoryName);
+        if (url != null) {
+            if (url.getProtocol().equals("file")) {
+                try {
+                    File file = Paths.get(url.toURI()).toFile();
+                    if (file != null) {
+                        File[] files = file.listFiles();
+                        if (files != null) {
+                            for (File filename : files) {
+                                filenames.add(filename.toString());
+                            }
+                        }
+                    }
+                } catch (URISyntaxException e) {
+                    // Skip and continue
+                }
+            } else if (url.getProtocol().equals("jar")) {
+                String dirname = directoryName + "/";
+                String path = url.getPath();
+                String jarPath = path.substring(5, path.indexOf("!"));
+                try (JarFile jar = new JarFile(URLDecoder.decode(jarPath, StandardCharsets.UTF_8.name()))) {
+                    Enumeration<JarEntry> entries = jar.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+                        String name = entry.getName();
+                        if (name.startsWith(dirname) && !dirname.equals(name)) {
+                            URL resource = Thread.currentThread().getContextClassLoader().getResource(name);
+                            filenames.add(resource.toString());
+                        }
+                    }
+                } catch (Exception e) {
+                    // Skip and continue
+                }
+            }
+        }
+
+        return filenames;
+    }
+
+    Map<String, String> transformResourceBundleToMap(Locale locale) {
+        Map<String, String> map = new HashMap<>();
+        ResourceBundle bundle = ResourceBundle.getBundle(RESOURCES_BASENAME, locale);
+        Enumeration<String> keys = bundle.getKeys();
+        while(keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, bundle.getString(key));
+        }
+
+        return map;
     }
 
 }
