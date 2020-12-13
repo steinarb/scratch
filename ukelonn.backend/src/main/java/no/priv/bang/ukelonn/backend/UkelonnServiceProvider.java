@@ -95,6 +95,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
     @Activate
     public void activate() {
         addRolesIfNotPresent();
+        availableLocales();
     }
 
     @Reference(target = "(osgi.jndi.service.name=jdbc/ukelonn)")
@@ -817,7 +818,7 @@ public class UkelonnServiceProvider extends UkelonnServiceBase {
                 } catch (URISyntaxException e) {
                     // Skip and continue
                 }
-            } else if (url.getProtocol().equals("jar")) {
+            } else if (url.getProtocol().equals("bundle")) {
                 String dirname = directoryName + "/";
                 String path = url.getPath();
                 String jarPath = path.substring(5, path.indexOf("!"));
