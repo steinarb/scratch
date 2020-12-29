@@ -115,6 +115,10 @@ public class ServletTestBase {
     }
 
     String removeDriveLetter(String path) {
+        if (path.matches("^/[A-Za-z]:.*")) {
+            return path.replaceAll("^/[A-Za-z]:", "");
+        }
+
         return path;
     }
 
