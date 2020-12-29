@@ -19,6 +19,7 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,7 +99,11 @@ public class ServletTestBase {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setProtocol("HTTP/1.1");
         request.setRequestURL(buildFullURL(resource));
-        request.setRequestURI(buildURI(resource));
+        System.out.println("buildRequest(1)");
+        System.out.println(buildURI(resource));
+        System.out.println("/ukelonn/api" + resource);
+        System.out.println(contextPath);
+        request.setRequestURI("/ukelonn/api" + resource);
         request.setContextPath(contextPath);
         request.setServletPath(servletPath);
         request.setSession(session);
@@ -106,7 +111,11 @@ public class ServletTestBase {
     }
 
     String buildURI(String resource) {
-        return Paths.get(contextPath, servletPath, resource).toUri().getPath();
+        return removeDriveLetter(Paths.get(contextPath, servletPath, resource).toUri().getPath());
+    }
+
+    String removeDriveLetter(String path) {
+        return path;
     }
 
     String buildFullURL(String resource) {
