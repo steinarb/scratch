@@ -99,11 +99,7 @@ public class ServletTestBase {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setProtocol("HTTP/1.1");
         request.setRequestURL(buildFullURL(resource));
-        System.out.println("buildRequest(1)");
-        System.out.println(buildURI(resource));
-        System.out.println("/ukelonn/api" + resource);
-        System.out.println(contextPath);
-        request.setRequestURI("/ukelonn/api" + resource);
+        request.setRequestURI(buildURI(resource));
         request.setContextPath(contextPath);
         request.setServletPath(servletPath);
         request.setSession(session);
