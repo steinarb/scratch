@@ -2,7 +2,7 @@ language: java
 
 jdk: openjdk8
 script:
-    - mvn -q -B install >/dev/null
+    - mvn -B install
 
 deploy:
     provider: script
