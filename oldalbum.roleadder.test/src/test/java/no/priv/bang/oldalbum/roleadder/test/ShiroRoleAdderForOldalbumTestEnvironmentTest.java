@@ -75,7 +75,7 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
     void testActivateChangeAdminPassword() {
         UserManagementService useradmin = mock(UserManagementService.class);
         User admin = new User(0, "admin", "admin@admin.com", "Admin", "Istrator");
-        when(useradmin.getUser(eq("admin"))).thenReturn(admin);
+        when(useradmin.getUser("admin")).thenReturn(admin);
         ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
         Map<String, Object> config = new HashMap<>();
