@@ -33,6 +33,7 @@
         <module>handlereg.web.api</module>
         <module>handlereg.web.frontend</module>
         <module>karaf</module>
+        <module>handlereg.tests</module>
     </modules>
 
     <properties>
@@ -40,6 +41,7 @@
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
         <karaf.version>4.2.8</karaf.version>
         <junit.jupiter.version>5.5.2</junit.jupiter.version>
+        <paxexam.version>4.13.4</paxexam.version>
         <mockrunner.version>2.0.4</mockrunner.version>
         <liquibase.version>3.8.0</liquibase.version>
         <snakeyaml.version>1.17</snakeyaml.version>
@@ -70,6 +72,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <!-- Pax Exam integration tests requires junit 4 -->
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.1</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
