@@ -9,7 +9,7 @@ Dette er en webapp som brukes til å registrere handling i butikker.
 
 Kjør følgende i karaf console:
 #+BEGIN_EXAMPLE
-  feature:repo-add mvn:no.priv.bang.handlereg/handlereg/LATEST/xml/features
+  feature:repo-add mvn:no.priv.bang.handlereg/karaf/LATEST/xml/features
   feature:install handlereg-with-derby
 #+END_EXAMPLE
 ** Konfigurering av PostgreSQL-database
