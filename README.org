@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                       |
 |------------------------+---------+---------------------------------------------------------------------------------------------------|
+| <2021-01-17 Sun 20:26> |   1.6.1 | Use axios 0.21.1 to fix github security alert. New karaf feature URL                              |
 | <2020-11-07 Sat 17:18> |   1.6.0 | Preview when adding imageUrl, load metadata when image loads, fix add picture/album cancel button |
 | <2020-10-31 Sat 20:52> |   1.5.0 | Use image as thumbnail, when no thumbnail exists, add share link button                           |
 | <2020-10-10 Sat 12:54> |   1.4.2 | User PostgreSQL 4.2.17 where [[https://github.com/pgjdbc/pgjdbc/issues/1891][the karaf feature issue]] is fixed                                     |
@@ -48,7 +49,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
   1. Download and install apache karaf
   2. From the karaf console, give the following commands:
      #+BEGIN_EXAMPLE
-       feature:repo-add mvn:no.priv.bang.oldalbum/oldalbum/LATEST/xml/features
+       feature:repo-add mvn:no.priv.bang.oldalbum/karaf/LATEST/xml/features
        feature:install oldalbum-with-derby
      #+END_EXAMPLE
 
@@ -65,9 +66,9 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
      #+end_example
   4. From the karaf console, give the following commands:
      #+BEGIN_EXAMPLE
-       feature:repo-add mvn:no.priv.bang.authservice/authservice/LATEST/xml/features
+       feature:repo-add mvn:no.priv.bang.authservice/karaf/LATEST/xml/features
        feature:install user-admin-with-productiondb
-       feature:repo-add mvn:no.priv.bang.oldalbum/oldalbum/LATEST/xml/features
+       feature:repo-add mvn:no.priv.bang.oldalbum/karaf/LATEST/xml/features
        feature:install oldalbum-with-postgresql-and-provided-authservice
      #+END_EXAMPLE
 
@@ -81,7 +82,7 @@ Procedure:
  2. Start karaf from the shell where you've set the DATABASE_CONTENT_URL environment variable
  3. Install the oldalbum application :
     #+begin_example
-      feature:repo-add mvn:no.priv.bang.oldalbum/oldalbum/LATEST/xml/features
+      feature:repo-add mvn:no.priv.bang.oldalbum/karaf/LATEST/xml/features
       feature:install oldalbum-with-memory-db-with-url-init
     #+end_example
  4. Visit http://localhost:8181/oldalbum in a web browser:
