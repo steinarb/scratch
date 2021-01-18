@@ -16,24 +16,24 @@ function StatistikkSumbutikk(props) {
                 <h1>Total handlesum fordelt på butikk</h1>
             </Header>
             <Container>
-            <div className="table-responsive table-sm table-striped">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <td>Butikk</td>
-                            <td>Total handlesum</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sumbutikk.map((sb) =>
-                            <tr key={'butikk' + sb.butikk.storeId}>
-                                <td>{sb.butikk.butikknavn}</td>
-                                <td>{sb.sum}</td>
+                <div className="table-responsive table-sm table-striped">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <td>Butikk</td>
+                                <td>Total handlesum</td>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {sumbutikk.map((sb) =>
+                                           <tr key={'butikk' + sb.butikk.storeId}>
+                                               <td>{sb.butikk.butikknavn}</td>
+                                               <td>{sb.sum}</td>
+                                           </tr>
+                                          )}
+                        </tbody>
+                    </table>
+                </div>
             </Container>
         </div>
     );

@@ -16,24 +16,24 @@ function StatistikkHandlingerbutikk(props) {
                 <h1>Antall handlinger gjort i butikk</h1>
             </Header>
             <Container>
-            <div className="table-responsive table-sm table-striped">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <td>Butikk</td>
-                            <td>Antall handlinger</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {handlingerbutikk.map((hb) =>
-                            <tr key={'butikk' + hb.butikk.storeId}>
-                                <td>{hb.butikk.butikknavn}</td>
-                                <td>{hb.count}</td>
+                <div className="table-responsive table-sm table-striped">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <td>Butikk</td>
+                                <td>Antall handlinger</td>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {handlingerbutikk.map((hb) =>
+                                                  <tr key={'butikk' + hb.butikk.storeId}>
+                                                      <td>{hb.butikk.butikknavn}</td>
+                                                      <td>{hb.count}</td>
+                                                  </tr>
+                                                 )}
+                        </tbody>
+                    </table>
+                </div>
             </Container>
         </div>
     );

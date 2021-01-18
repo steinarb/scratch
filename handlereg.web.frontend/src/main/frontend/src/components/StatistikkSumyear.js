@@ -17,24 +17,24 @@ function StatistikkSumyear(props) {
                 <h1>Handlesum pr år</h1>
             </Header>
             <Container>
-            <div className="table-responsive table-sm table-striped">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <td>År</td>
-                            <td>Handlebeløp</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sumyear.map((sy) =>
-                            <tr key={'year' + sy.year.value}>
-                                <td>{sy.year.value}</td>
-                                <td>{sy.sum}</td>
+                <div className="table-responsive table-sm table-striped">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <td>År</td>
+                                <td>Handlebeløp</td>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {sumyear.map((sy) =>
+                                         <tr key={'year' + sy.year.value}>
+                                             <td>{sy.year.value}</td>
+                                             <td>{sy.sum}</td>
+                                         </tr>
+                                        )}
+                        </tbody>
+                    </table>
+                </div>
             </Container>
         </div>
     );

@@ -17,24 +17,24 @@ function StatistikkSistehandel(props) {
                 <h1>Siste handel gjort i butikk</h1>
             </Header>
             <Container>
-            <div className="table-responsive table-sm table-striped">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <td>Butikk</td>
-                            <td>Sist handlet i</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sistehandel.map((sh) =>
-                            <tr key={'butikk' + sh.butikk.storeId}>
-                                <td>{sh.butikk.butikknavn}</td>
-                                <td>{moment(sh.date).format("YYYY-MM-DD")}</td>
+                <div className="table-responsive table-sm table-striped">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <td>Butikk</td>
+                                <td>Sist handlet i</td>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {sistehandel.map((sh) =>
+                                             <tr key={'butikk' + sh.butikk.storeId}>
+                                                 <td>{sh.butikk.butikknavn}</td>
+                                                 <td>{moment(sh.date).format("YYYY-MM-DD")}</td>
+                                             </tr>
+                                            )}
+                        </tbody>
+                    </table>
+                </div>
             </Container>
         </div>
     );
