@@ -12,10 +12,11 @@ function NyButikk(props) {
 
     return (
         <div>
-            <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
-            <Header>
+            <nav className="navbar navbar-light bg-light">
+                <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
                 <h1>Ny butikk</h1>
-            </Header>
+                <div className="col-sm-2"></div>
+            </nav>
             <Container>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <div className="form-group row">

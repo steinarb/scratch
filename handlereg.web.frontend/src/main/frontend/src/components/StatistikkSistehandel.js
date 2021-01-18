@@ -12,10 +12,11 @@ function StatistikkSistehandel(props) {
 
     return (
         <div>
-            <StyledLinkLeft to="/handlereg/statistikk">Tilbake</StyledLinkLeft>
-            <Header>
+            <nav className="navbar navbar-light bg-light">
+                <StyledLinkLeft to="/handlereg/statistikk">Tilbake</StyledLinkLeft>
                 <h1>Siste handel gjort i butikk</h1>
-            </Header>
+                <div className="col-sm-2"></div>
+            </nav>
             <Container>
                 <div className="table-responsive table-sm table-striped">
                     <table className="table">

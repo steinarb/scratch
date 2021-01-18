@@ -8,10 +8,11 @@ import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 function Statistikk(props) {
     return (
         <div>
-            <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
-            <Header>
+            <nav className="navbar navbar-light bg-light">
+                <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
                 <h1>Statistikk</h1>
-            </Header>
+                <div className="col-sm-2"></div>
+            </nav>
             <Container>
                 <StyledLinkRight to="/handlereg/statistikk/sumbutikk">Totalsum pr. butikk</StyledLinkRight>
                 <StyledLinkRight to="/handlereg/statistikk/handlingerbutikk">Antall handlinger i butikk</StyledLinkRight>

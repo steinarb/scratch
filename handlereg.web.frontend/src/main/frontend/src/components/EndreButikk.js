@@ -15,10 +15,11 @@ function EndreButikk(props) {
 
     return (
         <div>
-            <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
-            <Header>
+            <nav className="navbar navbar-light bg-light">
+                <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
                 <h1>Endre butikk</h1>
-            </Header>
+                <div className="col-sm-2"></div>
+            </nav>
             <Container>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <select size="10" value={valgtButikk} onChange={e => velgButikk(e.target.value, butikkerUnntattUndefined)}>
