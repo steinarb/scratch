@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                       |
 |------------------------+---------+---------------------------------------------------------------------------------------------------|
+| <2021-01-19 Tue 23:28> |   1.6.2 | Use shiro 1.7.0 and authservice 1.12.0, no functional changes                                     |
 | <2021-01-17 Sun 20:26> |   1.6.1 | Use axios 0.21.1 to fix github security alert. New karaf feature URL                              |
 | <2020-11-07 Sat 17:18> |   1.6.0 | Preview when adding imageUrl, load metadata when image loads, fix add picture/album cancel button |
 | <2020-10-31 Sat 20:52> |   1.5.0 | Use image as thumbnail, when no thumbnail exists, add share link button                           |
