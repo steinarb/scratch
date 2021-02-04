@@ -3,6 +3,7 @@
 .project
 .settings/
 /README.md
+/TAGS
 /oldalbum.db.liquibase/src/test/resources/olddata
 node_modules/
 target/
