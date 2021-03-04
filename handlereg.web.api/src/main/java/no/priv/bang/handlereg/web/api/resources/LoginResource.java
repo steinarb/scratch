@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,19 +54,19 @@ public class LoginResource {
         try {
             subject.login(token);
 
-            return new Loginresultat(true, "");
+            return Loginresultat.with().suksess(true).feilmelding("").build();
         } catch(UnknownAccountException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: unknown account", e);
-            return new Loginresultat(false, "Ukjent konto");
+            return Loginresultat.with().suksess(false).feilmelding("Ukjent konto").build();
         } catch (IncorrectCredentialsException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: wrong password", e);
-            return new Loginresultat(false, "Feil passord");
+            return Loginresultat.with().suksess(false).feilmelding("Feil passord").build();
         } catch (LockedAccountException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
-            return new Loginresultat(false, "Låst konto");
+            return Loginresultat.with().suksess(false).feilmelding("Låst konto").build();
         } catch (AuthenticationException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
-            return new Loginresultat(false, "Ukjent feil");
+            return Loginresultat.with().suksess(false).feilmelding("Ukjent feil").build();
         } catch (Exception e) {
             logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
             throw new InternalServerErrorException();
@@ -81,7 +81,7 @@ public class LoginResource {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
 
-        return new Loginresultat(false, "Logget ut");
+        return Loginresultat.with().suksess(false).feilmelding("Logget ut").build();
     }
 
 }

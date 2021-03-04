@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ class HandlingResourceTest {
     void testGetHandlinger() {
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.findLastTransactions(1)).thenReturn(Arrays.asList(new Transaction()));
+        when(handlereg.findLastTransactions(1)).thenReturn(Arrays.asList(Transaction.with().build()));
         HandlingResource resource = new HandlingResource();
         resource.logservice = logservice;
         resource.handlereg = handlereg;
@@ -79,12 +79,25 @@ class HandlingResourceTest {
     void testNyhandling() {
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
-        Oversikt oversikt = new Oversikt(1, "jd", "johndoe@gmail.com", "John", "Doe", 500);
+        Oversikt oversikt = Oversikt.with()
+            .accountid(1)
+            .brukernavn("jd")
+            .email("johndoe@gmail.com")
+            .fornavn("John")
+            .etternavn("Doe")
+            .balanse(500)
+            .build();
         when(handlereg.registrerHandling(any())).thenReturn(oversikt);
         HandlingResource resource = new HandlingResource();
         resource.logservice = logservice;
         resource.handlereg = handlereg;
-        NyHandling handling = new NyHandling("jd", 1, 1, 510, new Date());
+        NyHandling handling = NyHandling.with()
+            .username("jd")
+            .accountid(1)
+            .storeId(1)
+            .belop(510)
+            .handletidspunkt(new Date())
+            .build();
         Oversikt oppdatertOversikt = resource.nyhandling(handling);
         assertEquals(oversikt.getBalanse(), oppdatertOversikt.getBalanse());
     }
@@ -98,7 +111,13 @@ class HandlingResourceTest {
         HandlingResource resource = new HandlingResource();
         resource.logservice = logservice;
         resource.handlereg = handlereg;
-        NyHandling handling = new NyHandling("jd", 1, 1, 510, new Date());
+        NyHandling handling = NyHandling.with()
+            .username("jd")
+            .accountid(1)
+            .storeId(1)
+            .belop(510)
+            .handletidspunkt(new Date())
+            .build();
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.nyhandling(handling);
             });

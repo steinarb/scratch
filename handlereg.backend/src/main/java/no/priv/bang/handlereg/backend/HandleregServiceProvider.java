@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,14 @@ public class HandleregServiceProvider implements HandleregService {
                         String username = results.getString(2);
                         double balanse = results.getDouble(3);
                         User user = useradmin.getUser(username);
-                        return new Oversikt(userid, username, user.getEmail(), user.getFirstname(), user.getLastname(), balanse);
+                        return Oversikt.with()
+                            .accountid(userid)
+                            .brukernavn(username)
+                            .email(user.getEmail())
+                            .fornavn(user.getFirstname())
+                            .etternavn(user.getLastname())
+                            .balanse(balanse)
+                            .build();
                     }
 
                     return null;
@@ -110,12 +117,13 @@ public class HandleregServiceProvider implements HandleregService {
                 statement.setInt(1, userId);
                 try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
-                        int transactionId = results.getInt(1);
-                        Date transactionTime = new Date(results.getTimestamp(2).getTime());
-                        String butikk = results.getString(3);
-                        int storeId = results.getInt(4);
-                        double belop = results.getDouble(5);
-                        Transaction transaction = new Transaction(transactionId, transactionTime, butikk, storeId, belop);
+                        Transaction transaction = Transaction.with()
+                            .transactionId(results.getInt(1))
+                            .handletidspunkt(new Date(results.getTimestamp(2).getTime()))
+                            .butikk(results.getString(3))
+                            .storeId(results.getInt(4))
+                            .belop(results.getDouble(5))
+                            .build();
                         handlinger.add(transaction);
                     }
                 }
@@ -156,11 +164,12 @@ public class HandleregServiceProvider implements HandleregService {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
-                        int storeId = results.getInt(1);
-                        String storeName = results.getString(2);
-                        int gruppe = results.getInt(3);
-                        int rekkefolge = results.getInt(4);
-                        Butikk butikk = new Butikk(storeId, storeName, gruppe, rekkefolge);
+                        Butikk butikk = Butikk.with()
+                            .storeId(results.getInt(1))
+                            .butikknavn(results.getString(2))
+                            .gruppe(results.getInt(3))
+                            .rekkefolge(results.getInt(4))
+                            .build();
                         butikker.add(butikk);
                     }
                 }
@@ -224,13 +233,16 @@ public class HandleregServiceProvider implements HandleregService {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
-                        int storeId = results.getInt(1);
-                        String storeName = results.getString(2);
-                        int gruppe = results.getInt(3);
-                        int rekkefolge = results.getInt(4);
-                        Butikk butikk = new Butikk(storeId, storeName, gruppe, rekkefolge);
-                        double sum = results.getDouble(5);
-                        ButikkSum butikkSum = new ButikkSum(butikk, sum);
+                        Butikk butikk = Butikk.with()
+                            .storeId(results.getInt(1))
+                            .butikknavn(results.getString(2))
+                            .gruppe(results.getInt(3))
+                            .rekkefolge(results.getInt(4))
+                            .build();
+                        ButikkSum butikkSum = ButikkSum.with()
+                            .butikk(butikk)
+                            .sum(results.getDouble(5))
+                            .build();
                         sumOverButikk.add(butikkSum);
                     }
                 }
@@ -250,13 +262,16 @@ public class HandleregServiceProvider implements HandleregService {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
-                        int storeId = results.getInt(1);
-                        String storeName = results.getString(2);
-                        int gruppe = results.getInt(3);
-                        int rekkefolge = results.getInt(4);
-                        Butikk butikk = new Butikk(storeId, storeName, gruppe, rekkefolge);
-                        long count = results.getLong(5);
-                        ButikkCount butikkSum = new ButikkCount(butikk, count);
+                        Butikk butikk = Butikk.with()
+                            .storeId(results.getInt(1))
+                            .butikknavn(results.getString(2))
+                            .gruppe(results.getInt(3))
+                            .rekkefolge(results.getInt(4))
+                            .build();
+                        ButikkCount butikkSum = ButikkCount.with()
+                            .butikk(butikk)
+                            .count(results.getLong(5))
+                            .build();
                         antallHandlerIButikk.add(butikkSum);
                     }
                 }
@@ -276,13 +291,16 @@ public class HandleregServiceProvider implements HandleregService {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
-                        int storeId = results.getInt(1);
-                        String storeName = results.getString(2);
-                        int gruppe = results.getInt(3);
-                        int rekkefolge = results.getInt(4);
-                        Butikk butikk = new Butikk(storeId, storeName, gruppe, rekkefolge);
-                        Date date = new Date(results.getTimestamp(5).getTime());
-                        ButikkDate butikkSum = new ButikkDate(butikk, date);
+                        Butikk butikk = Butikk.with()
+                            .storeId(results.getInt(1))
+                            .butikknavn(results.getString(2))
+                            .gruppe(results.getInt(3))
+                            .rekkefolge(results.getInt(4))
+                            .build();
+                        ButikkDate butikkSum = ButikkDate.with()
+                            .butikk(butikk)
+                            .date(new Date(results.getTimestamp(5).getTime()))
+                            .build();
                         sisteHandelIButikk.add(butikkSum);
                     }
                 }
@@ -301,9 +319,10 @@ public class HandleregServiceProvider implements HandleregService {
             try (PreparedStatement statement = connection.prepareStatement("select * from sum_over_year_view")) {
                 try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
-                        double sum = results.getDouble(1);
-                        Year year = Year.of(results.getInt(2));
-                        SumYear sumMonth = new SumYear(sum, year);
+                        SumYear sumMonth = SumYear.with()
+                            .sum(results.getDouble(1))
+                            .year(Year.of(results.getInt(2)))
+                            .build();
                         totaltHandlebelopPrAar.add(sumMonth);
                     }
                 }
@@ -322,10 +341,11 @@ public class HandleregServiceProvider implements HandleregService {
             try (PreparedStatement statement = connection.prepareStatement("select * from sum_over_month_view")) {
                 try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
-                        double sum = results.getDouble(1);
-                        Year year = Year.of(results.getInt(2));
-                        Month month = Month.of(results.getInt(3));
-                        SumYearMonth sumMonth = new SumYearMonth(sum, year, month);
+                        SumYearMonth sumMonth = SumYearMonth.with()
+                            .sum(results.getDouble(1))
+                            .year(Year.of(results.getInt(2)))
+                            .month(Month.of(results.getInt(3)))
+                            .build();
                         totaltHandlebelopPrAarOgMaaned.add(sumMonth);
                     }
                 }

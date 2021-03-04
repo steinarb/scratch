@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,14 @@
 package no.priv.bang.handlereg.services;
 
 public class Oversikt {
-    int accountid = -1;
-    String brukernavn;
+    private int accountid;
+    private String brukernavn;
     private String email;
-    String fornavn;
-    String etternavn;
-    double balanse;
+    private String fornavn;
+    private String etternavn;
+    private double balanse;
 
-    public Oversikt() {
-        // jackson trenger no-args constructor
-    }
-
-    public Oversikt(int accountid, String brukernavn, String email, String fornavn, String etternavn, double balanse) {
-        super();
-        this.accountid = accountid;
-        this.brukernavn = brukernavn;
-        this.email = email;
-        this.fornavn = fornavn;
-        this.etternavn = etternavn;
-        this.balanse = balanse;
-    }
+    private Oversikt() {}
 
     public int getAccountid() {
         return accountid;
@@ -64,6 +52,63 @@ public class Oversikt {
     @Override
     public String toString() {
         return "Oversikt [user_id=" + accountid + ", brukernavn=" + brukernavn + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + "]";
+    }
+
+    public static OversiktBuilder with() {
+        OversiktBuilder oversiktBuilder = new OversiktBuilder();
+        return oversiktBuilder;
+    }
+
+    public static class OversiktBuilder {
+        private int accountid = -1;
+        private String brukernavn;
+        private String email;
+        private String fornavn;
+        private String etternavn;
+        private double balanse;
+
+        private OversiktBuilder() {}
+
+        public Oversikt build() {
+            Oversikt oversikt = new Oversikt();
+            oversikt.accountid = this.accountid;
+            oversikt.brukernavn = this.brukernavn;
+            oversikt.email = this.email;
+            oversikt.fornavn = this.fornavn;
+            oversikt.etternavn = this.etternavn;
+            oversikt.balanse = this.balanse;
+            return oversikt;
+        }
+
+        public OversiktBuilder accountid(int accountid) {
+            this.accountid = accountid;
+            return this;
+        }
+
+        public OversiktBuilder brukernavn(String brukernavn) {
+            this.brukernavn = brukernavn;
+            return this;
+        }
+
+        public OversiktBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public OversiktBuilder fornavn(String fornavn) {
+            this.fornavn = fornavn;
+            return this;
+        }
+
+        public OversiktBuilder etternavn(String etternavn) {
+            this.etternavn = etternavn;
+            return this;
+        }
+
+        public OversiktBuilder balanse(double balanse) {
+            this.balanse = balanse;
+            return this;
+        }
     }
 
 }

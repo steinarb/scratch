@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,14 @@ class OversiktTest {
 
     @Test
     void testAllValues() {
-        Oversikt bean = new Oversikt(1, "jad", "janedoe21@gmail.com", "Jane", "Doe", 1041);
+        Oversikt bean = Oversikt.with()
+            .accountid(1)
+            .brukernavn("jad")
+            .email("janedoe21@gmail.com")
+            .fornavn("Jane")
+            .etternavn("Doe")
+            .balanse(1041)
+            .build();
         assertEquals(1, bean.getAccountid());
         assertEquals("jad", bean.getBrukernavn());
         assertEquals("janedoe21@gmail.com", bean.getEmail());
@@ -36,7 +43,7 @@ class OversiktTest {
 
     @Test
     void testAllValuesNoargsConstructor() {
-        Oversikt bean = new Oversikt();
+        Oversikt bean = Oversikt.with().build();
         assertEquals(-1, bean.getAccountid());
         assertNull(bean.getBrukernavn());
         assertNull(bean.getFornavn());

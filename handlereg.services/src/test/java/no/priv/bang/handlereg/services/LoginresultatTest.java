@@ -25,14 +25,14 @@ class LoginresultatTest {
     void testCreate() {
         boolean suksess = true;
         String feilmelding = "Feil passord";
-        Loginresultat bean = new Loginresultat(suksess, feilmelding);
+        Loginresultat bean = Loginresultat.with().suksess(suksess).feilmelding(feilmelding).build();
         assertTrue(bean.getSuksess());
         assertEquals(feilmelding, bean.getFeilmelding());
     }
 
     @Test
     void testNoargsConstructor() {
-        Loginresultat bean = new Loginresultat();
+        Loginresultat bean = Loginresultat.with().build();
         assertFalse(bean.getSuksess());
         assertNull(bean.getFeilmelding());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,42 @@ public class SumYearMonth extends SumYear {
 
     private Month month;
 
-    public SumYearMonth(double sum, Year year, Month month) {
-        super(sum, year);
-        this.month = month;
-    }
-
-    public SumYearMonth() {
-        // No-args constructor requied by jackson
-    }
+    private SumYearMonth() {}
 
     public Month getMonth() {
         return month;
     }
 
+    public static SumYearMonthBuilder with() {
+        return new SumYearMonthBuilder();
+    }
+
+    public static class SumYearMonthBuilder extends SumYearBuilder {
+        private Month month;
+
+        @Override
+        public SumYearMonth build() {
+            SumYearMonth sumYearMonth = new SumYearMonth();
+            copyValues(sumYearMonth);
+            sumYearMonth.month = this.month;
+            return sumYearMonth;
+        }
+
+        @Override
+        public SumYearMonthBuilder sum(double sum) {
+            super.sum(sum);
+            return this;
+        }
+
+        @Override
+        public SumYearMonthBuilder year(Year year) {
+            super.year(year);
+            return this;
+        }
+
+        public SumYearMonthBuilder month(Month month) {
+            this.month = month;
+            return this;
+        }
+    }
 }

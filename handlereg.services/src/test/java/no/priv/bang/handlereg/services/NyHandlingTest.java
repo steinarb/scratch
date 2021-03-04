@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,19 +28,25 @@ class NyHandlingTest {
         String username = "jad";
         int accountid = 2;
         int storeId = 2;
-        double beløp = 42.0;
+        double belop = 42.0;
         Date now = new Date();
-        NyHandling bean = new NyHandling(username, accountid, storeId, beløp, now);
+        NyHandling bean = NyHandling.with()
+            .username(username)
+            .accountid(accountid)
+            .storeId(storeId)
+            .belop(belop)
+            .handletidspunkt(now)
+            .build();
         assertEquals(username, bean.getUsername());
         assertEquals(accountid, bean.getAccountid());
         assertEquals(storeId, bean.getStoreId());
-        assertEquals(beløp, bean.getBelop(), 1.0);
+        assertEquals(belop, bean.getBelop(), 1.0);
         assertEquals(now, bean.getHandletidspunkt());
     }
 
     @Test
     void testNoArgsConstructor() {
-        NyHandling bean = new NyHandling();
+        NyHandling bean = NyHandling.with().build();
         assertNull(bean.getUsername());
         assertEquals(-1, bean.getAccountid());
         assertEquals(-1, bean.getStoreId());

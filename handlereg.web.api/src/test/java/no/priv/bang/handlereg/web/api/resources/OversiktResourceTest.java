@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,14 @@ class OversiktResourceTest extends ShiroTestBase {
     @Test
     void testGetOversikt() {
         HandleregService handlereg = mock(HandleregService.class);
-        Oversikt jdOversikt = new Oversikt(1, "jd", "johndoe@gmail.com", "John", "Doe", 1500);
+        Oversikt jdOversikt = Oversikt.with()
+            .accountid(1)
+            .brukernavn("jd")
+            .email("johndoe@gmail.com")
+            .fornavn("John")
+            .etternavn("Doe")
+            .balanse(1500)
+            .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
         OversiktResource resource = new OversiktResource();
         resource.handlereg = handlereg;
@@ -47,7 +54,14 @@ class OversiktResourceTest extends ShiroTestBase {
     void testGetOversiktNotLoggedIn() {
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
-        Oversikt jdOversikt = new Oversikt(1, "jd", "johndoe@gmail.com", "John", "Doe", 1500);
+        Oversikt jdOversikt = Oversikt.with()
+            .accountid(1)
+            .brukernavn("jd")
+            .email("johndoe@gmail.com")
+            .fornavn("John")
+            .etternavn("Doe")
+            .balanse(1500)
+            .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
         OversiktResource resource = new OversiktResource();
         resource.logservice = logservice;

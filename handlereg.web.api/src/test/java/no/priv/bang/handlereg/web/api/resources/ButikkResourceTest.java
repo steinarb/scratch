@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class ButikkResourceTest {
     void testGetButikker() {
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.finnButikker()).thenReturn(Arrays.asList(new Butikk()));
+        when(handlereg.finnButikker()).thenReturn(Arrays.asList(Butikk.with().build()));
         ButikkResource resource = new ButikkResource();
         resource.logservice = logservice;
         resource.handlereg = handlereg;
@@ -66,7 +66,7 @@ class ButikkResourceTest {
     void testLeggTilButikk() {
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
-        Butikk nybutikk = new Butikk("Spar Høydalsmo");
+        Butikk nybutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
         when(handlereg.leggTilButikk(any())).thenReturn(Arrays.asList(nybutikk));
         ButikkResource resource = new ButikkResource();
         resource.logservice = logservice;
@@ -86,7 +86,7 @@ class ButikkResourceTest {
         resource.logservice = logservice;
         resource.handlereg = handlereg;
 
-        Butikk butikk = new Butikk();
+        Butikk butikk = Butikk.with().build();
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.leggTilButikk(butikk);
             });
@@ -96,7 +96,7 @@ class ButikkResourceTest {
     void testEndreButikk() {
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
-        Butikk endretbutikk = new Butikk("Spar Høydalsmo");
+        Butikk endretbutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
         when(handlereg.endreButikk(any())).thenReturn(Arrays.asList(endretbutikk));
         ButikkResource resource = new ButikkResource();
         resource.logservice = logservice;
@@ -116,7 +116,7 @@ class ButikkResourceTest {
         resource.logservice = logservice;
         resource.handlereg = handlereg;
 
-        Butikk butikk = new Butikk();
+        Butikk butikk = Butikk.with().build();
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.endreButikk(butikk);
             });

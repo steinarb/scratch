@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,12 @@ class HandleregServiceTest {
         int userId = 2;
         List<Transaction> transactions = service.findLastTransactions(userId);
         assertEquals(0, transactions.size());
-        NyHandling handling = new NyHandling();
+        NyHandling handling = NyHandling.with().build();
         Oversikt nyoversikt = service.registrerHandling(handling);
         assertNull(nyoversikt);
         List<Butikk> butikker = service.finnButikker();
         assertEquals(0, butikker.size());
-        Butikk nybutikk = new Butikk();
+        Butikk nybutikk = Butikk.with().build();
         List<Butikk> oppdaterteButikker = service.leggTilButikk(nybutikk);
         assertEquals(0, oppdaterteButikker.size());
         List<Butikk> endredeButikker = service.endreButikk(nybutikk);

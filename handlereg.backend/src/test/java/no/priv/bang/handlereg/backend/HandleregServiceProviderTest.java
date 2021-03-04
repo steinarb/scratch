@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -176,7 +176,13 @@ class HandleregServiceProviderTest {
         double originalBalanse = originalOversikt.getBalanse();
         double nyttBelop = 510;
         Date now = new Date();
-        NyHandling nyHandling = new NyHandling("jod", 1, 1, nyttBelop, now);
+        NyHandling nyHandling = NyHandling.with()
+            .username("jod")
+            .accountid(1)
+            .storeId(1)
+            .belop(nyttBelop)
+            .handletidspunkt(now)
+            .build();
         Oversikt nyOversikt = handlereg.registrerHandling(nyHandling);
         assertThat(nyOversikt.getBalanse()).isEqualTo(originalBalanse + nyttBelop);
     }
@@ -195,7 +201,12 @@ class HandleregServiceProviderTest {
         Oversikt originalOversikt = handlereg.finnOversikt("jod");
         double originalBalanse = originalOversikt.getBalanse();
         double nyttBelop = 510;
-        NyHandling nyHandling = new NyHandling("jod", 1, 1, nyttBelop, null);
+        NyHandling nyHandling = NyHandling.with()
+            .username("jod")
+            .accountid(1)
+            .storeId(1)
+            .belop(nyttBelop)
+            .build();
         Oversikt nyOversikt = handlereg.registrerHandling(nyHandling);
         assertThat(nyOversikt.getBalanse()).isEqualTo(originalBalanse + nyttBelop);
     }
@@ -213,7 +224,13 @@ class HandleregServiceProviderTest {
 
         double nyttBelop = 510;
         Date now = new Date();
-        NyHandling nyHandling = new NyHandling("jd", 1, 1, nyttBelop, now);
+        NyHandling nyHandling = NyHandling.with()
+            .username("jd")
+            .accountid(1)
+            .storeId(1)
+            .belop(nyttBelop)
+            .handletidspunkt(now)
+            .build();
         assertThrows(HandleregException.class, () -> {
                 handlereg.registrerHandling(nyHandling);
             });
@@ -262,7 +279,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<Butikk> butikkerFoerOppdatering = handlereg.finnButikker();
-        Butikk nybutikk = new Butikk("Spar fjellheimen");
+        Butikk nybutikk = Butikk.with().butikknavn("Spar fjellheimen").build();
         List<Butikk> butikker = handlereg.leggTilButikk(nybutikk);
         assertEquals(butikkerFoerOppdatering.size() + 1, butikker.size());
     }
@@ -278,7 +295,7 @@ class HandleregServiceProviderTest {
         handlereg.setUseradmin(useradmin);
         handlereg.activate();
 
-        Butikk nybutikk = new Butikk("Spar fjellheimen", 2, 1500);
+        Butikk nybutikk = Butikk.with().butikknavn("Spar fjellheimen").gruppe(2).rekkefolge(1500).build();
         assertThrows(HandleregException.class, () -> {
                 handlereg.leggTilButikk(nybutikk);
             });
@@ -316,7 +333,7 @@ class HandleregServiceProviderTest {
 
         List<Butikk> butikkerFoerEndring = handlereg.finnButikker();
         int idPaaButikkSomIkkeFinnes = 500;
-        Butikk butikkMedEndretTittel = new Butikk(idPaaButikkSomIkkeFinnes, "Tullebutikk", 300, 400);
+        Butikk butikkMedEndretTittel = Butikk.with().storeId(idPaaButikkSomIkkeFinnes).butikknavn("Tullebutikk").gruppe(300).rekkefolge(400).build();
         List<Butikk> butikker = handlereg.endreButikk(butikkMedEndretTittel);
         assertEquals(butikkerFoerEndring.size(), butikker.size());
         assertEquals(0, logservice.getLogmessages().size()); // Blir tydeligvis ikke noen SQLExceptin av update på en rad som ikke finnes?
@@ -493,10 +510,7 @@ class HandleregServiceProviderTest {
     }
 
     private Butikk endreTittel(Butikk butikk, String butikknavn) {
-        int id = butikk.getStoreId();
-        int gruppe = butikk.getRekkefolge();
-        int rekkefolge = butikk.getRekkefolge();
-        return new Butikk(id, butikknavn, gruppe, rekkefolge);
+        return Butikk.with(butikk).butikknavn(butikknavn).build();
     }
 
 }

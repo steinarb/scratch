@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,13 @@ package no.priv.bang.handlereg.services;
 import java.util.Date;
 
 public class Transaction {
-    int transactionId = -1;
-    Date handletidspunkt;
-    String butikk;
-    private int storeId = -1;
-    double belop;
+    private int transactionId;
+    private Date handletidspunkt;
+    private String butikk;
+    private int storeId;
+    private double belop;
 
-    public Transaction() {
-        // No-args constructor required by jackson
-    }
-
-    public Transaction(int transactionId, Date handletidspunkt, String butikk, int storeId, double belop) {
-        super();
-        this.transactionId = transactionId;
-        this.handletidspunkt = handletidspunkt;
-        this.butikk = butikk;
-        this.storeId = storeId;
-        this.belop = belop;
-    }
+    private Transaction() {}
 
     public int getTransactionId() {
         return transactionId;
@@ -59,5 +48,54 @@ public class Transaction {
 
     public double getBelop() {
         return belop;
+    }
+
+    public static TransactionBuilder with() {
+        return new TransactionBuilder();
+    }
+
+    public static class TransactionBuilder {
+        private int transactionId = -1;
+        private Date handletidspunkt;
+        private String butikk;
+        private int storeId = -1;
+        private double belop;
+
+        private TransactionBuilder() {}
+
+        public Transaction build() {
+            Transaction transaction = new Transaction();
+            transaction.transactionId = this.transactionId;
+            transaction.handletidspunkt = this.handletidspunkt;
+            transaction.butikk = this.butikk;
+            transaction.storeId = this.storeId;
+            transaction.belop = this.belop;
+            return transaction;
+        }
+
+        public TransactionBuilder transactionId(int transactionId) {
+            this.transactionId = transactionId;
+            return this;
+        }
+
+        public TransactionBuilder handletidspunkt(Date handletidspunkt) {
+            this.handletidspunkt = handletidspunkt;
+            return this;
+        }
+
+        public TransactionBuilder butikk(String butikk) {
+            this.butikk = butikk;
+            return this;
+        }
+
+        public TransactionBuilder storeId(int storeId) {
+            this.storeId = storeId;
+            return this;
+        }
+
+        public TransactionBuilder belop(double belop) {
+            this.belop = belop;
+            return this;
+        }
     }
 }

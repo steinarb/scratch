@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,12 @@ import java.util.Date;
 public class NyHandling {
 
     private String username;
-    private int accountid = -1;
-    private int storeId = -1;
+    private int accountid;
+    private int storeId;
     private double belop;
     private Date handletidspunkt;
 
-    public NyHandling() {
-        // No-args constructor required by jackson
-    }
-
-    public NyHandling(String username, int userId, int storeId, double belop, Date transactionTime) {
-        this.username = username;
-        this.accountid = userId;
-        this.storeId = storeId;
-        this.belop = belop;
-        this.handletidspunkt = transactionTime;
-    }
+    private NyHandling() {}
 
     public String getUsername() {
         return username;
@@ -55,6 +45,56 @@ public class NyHandling {
 
     public Date getHandletidspunkt() {
         return handletidspunkt;
+    }
+
+    public static NyHandlingBuilder with() {
+        NyHandlingBuilder nyHandlingBuilder = new NyHandlingBuilder();
+        return nyHandlingBuilder;
+    }
+
+    public static class NyHandlingBuilder {
+        private String username;
+        private int accountid = -1;
+        private int storeId = -1;
+        private double belop;
+        private Date handletidspunkt;
+
+        private NyHandlingBuilder() {}
+
+        public NyHandling build() {
+            NyHandling nyHandling = new NyHandling();
+            nyHandling.username = this.username;
+            nyHandling.accountid = this.accountid;
+            nyHandling.storeId = this.storeId;
+            nyHandling.belop = this.belop;
+            nyHandling.handletidspunkt = this.handletidspunkt;
+            return nyHandling;
+        }
+
+        public NyHandlingBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public NyHandlingBuilder accountid(int accountid) {
+            this.accountid = accountid;
+            return this;
+        }
+
+        public NyHandlingBuilder storeId(int storeId) {
+            this.storeId = storeId;
+            return this;
+        }
+
+        public NyHandlingBuilder belop(double belop) {
+            this.belop = belop;
+            return this;
+        }
+
+        public NyHandlingBuilder handletidspunkt(Date handletidspunkt) {
+            this.handletidspunkt = handletidspunkt;
+            return this;
+        }
     }
 
 }

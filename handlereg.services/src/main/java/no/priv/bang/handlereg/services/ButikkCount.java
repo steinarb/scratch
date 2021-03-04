@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,7 @@ public class ButikkCount {
     private Butikk butikk;
     private long count;
 
-    public ButikkCount(Butikk butikk, long count) {
-        this.butikk = butikk;
-        this.count = count;
-    }
-
-    public ButikkCount() {
-        // No-args constructor required by jackson
-    }
+    private ButikkCount() {}
 
     public Butikk getButikk() {
         return butikk;
@@ -35,6 +28,34 @@ public class ButikkCount {
 
     public long getCount() {
         return count;
+    }
+
+    public static ButikkCountBuilder with() {
+        return new ButikkCountBuilder();
+    }
+
+    public static class ButikkCountBuilder {
+        private Butikk butikk;
+        private long count;
+
+        private ButikkCountBuilder() {}
+
+        public ButikkCount build() {
+            ButikkCount butikkCount = new ButikkCount();
+            butikkCount.butikk = this.butikk;
+            butikkCount.count = this.count;
+            return butikkCount;
+        }
+
+        public ButikkCountBuilder butikk(Butikk butikk) {
+            this.butikk = butikk;
+            return this;
+        }
+
+        public ButikkCountBuilder count(long count) {
+            this.count = count;
+            return this;
+        }
     }
 
 }

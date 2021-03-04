@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,31 +17,12 @@ package no.priv.bang.handlereg.services;
 
 public class Butikk {
 
-    private int storeId = -1;
+    private int storeId;
     private String butikknavn;
     private int gruppe;
     private int rekkefolge;
 
-    public Butikk() {
-        // No-args constructor required by jackson
-    }
-
-    public Butikk(int storeId, String storeName, int gruppe, int rekkefolge) {
-        this.storeId = storeId;
-        this.butikknavn = storeName;
-        this.gruppe = gruppe;
-        this.rekkefolge = rekkefolge;
-    }
-
-    public Butikk(String butikknavn, int gruppe, int rekkefolge) {
-        this.butikknavn = butikknavn;
-        this.gruppe = gruppe;
-        this.rekkefolge = rekkefolge;
-    }
-
-    public Butikk(String butikknavn) {
-        this.butikknavn = butikknavn;
-    }
+    private Butikk() {}
 
     public int getStoreId() {
         return storeId;
@@ -57,6 +38,57 @@ public class Butikk {
 
     public int getRekkefolge() {
         return rekkefolge;
+    }
+
+    public static ButikkBuilder with() {
+        return new ButikkBuilder();
+    }
+
+    public static ButikkBuilder with(Butikk butikk) {
+        ButikkBuilder builder = new ButikkBuilder();
+        builder.storeId = butikk.storeId;
+        builder.butikknavn = butikk.butikknavn;
+        builder.gruppe = butikk.gruppe;
+        builder.rekkefolge = butikk.rekkefolge;
+        return builder;
+    }
+
+    public static class ButikkBuilder {
+
+        private int storeId = -1;
+        private String butikknavn;
+        private int gruppe;
+        private int rekkefolge;
+
+        public Butikk build() {
+            Butikk butikk = new Butikk();
+            butikk.storeId = this.storeId;
+            butikk.butikknavn = this.butikknavn;
+            butikk.gruppe = this.gruppe;
+            butikk.rekkefolge = this.rekkefolge;
+            return butikk;
+        }
+
+        public ButikkBuilder storeId(int storeId) {
+            this.storeId = storeId;
+            return this;
+        }
+
+        public ButikkBuilder butikknavn(String butikknavn) {
+            this.butikknavn = butikknavn;
+            return this;
+        }
+
+        public ButikkBuilder gruppe(int gruppe) {
+            this.gruppe = gruppe;
+            return this;
+        }
+
+        public ButikkBuilder rekkefolge(int rekkefolge) {
+            this.rekkefolge = rekkefolge;
+            return this;
+        }
+
     }
 
 }

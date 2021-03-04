@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "jd";
         String password = "johnnyBoi";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
         assertTrue(resultat.getSuksess());
     }
@@ -47,7 +47,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "jd";
         String password = "feil";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
         assertFalse(resultat.getSuksess());
         assertThat(resultat.getFeilmelding()).startsWith("Feil passord");
@@ -61,7 +61,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "jdd";
         String password = "feil";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
         assertThat(resultat.getFeilmelding()).startsWith("Ukjent konto");
     }

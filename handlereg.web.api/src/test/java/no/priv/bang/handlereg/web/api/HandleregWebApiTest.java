@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     void testLogin() throws Exception {
         String username = "jd";
         String password = "johnnyBoi";
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg , logservice);
@@ -86,7 +86,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     void testLoginWrongPassword() throws Exception {
         String username = "jd";
         String password = "johnniBoi";
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg , logservice);
@@ -104,7 +104,14 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testGetOversikt() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        Oversikt jdOversikt = new Oversikt(1, "jd", "johndoe@gmail.com", "John", "Doe", 1500);
+        Oversikt jdOversikt = Oversikt.with()
+            .accountid(1)
+            .brukernavn("jd")
+            .email("johndoe@gmail.com")
+            .fornavn("John")
+            .etternavn("Doe")
+            .balanse(1500)
+            .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
@@ -119,7 +126,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testGetHandlinger() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.findLastTransactions(eq(1))).thenReturn(Arrays.asList(new Transaction()));
+        when(handlereg.findLastTransactions(eq(1))).thenReturn(Arrays.asList(Transaction.with().build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildGetUrl("/handlinger/1");
@@ -133,12 +140,25 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testPostNyhandlinger() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        Oversikt oversikt = new Oversikt(1, "jd", "johndoe@gmail.com", "John", "Doe", 500);
+        Oversikt oversikt = Oversikt.with()
+            .accountid(1)
+            .brukernavn("jd")
+            .email("johndoe@gmail.com")
+            .fornavn("John")
+            .etternavn("Doe")
+            .balanse(500)
+            .build();
         when(handlereg.registrerHandling(any())).thenReturn(oversikt);
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildPostUrl("/nyhandling");
-        NyHandling handling = new NyHandling("jd", 1, 1, 510, new Date());
+        NyHandling handling = NyHandling.with()
+            .username("jd")
+            .accountid(1)
+            .storeId(1)
+            .belop(510)
+            .handletidspunkt(new Date())
+            .build();
         String postBody = mapper.writeValueAsString(handling);
         request.setBodyContent(postBody);
 
@@ -152,7 +172,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testGetButikker() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.finnButikker()).thenReturn(Arrays.asList(new Butikk()));
+        when(handlereg.finnButikker()).thenReturn(Arrays.asList(Butikk.with().build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildGetUrl("/butikker");
@@ -167,11 +187,11 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testLeggTilButikk() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.finnButikker()).thenReturn(Arrays.asList(new Butikk()));
+        when(handlereg.finnButikker()).thenReturn(Arrays.asList(Butikk.with().build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildPostUrl("/nybutikk");
-        Butikk butikk = new Butikk("Ny butikk");
+        Butikk butikk = Butikk.with().butikknavn("Ny butikk").build();
         String postBody = mapper.writeValueAsString(butikk);
         request.setBodyContent(postBody);
 
@@ -185,11 +205,11 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testEndreButikk() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.endreButikk(any())).thenReturn(Arrays.asList(new Butikk()));
+        when(handlereg.endreButikk(any())).thenReturn(Arrays.asList(Butikk.with().build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildPostUrl("/endrebutikk");
-        Butikk butikk = new Butikk("Ny butikk");
+        Butikk butikk = Butikk.with().butikknavn("Ny butikk").build();
         String postBody = mapper.writeValueAsString(butikk);
         request.setBodyContent(postBody);
 
@@ -203,7 +223,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testGetSumOverButikk() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.sumOverButikk()).thenReturn(Arrays.asList(new ButikkSum(new Butikk("Spar Fjellheimen"), 3345), new ButikkSum(new Butikk("Joker Nord"), 1234)));
+        when(handlereg.sumOverButikk()).thenReturn(Arrays.asList(ButikkSum.with().butikk(Butikk.with().butikknavn("Spar Fjellheimen").build()).sum(3345).build(), ButikkSum.with().butikk(Butikk.with().butikknavn("Joker Nord").build()).sum(1234).build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildGetUrl("/statistikk/sumbutikk");
@@ -221,7 +241,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testAntallHandlingerIButikk() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.antallHandlingerIButikk()).thenReturn(Arrays.asList(new ButikkCount(new Butikk("Spar Fjellheimen"), 3345), new ButikkCount(new Butikk("Joker Nord"), 1234)));
+        when(handlereg.antallHandlingerIButikk()).thenReturn(Arrays.asList(ButikkCount.with().butikk(Butikk.with().butikknavn("Spar Fjellheimen").build()).count(3345).build(), ButikkCount.with().butikk(Butikk.with().butikknavn("Joker Nord").build()).count(1234).build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildGetUrl("/statistikk/handlingerbutikk");
@@ -239,7 +259,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testSisteHandelIButikk() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.sisteHandelIButikk()).thenReturn(Arrays.asList(new ButikkDate(new Butikk("Spar Fjellheimen"), new Date()), new ButikkDate(new Butikk("Joker Nord"), new Date())));
+        when(handlereg.sisteHandelIButikk()).thenReturn(Arrays.asList(ButikkDate.with().butikk(Butikk.with().butikknavn("Spar Fjellheimen").build()).date(new Date()).build(), ButikkDate.with().butikk(Butikk.with().butikknavn("Joker Nord").build()).date(new Date()).build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildGetUrl("/statistikk/sistehandel");
@@ -257,7 +277,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testTotaltHandlebelopPrAar() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.totaltHandlebelopPrAar()).thenReturn(Arrays.asList(new SumYear(2345, Year.of(2001)), new SumYear(3241, Year.of(2002)), new SumYear(3241, Year.of(2003)), new SumYear(3241, Year.of(2004)), new SumYear(3241, Year.of(2005)), new SumYear(3241, Year.of(2006)), new SumYear(3241, Year.of(2007)), new SumYear(3241, Year.of(2008)), new SumYear(3241, Year.of(2009)), new SumYear(3241, Year.of(2010)), new SumYear(3241, Year.of(2011)), new SumYear(3241, Year.of(2012)), new SumYear(3241, Year.of(2013)), new SumYear(3241, Year.of(2014)), new SumYear(3241, Year.of(2015)), new SumYear(3241, Year.of(2016)), new SumYear(3241, Year.of(2017)), new SumYear(3241, Year.of(2018)), new SumYear(3241, Year.of(2019))));
+        when(handlereg.totaltHandlebelopPrAar()).thenReturn(Arrays.asList(SumYear.with().sum(2345).year(Year.of(2001)).build(), SumYear.with().sum(3241).year(Year.of(2002)).build(), SumYear.with().sum(3241).year(Year.of(2003)).build(), SumYear.with().sum(3241).year(Year.of(2004)).build(), SumYear.with().sum(3241).year(Year.of(2005)).build(), SumYear.with().sum(3241).year(Year.of(2006)).build(), SumYear.with().sum(3241).year(Year.of(2007)).build(), SumYear.with().sum(3241).year(Year.of(2008)).build(), SumYear.with().sum(3241).year(Year.of(2009)).build(), SumYear.with().sum(3241).year(Year.of(2010)).build(), SumYear.with().sum(3241).year(Year.of(2011)).build(), SumYear.with().sum(3241).year(Year.of(2012)).build(), SumYear.with().sum(3241).year(Year.of(2013)).build(), SumYear.with().sum(3241).year(Year.of(2014)).build(), SumYear.with().sum(3241).year(Year.of(2015)).build(), SumYear.with().sum(3241).year(Year.of(2016)).build(), SumYear.with().sum(3241).year(Year.of(2017)).build(), SumYear.with().sum(3241).year(Year.of(2018)).build(), SumYear.with().sum(3241).year(Year.of(2019)).build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildGetUrl("/statistikk/sumyear");
@@ -275,7 +295,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testTotaltHandlebelopPrAarOgMaaned() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
-        when(handlereg.totaltHandlebelopPrAarOgMaaned()).thenReturn(Arrays.asList(new SumYearMonth(234, Year.of(2001), Month.JANUARY),new SumYearMonth(234, Year.of(2001), Month.FEBRUARY),new SumYearMonth(234, Year.of(2001), Month.MARCH),new SumYearMonth(234, Year.of(2001), Month.APRIL),new SumYearMonth(234, Year.of(2001), Month.MAY),new SumYearMonth(234, Year.of(2001), Month.JUNE),new SumYearMonth(234, Year.of(2001), Month.JULY),new SumYearMonth(234, Year.of(2001), Month.AUGUST), new SumYearMonth(324, Year.of(2002), Month.SEPTEMBER), new SumYearMonth(324, Year.of(2003), Month.OCTOBER), new SumYearMonth(324, Year.of(2004), Month.NOVEMBER), new SumYearMonth(324, Year.of(2005), Month.DECEMBER), new SumYearMonth(324, Year.of(2006), Month.JANUARY), new SumYearMonth(324, Year.of(2007), Month.JANUARY), new SumYearMonth(324, Year.of(2008), Month.JANUARY), new SumYearMonth(324, Year.of(2009), Month.JANUARY), new SumYearMonth(324, Year.of(2010), Month.JANUARY), new SumYearMonth(324, Year.of(2011), Month.JANUARY), new SumYearMonth(324, Year.of(2012), Month.JANUARY), new SumYearMonth(324, Year.of(2013), Month.JANUARY), new SumYearMonth(324, Year.of(2014), Month.JANUARY), new SumYearMonth(324, Year.of(2015), Month.JANUARY), new SumYearMonth(324, Year.of(2016), Month.JANUARY), new SumYearMonth(324, Year.of(2017), Month.JANUARY), new SumYearMonth(324, Year.of(2018), Month.JANUARY), new SumYearMonth(324, Year.of(2019), Month.JANUARY)));
+        when(handlereg.totaltHandlebelopPrAarOgMaaned()).thenReturn(Arrays.asList(SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.JANUARY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.FEBRUARY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.MARCH).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.APRIL).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.MAY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.JUNE).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.JULY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.AUGUST).build(), SumYearMonth.with().sum(324).year(Year.of(2002)).month(Month.SEPTEMBER).build(), SumYearMonth.with().sum(324).year(Year.of(2003)).month(Month.OCTOBER).build(), SumYearMonth.with().sum(324).year(Year.of(2004)).month(Month.NOVEMBER).build(), SumYearMonth.with().sum(324).year(Year.of(2005)).month(Month.DECEMBER).build(), SumYearMonth.with().sum(324).year(Year.of(2006)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2007)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2008)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2009)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2010)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2011)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2012)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2013)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2014)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2015)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2016)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2017)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2018)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2019)).month(Month.JANUARY).build()));
         MockLogService logservice = new MockLogService();
         HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
         MockHttpServletRequest request = buildGetUrl("/statistikk/sumyearmonth");

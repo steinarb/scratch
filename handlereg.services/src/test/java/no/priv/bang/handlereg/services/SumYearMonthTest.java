@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class SumYearMonthTest {
         double sum = 2345;
         Year year = Year.of(2017);
         Month month = Month.JULY;
-        SumYearMonth bean = new SumYearMonth(sum, year, month);
+        SumYearMonth bean = SumYearMonth.with().sum(sum).year(year).month(month).build();
         assertEquals(sum, bean.getSum());
         assertEquals(year, bean.getYear());
         assertEquals(month, bean.getMonth());
@@ -37,7 +37,7 @@ class SumYearMonthTest {
 
     @Test
     void testNoargsConstructor() {
-        SumYearMonth bean = new SumYearMonth();
+        SumYearMonth bean = SumYearMonth.with().build();
         assertEquals(0, bean.getSum());
         assertNull(bean.getYear());
         assertNull(bean.getMonth());
