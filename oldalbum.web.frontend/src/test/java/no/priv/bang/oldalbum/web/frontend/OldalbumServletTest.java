@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,13 +43,13 @@ public class OldalbumServletTest {
     public void testGetAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "Motorcyle meeting places", "Places motorcylists meet", null, null, 1, null, null, 0, 4);
+        AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("Motorcyle meeting places").description("Places motorcylists meet").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
-        AlbumEntry grava1 = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif", 1, new Date(), "image/jpeg", 71072, 0);
-        AlbumEntry grava2 = new AlbumEntry(4, 2, "/moto/places/grava2", false, "Tyrigrava south view", "View from the south", "https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava2.gif", 2, new Date(), "image/jpeg", 71072, 0);
-        AlbumEntry grava3 = new AlbumEntry(5, 2, "/moto/places/grava3", false, "Tyrigrava Wednesday", "Huge number of motorcyles on Wednesdays", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 3, new Date(), "image/jpeg", 71072, 0);
-        AlbumEntry hove1 = new AlbumEntry(6, 2, "/moto/places/hove1", false, "Hove fjellgaard", "Meeting place in Ål in Hallingdal", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 4, new Date(), "image/jpeg", 71072, 0);
-        AlbumEntry album1 = new AlbumEntry(7, 2, "/moto/places/album1", true, "Sub album", "In another album resides other pictures", null, null, 5, null, null, 0, 0);
+        AlbumEntry grava1 = AlbumEntry.with().id(3).parent(2).path("/moto/places/grava1").album(false).title("Tyrigrava").description("On gamle Mossevei").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
+        AlbumEntry grava2 = AlbumEntry.with().id(4).parent(2).path("/moto/places/grava2").album(false).title("Tyrigrava south view").description("View from the south").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava2.gif").sort(2).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
+        AlbumEntry grava3 = AlbumEntry.with().id(5).parent(2).path("/moto/places/grava3").album(false).title("Tyrigrava Wednesday").description("Huge number of motorcyles on Wednesdays").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(3).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
+        AlbumEntry hove1 = AlbumEntry.with().id(6).parent(2).path("/moto/places/hove1").album(false).title("Hove fjellgaard").description("Meeting place in Ål in Hallingdal").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(4).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
+        AlbumEntry album1 = AlbumEntry.with().id(7).parent(2).path("/moto/places/album1").album(true).title("Sub album").description("In another album resides other pictures").sort(5).childcount(0).build();
         List<AlbumEntry> children = Arrays.asList(grava1, grava2, grava3, album1, hove1);
         when(oldalbum.getChildren(anyInt())).thenReturn(children);
         MockLogService logservice = new MockLogService();
@@ -86,7 +86,20 @@ public class OldalbumServletTest {
     public void testGetPicture() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(3, 2, "/moto/places/grava1", false, "Tyrigrava", "On gamle Mossevei", "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif", 1, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry entry = AlbumEntry.with()
+            .id(3)
+            .parent(2)
+            .path("/moto/places/grava1")
+            .album(false)
+            .title("Tyrigrava")
+            .description("On gamle Mossevei")
+            .imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif")
+            .sort(1)
+            .lastModified(new Date())
+            .contentType("image/jpeg")
+            .contentLength(71072)
+            .build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();
@@ -122,7 +135,7 @@ public class OldalbumServletTest {
     public void testGetEmptyAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, null, null, null, null, 1, null, null, 0, 4);
+        AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();
@@ -158,7 +171,7 @@ public class OldalbumServletTest {
     public void testGetAlbumWithEmptyValues() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
-        AlbumEntry entry = new AlbumEntry(2, 1, "/moto/places/", true, "", "", "", "", 1, null, null, 0, 4);
+        AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("").description("").imageUrl("").thumbnailUrl("").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();

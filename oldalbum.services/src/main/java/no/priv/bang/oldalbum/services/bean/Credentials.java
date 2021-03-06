@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,7 @@ public class Credentials {
     private String username;
     private String password;
 
-    public Credentials(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public Credentials() {
-        // Jackson krever en noargs-konstruktør
-    }
+    private Credentials() {}
 
     public String getUsername() {
         return username;
@@ -37,4 +30,31 @@ public class Credentials {
         return password;
     }
 
+    public static CredentialsBuilder with() {
+        return new CredentialsBuilder();
+    }
+
+    public static class CredentialsBuilder {
+        private String username;
+        private String password;
+
+        private CredentialsBuilder() {}
+
+        public Credentials build() {
+            Credentials credentials = new Credentials();
+            credentials.username = this.username;
+            credentials.password = this.password;
+            return credentials;
+        }
+
+        public CredentialsBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public CredentialsBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+    }
 }

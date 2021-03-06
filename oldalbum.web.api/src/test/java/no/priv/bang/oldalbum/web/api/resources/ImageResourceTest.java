@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,17 @@ class ImageResourceTest {
     @Test
     void testGetMetadata() {
         OldAlbumService backendService = mock(OldAlbumService.class);
-        ImageMetadata mockMetadata = new ImageMetadata(200, new Date(), "image/jpeg", 128000);
+        ImageMetadata mockMetadata = ImageMetadata.with()
+            .status(200)
+            .lastModified(new Date())
+            .contentType("image/jpeg")
+            .contentLength(128000)
+            .build();
         when(backendService.readMetadata(anyString())).thenReturn(mockMetadata);
         ImageResource resource = new ImageResource();
         resource.oldalbum = backendService;
         String url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
-        ImageMetadata metadata = resource.getMetadata(new ImageRequest(url));
+        ImageMetadata metadata = resource.getMetadata(ImageRequest.with().url(url).build());
         assertEquals(200, metadata.getStatus());
         assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
         assertEquals("image/jpeg", metadata.getContentType());

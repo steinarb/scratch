@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -192,7 +192,17 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
+        AlbumEntry modifiedAlbum = AlbumEntry.with()
+            .id(2)
+            .parent(1)
+            .path("/moto/")
+            .album(true)
+            .title("Album has been updated")
+            .description("This is an updated description")
+            .sort(1)
+            .contentLength(0)
+            .childcount(2)
+            .build();
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
@@ -215,12 +225,14 @@ class OldAlbumServiceProviderTest {
         int sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
         int sortValueOfLastItemInDestinationAlbum = allroutes.stream().filter(r -> "/moto/places/hove".equals(r.getPath())).findFirst().get().getSort();
 
-        AlbumEntry movedImage = new AlbumEntry(imageToMove.getId(), destinationAlbum.getId(), "/moto/places/acirc3", false, imageToMove.getTitle(), imageToMove.getDescription(), imageToMove.getImageUrl(), imageToMove.getThumbnailUrl(), imageToMove.getSort(), new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry movedImage = AlbumEntry.with(imageToMove)
+            .parent(destinationAlbum.getId())
+            .path("/moto/places/acirc3")
+            .build();
         allroutes = provider.updateEntry(movedImage);
 
         // Verify that sort values in the original album have been adjusted
-        int sortValueOfNextImageInOriginalAlbumAfterMove = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
-        assertThat(sortValueOfNextImageInOriginalAlbum).isGreaterThan(sortValueOfNextImageInOriginalAlbumAfterMove);
+        int sortValueOfNextImageInOriginalAlbumAfterMove = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();        assertThat(sortValueOfNextImageInOriginalAlbum).isGreaterThan(sortValueOfNextImageInOriginalAlbumAfterMove);
 
         // Verify that image is sorted last in the destination album
         AlbumEntry imageInDestination = allroutes.stream().filter(r -> r.getId() == imageToMove.getId()).findFirst().get();
@@ -237,7 +249,19 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        AlbumEntry modifiedAlbum = new AlbumEntry(357, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, new Date(), "image/jpeg", 71072, 2);
+        AlbumEntry modifiedAlbum = AlbumEntry.with()
+            .id(357)
+            .parent(1)
+            .path("/moto/")
+            .album(true)
+            .title("Album has been updated")
+            .description("This is an updated description")
+            .sort(1)
+            .lastModified(new Date())
+            .contentType("image/jpeg")
+            .contentLength(71072)
+            .childcount(2)
+            .build();
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
@@ -252,11 +276,19 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
+        AlbumEntry albumToAdd = AlbumEntry.with()
+            .parent(1)
+            .path("/newalbum/")
+            .album(true)
+            .title("A new album")
+            .description("A new album for new pictures")
+            .sort(2)
+            .build();
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
-        assertNotEquals(0, addedAlbum.getId());
+        assertNotEquals(albumToAdd.getId(), addedAlbum.getId()); // Placeholder ID is replaced with an actual database id
+        assertThat(addedAlbum.getId()).isPositive();
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
@@ -272,17 +304,29 @@ class OldAlbumServiceProviderTest {
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
         String imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane4", false, "Sylane påsken 1995", "Fra Storerikvollen til Nedalshytta i kraftig vind", imageUrl, "https://www.bang.priv.no/sb/pics/misc/.icons/sylane4.gif", 3, metadata.getLastModified(), metadata.getContentType(), metadata.getContentLength(), 0);
-        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        AlbumEntry pictureToAdd = AlbumEntry.with()
+            .parent(1)
+            .path("/sylane4")
+            .album(false)
+            .title("Sylane påsken 1995")
+            .description("Fra Storerikvollen til Nedalshytta i kraftig vind")
+            .imageUrl(imageUrl)
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane4.gif")
+            .sort(3)
+            .lastModified(metadata.getLastModified())
+            .contentType(metadata.getContentType())
+            .contentLength(metadata.getContentLength())
+            .build();
+        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
-        assertNotEquals(0, addedAlbum.getId());
-        assertEquals(1, addedAlbum.getParent());
-        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
-        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNotNull(addedAlbum.getLastModified());
-        assertNotNull(addedAlbum.getContentType());
-        assertThat(addedAlbum.getContentLength()).isPositive();
+        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
+        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.getParent());
+        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
+        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
+        assertNotNull(addedPicture.getLastModified());
+        assertNotNull(addedPicture.getContentType());
+        assertThat(addedPicture.getContentLength()).isPositive();
     }
 
     @Test
@@ -293,15 +337,24 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane5", false, "Sylane påsken 1996", "Ut på ski, alltid blid", "https://www.bang.priv.no/sb/pics/misc/sylane5.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif", 4, null, null, 0, 0);
-        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        AlbumEntry pictureToAdd = AlbumEntry.with()
+            .parent(1)
+            .path("/sylane5")
+            .album(false)
+            .title("Sylane påsken 1996")
+            .description("Ut på ski, alltid blid")
+            .imageUrl("https://www.bang.priv.no/sb/pics/misc/sylane5.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif")
+            .sort(4)
+            .build();
+        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
-        assertNotEquals(0, addedAlbum.getId());
-        assertEquals(1, addedAlbum.getParent());
-        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
-        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNull(addedAlbum.getLastModified());
+        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.getParent());
+        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
+        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
+        assertNull(addedPicture.getLastModified());
     }
 
     @Test
@@ -320,15 +373,24 @@ class OldAlbumServiceProviderTest {
         provider.setConnectionFactory(connectionFactory);
 
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane5", false, "Sylane påsken 1996", "Ut på ski, alltid blid", "https://www.bang.priv.no/sb/pics/misc/sylane5.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif", 4, null, null, 0, 0);
-        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        AlbumEntry pictureToAdd = AlbumEntry.with()
+            .parent(1)
+            .path("/sylane5")
+            .album(false)
+            .title("Sylane påsken 1996")
+            .description("Ut på ski, alltid blid")
+            .imageUrl("https://www.bang.priv.no/sb/pics/misc/sylane5.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif")
+            .sort(4)
+            .build();
+        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
-        assertNotEquals(0, addedAlbum.getId());
-        assertEquals(1, addedAlbum.getParent());
-        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
-        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNull(addedAlbum.getLastModified());
+        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.getParent());
+        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
+        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
+        assertNull(addedPicture.getLastModified());
     }
 
     @Test
@@ -339,15 +401,24 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/sylane5", false, "Sylane påsken 1996", "Ut på ski, alltid blid", "https://www.bang.priv.no/sb/pics/misc/sylane5.jpg", "https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif", 4, null, null, 0, 0);
-        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        AlbumEntry pictureToAdd = AlbumEntry.with()
+            .parent(1)
+            .path("/sylane5")
+            .album(false)
+            .title("Sylane påsken 1996")
+            .description("Ut på ski, alltid blid")
+            .imageUrl("https://www.bang.priv.no/sb/pics/misc/sylane5.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif")
+            .sort(4)
+            .build();
+        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
-        assertNotEquals(0, addedAlbum.getId());
-        assertEquals(1, addedAlbum.getParent());
-        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
-        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertNull(addedAlbum.getLastModified());
+        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.getParent());
+        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
+        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
+        assertNull(addedPicture.getLastModified());
     }
 
     @SuppressWarnings("unchecked")
@@ -360,7 +431,14 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
+        AlbumEntry albumToAdd = AlbumEntry.with()
+            .parent(1)
+            .path("/newalbum/")
+            .album(true)
+            .title("A new album")
+            .description("A new album for new pictures")
+            .sort(2)
+            .build();
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
@@ -375,7 +453,21 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry pictureToDelete = AlbumEntry.with()
+            .id(7)
+            .parent(3)
+            .path("/oldalbum/moto/places/grava3")
+            .album(false)
+            .title("")
+            .description("Tyrigrava, view from the north. Lotsa bikes here too")
+            .imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif")
+            .sort(1)
+            .lastModified(new Date())
+            .contentType("image/jpeg")
+            .contentLength(71072)
+            .childcount(0)
+            .build();
         List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
         assertThat(allroutes.size()).isLessThan(numberOfEntriesBeforeDelete);
         Optional<AlbumEntry> deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
@@ -393,7 +485,21 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry pictureToDelete = AlbumEntry.with()
+            .id(7)
+            .parent(3)
+            .path("/oldalbum/moto/places/grava3")
+            .album(false)
+            .title("")
+            .description("Tyrigrava, view from the north. Lotsa bikes here too")
+            .imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif")
+            .sort(1)
+            .lastModified(new Date())
+            .contentType("image/jpeg")
+            .contentLength(71072)
+            .childcount(0)
+            .build();
         List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
         assertEquals(numberOfEntriesBeforeDelete, allroutes.size());
         assertEquals(3, logservice.getLogmessages().size());
@@ -443,7 +549,7 @@ class OldAlbumServiceProviderTest {
         provider.activate();
 
         // Try moving an album and failing
-        List<AlbumEntry> allroutes = provider.moveEntryUp(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, null, null, 0, 10));
+        List<AlbumEntry> allroutes = provider.moveEntryUp(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
         assertEquals(0, allroutes.size());
         assertThat(logservice.getLogmessages().size()).isPositive();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
@@ -492,7 +598,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasourceThrowsException);
         provider.activate();
 
-        List<AlbumEntry> allroutes = provider.moveEntryDown(new AlbumEntry(0, 1, null, false, null, null, null, null, 10, null, null, 0, 10));
+        List<AlbumEntry> allroutes = provider.moveEntryDown(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
         assertEquals(0, allroutes.size());
         assertThat(logservice.getLogmessages().size()).isPositive();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
@@ -509,7 +615,21 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        AlbumEntry updatedEntry = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry updatedEntry = AlbumEntry.with()
+            .id(7)
+            .parent(3)
+            .path("/oldalbum/moto/places/grava3")
+            .album(false)
+            .title("")
+            .description("Tyrigrava, view from the north. Lotsa bikes here too")
+            .imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif")
+            .sort(1)
+            .lastModified(new Date())
+            .contentType("image/jpeg")
+            .contentLength(71072)
+            .childcount(0)
+            .build();
         int sort = provider.adjustSortValuesWhenMovingToDifferentAlbum(connection, updatedEntry);
         assertEquals(updatedEntry.getSort(), sort);
     }
@@ -540,7 +660,7 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        int entryCount = provider.findPreviousEntryInTheSameAlbum(connection, new AlbumEntry(), 2);
+        int entryCount = provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
         assertEquals(0, entryCount);
     }
 
@@ -555,7 +675,7 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        int entryCount = provider.findNextEntryInTheSameAlbum(connection, new AlbumEntry(), 2);
+        int entryCount = provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
         assertEquals(0, entryCount);
     }
 

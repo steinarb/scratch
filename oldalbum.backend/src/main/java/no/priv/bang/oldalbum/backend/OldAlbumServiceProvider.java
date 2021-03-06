@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -367,6 +367,24 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return null;
     }
 
+    public ImageMetadata readMetadata(String imageUrl) {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            try {
+                HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
+                connection.setRequestMethod("GET");
+                return ImageMetadata.with()
+                    .status(connection.getResponseCode())
+                    .lastModified(new Date(connection.getHeaderFieldDate("Last-Modified", 0)))
+                    .contentType(connection.getContentType())
+                    .contentLength(getAndParseContentLengthHeader(connection))
+                    .build();
+            } catch (IOException e) {
+                logservice.log(LogService.LOG_WARNING, String.format("Error when reading metadata for %s",  imageUrl), e);
+            }
+        }
+        return null;
+    }
+
     private String quoteStringButNotNull(String string) {
         if (string != null) {
             StringBuilder builder = new StringBuilder(string.length() + 10);
@@ -402,40 +420,35 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private AlbumEntry unpackAlbumEntry(ResultSet results) throws SQLException {
-        int id = results.getInt(1);
-        int parent = results.getInt(2);
-        String path = results.getString(3);
-        boolean album = results.getBoolean(4);
-        String title = results.getString(5);
-        String description = results.getString(6);
-        String imageUrl = results.getString(7);
-        String thumbnailUrl = results.getString(8);
-        int sort = results.getInt(9);
-        Timestamp lastmodifiedTimestamp = results.getTimestamp(10);
-        Date lastmodified = lastmodifiedTimestamp != null ? Date.from(lastmodifiedTimestamp.toInstant()) : null;
-        String contentype = results.getString(11);
-        int contentlength = results.getInt(12);
-        int columncount = results.getMetaData().getColumnCount();
-        int childcount = columncount > 12 ? results.getInt(13) : 0;
-        return new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contentype, contentlength, childcount);
+        return AlbumEntry.with()
+            .id(results.getInt(1))
+            .parent(results.getInt(2))
+            .path(results.getString(3))
+            .album(results.getBoolean(4))
+            .title(results.getString(5))
+            .description(results.getString(6))
+            .imageUrl(results.getString(7))
+            .thumbnailUrl(results.getString(8))
+            .sort(results.getInt(9))
+            .lastModified(timestampToDate(results.getTimestamp(10)))
+            .contentType(results.getString(11))
+            .contentLength(results.getInt(12))
+            .childcount(findChildCount(results))
+            .build();
     }
 
-    public ImageMetadata readMetadata(String imageUrl) {
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            try {
-                HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
-                connection.setRequestMethod("GET");
-                int status = connection.getResponseCode();
-                Date lastModified = new Date(connection.getHeaderFieldDate("Last-Modified", 0));
-                String contentType = connection.getContentType();
-                String contentLengthHeader = connection.getHeaderField("Content-Length");
-                int contentLength = contentLengthHeader != null ? Integer.parseInt(contentLengthHeader) : 0;
-                return new ImageMetadata(status, lastModified, contentType, contentLength);
-            } catch (IOException e) {
-                logservice.log(LogService.LOG_WARNING, String.format("Error when reading metadata for %s",  imageUrl), e);
-            }
-        }
-        return null;
+    private int findChildCount(ResultSet results) throws SQLException {
+        int columncount = results.getMetaData().getColumnCount();
+        return columncount > 12 ? results.getInt(13) : 0;
+    }
+
+    private Date timestampToDate(Timestamp lastmodifiedTimestamp) {
+        return lastmodifiedTimestamp != null ? Date.from(lastmodifiedTimestamp.toInstant()) : null;
+    }
+
+    private int getAndParseContentLengthHeader(HttpURLConnection connection) {
+        String contentLengthHeader = connection.getHeaderField("Content-Length");
+        return contentLengthHeader != null ? Integer.parseInt(contentLengthHeader) : 0;
     }
 
     private HttpConnectionFactory getConnectionFactory() {

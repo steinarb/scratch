@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testModifyalbum() {
-        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
+        AlbumEntry modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
@@ -45,7 +45,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testAddalbum() {
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
+        AlbumEntry albumToAdd = AlbumEntry.with().parent(1).path("/newalbum/").album(true).title("A new album").description("A new album for new pictures").sort(2).build();
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
@@ -58,7 +58,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testModifypicture() {
-        AlbumEntry modifiedPicture = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 1, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry modifiedPicture = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedPicture));
@@ -71,7 +71,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testAddpicture() {
-        AlbumEntry pictureToAdd = new AlbumEntry(2, 1, "/moto/vfr96/acirc1", false, "Picture has been updated", "This is an updated picture description", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 1, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry pictureToAdd = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
@@ -84,7 +84,7 @@ class AlbumentryResourceTest {
 
     @Test
     void testDeleteEntry() {
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 1, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry pictureToDelete = AlbumEntry.with().id(7).parent(3).path("/oldalbum/moto/places/grava3").album(false).title("").description("Tyrigrava, view from the north. Lotsa bikes here too").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         resource.oldalbum = oldalbum;
@@ -94,8 +94,8 @@ class AlbumentryResourceTest {
 
     @Test
     void testMoveEntryUp() {
-        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, null, null, 0, 2);
-        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
+        AlbumEntry albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
+        AlbumEntry movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
@@ -107,8 +107,8 @@ class AlbumentryResourceTest {
 
     @Test
     void testMoveEntryDown() {
-        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
-        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, null, null, 0, 2);
+        AlbumEntry albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
+        AlbumEntry movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
         AlbumentryResource resource = new AlbumentryResource();
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));

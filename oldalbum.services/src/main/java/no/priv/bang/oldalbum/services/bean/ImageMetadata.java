@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,7 @@ public class ImageMetadata {
     private String contentType;
     private int contentLength;
 
-    public ImageMetadata(int status, Date lastModified, String contentType, int contentLength) {
-        this.status = status;
-        this.lastModified = lastModified;
-        this.contentType = contentType;
-        this.contentLength = contentLength;
-    }
-
-    public ImageMetadata() {
-        // NoArgs constructor required by jackson
-    }
+    private ImageMetadata() {}
 
     public int getStatus() {
         return status;
@@ -49,6 +40,48 @@ public class ImageMetadata {
 
     public int getContentLength() {
         return contentLength;
+    }
+
+    public static ImageMetadataBuilder with() {
+        return new ImageMetadataBuilder();
+    }
+
+    public static class ImageMetadataBuilder {
+        private int status;
+        private Date lastModified;
+        private String contentType;
+        private int contentLength;
+
+        private ImageMetadataBuilder() {}
+
+        public ImageMetadata build() {
+            ImageMetadata imageMetadata = new ImageMetadata();
+            imageMetadata.status = this.status;
+            imageMetadata.lastModified = this.lastModified;
+            imageMetadata.contentType = this.contentType;
+            imageMetadata.contentLength = this.contentLength;
+            return imageMetadata;
+        }
+
+        public ImageMetadataBuilder status(int status) {
+            this.status = status;
+            return this;
+        }
+
+        public ImageMetadataBuilder lastModified(Date lastModified) {
+            this.lastModified = lastModified;
+            return this;
+        }
+
+        public ImageMetadataBuilder contentType(String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        public ImageMetadataBuilder contentLength(int contentLength) {
+            this.contentLength = contentLength;
+            return this;
+        }
     }
 
 }

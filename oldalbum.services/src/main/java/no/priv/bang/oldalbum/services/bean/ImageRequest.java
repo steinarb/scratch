@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,31 @@ public class ImageRequest {
 
     private String url;
 
-    public ImageRequest(String url) {
-        this.url = url;
-    }
-
-    public ImageRequest() {
-        // Noargs constructor required by jackson
-    }
+    private ImageRequest() {}
 
     public String getUrl() {
         return url;
+    }
+
+    public static ImageRequestBuilder with() {
+        return new ImageRequestBuilder();
+    }
+
+    public static class ImageRequestBuilder {
+        private String url;
+
+        private ImageRequestBuilder() {}
+
+        public ImageRequest build() {
+            ImageRequest imageRequest = new ImageRequest();
+            imageRequest.url = this.url;
+            return imageRequest;
+        }
+
+        public ImageRequestBuilder url(String url) {
+            this.url = url;
+            return this;
+        }
     }
 
 }

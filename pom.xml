@@ -71,6 +71,7 @@
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
             **/OldAlbumProductionDatabase.java,
+            **/AlbumEntry.java,
         </sonar.cpd.exclusions>
     </properties>
 

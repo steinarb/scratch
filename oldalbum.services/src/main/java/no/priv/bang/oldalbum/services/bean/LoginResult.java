@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,7 @@ public class LoginResult {
     private boolean canModifyAlbum;
     private boolean canLogin;
 
-    public LoginResult(boolean success, String username, String errormessage, boolean canModifyAlbum, boolean canLogin) {
-        this.success = success;
-        this.username = username;
-        this.errormessage = errormessage;
-        this.canModifyAlbum = canModifyAlbum;
-        this.canLogin = canLogin;
-    }
-
-    public LoginResult() {
-        // Jackson krever no-args-konstruktør
-    }
+    private LoginResult() {}
 
     public boolean getSuccess() {
         return success;
@@ -55,4 +45,52 @@ public class LoginResult {
         return canLogin;
     }
 
+    public static LoginResultBuilder with() {
+        return new LoginResultBuilder();
+    }
+
+    public static class LoginResultBuilder {
+        private boolean success;
+        private String username;
+        private String errormessage;
+        private boolean canModifyAlbum;
+        private boolean canLogin;
+
+        private LoginResultBuilder() {}
+
+        public LoginResult build() {
+            LoginResult loginResult = new LoginResult();
+            loginResult.success = this.success;
+            loginResult.username = this.username;
+            loginResult.errormessage = this.errormessage;
+            loginResult.canModifyAlbum = this.canModifyAlbum;
+            loginResult.canLogin = this.canLogin;
+            return loginResult;
+        }
+
+        public LoginResultBuilder success(boolean success) {
+            this.success = success;
+            return this;
+        }
+
+        public LoginResultBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public LoginResultBuilder errormessage(String errormessage) {
+            this.errormessage = errormessage;
+            return this;
+        }
+
+        public LoginResultBuilder canModifyAlbum(boolean canModifyAlbum) {
+            this.canModifyAlbum = canModifyAlbum;
+            return this;
+        }
+
+        public LoginResultBuilder canLogin(boolean canLogin) {
+            this.canLogin = canLogin;
+            return this;
+        }
+    }
 }

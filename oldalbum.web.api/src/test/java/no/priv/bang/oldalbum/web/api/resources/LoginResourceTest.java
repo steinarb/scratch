@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "admin";
         String password = "admin";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         resource.login(credentials); // Ensure user is logged in
 
         LoginResult result = resource.loginCheck();
@@ -94,7 +94,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "admin";
         String password = "admin";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         LoginResult result = resource.login(credentials);
         assertTrue(result.getSuccess());
         assertTrue(result.isCanModifyAlbum());
@@ -110,7 +110,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "jd";
         String password = "johnnyBoi";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         LoginResult result = resource.login(credentials);
         assertTrue(result.getSuccess());
         assertFalse(result.isCanModifyAlbum());
@@ -128,7 +128,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "jd";
         String password = "feil";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         LoginResult result = resource.login(credentials);
         assertFalse(result.getSuccess());
         assertThat(result.getErrormessage()).startsWith("Wrong password");
@@ -146,7 +146,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "jdd";
         String password = "feil";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         LoginResult result = resource.login(credentials);
         assertThat(result.getErrormessage()).startsWith("Unknown account");
     }
@@ -163,7 +163,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "lockeduser";
         String password = "lockpw";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         LoginResult result = resource.login(credentials);
         assertThat(result.getErrormessage()).startsWith("Locked account");
     }
@@ -184,7 +184,7 @@ class LoginResourceTest extends ShiroTestBase {
         doThrow(AuthenticationException.class).when(subject).login(any());
         when(securityManager.createSubject(any())).thenReturn(subject);
         createSubjectAndBindItToThread(securityManager);
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         LoginResult result = resource.login(credentials);
         assertThat(result.getErrormessage()).startsWith("Unknown login error");
     }
@@ -205,7 +205,7 @@ class LoginResourceTest extends ShiroTestBase {
         doThrow(RuntimeException.class).when(subject).login(any());
         when(securityManager.createSubject(any())).thenReturn(subject);
         createSubjectAndBindItToThread(securityManager);
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.login(credentials);
             });
@@ -223,7 +223,7 @@ class LoginResourceTest extends ShiroTestBase {
         String username = "jd";
         String password = "johnnyBoi";
         createSubjectAndBindItToThread();
-        Credentials credentials = new Credentials(username, password);
+        Credentials credentials = Credentials.with().username(username).password(password).build();
         LoginResult resultLogin = resource.login(credentials);
         assertTrue(resultLogin.getSuccess());
         LoginResult resultLogout = resource.logout(credentials);

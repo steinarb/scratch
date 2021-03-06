@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testModifyalbum() throws Exception {
-        AlbumEntry modifiedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
+        AlbumEntry modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
@@ -142,7 +142,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testAddAlbum() throws Exception {
-        AlbumEntry albumToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
+        AlbumEntry albumToAdd = AlbumEntry.with().parent(1).path("/newalbum/").album(true).title("A new album").description("A new album for new pictures").sort(2).build();
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
@@ -160,7 +160,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testAddPicture() throws Exception {
-        AlbumEntry pictureToAdd = new AlbumEntry(0, 1, "/newalbum/", true, "A new album", "A new album for new pictures", null, null, 2, null, null, 0, 0);
+        AlbumEntry pictureToAdd = AlbumEntry.with().parent(1).path("/newalbum/").album(true).title("A new album").description("A new album for new pictures").sort(2).build();
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
@@ -178,7 +178,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testDeleteEntry() throws Exception {
-        AlbumEntry pictureToDelete = new AlbumEntry(7, 3, "/oldalbum/moto/places/grava3", false, "", "Tyrigrava, view from the north. Lotsa bikes here too", "https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg", "https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif", 3, new Date(), "image/jpeg", 71072, 0);
+        AlbumEntry pictureToDelete = AlbumEntry.with().id(7).parent(3).path("/oldalbum/moto/places/grava3").album(false).title("").description("Tyrigrava, view from the north. Lotsa bikes here too").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(3).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         UserManagementService useradmin = mock(UserManagementService.class);
@@ -195,8 +195,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testMoveEntryUp() throws Exception {
-        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, null, null, 0, 2);
-        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
+        AlbumEntry albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
+        AlbumEntry movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
@@ -215,8 +215,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testMoveEntryDown() throws Exception {
-        AlbumEntry albumToMove = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 1, null, null, 0, 2);
-        AlbumEntry movedAlbum = new AlbumEntry(2, 1, "/moto/", true, "Album has been updated", "This is an updated description", null, null, 2, null, null, 0, 2);
+        AlbumEntry albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
+        AlbumEntry movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));
@@ -237,14 +237,19 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     void testGetMetadata() throws Exception {
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
-        ImageMetadata mockMetadata = new ImageMetadata(200, new Date(), "image/jpeg", 128000);
+        ImageMetadata mockMetadata = ImageMetadata.with()
+            .status(200)
+            .lastModified(new Date())
+            .contentType("image/jpeg")
+            .contentLength(128000)
+            .build();
         when(backendService.readMetadata(anyString())).thenReturn(mockMetadata);
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         String url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
-        HttpServletRequest request = buildPostUrl("/image/metadata", new ImageRequest(url));
+        HttpServletRequest request = buildPostUrl("/image/metadata", ImageRequest.with().url(url).build());
         MockHttpServletResponse response = new MockHttpServletResponse();
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());

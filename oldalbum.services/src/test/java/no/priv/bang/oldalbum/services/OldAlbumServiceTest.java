@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,16 +40,16 @@ class OldAlbumServiceTest {
         int parent = 2;
         List<AlbumEntry> children = service.getChildren(parent);
         assertEquals(0, children.size());
-        AlbumEntry modifiedEntry = new AlbumEntry();
+        AlbumEntry modifiedEntry = AlbumEntry.with().build();
         List<AlbumEntry> updatedRoutesOnModifiedEntry = service.updateEntry(modifiedEntry);
         assertEquals(0, updatedRoutesOnModifiedEntry.size());
-        AlbumEntry addedEntry = new AlbumEntry();
+        AlbumEntry addedEntry = AlbumEntry.with().build();
         List<AlbumEntry> updatedRoutesOnAddedEntry = service.addEntry(addedEntry);
         assertEquals(0, updatedRoutesOnAddedEntry.size());
-        AlbumEntry deletedEntry = new AlbumEntry();
+        AlbumEntry deletedEntry = AlbumEntry.with().build();
         List<AlbumEntry> updatedRoutesOnDelete = service.deleteEntry(deletedEntry);
         assertEquals(0, updatedRoutesOnDelete.size());
-        AlbumEntry movedEntry = new AlbumEntry();
+        AlbumEntry movedEntry = AlbumEntry.with().build();
         List<AlbumEntry> updatedRoutesOnEntryMovedUp = service.moveEntryUp(movedEntry);
         assertEquals(0, updatedRoutesOnEntryMovedUp.size());
         List<AlbumEntry> updatedRoutesOnEntryMovedDown = service.moveEntryDown(movedEntry);

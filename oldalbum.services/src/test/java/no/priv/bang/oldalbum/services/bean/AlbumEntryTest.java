@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,21 @@ class AlbumEntryTest {
         Date lastmodified = new Date(800275785000L);
         String contenttype = "image/jpeg";
         int contentlength = 128186;
-        AlbumEntry bean = new AlbumEntry(id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, childcount);
+        AlbumEntry bean = AlbumEntry.with()
+            .id(id)
+            .parent(parent)
+            .path(path)
+            .album(album)
+            .title(title)
+            .description(description)
+            .imageUrl(imageUrl)
+            .thumbnailUrl(thumbnailUrl)
+            .sort(sort)
+            .lastModified(lastmodified)
+            .contentType(contenttype)
+            .contentLength(contentlength)
+            .childcount(childcount)
+            .build();
         assertEquals(id, bean.getId());
         assertEquals(parent, bean.getParent());
         assertEquals(path, bean.getPath());
@@ -56,7 +70,7 @@ class AlbumEntryTest {
 
     @Test
     void testAlbumEntryNoArgsConstructor() {
-        AlbumEntry bean = new AlbumEntry();
+        AlbumEntry bean = AlbumEntry.with().build();
         assertEquals(-1, bean.getId());
         assertNull(bean.getPath());
         assertFalse(bean.isAlbum());

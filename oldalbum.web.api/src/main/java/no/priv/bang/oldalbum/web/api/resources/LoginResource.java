@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,13 @@ public class LoginResource {
         boolean remembered = subject.isAuthenticated();
         boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
         boolean canLogin = shiroRoleOldalbumadminExists();
-        return new LoginResult(remembered, (String) subject.getPrincipal(), "", remembered && canModifyAlbum, canLogin);
+        return LoginResult.with()
+            .success(remembered)
+            .username((String) subject.getPrincipal())
+            .errormessage("")
+            .canModifyAlbum(remembered && canModifyAlbum)
+            .canLogin(canLogin)
+            .build();
     }
 
     @POST
@@ -71,19 +77,25 @@ public class LoginResource {
         try {
             subject.login(token);
             boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
-            return new LoginResult(true, (String) subject.getPrincipal(), "", canModifyAlbum, canLogin);
+            return LoginResult.with()
+                .success(true)
+                .username((String) subject.getPrincipal())
+                .errormessage("")
+                .canModifyAlbum(canModifyAlbum)
+                .canLogin(canLogin)
+                .build();
         } catch(UnknownAccountException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: unknown account", e);
-            return new LoginResult(false, null, "Unknown account", false, canLogin);
+            return LoginResult.with().success(false).errormessage("Unknown account").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (IncorrectCredentialsException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: wrong password", e);
-            return new LoginResult(false, null, "Wrong password", false, canLogin);
+            return LoginResult.with().success(false).errormessage("Wrong password").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (LockedAccountException  e) {
             logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
-            return new LoginResult(false, null, "Locked account", false, canLogin);
+            return LoginResult.with().success(false).errormessage("Locked account").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (AuthenticationException e) {
             logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
-            return new LoginResult(false, null, "Unknown login error", false, canLogin);
+            return LoginResult.with().success(false).errormessage("Unknown login error").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (Exception e) {
             logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
             throw new InternalServerErrorException();
@@ -99,7 +111,7 @@ public class LoginResource {
         subject.logout();
         boolean canLogin = shiroRoleOldalbumadminExists();
 
-        return new LoginResult(false, null, "Logged out", false, canLogin);
+        return LoginResult.with().success(false).errormessage("Logged out").canModifyAlbum(false).canLogin(canLogin).build();
     }
 
     private boolean checkIfUserCanModifyAlbum(Subject subject) {

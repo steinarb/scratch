@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ class CredentialsTest {
     void testCreate() {
         String username = "jd";
         String password = "johnniboi";
-        Credentials bean = new Credentials(username, password);
+        Credentials bean = Credentials.with().username(username).password(password).build();
         assertEquals(username, bean.getUsername());
         assertEquals(password, bean.getPassword());
     }
 
     @Test
     void testNoArgsConstructor() {
-        Credentials bean = new Credentials();
+        Credentials bean = Credentials.with().build();
         assertNull(bean.getUsername());
         assertNull(bean.getPassword());
     }
