@@ -15,6 +15,7 @@
         <feature>scr</feature>
         <feature>authservice-definitions</feature>
         <feature>commons-beanutils</feature>
+        <feature prerequisite='true'>wrap</feature>
         <feature>shiro-web</feature>
     </feature>
 </features>
