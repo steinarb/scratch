@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import org.junit.jupiter.api.Test;
 
 class UserRolesTest {
 
-	@Test
-	void testCreate() {
+    @Test
+    void testCreate() {
         int userid = 42;
         String username = "jdoe";
         String email = "jdoe31@gmail.com";
@@ -37,18 +37,18 @@ class UserRolesTest {
         String description = "This is an administrator";
         Role role = new Role(id, rolename, description);
         List<Role> roles = Arrays.asList(role);
-		UserRoles userroles = new UserRoles(user, roles);
+        UserRoles userroles = new UserRoles(user, roles);
 
-		assertEquals(user, userroles.getUser());
-		assertEquals(role, userroles.getRoles().get(0));
-	}
+        assertEquals(user, userroles.getUser());
+        assertEquals(role, userroles.getRoles().get(0));
+    }
 
-	@Test
-	void testNoargsConstructor() {
-		UserRoles userroles = new UserRoles();
+    @Test
+    void testNoargsConstructor() {
+        UserRoles userroles = new UserRoles();
 
-		assertNull(userroles.getUser());
-		assertNull(userroles.getRoles());
-	}
+        assertNull(userroles.getUser());
+        assertNull(userroles.getRoles());
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,10 +37,10 @@ public class RolePermissions {
      * are null when this constructor is used.
      */
     public RolePermissions() {
-		// Jackson requires a No-args constructor
-	}
+        // Jackson requires a No-args constructor
+    }
 
-	public Role getRole() {
+    public Role getRole() {
         return role;
     }
 
