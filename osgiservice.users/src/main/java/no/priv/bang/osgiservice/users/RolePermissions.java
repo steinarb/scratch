@@ -27,18 +27,7 @@ public class RolePermissions {
     private Role role;
     private List<Permission> permissions;
 
-    public RolePermissions(Role role, List<Permission> permissions) {
-        this.role = role;
-        this.permissions = permissions;
-    }
-
-    /**
-     * No-args constructor mandated by jackson.  All properties
-     * are null when this constructor is used.
-     */
-    public RolePermissions() {
-        // Jackson requires a No-args constructor
-    }
+    private RolePermissions() {}
 
     public Role getRole() {
         return role;
@@ -46,6 +35,34 @@ public class RolePermissions {
 
     public List<Permission> getPermissions() {
         return permissions;
+    }
+
+    public static RolePermissionsBuilder with() {
+        return new RolePermissionsBuilder();
+    }
+
+    public static class RolePermissionsBuilder {
+        private Role role;
+        private List<Permission> permissions;
+
+        private RolePermissionsBuilder() {}
+
+        public RolePermissions build() {
+            RolePermissions rolePermissions = new RolePermissions();
+            rolePermissions.role = this.role;
+            rolePermissions.permissions = this.permissions;
+            return rolePermissions;
+        }
+
+        public RolePermissionsBuilder role(Role role) {
+            this.role = role;
+            return this;
+        }
+
+        public RolePermissionsBuilder permissions(List<Permission> permissions) {
+            this.permissions = permissions;
+            return this;
+        }
     }
 
 }

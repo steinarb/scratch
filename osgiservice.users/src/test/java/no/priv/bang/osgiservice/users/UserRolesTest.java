@@ -31,13 +31,19 @@ class UserRolesTest {
         String email = "jdoe31@gmail.com";
         String firstname = "John";
         String lastname = "Doe";
-        User user = new User(userid, username, email, firstname, lastname);
+        User user = User.with()
+            .userid(userid)
+            .username(username)
+            .email(email)
+            .firstname(firstname)
+            .lastname(lastname)
+            .build();
         int id = 42;
         String rolename = "admin";
         String description = "This is an administrator";
-        Role role = new Role(id, rolename, description);
+        Role role = Role.with().id(id).rolename(rolename).description(description).build();
         List<Role> roles = Arrays.asList(role);
-        UserRoles userroles = new UserRoles(user, roles);
+        UserRoles userroles = UserRoles.with().user(user).roles(roles).build();
 
         assertEquals(user, userroles.getUser());
         assertEquals(role, userroles.getRoles().get(0));
@@ -45,7 +51,7 @@ class UserRolesTest {
 
     @Test
     void testNoargsConstructor() {
-        UserRoles userroles = new UserRoles();
+        UserRoles userroles = UserRoles.with().build();
 
         assertNull(userroles.getUser());
         assertNull(userroles.getRoles());

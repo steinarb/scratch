@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,13 @@ class UserTest {
         String email = "jdoe31@gmail.com";
         String firstname = "John";
         String lastname = "Doe";
-        User user = new User(userid, username, email, firstname, lastname);
+        User user = User.with()
+            .userid(userid)
+            .username(username)
+            .email(email)
+            .firstname(firstname)
+            .lastname(lastname)
+            .build();
         assertEquals(userid, user.getUserid());
         assertEquals(username, user.getUsername());
         assertEquals(email, user.getEmail());
@@ -38,7 +44,7 @@ class UserTest {
 
     @Test
     void testCreateNoargs() {
-        User user = new User();
+        User user = User.with().build();
         assertEquals(-1, user.getUserid());
         assertNull(user.getUsername());
         assertNull(user.getEmail());

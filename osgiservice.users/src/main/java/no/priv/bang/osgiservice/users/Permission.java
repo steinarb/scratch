@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,7 @@ public class Permission {
     private String permissionname;
     private String description;
 
-    public Permission(int id, String permissionname, String description) {
-        this.id = id;
-        this.permissionname = permissionname;
-        this.description = description;
-    }
-
-    public Permission() {
-        // Jersey requires a no-args constructor
-        id = -1;
-    }
+    private Permission() {}
 
     public int getId() {
         return id;
@@ -48,4 +39,38 @@ public class Permission {
         return description;
     }
 
+    public static PermissionBuilder with() {
+        return new PermissionBuilder();
+    }
+
+    public static class PermissionBuilder {
+        private int id = -1;
+        private String permissionname;
+        private String description;
+
+        private PermissionBuilder() {}
+
+        public Permission build() {
+            Permission permission = new Permission();
+            permission.id = this.id;
+            permission.permissionname = this.permissionname;
+            permission.description = this.description;
+            return permission;
+        }
+
+        public PermissionBuilder id(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public PermissionBuilder permissionname(String permissionname) {
+            this.permissionname = permissionname;
+            return this;
+        }
+
+        public PermissionBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+    }
 }

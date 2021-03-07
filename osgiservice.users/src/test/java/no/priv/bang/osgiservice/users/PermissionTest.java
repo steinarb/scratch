@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,11 @@ class PermissionTest {
         int id = 365;
         String permissionname = "user_admin_write";
         String description = "Allow updating user data";
-        Permission bean = new Permission(id, permissionname, description);
+        Permission bean = Permission.with()
+            .id(id)
+            .permissionname(permissionname)
+            .description(description)
+            .build();
         assertEquals(id, bean.getId());
         assertEquals(permissionname, bean.getPermissionname());
         assertEquals(description, bean.getDescription());
@@ -35,7 +39,7 @@ class PermissionTest {
     @Test
     void testNoArgsConstructor() {
         int id = -1;
-        Permission bean = new Permission();
+        Permission bean = Permission.with().build();
         assertEquals(id, bean.getId());
         assertNull(bean.getPermissionname());
         assertNull(bean.getDescription());

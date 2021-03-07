@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,7 @@ public class Role extends Immutable { // NOSONAR Immutable handles added fields
     private String rolename;
     private String description;
 
-    public Role(int id, String rolename, String description) {
-        this.id = id;
-        this.rolename = rolename;
-        this.description = description;
-    }
-
-    public Role() {
-        // Jersey requires a no-args constructor
-        id = -1;
-    }
+    private Role() {}
 
     public int getId() {
         return id;
@@ -49,4 +40,38 @@ public class Role extends Immutable { // NOSONAR Immutable handles added fields
         return description;
     }
 
+    public static RoleBuilder with() {
+        return new RoleBuilder();
+    }
+
+    public static class RoleBuilder {
+        private int id = -1;
+        private String rolename;
+        private String description;
+
+        private RoleBuilder() {}
+
+        public Role build() {
+            Role role = new Role();
+            role.id = this.id;
+            role.rolename = this.rolename;
+            role.description = this.description;
+            return role;
+        }
+
+        RoleBuilder id(int id) {
+            this.id = id;
+            return this;
+        }
+
+        RoleBuilder rolename(String rolename) {
+            this.rolename = rolename;
+            return this;
+        }
+
+        RoleBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+    }
 }

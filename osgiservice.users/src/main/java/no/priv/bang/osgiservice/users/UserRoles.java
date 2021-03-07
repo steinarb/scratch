@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,7 @@ public class UserRoles {
     private User user;
     private List<Role> roles;
 
-    public UserRoles(User user, List<Role> roles) {
-        this.user = user;
-        this.roles = roles;
-    }
-
-    public UserRoles() {
-        // Jackson needs noargs constructor
-    }
+    private UserRoles() {}
 
     public User getUser() {
         return user;
@@ -39,4 +32,31 @@ public class UserRoles {
         return roles;
     }
 
+    public static UserRolesBuilder with() {
+        return new UserRolesBuilder();
+    }
+
+    public static class UserRolesBuilder {
+        private User user;
+        private List<Role> roles;
+
+        private UserRolesBuilder() {}
+
+        public UserRoles build() {
+            UserRoles userRoles = new UserRoles();
+            userRoles.user = this.user;
+            userRoles.roles = this.roles;
+            return userRoles;
+        }
+
+        public UserRolesBuilder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public UserRolesBuilder roles(List<Role> roles) {
+            this.roles = roles;
+            return this;
+        }
+    }
 }

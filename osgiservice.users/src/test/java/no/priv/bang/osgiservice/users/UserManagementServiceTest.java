@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,16 +29,21 @@ class UserManagementServiceTest {
     @Test
     void testServiceDefinition() throws Exception {
         UserManagementService service = mock(UserManagementService.class);
-        when(service.getUsers()).thenReturn(Arrays.asList(new User(42, "jdoe", "jdoe42@gmail.com", "John", "Doe")));
+        when(service.getUsers()).thenReturn(Arrays.asList(User.with().userid(42).username("jdoe").email("jdoe42@gmail.com").firstname("John").lastname("Doe").build()));
         List<User> users = service.getUsers();
         User user = users.get(0);
         List<User> updatedUsers = service.modifyUser(user);
         assertEquals(0, updatedUsers.size());
-        UserAndPasswords userPasswords = new UserAndPasswords();
+        UserAndPasswords userPasswords = UserAndPasswords.with().build();
         List<User> usersAfterPasswordUpdate = service.updatePassword(userPasswords);
         assertEquals(0, usersAfterPasswordUpdate.size());
-        User newUser = new User(-1, "nuser", "nuser@gmail.com", "New", "User");
-        UserAndPasswords newUserWithPasswords = new UserAndPasswords(newUser, "secret", "secret", false);
+        User newUser = User.with().userid(-1).username("nuser").email("nuser@gmail.com").firstname("New").lastname("User").build();
+        UserAndPasswords newUserWithPasswords = UserAndPasswords.with()
+            .user(newUser)
+            .password1("secret")
+            .password2("secret")
+            .passwordsNotIdentical(false)
+            .build();
         List<User> usersAfterUserCreate = service.addUser(newUserWithPasswords);
         assertEquals(0, usersAfterUserCreate.size());
 
@@ -52,25 +57,25 @@ class UserManagementServiceTest {
 
         List<Role> roles = service.getRoles();
         assertEquals(0, roles.size());
-        Role role = new Role();
+        Role role = Role.with().build();
         List<Role> rolesAfterModification = service.modifyRole(role);
         assertEquals(0, rolesAfterModification.size());
-        Role newRole = new Role();
+        Role newRole = Role.with().build();
         List<Role> rolesAfterAddition = service.addRole(newRole);
         assertEquals(0, rolesAfterAddition.size());
 
         List<Permission> permissions = service.getPermissions();
         assertEquals(0, permissions.size());
-        Permission permission = new Permission();
+        Permission permission = Permission.with().build();
         List<Permission> permissionsAfterModification = service.modifyPermission(permission);
         assertEquals(0, permissionsAfterModification.size());
-        Permission newPermission = new Permission();
+        Permission newPermission = Permission.with().build();
         List<Permission> permissionsAfterAddition = service.addPermission(newPermission);
         assertEquals(0, permissionsAfterAddition.size());
 
         Map<String, List<Role>> userRoles = service.getUserRoles();
         assertEquals(0, userRoles.size());
-        UserRoles userroles = new UserRoles(user, roles);
+        UserRoles userroles = UserRoles.with().user(user).roles(roles).build();
         Map<String, List<Role>> userRolesAfterAdd = service.addUserRoles(userroles);
         assertEquals(0, userRolesAfterAdd.size());
         Map<String, List<Role>> userRolesAfterRemove = service.removeUserRoles(userroles);
@@ -78,7 +83,7 @@ class UserManagementServiceTest {
 
         Map<String, List<Permission>> rolesPermissions = service.getRolesPermissions();
         assertEquals(0, rolesPermissions.size());
-        RolePermissions rolepermissions = new RolePermissions(role, permissions);
+        RolePermissions rolepermissions = RolePermissions.with().role(role).permissions(permissions).build();
         Map<String, List<Permission>> rolesPermissionsAfterAdd = service.addRolePermissions(rolepermissions);
         assertEquals(0, rolesPermissionsAfterAdd.size());
         Map<String, List<Permission>> rolesPermissionsAfterRemove = service.removeRolePermissions(rolepermissions);

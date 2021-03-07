@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,22 @@ class UserAndPasswordsTest {
 
     @Test
     void test() {
-        User user = new User(42, "jdoe", "ldoe365@gmail.com", "John", "Doe");
+        User user = User.with()
+            .userid(42)
+            .username("jdoe")
+            .email("ldoe365@gmail.com")
+            .firstname("John")
+            .lastname("Doe")
+            .build();
         String password1 = "secret";
         String password2 = "secret";
         boolean passwordsNotIdentical = true;
-        UserAndPasswords userPasswords = new UserAndPasswords(user, password1, password2, passwordsNotIdentical);
+        UserAndPasswords userPasswords = UserAndPasswords.with()
+            .user(user)
+            .password1(password1)
+            .password2(password2)
+            .passwordsNotIdentical(passwordsNotIdentical)
+            .build();
         assertEquals(user.getUserid(), userPasswords.getUser().getUserid());
         assertEquals(password1, userPasswords.getPassword1());
         assertEquals(password2, userPasswords.getPassword2());
@@ -36,7 +47,7 @@ class UserAndPasswordsTest {
 
     @Test
     void testNoargsConstructor() {
-        UserAndPasswords userPasswords = new UserAndPasswords();
+        UserAndPasswords userPasswords = UserAndPasswords.with().build();
         assertNull(userPasswords.getUser());
         assertNull(userPasswords.getPassword1());
         assertNull(userPasswords.getPassword2());

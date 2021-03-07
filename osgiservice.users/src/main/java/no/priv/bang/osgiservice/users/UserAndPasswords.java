@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,16 +27,7 @@ public class UserAndPasswords {
     private String password2;
     private boolean passwordsNotIdentical;
 
-    public UserAndPasswords(User user, String password1, String password2, boolean passwordsNotIdentical) {
-        this.user = user;
-        this.password1 = password1;
-        this.password2 = password2;
-        this.passwordsNotIdentical = passwordsNotIdentical;
-    }
-
-    public UserAndPasswords() {
-        // No-args constructor is required by jersey
-    }
+    private UserAndPasswords() {}
 
     public User getUser() {
         return user;
@@ -52,6 +43,48 @@ public class UserAndPasswords {
 
     public boolean isPasswordsNotIdentical() {
         return passwordsNotIdentical;
+    }
+
+    public static UserAndPasswordsBuilder with() {
+        return new UserAndPasswordsBuilder();
+    }
+
+    public static class UserAndPasswordsBuilder {
+        private User user;
+        private String password1;
+        private String password2;
+        private boolean passwordsNotIdentical;
+
+        private UserAndPasswordsBuilder() {}
+
+        public UserAndPasswords build() {
+            UserAndPasswords userAndPasswords = new UserAndPasswords();
+            userAndPasswords.user = this.user;
+            userAndPasswords.password1 = this.password1;
+            userAndPasswords.password2 = this.password2;
+            userAndPasswords.passwordsNotIdentical = this.passwordsNotIdentical;
+            return userAndPasswords;
+        }
+
+        public UserAndPasswordsBuilder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public UserAndPasswordsBuilder password1(String password1) {
+            this.password1 = password1;
+            return this;
+        }
+
+        public UserAndPasswordsBuilder password2(String password2) {
+            this.password2 = password2;
+            return this;
+        }
+
+        public UserAndPasswordsBuilder passwordsNotIdentical(boolean passwordsNotIdentical) {
+            this.passwordsNotIdentical = passwordsNotIdentical;
+            return this;
+        }
     }
 
 }

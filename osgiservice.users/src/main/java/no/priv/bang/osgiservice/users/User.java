@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,18 +28,7 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
     private String firstname;
     private String lastname;
 
-    public User(int userid, String username, String email, String firstname, String lastname) {
-        this.userid = userid;
-        this.username = username;
-        this.email = email;
-        this.firstname = firstname;
-        this.lastname = lastname;
-    }
-
-    public User() {
-        // Jersey requires a no-argument constructor
-        userid = -1;
-    }
+    private User() {}
 
     public int getUserid() {
         return userid;
@@ -61,4 +50,52 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         return lastname;
     }
 
+    public static UserBuilder with() {
+        return new UserBuilder();
+    }
+
+    public static class UserBuilder {
+        private int userid = -1;
+        private String username;
+        private String email;
+        private String firstname;
+        private String lastname;
+
+        private UserBuilder() {}
+
+        public User build() {
+            User user = new User();
+            user.userid = this.userid;
+            user.username = this.username;
+            user.email = this.email;
+            user.firstname = this.firstname;
+            user.lastname = this.lastname;
+            return user;
+        }
+
+        public UserBuilder userid(int userid) {
+            this.userid = userid;
+            return this;
+        }
+
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder firstname(String firstname) {
+            this.firstname = firstname;
+            return this;
+        }
+
+        public UserBuilder lastname(String lastname) {
+            this.lastname = lastname;
+            return this;
+        }
+    }
 }

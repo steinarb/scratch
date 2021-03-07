@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class RoleTest {
         int id = 42;
         String rolename = "admin";
         String description = "This is an administrator";
-        Role bean = new Role(id, rolename, description);
+        Role bean = Role.with().id(id).rolename(rolename).description(description).build();
         assertEquals(id, bean.getId());
         assertEquals(rolename, bean.getRolename());
         assertEquals(description, bean.getDescription());
@@ -35,7 +35,7 @@ class RoleTest {
     @Test
     void testNoArgsConstructor() {
         int id = -1;
-        Role bean = new Role();
+        Role bean = Role.with().build();
         assertEquals(id, bean.getId());
         assertNull(bean.getRolename());
         assertNull(bean.getDescription());
