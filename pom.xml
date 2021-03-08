@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xml:space="preserve">
 
-    <!-- Copyright 2018-2019 Steinar Bang                                                -->
+    <!-- Copyright 2018-2021 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -26,6 +26,7 @@
     <modules>
         <module>osgiservice.database</module>
         <module>osgiservice.users</module>
+        <module>jacoco-coverage-report</module>
     </modules>
 
     <properties>
@@ -41,6 +42,7 @@
         <pax.jdbc.version>1.0.1</pax.jdbc.version>
         <osgi-service-adaptors.version>1.0.1</osgi-service-adaptors.version>
         <beans.version>1.0.0</beans.version>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
