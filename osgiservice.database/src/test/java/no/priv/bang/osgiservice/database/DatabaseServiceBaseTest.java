@@ -54,8 +54,7 @@ class DatabaseServiceBaseTest {
             };
 
         assertThrows(DatabaseServiceException.class, () -> {
-                Connection connection = service.getConnection();
-                assertNull(connection);
+                service.getConnection();
             });
     }
 
