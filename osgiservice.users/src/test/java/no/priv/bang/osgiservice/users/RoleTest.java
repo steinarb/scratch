@@ -33,6 +33,18 @@ class RoleTest {
     }
 
     @Test
+    void testCopy() {
+        int id = 42;
+        String rolename = "admin";
+        String description = "This is an administrator";
+        Role bean = Role.with().id(id).rolename(rolename).description(description).build();
+        Role copy = Role.with(bean).build();
+        assertEquals(id, copy.getId());
+        assertEquals(rolename, copy.getRolename());
+        assertEquals(description, copy.getDescription());
+    }
+
+    @Test
     void testNoArgsConstructor() {
         int id = -1;
         Role bean = Role.with().build();

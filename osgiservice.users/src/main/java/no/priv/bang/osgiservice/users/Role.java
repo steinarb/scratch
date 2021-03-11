@@ -44,6 +44,14 @@ public class Role extends Immutable { // NOSONAR Immutable handles added fields
         return new RoleBuilder();
     }
 
+    public static RoleBuilder with(Role role) {
+        RoleBuilder builder = new RoleBuilder();
+        builder.id = role.id;
+        builder.rolename = role.rolename;
+        builder.description = role.description;
+        return builder;
+    }
+
     public static class RoleBuilder {
         private int id = -1;
         private String rolename;
