@@ -59,17 +59,17 @@ public class Role extends Immutable { // NOSONAR Immutable handles added fields
             return role;
         }
 
-        RoleBuilder id(int id) {
+        public RoleBuilder id(int id) {
             this.id = id;
             return this;
         }
 
-        RoleBuilder rolename(String rolename) {
+        public RoleBuilder rolename(String rolename) {
             this.rolename = rolename;
             return this;
         }
 
-        RoleBuilder description(String description) {
+        public RoleBuilder description(String description) {
             this.description = description;
             return this;
         }
