@@ -54,6 +54,16 @@ public class User extends Immutable { // NOSONAR Immutable handles added fields
         return new UserBuilder();
     }
 
+    public static UserBuilder with(User user) {
+        UserBuilder builder = new UserBuilder();
+        builder.userid = user.userid;
+        builder.username = user.username;
+        builder.email = user.email;
+        builder.firstname = user.firstname;
+        builder.lastname = user.lastname;
+        return builder;
+    }
+
     public static class UserBuilder {
         private int userid = -1;
         private String username;

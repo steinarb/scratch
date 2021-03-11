@@ -43,6 +43,28 @@ class UserTest {
     }
 
     @Test
+    void testCopy() {
+        int userid = 42;
+        String username = "jdoe";
+        String email = "jdoe31@gmail.com";
+        String firstname = "John";
+        String lastname = "Doe";
+        User user = User.with()
+            .userid(userid)
+            .username(username)
+            .email(email)
+            .firstname(firstname)
+            .lastname(lastname)
+            .build();
+        User copy = User.with(user).build();
+        assertEquals(userid, copy.getUserid());
+        assertEquals(username, copy.getUsername());
+        assertEquals(email, copy.getEmail());
+        assertEquals(firstname, copy.getFirstname());
+        assertEquals(lastname, copy.getLastname());
+    }
+
+    @Test
     void testCreateNoargs() {
         User user = User.with().build();
         assertEquals(-1, user.getUserid());
