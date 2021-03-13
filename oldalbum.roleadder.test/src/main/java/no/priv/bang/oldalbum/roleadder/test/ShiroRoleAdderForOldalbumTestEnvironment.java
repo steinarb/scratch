@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,13 +56,13 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
     User findAdminuser(String adminusername, String adminpassword) {
         User admin = getUser(adminusername);
         if (admin == null) {
-            User user = new User(0, adminusername, "admin@company.com", "Ad", "Min");
-            UserAndPasswords newUserWithPasswords = new UserAndPasswords(user, adminpassword, adminpassword, false);
+            User user = User.with().userid(0).username(adminusername).email("admin@company.com").firstname("Ad").lastname("Min").build();
+            UserAndPasswords newUserWithPasswords = UserAndPasswords.with().user(user).password1(adminpassword).password2(adminpassword).build();
             List<User> users = useradmin.addUser(newUserWithPasswords);
             Optional<User> adminOpt = users.isEmpty() ? Optional.empty() : users.stream().filter(u -> adminusername.equals(u.getUsername())).findFirst();
             admin = adminOpt.isEmpty() ? null : adminOpt.get();
         } else {
-            UserAndPasswords userAndPasswords = new UserAndPasswords(admin, adminpassword, adminpassword, false);
+            UserAndPasswords userAndPasswords = UserAndPasswords.with().user(admin).password1(adminpassword).password2(adminpassword).build();
             useradmin.updatePassword(userAndPasswords);
         }
         return admin;
@@ -74,7 +74,7 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
             return existingrole.get();
         }
 
-        Role role = new Role(0, "oldalbumadmin", "Created by oldalbum.roleadder.test");
+        Role role = Role.with().id(0).rolename("oldalbumadmin").description("Created by oldalbum.roleadder.test").build();
         useradmin.addRole(role);
         return role;
     }
@@ -83,7 +83,7 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
         if (admin == null) {
             return null;
         }
-        UserRoles adminroles = new UserRoles(admin, Arrays.asList(role));
+        UserRoles adminroles = UserRoles.with().user(admin).roles(Arrays.asList(role)).build();
         useradmin.addUserRoles(adminroles);
         return adminroles;
     }

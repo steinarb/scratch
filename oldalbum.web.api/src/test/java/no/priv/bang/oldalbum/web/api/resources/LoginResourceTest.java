@@ -41,7 +41,7 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLoginCheck() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
@@ -60,7 +60,7 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLoginCheckWhenNotLoggedIn() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
@@ -87,7 +87,7 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLogin() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
@@ -103,7 +103,7 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLoginModifyNotAllowed() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
@@ -120,7 +120,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginWrongPassword() {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.logservice = logservice;
@@ -138,7 +138,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginUknownUser() {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.logservice = logservice;
@@ -155,7 +155,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginLockedUser() {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.logservice = logservice;
@@ -172,7 +172,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginGenericAuthenticationException() {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.logservice = logservice;
@@ -193,7 +193,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginInternalServerError() {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.logservice = logservice;
@@ -216,7 +216,7 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLogout() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;

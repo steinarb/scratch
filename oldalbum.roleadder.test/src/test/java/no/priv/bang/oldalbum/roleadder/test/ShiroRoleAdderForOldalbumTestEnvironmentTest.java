@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
     void testActivateChangeAdminUsername() {
         UserManagementService useradmin = mock(UserManagementService.class);
         when(useradmin.getUser(anyString())).thenThrow(AuthserviceException.class);
-        User newuser = new User(2, "imagemaster", "admin@company.com", "Ad", "Min");
+        User newuser = User.with().userid(2).username("imagemaster").email("admin@company.com").firstname("Ad").lastname("Min").build();
         when(useradmin.addUser(any())).thenReturn(Collections.singletonList(newuser));
         ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
@@ -74,7 +74,7 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
     @Test
     void testActivateChangeAdminPassword() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        User admin = new User(0, "admin", "admin@admin.com", "Admin", "Istrator");
+        User admin = User.with().userid(0).username("admin").email("admin@admin.com").firstname("Admin").lastname("Istrator").build();
         when(useradmin.getUser("admin")).thenReturn(admin);
         ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
@@ -98,7 +98,7 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
     @Test
     void testAddOldalbumRoleWhenRoleAlreadyExist() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role existingRole = new Role(0, "oldalbumadmin", "Already exists");
+        Role existingRole = Role.with().id(0).rolename("oldalbumadmin").description("Already exists").build();
         when(useradmin.getRoles()).thenReturn(Arrays.asList(existingRole));
         ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
@@ -110,7 +110,7 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
     @Test
     void testGiveUserAdminOldalbumRole() {
         UserManagementService useradmin = mock(UserManagementService.class);
-        User admin = new User(0, "admin", "admin@admin.com", "Admin", "Istrator");
+        User admin = User.with().userid(0).username("admin").email("admin@admin.com").firstname("Admin").lastname("Istrator").build();
         ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
         Role role = roleadder.addOldalbumadminRole();

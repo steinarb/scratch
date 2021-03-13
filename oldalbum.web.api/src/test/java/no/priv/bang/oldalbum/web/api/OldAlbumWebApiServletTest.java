@@ -76,7 +76,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.fetchAllRoutes()).thenReturn(allroutes);
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildGetUrl("/login");
@@ -93,7 +93,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.fetchAllRoutes()).thenReturn(allroutes);
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildGetUrl("/allroutes");
@@ -110,7 +110,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.dumpDatabaseSql()).thenReturn(dumpedroutes);
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildGetUrl("/dumproutessql");
@@ -129,7 +129,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/modifyalbum", modifiedAlbum);
@@ -147,7 +147,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/addalbum", albumToAdd);
@@ -165,7 +165,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/addpicture", pictureToAdd);
@@ -182,7 +182,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/deleteentry", pictureToDelete);
@@ -201,7 +201,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/movealbumentryup", albumToMove);
@@ -221,7 +221,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumService backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/movealbumentrydown", albumToMove);
@@ -245,7 +245,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
             .build();
         when(backendService.readMetadata(anyString())).thenReturn(mockMetadata);
         UserManagementService useradmin = mock(UserManagementService.class);
-        Role oldalbumadmin = new Role(7, "oldalbumadmin", "Modify albums");
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         String url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
