@@ -43,6 +43,14 @@ public class Permission {
         return new PermissionBuilder();
     }
 
+    public static PermissionBuilder with(Permission permission) {
+        PermissionBuilder builder = new PermissionBuilder();
+        builder.id = permission.id;
+        builder.permissionname = permission.permissionname;
+        builder.description = permission.description;
+        return builder;
+    }
+
     public static class PermissionBuilder {
         private int id = -1;
         private String permissionname;

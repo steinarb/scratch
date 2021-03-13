@@ -37,6 +37,22 @@ class PermissionTest {
     }
 
     @Test
+    void testCopy() {
+        int id = 365;
+        String permissionname = "user_admin_write";
+        String description = "Allow updating user data";
+        Permission bean = Permission.with()
+            .id(id)
+            .permissionname(permissionname)
+            .description(description)
+            .build();
+        Permission copy = Permission.with(bean).build();
+        assertEquals(id, copy.getId());
+        assertEquals(permissionname, copy.getPermissionname());
+        assertEquals(description, copy.getDescription());
+    }
+
+    @Test
     void testNoArgsConstructor() {
         int id = -1;
         Permission bean = Permission.with().build();
