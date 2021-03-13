@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,9 +51,9 @@ public class HandleregTestdata {
     void addRolesForTestusers() {
         Role handleregbruker = useradmin.getRoles().stream().filter(r -> "handleregbruker".equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
         User jod = useradmin.getUser("jod");
-        useradmin.addUserRoles(new UserRoles(jod, Arrays.asList(handleregbruker)));
+        useradmin.addUserRoles(UserRoles.with().user(jod).roles(Arrays.asList(handleregbruker)).build());
         User jad = useradmin.getUser("jad");
-        useradmin.addUserRoles(new UserRoles(jad, Arrays.asList(handleregbruker)));
+        useradmin.addUserRoles(UserRoles.with().user(jad).roles(Arrays.asList(handleregbruker)).build());
     }
 
 }

@@ -383,7 +383,7 @@ public class HandleregServiceProvider implements HandleregService {
         List<Role> roles = useradmin.getRoles();
         Optional<Role> existingRole = roles.stream().filter(r -> handleregbruker.equals(r.getRolename())).findFirst();
         if (!existingRole.isPresent()) {
-            useradmin.addRole(new Role(-1, handleregbruker, "Bruker av applikasjonen handlereg"));
+            useradmin.addRole(Role.with().id(-1).rolename(handleregbruker).description("Bruker av applikasjonen handlereg").build());
         }
     }
 
