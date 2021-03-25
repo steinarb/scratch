@@ -38,7 +38,6 @@
         <osgi.jdbc.version>1.0.0</osgi.jdbc.version>
         <pax.jdbc.version>1.0.1</pax.jdbc.version>
         <pax.jdbc.version>1.0.1</pax.jdbc.version>
-        <osgi-service-adaptors.version>1.0.1</osgi-service-adaptors.version>
         <beans.version>1.0.0</beans.version>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
@@ -63,12 +62,6 @@
                 <artifactId>mockito-core</artifactId>
                 <version>1.10.19</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.osgi.service.adapters</groupId>
-                <artifactId>jdbc</artifactId>
-                <version>${osgi-service-adaptors.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
