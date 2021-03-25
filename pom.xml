@@ -26,6 +26,7 @@
     <modules>
         <module>osgiservice.database</module>
         <module>osgiservice.users</module>
+        <module>osgiservice.tests</module>
         <module>jacoco-coverage-report</module>
     </modules>
 
