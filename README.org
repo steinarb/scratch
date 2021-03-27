@@ -4,7 +4,7 @@ Common code for Java beans, used in my other projects. Having this code in a lib
 
 ** Status of the project
 
-[[https://travis-ci.org/steinarb/beans][file:https://travis-ci.org/steinarb/beans.svg?branch=master]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=alert_status#.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.beans/beans][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.beans/beans/badge.svg]] [[https://www.javadoc.io/doc/no.priv.bang.beans/beans][file:https://www.javadoc.io/badge/no.priv.bang.beans/beans.svg]]
+[[https://travis-ci.org/steinarb/beans][file:https://travis-ci.org/steinarb/beans.svg?branch=master]] [[https://coveralls.io/r/steinarb/beans][file:https://coveralls.io/repos/steinarb/beans/badge.svg]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.beans%3Abeans][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.beans%3Abeans&metric=alert_status#.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.beans/beans][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.beans/beans/badge.svg]] [[https://www.javadoc.io/doc/no.priv.bang.beans/beans][file:https://www.javadoc.io/badge/no.priv.bang.beans/beans.svg]]
 
 *** Sonarqube
 
