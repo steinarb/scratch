@@ -26,6 +26,7 @@
     <modules>
         <module>beans.immutable</module>
         <module>karaf</module>
+        <module>beans.tests</module>
         <module>jacoco-coverage-report</module>
     </modules>
 
@@ -53,6 +54,12 @@
                 <version>${junit.jupiter.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
