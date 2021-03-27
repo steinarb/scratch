@@ -1,6 +1,6 @@
 package no.priv.bang.beans.immutable;
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,13 +59,13 @@ class ImmutableTest {
     void testIntBeanDifferentClass() {
         IntBean bean1 = new IntBean(1, 42);
         String notABean = "not a bean";
-        assertNotEquals(bean1, notABean);
+        assertNotEquals(bean1, notABean); // NOSONAR The entire point here is to test bean equals against an instance of different class
     }
 
     @Test
     void testIntBeanSameBean() {
         IntBean bean1 = new IntBean(1, 42);
-        assertEquals(bean1, bean1);
+        assertEquals(bean1, bean1); // NOSONAR The entire point here is to test bean equals against the same instance
     }
 
     @Test
