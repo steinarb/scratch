@@ -31,12 +31,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.jupiter.version>5.7.1</junit.jupiter.version>
         <maven.bundle.plugin.version>3.5.1</maven.bundle.plugin.version>
-        <karaf.version>4.2.6</karaf.version>
+        <karaf.version>4.2.11</karaf.version>
     </properties>
 
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.karaf</groupId>
+                <artifactId>karaf-bom</artifactId>
+                <version>${karaf.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
@@ -55,11 +62,6 @@
                 <artifactId>mockito-core</artifactId>
                 <version>1.10.19</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.9</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
