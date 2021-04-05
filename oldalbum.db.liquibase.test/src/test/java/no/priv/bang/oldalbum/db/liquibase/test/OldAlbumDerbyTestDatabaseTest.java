@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
@@ -29,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-import liquibase.exception.LiquibaseException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumDerbyTestDatabaseTest {
@@ -47,11 +47,12 @@ class OldAlbumDerbyTestDatabaseTest {
         assertDummyDataAsExpected(datasource);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testCreateInitialSchemaWithLiquibaseException() throws Exception {
         DataSource datasource = mock(DataSource.class);
-        when(datasource.getConnection()).thenThrow(LiquibaseException.class);
+        Connection connection = mock(Connection.class);
+        when (connection.getMetaData()).thenThrow(SQLException.class);
+        when(datasource.getConnection()).thenReturn(connection);
         MockLogService logservice = new MockLogService();
         OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
         hook.setLogService(logservice);
