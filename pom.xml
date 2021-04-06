@@ -35,7 +35,6 @@
         <maven.bundle.plugin.version>5.1.1</maven.bundle.plugin.version>
         <karaf.version>4.2.11</karaf.version>
         <junit.jupiter.version>5.7.1</junit.jupiter.version>
-        <junit.platform.version>1.5.2</junit.platform.version>
         <beans.version>1.0.0</beans.version>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
