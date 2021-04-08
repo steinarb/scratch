@@ -45,7 +45,7 @@ public class OsgiServiceIntegrationTest extends KarafTestSupport {
         final MavenArtifactUrlReference usersFeatureRepo = maven()
             .groupId("no.priv.bang.osgiservice")
             .artifactId("osgiservice.users")
-            .version("LATEST")
+            .versionAsInProject()
             .type("xml")
             .classifier("features");
         Option[] options = new Option[] { features(databaseFeatureRepo), features(usersFeatureRepo) };
