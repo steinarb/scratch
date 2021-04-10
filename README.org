@@ -1,0 +1,15 @@
+* Master BoM and POM
+
+[[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.pom/bang-bompom][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.pom/bang-bompom/badge.svg]]
+
+This project contains common maven plugin configurations and versions used across my project.
+
+This project also contains common versions of code used in development and testing (JUnit, mockito, assertJ).
+
+The purpose of this clutter is to get a single point of change for boring configuration stuff as well as slimming down the top pom files of my maven projects.
+
+** Release history
+
+| Date | Version | Highlights                                                                    |
+|------+---------+-------------------------------------------------------------------------------|
+|      |   1.0.0 | bundle-plugin 5.1.1, karaf 4.2.11, junit 5.7.1, mockito 3,8.0, assertj 3.19.0 |
