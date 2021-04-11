@@ -39,7 +39,7 @@ public class BeansIntegrationTest extends KarafTestSupport {
         final MavenArtifactUrlReference beansFeatureRepo = maven()
             .groupId("no.priv.bang.beans")
             .artifactId("karaf")
-            .versionAsInProject()
+            .version("LATEST")
             .type("xml")
             .classifier("features");
         Option[] options = new Option[] {
