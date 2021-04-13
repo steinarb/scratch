@@ -42,5 +42,6 @@
         <osgi.log.service.version>${osgi.service.version}</osgi.log.service.version>
         <pax.jdbc.version>1.3.1</pax.jdbc.version>
         <derby.version>10.11.1.1</derby.version>
+        <postgresql.version>42.2.17</postgresql.version>
     </properties>
 </project>
