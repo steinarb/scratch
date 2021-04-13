@@ -38,6 +38,11 @@
                 <artifactId>mockito-core</artifactId>
                 <version>${mockito.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.mockrunner</groupId>
+                <artifactId>mockrunner-servlet</artifactId>
+                <version>${mockrunner.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
