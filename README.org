@@ -13,3 +13,12 @@ The purpose of this clutter is to get a single point of change for boring config
 | Date | Version | Highlights                                                                    |
 |------+---------+-------------------------------------------------------------------------------|
 |      |   1.0.0 | bundle-plugin 5.1.1, karaf 4.2.11, junit 5.7.1, mockito 3,8.0, assertj 3.19.0 |
+** Usage
+Use the following parent in the project:
+#+begin_src xml
+  <parent>
+      <groupId>no.priv.bang.pom</groupId>
+      <artifactId>bang-pom</artifactId>
+      <version>1.0.0</version>
+  </parent>
+#+end_src
