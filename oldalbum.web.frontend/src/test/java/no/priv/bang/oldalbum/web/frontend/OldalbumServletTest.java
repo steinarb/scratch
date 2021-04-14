@@ -15,9 +15,8 @@
  */
 package no.priv.bang.oldalbum.web.frontend;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
@@ -35,6 +34,9 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+
+import org.junit.jupiter.api.Test;
+
 import static javax.servlet.http.HttpServletResponse.*;
 
 public class OldalbumServletTest {
