@@ -95,6 +95,18 @@
                 <type>xml</type>
                 <classifier>features</classifier>
             </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.karaf</groupId>
+                <artifactId>liquibase-core-karaf</artifactId>
+                <version>${liquibase.version}</version>
+                <type>xml</type>
+                <classifier>features</classifier>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
