@@ -12,9 +12,10 @@ Common code related to JDBC.
 
 ** Release history
 
-| Date                   | Version | Comment                  |
-|------------------------+---------+--------------------------|
-| <2020-01-03 Fri 23:55> |   1.0.0 | Add JDBC DataSourceProxy |
+| Date                   | Version | Comment                                                                  |
+|------------------------+---------+--------------------------------------------------------------------------|
+| <2021-04-15 Thu 19:49> |   1.1.0 | Get dependencies and maven config from parent POM. New versions of stuff |
+| <2020-01-03 Fri 23:55> |   1.0.0 | Add JDBC DataSourceProxy                                                 |
 
 ** Overview of the project
 
@@ -28,13 +29,13 @@ To use this in an OSGi maven project add the following dependencies:
       <dependency>
           <groupId>no.priv.bang.jdbc</groupId>
           <artifactId>jdbc.datasourceproxy</artifactId>
-          <version>1.0.0</version>
+          <version>1.1.0</version>
           <scope>provided</scope>
       </dependency>
       <dependency>
           <groupId>no.priv.bang.jdbc</groupId>
           <artifactId>jdbc.datasourceproxy</artifactId>
-          <version>1.0.0</version>
+          <version>1.1.0</version>
           <type>xml</type>
           <classifier>features</classifier>
       </dependency>
