@@ -10,9 +10,9 @@ The purpose of this clutter is to get a single point of change for boring config
 
 ** Release history
 
-| Date | Version | Highlights                                                                    |
-|------+---------+-------------------------------------------------------------------------------|
-|      |   1.0.0 | bundle-plugin 5.1.1, karaf 4.2.11, junit 5.7.1, mockito 3,8.0, assertj 3.19.0 |
+| Date                   | Version | Highlights                                                                   |
+|------------------------+---------+------------------------------------------------------------------------------|
+| <2021-04-15 Thu 00:20> |   1.0.0 | bundle-plugin 5.1.2, karaf 4.3.0, junit 5.7.1, mockito 3,8.0, assertj 3.19.0 |
 ** Usage
 Use the following parent in the project:
 #+begin_src xml
