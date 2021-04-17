@@ -111,6 +111,12 @@
             <artifactId>servlet.frontend</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>no.priv.bang.servlet</groupId>
+            <artifactId>servlet.frontend</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
     </dependencies>
 
     <build>
