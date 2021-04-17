@@ -49,13 +49,10 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <bang-osgi-service.version>1.7.2</bang-osgi-service.version>
         <osgi-service-adapters.version>1.1.2</osgi-service-adapters.version>
-        <bang-servlet.version>1.5.1
-        </bang-servlet.version>
+        <bang-servlet.version>1.5.3</bang-servlet.version>
         <authservice.version>1.13.1</authservice.version>
         <shiro.version>1.7.0</shiro.version>
         <beans.version>1.1.2</beans.version>
-        <jackson.version>2.12.1</jackson.version>
-        <jersey.version>2.33</jersey.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
@@ -103,15 +100,10 @@
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.servlet</groupId>
-                <artifactId>servlet.frontend</artifactId>
+                <artifactId>servlet-bom</artifactId>
                 <version>${bang-servlet.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.servlet</groupId>
-                <artifactId>servlet.jersey</artifactId>
-                <version>${bang-servlet.version}</version>
-                <scope>provided</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.shiro</groupId>
@@ -123,46 +115,6 @@
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-web</artifactId>
                 <version>${shiro.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-servlet</artifactId>
-                <version>${jersey.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-moxy</artifactId>
-                <version>${jersey.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson</artifactId>
-                <version>${jersey.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
