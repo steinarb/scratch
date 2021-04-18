@@ -43,7 +43,7 @@
 
     <properties>
         <snakeyaml.version>1.17</snakeyaml.version>
-        <bang-osgi-service>1.7.1</bang-osgi-service>
+        <bang-osgi-service>1.7.2</bang-osgi-service>
         <osgi-service-adapters.version>1.1.1</osgi-service-adapters.version>
         <bang-servlet.version>1.5.1</bang-servlet.version>
         <authservice.version>1.13.1</authservice.version>
@@ -83,6 +83,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>no.priv.bang.osgiservice</groupId>
+                <artifactId>osgiservice-bom</artifactId>
+                <version>${bang-osgi-service}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>no.priv.bang.osgi.service.adapters</groupId>
                 <artifactId>adapters.logservice</artifactId>
                 <version>${osgi-service-adapters.version}</version>
@@ -93,12 +100,6 @@
                 <artifactId>service-mocks</artifactId>
                 <version>${osgi-service-adapters.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.priv.bang.osgiservice</groupId>
-                <artifactId>osgiservice.users</artifactId>
-                <version>${bang-osgi-service}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>no.priv.bang.servlet</groupId>

@@ -101,7 +101,6 @@
         <dependency>
             <groupId>no.priv.bang.osgiservice</groupId>
             <artifactId>osgiservice.users</artifactId>
-            <version>${bang-osgi-service}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
