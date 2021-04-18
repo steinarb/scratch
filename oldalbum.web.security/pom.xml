@@ -40,6 +40,12 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
+            <artifactId>authservice.definitions</artifactId>
+            <groupId>no.priv.bang.authservice</groupId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.component.annotations</artifactId>
             <scope>provided</scope>

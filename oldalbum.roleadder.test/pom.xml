@@ -47,13 +47,11 @@
         <dependency>
             <artifactId>authservice.definitions</artifactId>
             <groupId>no.priv.bang.authservice</groupId>
-            <version>${authservice.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <artifactId>authservice.definitions</artifactId>
             <groupId>no.priv.bang.authservice</groupId>
-            <version>${authservice.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
