@@ -27,9 +27,8 @@
     <dependencies>
         <dependency>
             <groupId>no.priv.bang.beans</groupId>
-            <artifactId>karaf</artifactId>
+            <artifactId>beans.immutable</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
