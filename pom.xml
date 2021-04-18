@@ -33,6 +33,7 @@
         <module>karaf</module>
         <module>beans.tests</module>
         <module>jacoco-coverage-report</module>
+        <module>beans-bom</module>
     </modules>
 
     <properties>
