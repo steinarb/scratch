@@ -14,6 +14,7 @@ Common code for Java beans, used in my other projects. Having this code in a lib
 
 | Date                   | Version | Comment                                                             |
 |------------------------+---------+---------------------------------------------------------------------|
+| <2021-04-18 Sun 22:47> |   1.1.2 | Add a "Bill of Materials" (BoM)                                     |
 | <2021-04-15 Thu 00:43> |   1.1.1 | Get common maven dependencies and maven plugin config from parent   |
 | <2021-04-11 Sun 21:43> |   1.1.0 | Built with karaf 4.3.0 and OSGi 7                                   |
 | <2019-12-31 Tue 00:47> |   1.0.0 | Adds bean base class Immutable implementing hashCode() and equals() |
@@ -38,7 +39,7 @@ To use the latest version of the OSGi bundle in a maven project, or just use it 
       <dependency>
           <groupId>no.priv.bang.beans</groupId>
           <artifactId>beans.immutable</artifactId>
-          <version>1.1.1</version>
+          <version>1.1.2</version>
       </dependency>
       <dependency>
           <groupId>org.apache.commons</groupId>
@@ -55,7 +56,7 @@ To use the latest version of the OSGi bundle in a maven project, building an OSG
           <dependency>
               <groupId>no.priv.bang.beans</groupId>
               <artifactId>beans.immutable</artifactId>
-              <version>1.1.1</version>
+              <version>1.1.2</version>
               <scope>provided</scope>
           </dependency>
           <dependency>
@@ -69,7 +70,7 @@ To use the latest version of the OSGi bundle in a maven project, building an OSG
  2. Add a load of the feature repository containing beans.immutable and depend on the beans-immutable feature from your projects template feature.xml (src/main/feature/feature.xml):
     #+begin_src xml
       <features>
-          <repository>mvn:no.priv.bang.beans/beans/1.1.1/xml/features</repository>
+          <repository>mvn:no.priv.bang.beans/beans/1.1.2/xml/features</repository>
           <feature name="my-feature">
               <feature>beans-immutable</feature>
           </feature>
