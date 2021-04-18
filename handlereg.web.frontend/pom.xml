@@ -101,6 +101,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.osgi.service.adapters</groupId>
+            <artifactId>adapters.logservice</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.servlet</groupId>
             <artifactId>servlet.frontend</artifactId>
             <scope>provided</scope>
