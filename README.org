@@ -6,7 +6,7 @@ This project contains common maven plugin configurations and versions used acros
 
 This project also contains common versions of code used in development and testing (JUnit, mockito, assertJ).
 
-The purpose of this clutter is to get a single point of change for boring configuration stuff as well as slimming down the top pom files of my maven projects.
+The purpose of this maven parent, is to get a single point of change for boring configuration stuff as well as slimming down the top pom files of my maven projects.
 
 ** Release history
 
