@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <!-- Copyright 2018-2019 Steinar Bang                                                -->
+    <!-- Copyright 2018-2021 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -155,5 +155,39 @@
 
         <createView viewName="sum_over_month_view" fullDefinition="false" >select sum(t.transaction_amount) as aggregate_amount, extract(year from t.transaction_time) as aggregate_year, extract(month from t.transaction_time) as aggregate_month from transactions t group by extract(year from t.transaction_time), extract(month from t.transaction_time) order by extract(year from t.transaction_time), extract(month from t.transaction_time)</createView>
     </changeSet>
+
+
+    <changeSet author="sb" id="handlereg-1.0.0-favourites">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="favourites" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="favourites">
+            <column autoIncrement="true" name="favourite_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="favourites_primary_key"/>
+            </column>
+            <column name="account_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fk_favourites_account" references="accounts(account_id)"/>
+            </column>
+            <column name="store_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fk_favourites_store" references="stores(store_id)"/>
+            </column>
+            <column name="rekkefolge" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="favourites_account_id_index" tableName="favourites">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex indexName="favourites_store_id_index" tableName="favourites">
+            <column name="store_id"/>
+        </createIndex>
+
+    </changeSet>
+
 
 </databaseChangeLog>

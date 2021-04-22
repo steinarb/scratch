@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,8 @@ class HandleregLiquibaseTest {
         assertStores(connection);
         addTransactions(connection);
         assertTransactions(connection);
+        addFavourites(connection);
+        assertFavourites(connection);
         handleregLiquibase.updateSchema(connection);
     }
 
@@ -233,6 +236,39 @@ class HandleregLiquibaseTest {
         assertEquals(amount, results.getDouble(5), 0.1);
         assertEquals(storename, results.getString(7));
         assertEquals(username, results.getString(12));
+    }
+
+    private void addFavourites(Connection connection) throws Exception {
+        int accountid = findAccountId(connection, "admin");
+        int storeid = findStoreIds(connection).entrySet().stream().findFirst().get().getValue();
+        addFavourite(connection, accountid, storeid, 10);
+    }
+
+    private void addFavourite(Connection connection, int accountid, int storeid, int rekkefolge) throws Exception {
+        try(PreparedStatement statement = connection.prepareStatement("insert into favourites (account_id, store_id, rekkefolge) values (?, ?, ?)")) {
+            statement.setInt(1, accountid);
+            statement.setInt(2, storeid);
+            statement.setInt(3, rekkefolge);
+            statement.executeUpdate();
+        }
+    }
+
+    private void assertFavourites(Connection connection) throws Exception {
+        int accountid = findAccountId(connection, "admin");
+        int storeid = findStoreIds(connection).entrySet().stream().findFirst().get().getValue();
+        int rekkefolge = 10;
+        try(PreparedStatement statement = connection.prepareStatement("select * from favourites")) {
+            ResultSet results = statement.executeQuery();
+            assertFavourite(results, accountid, storeid, rekkefolge);
+        }
+
+    }
+
+    private void assertFavourite(ResultSet results, int accountid, int storeid, int rekkefolge) throws Exception {
+        assertTrue(results.next());
+        assertEquals(accountid, results.getInt(2));
+        assertEquals(storeid, results.getInt(3));
+        assertEquals(rekkefolge, results.getInt(4));
     }
 
     private Connection createConnection() throws Exception {
