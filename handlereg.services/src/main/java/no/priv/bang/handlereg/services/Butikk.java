@@ -15,7 +15,9 @@
  */
 package no.priv.bang.handlereg.services;
 
-public class Butikk {
+import no.priv.bang.beans.immutable.Immutable;
+
+public class Butikk extends Immutable {
 
     private int storeId;
     private String butikknavn;

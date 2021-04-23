@@ -35,6 +35,20 @@ class ButikkTest {
     }
 
     @Test
+    void testCopy() {
+        int storeId = 1;
+        String storeName = "Spar fjelheimen";
+        int gruppe = 2;
+        int rekkefolge = 140;
+        Butikk bean = Butikk.with().storeId(storeId).butikknavn(storeName).gruppe(gruppe).rekkefolge(rekkefolge).build();
+        Butikk copy = Butikk.with(bean).build();
+        assertEquals(storeId, copy.getStoreId());
+        assertEquals(storeName, copy.getButikknavn());
+        assertEquals(gruppe, copy.getGruppe());
+        assertEquals(rekkefolge, copy.getRekkefolge());
+    }
+
+    @Test
     void testConstructorWithoutId() {
         String storeName = "Spar fjelheimen";
         int gruppe = 2;

@@ -42,10 +42,6 @@ public class Transaction {
         return storeId;
     }
 
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
-    }
-
     public double getBelop() {
         return belop;
     }

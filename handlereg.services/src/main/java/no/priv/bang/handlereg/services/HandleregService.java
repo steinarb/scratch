@@ -41,4 +41,12 @@ public interface HandleregService {
 
     List<SumYearMonth> totaltHandlebelopPrAarOgMaaned();
 
+    List<Favoritt> finnFavoritter(String brukernavn);
+
+    List<Favoritt> leggTilFavoritt(NyFavoritt nyFavoritt);
+
+    List<Favoritt> slettFavoritt(Favoritt skalSlettes);
+
+    List<Favoritt> byttRekkefolge(Favorittpar parSomSkalBytteRekkfolge);
+
 }

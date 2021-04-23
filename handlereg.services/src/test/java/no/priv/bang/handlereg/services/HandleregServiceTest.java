@@ -54,6 +54,17 @@ class HandleregServiceTest {
         assertEquals(0, totaltHandlebelopPrAar.size());
         List<SumYearMonth> totaltHandlebelopPrAarOgMaaned = service.totaltHandlebelopPrAarOgMaaned();
         assertEquals(0, totaltHandlebelopPrAarOgMaaned.size());
+        List<Favoritt> favoritter = service.finnFavoritter(null);
+        assertEquals(0, favoritter.size());
+        NyFavoritt nyFavoritt = NyFavoritt.with().brukernavn("jd").build();
+        List<Favoritt> enMerFavoritt = service.leggTilFavoritt(nyFavoritt);
+        assertEquals(0, enMerFavoritt.size());
+        Favoritt skalSlettes = Favoritt.with().build();
+        List<Favoritt> favoritterMinusSlettet = service.slettFavoritt(skalSlettes);
+        assertEquals(0, favoritterMinusSlettet.size());
+        Favorittpar parSomSkalBytteRekkfolge = Favorittpar.with().build();
+        List<Favoritt> favoritterByttet = service.byttRekkefolge(parSomSkalBytteRekkfolge);
+        assertEquals(0, favoritterByttet.size());
     }
 
 }

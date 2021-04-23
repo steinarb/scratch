@@ -42,6 +42,9 @@ import no.priv.bang.handlereg.services.Butikk;
 import no.priv.bang.handlereg.services.ButikkCount;
 import no.priv.bang.handlereg.services.ButikkDate;
 import no.priv.bang.handlereg.services.ButikkSum;
+import no.priv.bang.handlereg.services.Favoritt;
+import no.priv.bang.handlereg.services.Favorittpar;
+import no.priv.bang.handlereg.services.NyFavoritt;
 import no.priv.bang.handlereg.services.HandleregException;
 import no.priv.bang.handlereg.services.NyHandling;
 import no.priv.bang.handlereg.services.Oversikt;
@@ -460,6 +463,160 @@ class HandleregServiceProviderTest {
         assertThat(totaltHandlebelopPrAarOgMaaned.size()).isPositive();
     }
 
+    @Test
+    void testFavoritter() {
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        HandleregServiceProvider handlereg = new HandleregServiceProvider();
+        handlereg.setLogservice(logservice);
+        handlereg.setDatasource(datasource);
+        handlereg.setUseradmin(useradmin);
+        handlereg.activate();
+
+        String username = "jod";
+        List<Favoritt> favoritterOpprinnelig = handlereg.finnFavoritter(username);
+        assertNotNull(favoritterOpprinnelig);
+
+        // Opprett to favoritter
+        List<Butikk> butikker = handlereg.finnButikker();
+        Butikk butikk1 = butikker.get(0);
+        List<Favoritt> favoritter1 = handlereg.leggTilFavoritt(NyFavoritt.with().brukernavn(username).butikk(butikk1).build());
+        assertThat(favoritter1.size()).isGreaterThan(favoritterOpprinnelig.size());
+        Butikk butikk2 = butikker.get(1);
+        List<Favoritt> favoritter2 = handlereg.leggTilFavoritt(NyFavoritt.with().brukernavn(username).butikk(butikk2).build());
+        assertThat(favoritter2.size()).isGreaterThan(favoritter1.size());
+        int forsteFavorittIndeks = favoritter1.size() -1;
+        int andreFavorittIndeks = favoritter1.size();
+        Favoritt favoritt1 = favoritter2.get(forsteFavorittIndeks);
+        Favoritt favoritt2 = favoritter2.get(andreFavorittIndeks);
+        assertEquals(favoritt1.getAccountid(), favoritt2.getAccountid());
+        assertEquals(butikk1, favoritt1.getStore());
+        assertEquals(butikk2, favoritt2.getStore());
+        assertThat(favoritt2.getRekkefolge()).isGreaterThan(favoritt1.getRekkefolge());
+
+        // Bytt rekkefølge på de to favorittene
+        Favorittpar favoritterSomSkalFlippes = Favorittpar.with().forste(favoritt1).andre(favoritt2).build();
+        List<Favoritt> favoritter3 = handlereg.byttRekkefolge(favoritterSomSkalFlippes);
+        assertEquals(favoritter2.size(), favoritter3.size());
+        Favoritt flippetFavoritt1 = favoritter3.get(forsteFavorittIndeks);
+        Favoritt flippetFavoritt2 = favoritter3.get(andreFavorittIndeks);
+        assertEquals(flippetFavoritt1.getFavouriteid(), favoritt2.getFavouriteid());
+        assertEquals(flippetFavoritt2.getFavouriteid(), favoritt1.getFavouriteid());
+        assertThat(flippetFavoritt2.getRekkefolge()).isGreaterThan(flippetFavoritt1.getRekkefolge());
+
+        // Slett en favoritt
+        assertThat(favoritter3).contains(flippetFavoritt1);
+        assertThat(favoritter3).contains(flippetFavoritt2);
+        List<Favoritt> favoritter4 = handlereg.slettFavoritt(flippetFavoritt1);
+        assertThat(favoritter4.size()).isLessThan(favoritter3.size());
+        assertThat(favoritter4).doesNotContain(flippetFavoritt1);
+        assertThat(favoritter4).contains(flippetFavoritt2);
+    }
+
+    @Test
+    void testFinnFavoritterMedFeil() throws Exception {
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        HandleregServiceProvider handlereg = new HandleregServiceProvider();
+        handlereg.setLogservice(logservice);
+        DataSource datasourceThrowingException = mock(DataSource.class);
+        when(datasourceThrowingException.getConnection()).thenThrow(SQLException.class);
+        handlereg.setDatasource(datasourceThrowingException);
+        handlereg.setUseradmin(useradmin);
+        handlereg.activate();
+
+        HandleregException exception = assertThrows(HandleregException.class, () -> handlereg.finnFavoritter("jod"));
+        assertThat(exception.getMessage()).startsWith("Failed to retrieve a list of favourites");
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testLeggTilFavorittMedFeil() throws Exception {
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        HandleregServiceProvider handlereg = new HandleregServiceProvider();
+        handlereg.setLogservice(logservice);
+        DataSource datasourceThrowingException = mock(DataSource.class);
+        when(datasourceThrowingException.getConnection()).thenThrow(SQLException.class);
+        handlereg.setDatasource(datasourceThrowingException);
+        handlereg.setUseradmin(useradmin);
+        handlereg.activate();
+
+        HandleregException exception = assertThrows(HandleregException.class, () -> handlereg.leggTilFavoritt(null));
+        assertThat(exception.getMessage()).startsWith("Failed to insert a new favourite");
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testSlettFavorittMedFeil() throws Exception {
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        HandleregServiceProvider handlereg = new HandleregServiceProvider();
+        handlereg.setLogservice(logservice);
+        DataSource datasourceThrowingException = mock(DataSource.class);
+        when(datasourceThrowingException.getConnection()).thenThrow(SQLException.class);
+        handlereg.setDatasource(datasourceThrowingException);
+        handlereg.setUseradmin(useradmin);
+        handlereg.activate();
+
+        HandleregException exception = assertThrows(HandleregException.class, () -> handlereg.slettFavoritt(null));
+        assertThat(exception.getMessage()).startsWith("Failed to delete favourite");
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testbyttRekkefolgeMedFeil() throws Exception {
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        HandleregServiceProvider handlereg = new HandleregServiceProvider();
+        handlereg.setLogservice(logservice);
+        DataSource datasourceThrowingException = mock(DataSource.class);
+        when(datasourceThrowingException.getConnection()).thenThrow(SQLException.class);
+        handlereg.setDatasource(datasourceThrowingException);
+        handlereg.setUseradmin(useradmin);
+        handlereg.activate();
+
+        HandleregException exception = assertThrows(HandleregException.class, () -> handlereg.byttRekkefolge(null));
+        assertThat(exception.getMessage()).startsWith("Failed to swap order of favourite");
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testFinnFavoritterMedAccountidMedFeil() throws Exception {
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        HandleregServiceProvider handlereg = new HandleregServiceProvider();
+        handlereg.setLogservice(logservice);
+        DataSource datasourceThrowingException = mock(DataSource.class);
+        when(datasourceThrowingException.getConnection()).thenThrow(SQLException.class);
+        handlereg.setDatasource(datasourceThrowingException);
+        handlereg.setUseradmin(useradmin);
+        handlereg.activate();
+
+        HandleregException exception = assertThrows(HandleregException.class, () -> handlereg.finnFavoritterMedAccountid(1));
+        assertThat(exception.getMessage()).startsWith("Failed to retrieve a list of favourites");
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testFinnSisteRekkefolgeIBrukersFavoritterMedAccountidMedFeil() throws Exception {
+        MockLogService logservice = new MockLogService();
+        UserManagementService useradmin = mock(UserManagementService.class);
+        HandleregServiceProvider handlereg = new HandleregServiceProvider();
+        handlereg.setLogservice(logservice);
+        DataSource datasourceThrowingException = mock(DataSource.class);
+        when(datasourceThrowingException.getConnection()).thenThrow(SQLException.class);
+        handlereg.setDatasource(datasourceThrowingException);
+        handlereg.setUseradmin(useradmin);
+        handlereg.activate();
+
+        Connection connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
+        int rekkefolge = handlereg.finnSisteRekkefolgeIBrukersFavoritter(connection, "jod");
+        assertEquals(0, rekkefolge);
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
     private DataSource createMockDbWithEmptyResultset() throws SQLException {
         PreparedStatement statement = mock(PreparedStatement.class);
         ResultSet results = mock(ResultSet.class);
@@ -472,7 +629,6 @@ class HandleregServiceProviderTest {
         return mockdb;
     }
 
-    @SuppressWarnings("unchecked")
     private DataSource createMockDbWithResultSetThatThrowsExceptionWhenIterated() throws SQLException {
         PreparedStatement statement = mock(PreparedStatement.class);
         ResultSet results = mock(ResultSet.class);
@@ -485,7 +641,6 @@ class HandleregServiceProviderTest {
         return mockdb;
     }
 
-    @SuppressWarnings("unchecked")
     private DataSource createMockDbThrowingException() throws SQLException {
         DataSource mockdb = mock(DataSource.class);
         Connection connection = mock(Connection.class);

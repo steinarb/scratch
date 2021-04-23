@@ -38,6 +38,9 @@ import no.priv.bang.handlereg.services.Butikk;
 import no.priv.bang.handlereg.services.ButikkCount;
 import no.priv.bang.handlereg.services.ButikkDate;
 import no.priv.bang.handlereg.services.ButikkSum;
+import no.priv.bang.handlereg.services.Favoritt;
+import no.priv.bang.handlereg.services.NyFavoritt;
+import no.priv.bang.handlereg.services.Favorittpar;
 import no.priv.bang.handlereg.services.HandleregException;
 import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.NyHandling;
@@ -357,6 +360,96 @@ public class HandleregServiceProvider implements HandleregService {
         return totaltHandlebelopPrAarOgMaaned;
     }
 
+    @Override
+    public List<Favoritt> finnFavoritter(String brukernavn) {
+        List<Favoritt> favoritter = new ArrayList<>();
+        String sql = "select * from accounts a join favourites f on a.account_id=f.account_id join stores s on f.store_id=s.store_id where a.username=? order by f.rekkefolge";
+        try (Connection connection = datasource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, brukernavn);
+                try (ResultSet results = statement.executeQuery()) {
+                    while(results.next()) {
+                        Butikk butikk = Butikk.with()
+                            .storeId(results.getInt(7))
+                            .butikknavn(results.getString(8))
+                            .gruppe(results.getInt(9))
+                            .rekkefolge(results.getInt(10))
+                            .build();
+                        Favoritt favoritt = Favoritt.with()
+                            .favouriteid(results.getInt(3))
+                            .accountid(results.getInt(4))
+                            .store(butikk)
+                            .rekkefolge(results.getInt(5))
+                            .build();
+                        favoritter.add(favoritt);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            String message = "Failed to retrieve a list of favourites";
+            logError(message, e);
+            throw new HandleregException(message, e);
+        }
+        return favoritter;
+    }
+
+    @Override
+    public List<Favoritt> leggTilFavoritt(NyFavoritt nyFavoritt) {
+        try (Connection connection = datasource.getConnection()) {
+            int sisteRekkefolge = finnSisteRekkefolgeIBrukersFavoritter(connection, nyFavoritt.getBrukernavn());
+            String sql = "insert into favourites (account_id, store_id, rekkefolge) values ((select account_id from accounts where username=?), ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, nyFavoritt.getBrukernavn());
+                statement.setInt(2, nyFavoritt.getButikk().getStoreId());
+                statement.setInt(3, sisteRekkefolge + 1);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            String message = "Failed to insert a new favourite";
+            logError(message, e);
+            throw new HandleregException(message, e);
+        }
+        return finnFavoritter(nyFavoritt.getBrukernavn());
+    }
+
+    @Override
+    public List<Favoritt> slettFavoritt(Favoritt skalSlettes) {
+        try (Connection connection = datasource.getConnection()) {
+            String sql = "delete from favourites where favourite_id=?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, skalSlettes.getFavouriteid());
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            String message = "Failed to delete favourite";
+            logError(message, e);
+            throw new HandleregException(message, e);
+        }
+        return finnFavoritterMedAccountid(skalSlettes.getAccountid());
+    }
+
+    @Override
+    public List<Favoritt> byttRekkefolge(Favorittpar parSomSkalBytteRekkfolge) {
+        try (Connection connection = datasource.getConnection()) {
+            String sql = "update favourites set rekkefolge=? where favourite_id=?";
+            try (PreparedStatement flipstatement1 = connection.prepareStatement(sql)) {
+                flipstatement1.setInt(1, parSomSkalBytteRekkfolge.getAndre().getRekkefolge());
+                flipstatement1.setInt(2, parSomSkalBytteRekkfolge.getForste().getFavouriteid());
+                flipstatement1.executeUpdate();
+            }
+            try (PreparedStatement flipstatement2 = connection.prepareStatement(sql)) {
+                flipstatement2.setInt(1, parSomSkalBytteRekkfolge.getForste().getRekkefolge());
+                flipstatement2.setInt(2, parSomSkalBytteRekkfolge.getAndre().getFavouriteid());
+                flipstatement2.executeUpdate();
+            }
+        } catch (SQLException e) {
+            String message = "Failed to swap order of favourites";
+            logError(message, e);
+            throw new HandleregException(message, e);
+        }
+        return finnFavoritterMedAccountid(parSomSkalBytteRekkfolge.getForste().getAccountid());
+    }
+
     int finnNesteLedigeRekkefolgeForGruppe(int gruppe) {
         String sql = "select rekkefolge from stores where gruppe=? order by rekkefolge desc fetch next 1 rows only";
         try (Connection connection = datasource.getConnection()) {
@@ -375,6 +468,53 @@ public class HandleregServiceProvider implements HandleregService {
             throw new HandleregException(message, e);
         }
 
+        return 0;
+    }
+
+    List<Favoritt> finnFavoritterMedAccountid(int accountid) {
+        List<Favoritt> favoritter = new ArrayList<>();
+        String sql = "select * from favourites f join stores s on f.store_id=s.store_id where f.account_id=? order by f.rekkefolge";
+        try (Connection connection = datasource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, accountid);
+                try (ResultSet results = statement.executeQuery()) {
+                    while(results.next()) {
+                        Butikk butikk = Butikk.with()
+                            .storeId(results.getInt(5))
+                            .butikknavn(results.getString(6))
+                            .gruppe(results.getInt(7))
+                            .rekkefolge(results.getInt(8))
+                            .build();
+                        Favoritt favoritt = Favoritt.with()
+                            .favouriteid(results.getInt(1))
+                            .accountid(results.getInt(2))
+                            .store(butikk)
+                            .rekkefolge(results.getInt(4))
+                            .build();
+                        favoritter.add(favoritt);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            String message = "Failed to retrieve a list of favourites";
+            logError(message, e);
+            throw new HandleregException(message, e);
+        }
+        return favoritter;
+    }
+
+    int finnSisteRekkefolgeIBrukersFavoritter(Connection connection, String brukernavn) {
+        String sql = "select * from accounts a join favourites f on a.account_id=f.account_id where a.username=? order by f.rekkefolge desc";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, brukernavn);
+            try (ResultSet results = statement.executeQuery()) {
+                while(results.next()) {
+                    return results.getInt(6);
+                }
+            }
+        } catch (SQLException e) {
+            logWarning("Failed to retrieve last favourite rekkefolge value", e);
+        }
         return 0;
     }
 
