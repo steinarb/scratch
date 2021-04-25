@@ -17,7 +17,7 @@ package no.priv.bang.handlereg.web.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -49,7 +49,10 @@ import no.priv.bang.handlereg.services.ButikkCount;
 import no.priv.bang.handlereg.services.ButikkDate;
 import no.priv.bang.handlereg.services.ButikkSum;
 import no.priv.bang.handlereg.services.Credentials;
+import no.priv.bang.handlereg.services.Favoritt;
+import no.priv.bang.handlereg.services.Favorittpar;
 import no.priv.bang.handlereg.services.HandleregService;
+import no.priv.bang.handlereg.services.NyFavoritt;
 import no.priv.bang.handlereg.services.NyHandling;
 import no.priv.bang.handlereg.services.Oversikt;
 import no.priv.bang.handlereg.services.SumYear;
@@ -308,6 +311,105 @@ class HandleregWebApiTest extends ShiroTestBase {
         List<SumYearMonth> sumyearmonth = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYearMonth>>() {});
         assertThat(sumyearmonth).isNotEmpty();
         assertEquals(Year.of(2001), sumyearmonth.get(0).getYear());
+    }
+
+    @Test
+    void testGetFavoritter() throws Exception {
+        String username = "jd";
+        HandleregService handlereg = mock(HandleregService.class);
+        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
+        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).build();
+        when(handlereg.finnFavoritter(username)).thenReturn(Arrays.asList(favoritt1, favoritt2));
+        MockLogService logservice = new MockLogService();
+        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        MockHttpServletRequest request = buildGetUrl("/favoritter");
+        request.setQueryString("username=" + username);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        loginUser(request, response, username, "johnnyBoi");
+        servlet.service(request, response);
+        assertEquals(200, response.getStatus());
+        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        assertThat(favoritter.size()).isPositive();
+    }
+
+    @Test
+    void testPostLeggTilFavoritt() throws Exception {
+        String username = "jd";
+        HandleregService handlereg = mock(HandleregService.class);
+        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
+        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
+        when(handlereg.leggTilFavoritt(any())).thenReturn(Arrays.asList(favoritt1, favoritt2));
+        MockLogService logservice = new MockLogService();
+        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        MockHttpServletRequest request = buildPostUrl("/favoritt/leggtil");
+        NyFavoritt nyFavoritt = NyFavoritt.with().brukernavn(username).butikk(butikk ).build();
+        String postBody = mapper.writeValueAsString(nyFavoritt);
+        request.setBodyContent(postBody);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        loginUser(request, response, username, "johnnyBoi");
+        servlet.service(request, response);
+        assertEquals(200, response.getStatus());
+        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        assertThat(favoritter.size()).isPositive();
+    }
+
+    @Test
+    void testPostSlettFavoritt() throws Exception {
+        String username = "jd";
+        HandleregService handlereg = mock(HandleregService.class);
+        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
+        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
+        when(handlereg.slettFavoritt(any())).thenReturn(Arrays.asList(favoritt2));
+        MockLogService logservice = new MockLogService();
+        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        MockHttpServletRequest request = buildPostUrl("/favoritt/slett");
+        String postBody = mapper.writeValueAsString(favoritt1);
+        request.setBodyContent(postBody);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        loginUser(request, response, username, "johnnyBoi");
+        servlet.service(request, response);
+        assertEquals(200, response.getStatus());
+        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).contains(favoritt2);
+        assertThat(favoritter).doesNotContain(favoritt1);
+        assertEquals(butikk, favoritter.get(0).getStore());
+    }
+
+    @Test
+    void testPostFavoritterByttRekkefolge() throws Exception {
+        String username = "jd";
+        HandleregService handlereg = mock(HandleregService.class);
+        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).rekkefolge(2).build();
+        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).rekkefolge(1).build();
+        when(handlereg.byttRekkefolge(any())).thenReturn(Arrays.asList(favoritt2, favoritt1));
+        MockLogService logservice = new MockLogService();
+        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        MockHttpServletRequest request = buildPostUrl("/favoritter/bytt");
+        Favorittpar favoritterSomSkalBytteRekkefolge = Favorittpar.with()
+            .forste(favoritt1)
+            .andre(favoritt2)
+            .build();
+        String postBody = mapper.writeValueAsString(favoritterSomSkalBytteRekkefolge);
+        request.setBodyContent(postBody);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        loginUser(request, response, username, "johnnyBoi");
+        servlet.service(request, response);
+        assertEquals(200, response.getStatus());
+        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).containsSequence(favoritt2, favoritt1);
     }
 
     private byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
