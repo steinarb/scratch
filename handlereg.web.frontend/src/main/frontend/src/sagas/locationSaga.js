@@ -7,6 +7,9 @@ import { HANDLINGERBUTIKK_HENT } from '../reducers/handlingerbutikk';
 import { SISTEHANDEL_HENT } from '../reducers/sistehandel';
 import { SUMYEAR_HENT } from '../reducers/sumyear';
 import { SUMYEARMONTH_HENT } from '../reducers/sumyearmonth';
+import {
+    FAVORITTER_HENT,
+} from '../actiontypes';
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
@@ -39,6 +42,19 @@ function* locationChange(action) {
 
     if (pathname === '/handlereg/statistikk/sumyearmonth') {
         yield put(SUMYEARMONTH_HENT());
+    }
+
+    if (pathname === '/handlereg/favoritter/leggtil') {
+        yield put(OVERSIKT_HENT());
+        yield put(BUTIKKER_HENT());
+    }
+
+    if (pathname === '/handlereg/favoritter/slett') {
+        yield put(OVERSIKT_HENT());
+    }
+
+    if (pathname === '/handlereg/favoritter/sorter') {
+        yield put(OVERSIKT_HENT());
     }
 }
 

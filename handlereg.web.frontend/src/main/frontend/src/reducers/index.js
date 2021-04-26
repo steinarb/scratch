@@ -13,6 +13,9 @@ import handlingerbutikk from './handlingerbutikk';
 import sistehandel from './sistehandel';
 import sumyear from './sumyear';
 import sumyearmonth from './sumyearmonth';
+import brukernavn from './brukernavnReducer';
+import favoritter from './favoritterReducer';
+import favorittbutikk from './favorittbutikkReducer';
 import errors from './errors';
 
 export default (history) => combineReducers({
@@ -29,4 +32,7 @@ export default (history) => combineReducers({
     sumyear: sumyear.reducer,
     sumyearmonth: sumyearmonth.reducer,
     errors: errors.reducer,
+    brukernavn,
+    favoritter,
+    favorittbutikk,
 });

@@ -78,6 +78,7 @@ function Home(props) {
                 <StyledLinkRight to="/handlereg/statistikk">Statistikk</StyledLinkRight>
                 <StyledLinkRight to="/handlereg/nybutikk">Ny butikk</StyledLinkRight>
                 <StyledLinkRight to="/handlereg/endrebutikk">Endre butikk</StyledLinkRight>
+                <StyledLinkRight to="/handlereg/favoritter">Favoritter</StyledLinkRight>
             </Container>
         </div>
     );

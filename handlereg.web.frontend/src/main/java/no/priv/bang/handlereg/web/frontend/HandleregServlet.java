@@ -46,6 +46,10 @@ public class HandleregServlet extends FrontendServlet {
             "/statistikk/sistehandel",
             "/statistikk/sumyear",
             "/statistikk/sumyearmonth",
+            "/favoritter",
+            "/favoritter/leggtil",
+            "/favoritter/slett",
+            "/favoritter/sorter",
             "/nybutikk",
             "/endrebutikk",
             "/login");

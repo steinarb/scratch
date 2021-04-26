@@ -13,6 +13,10 @@ import handlingerbutikkSaga from './handlingerbutikkSaga';
 import sistehandelSaga from './sistehandelSaga';
 import sumyearSaga from './sumyearSaga';
 import sumyearmonthSaga from './sumyearmonthSaga';
+import favoritterSaga from './favoritterSaga';
+import favorittLeggTilSaga from './favorittLeggTilSaga';
+import favorittSlettSaga from './favorittSlettSaga';
+import favoritterByttSaga from './favoritterByttSaga';
 
 export default function* rootSaga() {
     yield all([
@@ -29,5 +33,9 @@ export default function* rootSaga() {
         fork(sistehandelSaga),
         fork(sumyearSaga),
         fork(sumyearmonthSaga),
+        fork(favoritterSaga),
+        fork(favorittLeggTilSaga),
+        fork(favorittSlettSaga),
+        fork(favoritterByttSaga),
     ]);
 };

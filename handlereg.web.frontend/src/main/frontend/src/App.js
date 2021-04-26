@@ -10,6 +10,10 @@ import StatistikkHandlingerbutikk from './components/StatistikkHandlingerbutikk'
 import StatistikkSistehandel from './components/StatistikkSistehandel';
 import StatistikkSumyear from './components/StatistikkSumyear';
 import StatistikkSumyearmonth from './components/StatistikkSumyearmonth';
+import Favoritter from './components/Favoritter';
+import FavoritterLeggTil from './components/FavoritterLeggTil';
+import FavoritterSlett from './components/FavoritterSlett';
+import FavoritterSorter from './components/FavoritterSorter';
 import NyButikk from './components/NyButikk';
 import EndreButikk from './components/EndreButikk';
 import Login from './components/Login';
@@ -28,6 +32,10 @@ class App extends Component {
                     <Route exact path="/handlereg/statistikk/sumyearmonth" component={StatistikkSumyearmonth} />
                     <Route exact path="/handlereg/statistikk/sumyear" component={StatistikkSumyear} />
                     <Route exact path="/handlereg/statistikk" component={Statistikk} />
+                    <Route exact path="/handlereg/favoritter/leggtil" component={FavoritterLeggTil} />
+                    <Route exact path="/handlereg/favoritter/slett" component={FavoritterSlett} />
+                    <Route exact path="/handlereg/favoritter/sorter" component={FavoritterSorter} />
+                    <Route exact path="/handlereg/favoritter" component={Favoritter} />
                     <Route exact path="/handlereg/nybutikk" component={NyButikk} />
                     <Route exact path="/handlereg/endrebutikk" component={EndreButikk} />
                     <Route exact path="/handlereg/login" component={Login} />
