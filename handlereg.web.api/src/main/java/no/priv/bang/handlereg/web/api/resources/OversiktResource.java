@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.Oversikt;
@@ -34,11 +35,15 @@ import no.priv.bang.handlereg.services.Oversikt;
 @Produces(MediaType.APPLICATION_JSON)
 public class OversiktResource {
 
-    @Inject
-    public LogService logservice;
+    private Logger logger;
 
     @Inject
     HandleregService handlereg;
+
+    @Inject
+    public void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(OversiktResource.class);
+    }
 
     @GET
     public Oversikt get() {
@@ -48,7 +53,7 @@ public class OversiktResource {
             return handlereg.finnOversikt(brukernavn);
         } catch (Exception e) {
             String message = "Failed to get Oversikt in handlereg";
-            logservice.log(LogService.LOG_ERROR, message);
+            logger.error(message, e);
             throw new InternalServerErrorException(message + ", see the log for details");
         }
     }

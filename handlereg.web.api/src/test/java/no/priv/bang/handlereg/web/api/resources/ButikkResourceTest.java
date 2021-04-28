@@ -40,7 +40,7 @@ class ButikkResourceTest {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.finnButikker()).thenReturn(Arrays.asList(Butikk.with().build()));
         ButikkResource resource = new ButikkResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         List<Butikk> butikker = resource.getButikker();
@@ -54,7 +54,7 @@ class ButikkResourceTest {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.finnButikker()).thenThrow(HandleregException.class);
         ButikkResource resource = new ButikkResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         assertThrows(InternalServerErrorException.class, () -> {
@@ -69,7 +69,7 @@ class ButikkResourceTest {
         Butikk nybutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
         when(handlereg.leggTilButikk(any())).thenReturn(Arrays.asList(nybutikk));
         ButikkResource resource = new ButikkResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         List<Butikk> butikker = resource.leggTilButikk(nybutikk);
@@ -83,7 +83,7 @@ class ButikkResourceTest {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.leggTilButikk(any())).thenThrow(HandleregException.class);
         ButikkResource resource = new ButikkResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         Butikk butikk = Butikk.with().build();
@@ -99,7 +99,7 @@ class ButikkResourceTest {
         Butikk endretbutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
         when(handlereg.endreButikk(any())).thenReturn(Arrays.asList(endretbutikk));
         ButikkResource resource = new ButikkResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         List<Butikk> butikker = resource.endreButikk(endretbutikk);
@@ -113,7 +113,7 @@ class ButikkResourceTest {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.endreButikk(any())).thenThrow(HandleregException.class);
         ButikkResource resource = new ButikkResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         Butikk butikk = Butikk.with().build();

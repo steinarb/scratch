@@ -43,7 +43,7 @@ class HandlingResourceTest {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.findLastTransactions(1)).thenReturn(Arrays.asList(Transaction.with().build()));
         HandlingResource resource = new HandlingResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         List<Transaction> handlinger = resource.getHandlinger(1);
         assertThat(handlinger.size()).isPositive();
@@ -54,7 +54,7 @@ class HandlingResourceTest {
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
         HandlingResource resource = new HandlingResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         List<Transaction> handlinger = resource.getHandlinger(1);
         assertEquals(0, handlinger.size());
@@ -67,7 +67,7 @@ class HandlingResourceTest {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.findLastTransactions(anyInt())).thenThrow(HandleregException.class);
         HandlingResource resource = new HandlingResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         assertThrows(InternalServerErrorException.class, () -> {
@@ -89,7 +89,7 @@ class HandlingResourceTest {
             .build();
         when(handlereg.registrerHandling(any())).thenReturn(oversikt);
         HandlingResource resource = new HandlingResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         NyHandling handling = NyHandling.with()
             .username("jd")
@@ -109,7 +109,7 @@ class HandlingResourceTest {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.registrerHandling(any())).thenThrow(HandleregException.class);
         HandlingResource resource = new HandlingResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         NyHandling handling = NyHandling.with()
             .username("jd")

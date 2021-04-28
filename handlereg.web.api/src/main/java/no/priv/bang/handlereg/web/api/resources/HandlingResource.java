@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.NyHandling;
@@ -39,11 +40,15 @@ import no.priv.bang.handlereg.services.Transaction;
 @Produces(MediaType.APPLICATION_JSON)
 public class HandlingResource {
 
-    @Inject
-    LogService logservice;
+    private Logger logger;
 
     @Inject
     HandleregService handlereg;
+
+    @Inject
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(HandlingResource.class);
+    }
 
     @GET
     @Path("/handlinger/{accountid}")
@@ -52,7 +57,7 @@ public class HandlingResource {
             return handlereg.findLastTransactions(accountId);
         } catch (Exception e) {
             String message = String.format("Failed to get transactions for account %d", accountId);
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new InternalServerErrorException(message + ", see the log for details");
         }
     }
@@ -65,7 +70,7 @@ public class HandlingResource {
             return handlereg.registrerHandling(handling);
         } catch (Exception e) {
             String message = "Failed to add transaction";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new InternalServerErrorException(message + ", see the log for details");
         }
     }

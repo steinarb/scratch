@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.handlereg.services.Butikk;
 import no.priv.bang.handlereg.services.HandleregService;
@@ -38,11 +39,15 @@ public class ButikkResource {
 
     private static final String SEE_THE_LOG_FOR_DETAILS = ", see the log for details";
 
-    @Inject
-    LogService logservice;
+    private Logger logger;
 
     @Inject
     HandleregService handlereg;
+
+    @Inject
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(ButikkResource.class);
+    }
 
     @GET
     @Path("/butikker")
@@ -51,7 +56,7 @@ public class ButikkResource {
             return handlereg.finnButikker();
         } catch (Exception e) {
             String message = "Failed to find the list of stores";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new InternalServerErrorException(message + SEE_THE_LOG_FOR_DETAILS);
         }
     }
@@ -64,7 +69,7 @@ public class ButikkResource {
             return handlereg.leggTilButikk(nybutikk);
         } catch (Exception e) {
             String message = "Failed to add a new store";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new InternalServerErrorException(message + SEE_THE_LOG_FOR_DETAILS);
         }
     }
@@ -78,7 +83,7 @@ public class ButikkResource {
             return handlereg.endreButikk(endretbutikk);
         } catch (Exception e) {
             String message = "Failed to change a store";
-            logservice.log(LogService.LOG_ERROR, message, e);
+            logger.error(message, e);
             throw new InternalServerErrorException(message + SEE_THE_LOG_FOR_DETAILS);
         }
     }

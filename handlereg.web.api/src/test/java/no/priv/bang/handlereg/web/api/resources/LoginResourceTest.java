@@ -43,7 +43,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginFeilPassord() {
         MockLogService logservice = new MockLogService();
         LoginResource resource = new LoginResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         String username = "jd";
         String password = "feil";
         createSubjectAndBindItToThread();
@@ -57,7 +57,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginUkjentBrukernavn() {
         MockLogService logservice = new MockLogService();
         LoginResource resource = new LoginResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         String username = "jdd";
         String password = "feil";
         createSubjectAndBindItToThread();

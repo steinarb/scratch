@@ -64,7 +64,7 @@ class OversiktResourceTest extends ShiroTestBase {
             .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
         OversiktResource resource = new OversiktResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         removeWebSubjectFromThread();
 

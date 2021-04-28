@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
@@ -35,11 +36,11 @@ import no.priv.bang.handlereg.db.liquibase.HandleregLiquibase;
 @Component(immediate=true, property = "name=handleregdb")
 public class HandleregProductionDbLiquibaseRunner implements PreHook {
 
-    private LogService logservice;
+    private Logger logger;
 
     @Reference
     public void setLogService(LogService logservice) {
-        this.logservice = logservice;
+        this.logger = logservice.getLogger(HandleregProductionDbLiquibaseRunner.class);
     }
 
     @Activate
@@ -67,7 +68,7 @@ public class HandleregProductionDbLiquibaseRunner implements PreHook {
     }
 
     private void logError(String message, Exception exception) {
-        logservice.log(LogService.LOG_ERROR, message, exception);
+        logger.error(message, exception);
     }
 
 }

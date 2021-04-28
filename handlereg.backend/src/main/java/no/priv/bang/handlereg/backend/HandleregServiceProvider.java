@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.handlereg.services.Butikk;
 import no.priv.bang.handlereg.services.ButikkCount;
@@ -55,13 +56,13 @@ import no.priv.bang.osgiservice.users.UserManagementService;
 @Component(service=HandleregService.class, immediate=true)
 public class HandleregServiceProvider implements HandleregService {
 
-    private LogService logservice;
+    private Logger logger;
     private DataSource datasource;
     private UserManagementService useradmin;
 
     @Reference
     public void setLogservice(LogService logservice) {
-        this.logservice = logservice;
+        this.logger = logservice.getLogger(HandleregServiceProvider.class);
     }
 
     @Reference(target = "(osgi.jndi.service.name=jdbc/handlereg)")
@@ -528,11 +529,11 @@ public class HandleregServiceProvider implements HandleregService {
     }
 
     private void logError(String message, SQLException e) {
-        logservice.log(LogService.LOG_ERROR, message, e);
+        logger.error(message, e);
     }
 
     private void logWarning(String message, SQLException e) {
-        logservice.log(LogService.LOG_WARNING, message, e);
+        logger.warn(message, e);
     }
 
 }

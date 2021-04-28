@@ -32,6 +32,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.handlereg.services.Credentials;
 import no.priv.bang.handlereg.services.Loginresultat;
@@ -42,8 +43,12 @@ import no.priv.bang.handlereg.services.Loginresultat;
 @Produces(MediaType.APPLICATION_JSON)
 public class LoginResource {
 
+    private Logger logger;
+
     @Inject
-    LogService logservice;
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(LoginResource.class);
+    }
 
     @POST
     @Path("/login")
@@ -56,19 +61,19 @@ public class LoginResource {
 
             return Loginresultat.with().suksess(true).feilmelding("").build();
         } catch(UnknownAccountException e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: unknown account", e);
+            logger.warn("Login error: unknown account", e);
             return Loginresultat.with().suksess(false).feilmelding("Ukjent konto").build();
         } catch (IncorrectCredentialsException  e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: wrong password", e);
+            logger.warn("Login error: wrong password", e);
             return Loginresultat.with().suksess(false).feilmelding("Feil passord").build();
         } catch (LockedAccountException  e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
+            logger.warn("Login error: locked account", e);
             return Loginresultat.with().suksess(false).feilmelding("Låst konto").build();
         } catch (AuthenticationException e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
+            logger.warn("Login error: general authentication error", e);
             return Loginresultat.with().suksess(false).feilmelding("Ukjent feil").build();
         } catch (Exception e) {
-            logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
+            logger.error("Login error: internal server error", e);
             throw new InternalServerErrorException();
         } finally {
             token.clear();
