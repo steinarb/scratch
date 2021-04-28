@@ -20,7 +20,7 @@ function Home(props) {
             <nav className="navbar navbar-light bg-light">
                 <a className="btn btn-primary left-align-cell" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Gå hjem!</a>
                 <h1>Matregnskap</h1>
-                <div className="col-sm-2"></div>
+                <StyledLinkRight className="col-sm-2" to="/handlereg/hurtigregistrering">Hurtig</StyledLinkRight>
             </nav>
             <Container>
                 <p>Hei {oversikt.fornavn}! Totalsummen er for øyeblikket {Math.abs(oversikt.balanse)} i din {favordisfavor}.</p>

@@ -4,6 +4,7 @@ import { ConnectedRouter as Router } from 'connected-react-router';
 import logo from './logo.svg';
 import './App.css';
 import Home from './components/Home';
+import Hurtigregistrering from './components/Hurtigregistrering';
 import Statistikk from './components/Statistikk';
 import StatistikkSumbutikk from './components/StatistikkSumbutikk';
 import StatistikkHandlingerbutikk from './components/StatistikkHandlingerbutikk';
@@ -26,6 +27,7 @@ class App extends Component {
             <Router history={history}>
                 <Switch>
                     <Route exact path="/handlereg/" component={Home} />
+                    <Route exact path="/handlereg/hurtigregistrering" component={Hurtigregistrering} />
                     <Route exact path="/handlereg/statistikk/sumbutikk" component={StatistikkSumbutikk} />
                     <Route exact path="/handlereg/statistikk/handlingerbutikk" component={StatistikkHandlingerbutikk} />
                     <Route exact path="/handlereg/statistikk/sistehandel" component={StatistikkSistehandel} />

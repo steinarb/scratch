@@ -20,6 +20,11 @@ function* locationChange(action) {
         yield put(BUTIKKER_HENT());
     }
 
+    if (pathname === '/handlereg/hurtigregistrering') {
+        yield put(OVERSIKT_HENT());
+        yield put(BUTIKKER_HENT());
+    }
+
     if (pathname === '/handlereg/endrebutikk') {
         yield put(BUTIKKER_HENT());
     }
