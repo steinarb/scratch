@@ -1,13 +1,10 @@
-import { createSlice, createAction } from '@reduxjs/toolkit';
+import { createReducer } from '@reduxjs/toolkit';
+import {
+    SUMYEAR_MOTTA,
+} from '../actiontypes';
 
-const sumyear = createSlice({
-    name: 'sumyear',
-    initialState: [],
-    reducers: {
-        SUMYEAR_MOTTA: (state, action) => action.payload,
-    },
+const sumyearReducer = createReducer([], {
+    [SUMYEAR_MOTTA]: (state, action) => action.payload,
 });
 
-export const SUMYEAR_HENT = createAction('SUMYEAR_HENT');
-
-export default sumyear;
+export default sumyearReducer;

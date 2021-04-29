@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import butikk, { NYBUTIKK_REGISTRER } from '../reducers/butikk';
-const { BUTIKKNAVN_ENDRE } = butikk.actions;
+import {
+    BUTIKKNAVN_ENDRE,
+    NYBUTIKK_REGISTRER,
+} from '../actiontypes';
 
 function NyButikk(props) {
     const { butikk, endreNavn, onRegistrerNyButikk } = props;

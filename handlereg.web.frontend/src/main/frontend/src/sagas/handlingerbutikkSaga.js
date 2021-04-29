@@ -1,9 +1,10 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
-import handlingerbutikk, { HANDLINGERBUTIKK_HENT } from '../reducers/handlingerbutikk';
-const { HANDLINGERBUTIKK_MOTTA } = handlingerbutikk.actions;
-import errors from '../reducers/errors';
-const { HANDLINGERBUTIKK_ERROR } = errors.actions;
+import {
+    HANDLINGERBUTIKK_HENT,
+    HANDLINGERBUTIKK_MOTTA,
+    HANDLINGERBUTIKK_ERROR,
+} from '../actiontypes';
 
 function hentHandlingerbutikk() {
     return axios.get('/handlereg/api/statistikk/handlingerbutikk');

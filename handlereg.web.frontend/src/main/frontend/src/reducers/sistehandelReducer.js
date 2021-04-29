@@ -1,13 +1,10 @@
-import { createSlice, createAction } from '@reduxjs/toolkit';
+import { createReducer } from '@reduxjs/toolkit';
+import {
+    SISTEHANDEL_MOTTA,
+} from '../actiontypes';
 
-const sistehandel = createSlice({
-    name: 'sistehandel',
-    initialState: [],
-    reducers: {
-        SISTEHANDEL_MOTTA: (state, action) => action.payload,
-    },
+const sistehandelReducer = createReducer([], {
+    [SISTEHANDEL_MOTTA]: (state, action) => action.payload,
 });
 
-export const SISTEHANDEL_HENT = createAction('SISTEHANDEL_HENT');
-
-export default sistehandel;
+export default sistehandelReducer;

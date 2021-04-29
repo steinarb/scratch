@@ -1,7 +1,9 @@
-import { createSlice, createAction } from '@reduxjs/toolkit';
-import butikk from './butikk';
-
-const { NYBUTIKK_LAGRET, BUTIKK_LAGRET } = butikk.actions;
+import { createReducer } from '@reduxjs/toolkit';
+import {
+    NYBUTIKK_LAGRET,
+    BUTIKK_LAGRET,
+    BUTIKKER_MOTTA,
+} from '../actiontypes';
 
 const tomButikk = {
     storeId: -1,
@@ -14,22 +16,15 @@ const defaultState = [];
 
 function leggPaaTomButikkIStarten(action) {
     const butikker = action.payload;
-    butikker.unshift(tomButikk);
+    butikker.unshift({ ...tomButikk });
     return butikker;
  }
 
-const butikker = createSlice({
-    name: 'butikker',
-    initialState: [],
-    reducers: {
-        BUTIKKER_MOTTA: (state, action) => leggPaaTomButikkIStarten(action),
-    },
-    extraReducers: {
+const butikkerReducer = createReducer(defaultState, {
+        [BUTIKKER_MOTTA]: (state, action) => leggPaaTomButikkIStarten(action),
         [NYBUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
         [BUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
-    },
 });
 
-export const BUTIKKER_HENT = createAction('BUTIKKER_HENT');
 
-export default butikker;
+export default butikkerReducer;

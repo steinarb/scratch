@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import login, { LOGIN_HENT } from '../reducers/login';
-const { USERNAME_ENDRE, PASSWORD_ENDRE } = login.actions;
+import {
+    USERNAME_ENDRE,
+    PASSWORD_ENDRE,
+    LOGIN_HENT,
+} from '../actiontypes';
 
 function Login(props) {
     const { username, password, loginresultat, onUsernameEndre, onPasswordEndre, onSendLogin } = props;

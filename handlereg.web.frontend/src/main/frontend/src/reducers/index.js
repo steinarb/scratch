@@ -13,25 +13,25 @@ import handlingerbutikk from './handlingerbutikkReducer';
 import sistehandel from './sistehandelReducer';
 import sumyear from './sumyearReducer';
 import sumyearmonth from './sumyearmonthReducer';
-import brukernavn from './brukernavnReducerReducer';
-import favoritter from './favoritterReducerReducer';
+import brukernavn from './brukernavnReducer';
+import favoritter from './favoritterReducer';
 import favorittbutikk from './favorittbutikkReducer';
 import errors from './errorsReducer';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
-    login: login.reducer,
-    oversikt: oversikt.reducer,
-    butikker: butikker.reducer,
-    butikk: butikk.reducer,
-    handlinger: handlinger.reducer,
-    nyhandling: nyhandling.reducer,
-    sumbutikk: sumbutikk.reducer,
-    handlingerbutikk: handlingerbutikk.reducer,
-    sistehandel: sistehandel.reducer,
-    sumyear: sumyear.reducer,
-    sumyearmonth: sumyearmonth.reducer,
-    errors: errors.reducer,
+    login: login,
+    oversikt: oversikt,
+    butikker: butikker,
+    butikk: butikk,
+    handlinger: handlinger,
+    nyhandling: nyhandling,
+    sumbutikk: sumbutikk,
+    handlingerbutikk: handlingerbutikk,
+    sistehandel: sistehandel,
+    sumyear: sumyear,
+    sumyearmonth: sumyearmonth,
+    errors: errors,
     brukernavn,
     favoritter,
     favorittbutikk,

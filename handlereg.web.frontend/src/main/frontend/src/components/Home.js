@@ -4,8 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import nyhandling, { NYHANDLING_REGISTRER } from '../reducers/nyhandling';
-const { BELOP_ENDRE, BUTIKK_ENDRE, DATO_ENDRE } = nyhandling.actions;
+import {
+    BELOP_ENDRE,
+    BUTIKK_ENDRE,
+    DATO_ENDRE,
+    NYHANDLING_REGISTRER,
+} from '../actiontypes';
 import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkRight } from './bootstrap/StyledLinkRight';

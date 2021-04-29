@@ -1,9 +1,10 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
-import sumyearmonth, { SUMYEARMONTH_HENT } from '../reducers/sumyearmonth';
-const { SUMYEARMONTH_MOTTA } = sumyearmonth.actions;
-import errors from '../reducers/errors';
-const { SUMYEARMONTH_ERROR } = errors.actions;
+import {
+    SUMYEARMONTH_HENT,
+    SUMYEARMONTH_MOTTA,
+    SUMYEARMONTH_ERROR,
+} from '../actiontypes';
 
 function hentSumyearmonth() {
     return axios.get('/handlereg/api/statistikk/sumyearmonth');

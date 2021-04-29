@@ -1,13 +1,10 @@
-import { createSlice, createAction } from '@reduxjs/toolkit';
+import { createReducer } from '@reduxjs/toolkit';
+import {
+    HANDLINGERBUTIKK_MOTTA,
+} from '../actiontypes';
 
-const handlingerbutikk = createSlice({
-    name: 'handlingerbutikk',
-    initialState: [],
-    reducers: {
-        HANDLINGERBUTIKK_MOTTA: (state, action) => action.payload,
-    },
+const handlingerbutikkReducer = createReducer([], {
+    [HANDLINGERBUTIKK_MOTTA]: (state, action) => action.payload,
 });
 
-export const HANDLINGERBUTIKK_HENT = createAction('HANDLINGERBUTIKK_HENT');
-
-export default handlingerbutikk;
+export default handlingerbutikkReducer;

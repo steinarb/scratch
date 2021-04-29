@@ -1,10 +1,11 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
-import nyhandling, { NYHANDLING_REGISTRER } from '../reducers/nyhandling';
-import { HANDLINGER_HENT } from '../reducers/handlinger';
-const { NYHANDLING_LAGRET } = nyhandling.actions;
-import errors from '../reducers/errors';
-const { NYHANDLING_ERROR } = errors.actions;
+import {
+    NYHANDLING_REGISTRER,
+    NYHANDLING_LAGRET,
+    NYHANDLING_ERROR,
+    HANDLINGER_HENT,
+} from '../actiontypes';
 
 function registrerNyhandling(handling) {
     return axios.post('/handlereg/api/nyhandling', handling);

@@ -1,13 +1,13 @@
 import { takeLatest, put } from 'redux-saga/effects';
 import { LOCATION_CHANGE } from 'connected-react-router';
-import { OVERSIKT_HENT } from '../reducers/oversikt';
-import { BUTIKKER_HENT } from '../reducers/butikker';
-import { SUMBUTIKK_HENT } from '../reducers/sumbutikk';
-import { HANDLINGERBUTIKK_HENT } from '../reducers/handlingerbutikk';
-import { SISTEHANDEL_HENT } from '../reducers/sistehandel';
-import { SUMYEAR_HENT } from '../reducers/sumyear';
-import { SUMYEARMONTH_HENT } from '../reducers/sumyearmonth';
 import {
+    OVERSIKT_HENT,
+    BUTIKKER_HENT,
+    SUMBUTIKK_HENT,
+    HANDLINGERBUTIKK_HENT,
+    SISTEHANDEL_HENT,
+    SUMYEAR_HENT,
+    SUMYEARMONTH_HENT,
     FAVORITTER_HENT,
 } from '../actiontypes';
 

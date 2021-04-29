@@ -4,9 +4,13 @@ import { Link } from 'react-router-dom';
 import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import butikk, { BUTIKK_LAGRE } from '../reducers/butikk';
-const { BUTIKKNAVN_ENDRE, VELG_BUTIKK } = butikk.actions;
-import { BUTIKKER_HENT } from '../reducers/butikker';
+import {
+    BUTIKKER_HENT,
+    BUTIKKNAVN_ENDRE,
+    VELG_BUTIKK,
+    BUTIKK_LAGRE,
+    NYBUTIKK_REGISTRER,
+} from '../actiontypes';
 
 function EndreButikk(props) {
     const { valgtButikk, butikk, butikker, velgButikk, endreNavn, onLagreEndretButikk } = props;

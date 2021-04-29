@@ -1,9 +1,10 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
-import handlinger, { HANDLINGER_HENT } from '../reducers/handlinger';
-const { HANDLINGER_MOTTA } = handlinger.actions;
-import errors from '../reducers/errors';
-const { HANDLINGER_ERROR } = errors.actions;
+import {
+    HANDLINGER_HENT,
+    HANDLINGER_MOTTA,
+    HANDLINGER_ERROR,
+} from '../actiontypes';
 
 function hentHandlinger(accountid) {
     return axios.get('/handlereg/api/handlinger/' + accountid);

@@ -1,9 +1,10 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
-import sistehandel, { SISTEHANDEL_HENT } from '../reducers/sistehandel';
-const { SISTEHANDEL_MOTTA } = sistehandel.actions;
-import errors from '../reducers/errors';
-const { SISTEHANDEL_ERROR } = errors.actions;
+import {
+    SISTEHANDEL_HENT,
+    SISTEHANDEL_MOTTA,
+    SISTEHANDEL_ERROR,
+} from '../actiontypes';
 
 function hentSistehandel() {
     return axios.get('/handlereg/api/statistikk/sistehandel');

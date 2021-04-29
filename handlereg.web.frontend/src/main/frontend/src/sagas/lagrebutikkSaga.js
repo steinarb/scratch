@@ -1,9 +1,10 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
-import butikk, { BUTIKK_LAGRE } from '../reducers/butikk';
-const { BUTIKK_LAGRET } = butikk.actions;
-import errors from '../reducers/errors';
-const { NYBUTIKK_ERROR } = errors.actions;
+import {
+    BUTIKK_LAGRE,
+    BUTIKK_LAGRET,
+    NYBUTIKK_ERROR,
+} from '../actiontypes';
 
 function lagreButikk(butikk) {
     return axios.post('/handlereg/api/endrebutikk', butikk);

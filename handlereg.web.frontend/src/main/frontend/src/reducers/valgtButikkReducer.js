@@ -1,19 +1,13 @@
-import { createSlice, createAction } from '@reduxjs/toolkit';
-import butikk from './butikk';
+import { createReducer } from '@reduxjs/toolkit';
+import {
+    VELG_BUTIKK,
+} from '../actiontypes';
 
-const { VELG_BUTIKK } = butikk.actions;
-
-const defaultState = -1;
-
-const valgtButikk = createSlice({
-    name: 'valgtButikk',
-    initialState: defaultState,
-    extraReducers: {
-        [VELG_BUTIKK]: (state, action) => {
-            const { indeks } = action.payload;
-            return indeks;
-        },
+const valgtButikkReducer = createReducer(-1, {
+    [VELG_BUTIKK]: (state, action) => {
+        const { indeks } = action.payload;
+        return indeks;
     },
 });
 
-export default valgtButikk;
+export default valgtButikkReducer;

@@ -5,8 +5,10 @@ import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import { StyledLinkRight } from './bootstrap/StyledLinkRight';
-import nyhandling, { NYHANDLING_REGISTRER } from '../reducers/nyhandling';
-const { BELOP_ENDRE } = nyhandling.actions;
+import {
+    BELOP_ENDRE,
+    NYHANDLING_REGISTRER,
+} from '../actiontypes';
 
 function Hurtigregistrering(props) {
     const {

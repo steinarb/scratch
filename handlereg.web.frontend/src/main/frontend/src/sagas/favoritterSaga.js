@@ -1,8 +1,7 @@
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
-import oversikt from '../reducers/oversikt';
-const { OVERSIKT_MOTTA } = oversikt.actions;
 import {
+    OVERSIKT_MOTTA,
     FAVORITTER_HENT,
     FAVORITTER_MOTTA,
     FAVORITTER_ERROR,
