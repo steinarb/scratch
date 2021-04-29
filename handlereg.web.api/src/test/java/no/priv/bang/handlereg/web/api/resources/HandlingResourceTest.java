@@ -60,7 +60,6 @@ class HandlingResourceTest {
         assertEquals(0, handlinger.size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testGetHandlingerWhenExceptionIsThrown() {
         MockLogService logservice = new MockLogService();
@@ -102,7 +101,6 @@ class HandlingResourceTest {
         assertEquals(oversikt.getBalanse(), oppdatertOversikt.getBalanse());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testNyhandlingWhenExceptionIsThrown() {
         MockLogService logservice = new MockLogService();

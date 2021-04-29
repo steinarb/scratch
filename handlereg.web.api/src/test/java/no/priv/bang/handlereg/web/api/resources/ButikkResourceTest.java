@@ -47,7 +47,6 @@ class ButikkResourceTest {
         assertThat(butikker.size()).isPositive();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testGetButikkerWhenExceptionIsThrown() {
         MockLogService logservice = new MockLogService();
@@ -76,7 +75,6 @@ class ButikkResourceTest {
         assertEquals(nybutikk, butikker.get(0));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testLeggTilButikkWhenExceptionIsThrown() {
         MockLogService logservice = new MockLogService();
@@ -106,7 +104,6 @@ class ButikkResourceTest {
         assertEquals(endretbutikk, butikker.get(0));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testEndreButikkWhenExceptionIsThrown() {
         MockLogService logservice = new MockLogService();

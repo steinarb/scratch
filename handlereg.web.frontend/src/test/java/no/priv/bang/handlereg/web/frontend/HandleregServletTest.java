@@ -93,7 +93,6 @@ public class HandleregServletTest {
         assertEquals(500, response.getStatus());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
         MockLogService logservice = new MockLogService();
