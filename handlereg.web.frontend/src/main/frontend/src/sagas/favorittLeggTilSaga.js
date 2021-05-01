@@ -13,7 +13,7 @@ function sendLeggTilFavoritt(nyFavoritt) {
 
 function* leggTilFavoritt() {
     try {
-        const brukernavn = yield select(state => state.oversikt.brukernavn);
+        const brukernavn = yield select(state => state.username);
         const storeId = yield select(state => state.favorittbutikk);
         const nyFavoritt = { brukernavn, butikk: { storeId } };
         const response = yield call(sendLeggTilFavoritt, nyFavoritt);

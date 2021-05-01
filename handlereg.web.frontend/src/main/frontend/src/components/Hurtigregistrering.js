@@ -12,7 +12,7 @@ import {
 
 function Hurtigregistrering(props) {
     const {
-        brukernavn,
+        username,
         favoritter,
         nyhandling,
         endreBelop,
@@ -34,7 +34,7 @@ function Hurtigregistrering(props) {
                             <input id="amount" className="form-control" type="text" value={nyhandling.belop} onChange={e => endreBelop(e.target.value)} />
                         </div>
                     </div>
-                    { favoritter.map(f => <button className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, brukernavn)}>{f.store.butikknavn}</button>) }
+                    { favoritter.map(f => <button className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, username)}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>
         </div>
@@ -42,9 +42,9 @@ function Hurtigregistrering(props) {
 }
 
 function mapStateToProps(state) {
-    const { brukernavn, favoritter, nyhandling } = state;
+    const { username, favoritter, nyhandling } = state;
     return {
-        brukernavn,
+        username,
         favoritter,
         nyhandling,
     };
