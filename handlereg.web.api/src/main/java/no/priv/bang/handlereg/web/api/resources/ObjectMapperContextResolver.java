@@ -20,6 +20,7 @@ import javax.ws.rs.ext.Provider;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Provider
 public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
@@ -38,7 +39,7 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
     private ObjectMapper createObjectMapper() {
         ObjectMapper theMapper = new ObjectMapper();
         theMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        //theMapper.findAndRegisterModules();
+        theMapper.registerModule(new JavaTimeModule());
         return theMapper;
     }
 }
