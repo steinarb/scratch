@@ -29,8 +29,8 @@ function StatistikkSumyearmonth(props) {
                         </thead>
                         <tbody>
                             {sumyearmonth.map((sym) =>
-                                              <tr key={'year' + sym.year.value}>
-                                                  <td>{sym.year.value}</td>
+                                              <tr key={'year' + sym.year}>
+                                                  <td>{sym.year}</td>
                                                   <td>{sym.month}</td>
                                                   <td>{sym.sum}</td>
                                               </tr>

@@ -28,8 +28,8 @@ function StatistikkSumyear(props) {
                         </thead>
                         <tbody>
                             {sumyear.map((sy) =>
-                                         <tr key={'year' + sy.year.value}>
-                                             <td>{sy.year.value}</td>
+                                         <tr key={'year' + sy.year}>
+                                             <td>{sy.year}</td>
                                              <td>{sy.sum}</td>
                                          </tr>
                                         )}
