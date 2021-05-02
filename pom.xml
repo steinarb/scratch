@@ -49,7 +49,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <bang-osgi-service.version>1.7.2</bang-osgi-service.version>
         <osgi-service-adapters.version>1.1.2</osgi-service-adapters.version>
-        <bang-servlet.version>1.5.3</bang-servlet.version>
+        <bang-servlet.version>1.5.4</bang-servlet.version>
         <authservice.version>1.13.2</authservice.version>
         <beans.version>1.1.2</beans.version>
         <open-iconic.version>1.1.1</open-iconic.version>
