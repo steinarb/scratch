@@ -242,6 +242,26 @@ class HandleregWebApiTest extends ShiroTestBase {
     }
 
     @Test
+    void testGetTotaltHandlebelopPrAar() throws Exception {
+        HandleregService handlereg = mock(HandleregService.class);
+        when(handlereg.totaltHandlebelopPrAar()).thenReturn(Arrays.asList(SumYear.with().year(Year.of(2016)).sum(45000).build()));
+        MockLogService logservice = new MockLogService();
+        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        MockHttpServletRequest request = buildGetUrl("/statistikk/sumyear");
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        loginUser(request, response, "jd", "johnnyBoi");
+        servlet.service(request, response);
+        assertEquals(200, response.getStatus());
+        System.out.println("Content:");
+        System.out.println(response.getOutputStreamContent());
+        List<SumYear> sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
+        assertThat(sumOverButikk).isNotEmpty();
+        assertEquals(Year.of(2016), sumOverButikk.get(0).getYear());
+    }
+
+    @Test
     void testAntallHandlingerIButikk() throws Exception {
         HandleregService handlereg = mock(HandleregService.class);
         when(handlereg.antallHandlingerIButikk()).thenReturn(Arrays.asList(ButikkCount.with().butikk(Butikk.with().butikknavn("Spar Fjellheimen").build()).count(3345).build(), ButikkCount.with().butikk(Butikk.with().butikknavn("Joker Nord").build()).count(1234).build()));

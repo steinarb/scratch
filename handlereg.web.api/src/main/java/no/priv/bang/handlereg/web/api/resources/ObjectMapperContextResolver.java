@@ -38,7 +38,7 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
     private ObjectMapper createObjectMapper() {
         ObjectMapper theMapper = new ObjectMapper();
         theMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        theMapper.findAndRegisterModules();
+        //theMapper.findAndRegisterModules();
         return theMapper;
     }
 }
