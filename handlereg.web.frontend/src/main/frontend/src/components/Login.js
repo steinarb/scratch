@@ -6,6 +6,7 @@ import {
     PASSWORD_ENDRE,
     LOGIN_HENT,
 } from '../actiontypes';
+import LoginMessage from './LoginMessage';
 
 function Login(props) {
     const { username, password, loginresultat, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
@@ -22,6 +23,7 @@ function Login(props) {
                 </div>
             </header>
             <div className="container">
+                <LoginMessage/>
                 <form onSubmit={e => { e.preventDefault(); }}>
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Username:</label>
