@@ -19,6 +19,7 @@ public class Loginresultat {
 
     private boolean suksess;
     private String feilmelding;
+    private boolean authorized;
 
     private Loginresultat() {}
 
@@ -30,6 +31,10 @@ public class Loginresultat {
         return feilmelding;
     }
 
+    public boolean isAuthorized() {
+        return authorized;
+    }
+
     public static LoginresultatBuilder with() {
         return new LoginresultatBuilder();
     }
@@ -37,6 +42,7 @@ public class Loginresultat {
     public static class LoginresultatBuilder {
         private boolean suksess;
         private String feilmelding;
+        private boolean authorized;
 
         private LoginresultatBuilder() {}
 
@@ -44,6 +50,7 @@ public class Loginresultat {
             Loginresultat loginresultat = new Loginresultat();
             loginresultat.suksess = this.suksess;
             loginresultat.feilmelding = this.feilmelding;
+            loginresultat.authorized = authorized;
             return loginresultat;
         }
 
@@ -54,6 +61,11 @@ public class Loginresultat {
 
         public LoginresultatBuilder feilmelding(String feilmelding) {
             this.feilmelding = feilmelding;
+            return this;
+        }
+
+        public LoginresultatBuilder authorized(boolean authorized) {
+            this.authorized = authorized;
             return this;
         }
     }

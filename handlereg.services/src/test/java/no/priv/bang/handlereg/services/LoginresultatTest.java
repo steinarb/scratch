@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,16 @@ class LoginresultatTest {
     @Test
     void testCreate() {
         boolean suksess = true;
+        boolean authorized = true;
         String feilmelding = "Feil passord";
-        Loginresultat bean = Loginresultat.with().suksess(suksess).feilmelding(feilmelding).build();
+        Loginresultat bean = Loginresultat.with()
+            .suksess(suksess)
+            .feilmelding(feilmelding)
+            .authorized(authorized)
+            .build();
         assertTrue(bean.getSuksess());
         assertEquals(feilmelding, bean.getFeilmelding());
+        assertTrue(bean.isAuthorized());
     }
 
     @Test
@@ -35,6 +41,7 @@ class LoginresultatTest {
         Loginresultat bean = Loginresultat.with().build();
         assertFalse(bean.getSuksess());
         assertNull(bean.getFeilmelding());
+        assertFalse(bean.isAuthorized());
     }
 
 }

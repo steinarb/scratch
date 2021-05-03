@@ -10,6 +10,7 @@ import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import createRootReducer from './reducers';
 import rootSaga from './sagas';
+import { LOGINTILSTAND_HENT } from './actiontypes';
 
 const sagaMiddleware = createSagaMiddleware();
 const history = createBrowserHistory();
@@ -21,6 +22,8 @@ const store = configureStore({
     ],
 });
 sagaMiddleware.run(rootSaga);
+
+store.dispatch(LOGINTILSTAND_HENT());
 
 ReactDOM.render(
     <Provider store={store}>

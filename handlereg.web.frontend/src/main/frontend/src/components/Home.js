@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -16,8 +17,21 @@ import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 
 
 function Home(props) {
-    const { oversikt, handlinger, butikker, nyhandling, endreBelop, endreButikk, endreDato, onRegistrerHandling } = props;
+    const {
+        loginresultat,
+        oversikt,
+        handlinger,
+        butikker,
+        nyhandling,
+        endreBelop,
+        endreButikk,
+        endreDato,
+        onRegistrerHandling
+    } = props;
     const favordisfavor = oversikt.balanse >= 0 ? 'favør' : 'disfavør';
+    if (!loginresultat.authorized) {
+        return <Redirect to="/handlereg/unauthorized" />;
+    }
 
     return (
         <div>
@@ -89,8 +103,9 @@ function Home(props) {
 }
 
 const mapStateToProps = state => {
-    const { oversikt, handlinger, butikker, nyhandling } = state;
+    const { loginresultat, oversikt, handlinger, butikker, nyhandling } = state;
     return {
+        loginresultat,
         oversikt,
         handlinger,
         butikker,

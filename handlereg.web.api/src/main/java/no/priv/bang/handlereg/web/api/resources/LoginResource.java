@@ -59,7 +59,11 @@ public class LoginResource {
         try {
             subject.login(token);
 
-            return Loginresultat.with().suksess(true).feilmelding("").build();
+            return Loginresultat.with()
+                .suksess(true)
+                .feilmelding("")
+                .authorized(subject.hasRole("handleregbruker"))
+                .build();
         } catch(UnknownAccountException e) {
             logger.warn("Login error: unknown account", e);
             return Loginresultat.with().suksess(false).feilmelding("Ukjent konto").build();
@@ -82,11 +86,30 @@ public class LoginResource {
 
     @GET
     @Path("/logout")
-    public Loginresultat logout(Credentials credentials) {
+    public Loginresultat logout() {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
 
         return Loginresultat.with().suksess(false).feilmelding("Logget ut").build();
+    }
+
+    @GET
+    @Path("/logintilstand")
+    public Loginresultat logintilstand() {
+        Subject subject = SecurityUtils.getSubject();
+        boolean suksess = subject.isAuthenticated();
+        boolean harRoleHandleregbruker = subject.hasRole("handleregbruker");
+        String melding =
+            suksess ?
+            (harRoleHandleregbruker ?
+             "Bruker er logget inn og har tilgang" :
+             "Bruker er logget inn men mangler tilgang") :
+            "Bruker er ikke logget inn";
+        return Loginresultat.with()
+            .suksess(suksess)
+            .feilmelding(melding)
+            .authorized(harRoleHandleregbruker)
+            .build();
     }
 
 }

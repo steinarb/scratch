@@ -16,6 +16,10 @@
 package no.priv.bang.handlereg.web.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.web.subject.WebSubject;
+
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -64,6 +68,64 @@ class LoginResourceTest extends ShiroTestBase {
         Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
         assertThat(resultat.getFeilmelding()).startsWith("Ukjent konto");
+    }
+
+    @Test
+    void testLogout() {
+        LoginResource resource = new LoginResource();
+        String username = "jd";
+        String password = "johnnyBoi";
+        WebSubject subject = createSubjectAndBindItToThread();
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
+        assertTrue(subject.isAuthenticated()); // Verify precondition user logged in
+
+        Loginresultat loginresultat = resource.logout();
+        assertFalse(loginresultat.getSuksess());
+        assertEquals("Logget ut", loginresultat.getFeilmelding());
+        assertFalse(loginresultat.isAuthorized());
+        assertFalse(subject.isAuthenticated()); // Verify user has been logged out
+    }
+
+    @Test
+    void testGetLogintilstandWhenLoggedIn() {
+        LoginResource resource = new LoginResource();
+        String username = "jd";
+        String password = "johnnyBoi";
+        WebSubject subject = createSubjectAndBindItToThread();
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
+
+        Loginresultat loginresultat = resource.logintilstand();
+        assertTrue(loginresultat.getSuksess());
+        assertEquals("Bruker er logget inn og har tilgang", loginresultat.getFeilmelding());
+        assertTrue(loginresultat.isAuthorized());
+    }
+
+    @Test
+    void testGetLogintilstandWhenLoggedInButUserDoesntHaveRoleHandleregbruker() {
+        LoginResource resource = new LoginResource();
+        String username = "jad";
+        String password = "1ad";
+        WebSubject subject = createSubjectAndBindItToThread();
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
+
+        Loginresultat loginresultat = resource.logintilstand();
+        assertTrue(loginresultat.getSuksess());
+        assertEquals("Bruker er logget inn men mangler tilgang", loginresultat.getFeilmelding());
+        assertFalse(loginresultat.isAuthorized());
+    }
+
+    @Test
+    void testGetLogintilstandWhenNotLoggedIn() {
+        LoginResource resource = new LoginResource();
+        createSubjectAndBindItToThread();
+
+        Loginresultat loginresultat = resource.logintilstand();
+        assertFalse(loginresultat.getSuksess());
+        assertEquals("Bruker er ikke logget inn", loginresultat.getFeilmelding());
+        assertFalse(loginresultat.isAuthorized());
     }
 
 }

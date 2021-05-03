@@ -53,7 +53,8 @@ public class HandleregServlet extends FrontendServlet {
             "/favoritter/sorter",
             "/nybutikk",
             "/endrebutikk",
-            "/login");
+            "/login",
+            "/unauthorized");
     }
 
     @Override

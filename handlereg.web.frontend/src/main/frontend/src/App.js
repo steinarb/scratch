@@ -18,6 +18,7 @@ import FavoritterSorter from './components/FavoritterSorter';
 import NyButikk from './components/NyButikk';
 import EndreButikk from './components/EndreButikk';
 import Login from './components/Login';
+import Unauthorized from './components/Unauthorized';
 
 class App extends Component {
     render() {
@@ -41,6 +42,7 @@ class App extends Component {
                     <Route exact path="/handlereg/nybutikk" component={NyButikk} />
                     <Route exact path="/handlereg/endrebutikk" component={EndreButikk} />
                     <Route exact path="/handlereg/login" component={Login} />
+                    <Route exact path="/handlereg/unauthorized" component={Unauthorized} />
                 </Switch>
             </Router>
         );

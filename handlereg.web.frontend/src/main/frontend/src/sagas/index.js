@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime';
 import { fork, all } from "redux-saga/effects";
 import loginSaga from './loginSaga';
+import logoutSaga from './logoutSaga';
+import logintilstandSaga from './logintilstandSaga';
 import locationSaga from './locationSaga';
 import oversiktSaga from './oversiktSaga';
 import handlingerSaga from './handlingerSaga';
@@ -21,6 +23,8 @@ import favoritterByttSaga from './favoritterByttSaga';
 export default function* rootSaga() {
     yield all([
         fork(loginSaga),
+        fork(logoutSaga),
+        fork(logintilstandSaga),
         fork(locationSaga),
         fork(oversiktSaga),
         fork(handlingerSaga),
