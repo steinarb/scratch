@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ public class HandleregConstants {
     public static final String HANDLEREG_JDBC_URL = "handlereg.db.jdbc.url";
     public static final String HANDLEREG_JDBC_USER = "handlereg.db.jdbc.user";
     public static final String HANDLEREG_JDBC_PASSWORD = "handlereg.db.jdbc.password"; // NOSONAR hard to write code to handle passwords without saying the word "password"
+
+    public static final String HANDLEREGBRUKER_ROLE = "handleregbruker";
 
     private HandleregConstants() {}
 }

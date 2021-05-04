@@ -36,7 +36,7 @@ import org.osgi.service.log.Logger;
 
 import no.priv.bang.handlereg.services.Credentials;
 import no.priv.bang.handlereg.services.Loginresultat;
-
+import static no.priv.bang.handlereg.services.HandleregConstants.*;
 
 @Path("")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -62,7 +62,7 @@ public class LoginResource {
             return Loginresultat.with()
                 .suksess(true)
                 .feilmelding("")
-                .authorized(subject.hasRole("handleregbruker"))
+                .authorized(subject.hasRole(HANDLEREGBRUKER_ROLE))
                 .build();
         } catch(UnknownAccountException e) {
             logger.warn("Login error: unknown account", e);
@@ -98,7 +98,7 @@ public class LoginResource {
     public Loginresultat logintilstand() {
         Subject subject = SecurityUtils.getSubject();
         boolean suksess = subject.isAuthenticated();
-        boolean harRoleHandleregbruker = subject.hasRole("handleregbruker");
+        boolean harRoleHandleregbruker = subject.hasRole(HANDLEREGBRUKER_ROLE);
         String melding =
             suksess ?
             (harRoleHandleregbruker ?

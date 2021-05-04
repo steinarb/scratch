@@ -31,6 +31,7 @@ import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.osgiservice.users.UserRoles;
+import static no.priv.bang.handlereg.services.HandleregConstants.*;
 
 class HandleregTestdataTest {
 
@@ -41,7 +42,7 @@ class HandleregTestdataTest {
         UserManagementService useradmin = mock(MockUserManagementService.class, CALLS_REAL_METHODS);
         when(useradmin.getUser("jod")).thenReturn(User.with().userid(1).username("jod").email("jd@gmail.com").firstname("John").lastname("Doe").build());
         when(useradmin.getUser("jad")).thenReturn(User.with().userid(1).username("jad").email("jad@gmail.com").firstname("Jane").lastname("Doe").build());
-        when(useradmin.getRoles()).thenReturn(Arrays.asList(Role.with().build(), Role.with().build(), Role.with().id(2).rolename("handleregbruker").build()));
+        when(useradmin.getRoles()).thenReturn(Arrays.asList(Role.with().build(), Role.with().build(), Role.with().id(2).rolename(HANDLEREGBRUKER_ROLE).build()));
         testdata.setUseradmin(useradmin);
 
         assertEquals(0, useradmin.getUserRoles().size()); // Verify preconditions

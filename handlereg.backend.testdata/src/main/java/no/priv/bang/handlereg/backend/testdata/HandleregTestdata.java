@@ -25,6 +25,7 @@ import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.osgiservice.users.UserRoles;
+import static no.priv.bang.handlereg.services.HandleregConstants.*;
 
 @Component(immediate=true)
 public class HandleregTestdata {
@@ -49,7 +50,7 @@ public class HandleregTestdata {
     }
 
     void addRolesForTestusers() {
-        Role handleregbruker = useradmin.getRoles().stream().filter(r -> "handleregbruker".equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
+        Role handleregbruker = useradmin.getRoles().stream().filter(r -> HANDLEREGBRUKER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
         User jod = useradmin.getUser("jod");
         useradmin.addUserRoles(UserRoles.with().user(jod).roles(Arrays.asList(handleregbruker)).build());
         User jad = useradmin.getUser("jad");

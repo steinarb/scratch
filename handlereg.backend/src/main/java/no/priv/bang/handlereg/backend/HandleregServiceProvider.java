@@ -52,6 +52,7 @@ import no.priv.bang.handlereg.services.Transaction;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
+import static no.priv.bang.handlereg.services.HandleregConstants.*;
 
 @Component(service=HandleregService.class, immediate=true)
 public class HandleregServiceProvider implements HandleregService {
@@ -520,7 +521,7 @@ public class HandleregServiceProvider implements HandleregService {
     }
 
     private void addRolesIfNotpresent() {
-        String handleregbruker = "handleregbruker";
+        String handleregbruker = HANDLEREGBRUKER_ROLE;
         List<Role> roles = useradmin.getRoles();
         Optional<Role> existingRole = roles.stream().filter(r -> handleregbruker.equals(r.getRolename())).findFirst();
         if (!existingRole.isPresent()) {
