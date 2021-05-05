@@ -27,7 +27,7 @@ const nyhandlingReducer = createReducer(defaultState, {
         const handletidspunkt = action.payload;
         return { ...state, handletidspunkt };
     },
-    [NYHANDLING_LAGRET]: (state, action) => ({ ...state, belop: 0, handletidspunkt: moment() }),
+    [NYHANDLING_LAGRET]: (state) => ({ ...state, belop: 0, handletidspunkt: moment() }),
     [HANDLINGER_MOTTA]: (state, action) => {
         const sistebutikk = [...action.payload].pop();
         const storeId = sistebutikk.storeId;

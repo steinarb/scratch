@@ -1,11 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 import {
     SLETT_FAVORITT,
 } from '../actiontypes';
@@ -21,7 +17,7 @@ function FavoritterSlett(props) {
                 <div className="col-sm-2"></div>
             </nav>
             <Container>
-                { favoritter.map(f => <button className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onSlettFavoritt(f)}>{f.store.butikknavn}</button>) }
+                { favoritter.map(f => <button key={'favoritt_' + f.favouriteid} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onSlettFavoritt(f)}>{f.store.butikknavn}</button>) }
             </Container>
         </div>
     );

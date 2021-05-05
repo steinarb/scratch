@@ -10,7 +10,7 @@ function hentHandlingerbutikk() {
     return axios.get('/handlereg/api/statistikk/handlingerbutikk');
 }
 
-function* mottaHandlingerbutikk(action) {
+function* mottaHandlingerbutikk() {
     try {
         const response = yield call(hentHandlingerbutikk);
         const handlingerbutikk = (response.headers['content-type'] === 'application/json') ? response.data : [];

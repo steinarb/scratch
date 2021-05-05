@@ -12,7 +12,7 @@ function hentOversikt() {
     return axios.get('/handlereg/api/oversikt');
 }
 
-function* mottaOversikt(action) {
+function* mottaOversikt() {
     try {
         const response = yield call(hentOversikt);
         const oversikt = (response.headers['content-type'] === 'application/json') ? response.data : {};

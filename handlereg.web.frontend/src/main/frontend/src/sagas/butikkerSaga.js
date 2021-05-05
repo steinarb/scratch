@@ -10,7 +10,7 @@ function hentButikker() {
     return axios.get('/handlereg/api/butikker');
 }
 
-function* mottaButikker(action) {
+function* mottaButikker() {
     try {
         const response = yield call(hentButikker);
         const butikker = (response.headers['content-type'] === 'application/json') ? response.data : [];

@@ -10,7 +10,7 @@ function sendLogout() {
     return axios.get('/handlereg/api/logout');
 }
 
-function* mottaLogoutResultat(action) {
+function* mottaLogoutResultat() {
     try {
         const response = yield call(sendLogout);
         const logoutresult = (response.headers['content-type'] === 'application/json') ? response.data : {};

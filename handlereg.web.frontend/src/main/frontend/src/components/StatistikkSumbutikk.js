@@ -1,10 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 
 function StatistikkSumbutikk(props) {
     const { sumbutikk } = props;
@@ -47,5 +44,4 @@ const mapStateToProps = state => {
     };
 };
 
-StatistikkSumbutikk = connect(mapStateToProps)(StatistikkSumbutikk);
-export default StatistikkSumbutikk;
+export default connect(mapStateToProps)(StatistikkSumbutikk);

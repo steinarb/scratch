@@ -10,7 +10,7 @@ function sendLogintilstand() {
     return axios.get('/handlereg/api/logintilstand');
 }
 
-function* mottaLogintilstandResultat(action) {
+function* mottaLogintilstandResultat() {
     try {
         const response = yield call(sendLogintilstand);
         const logoutresult = (response.headers['content-type'] === 'application/json') ? response.data : {};

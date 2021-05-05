@@ -10,7 +10,7 @@ function hentSistehandel() {
     return axios.get('/handlereg/api/statistikk/sistehandel');
 }
 
-function* mottaSistehandel(action) {
+function* mottaSistehandel() {
     try {
         const response = yield call(hentSistehandel);
         const sistehandel = (response.headers['content-type'] === 'application/json') ? response.data : [];

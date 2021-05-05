@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import ChevronTop from './bootstrap/ChevronTop';
@@ -27,7 +24,7 @@ function FavoritterSorter(props) {
                         const forrige = array[indeks-1];
                         const neste = array[indeks+1];
                         return (
-                            <div className="row">
+                            <div key={'favoritt_' + f.favouriteid.toString()} className="row">
                                 <button className="col btn btn-primary m-1" disabled={!forrige} onClick={() => bytt(f, forrige)}>
                                     <ChevronTop/>
                                 </button>

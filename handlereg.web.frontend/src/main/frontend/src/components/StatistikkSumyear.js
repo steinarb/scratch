@@ -1,11 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 
 function StatistikkSumyear(props) {
     const { sumyear } = props;
@@ -48,5 +44,4 @@ const mapStateToProps = state => {
     };
 };
 
-StatistikkSumyear = connect(mapStateToProps)(StatistikkSumyear);
-export default StatistikkSumyear;
+export default connect(mapStateToProps)(StatistikkSumyear);

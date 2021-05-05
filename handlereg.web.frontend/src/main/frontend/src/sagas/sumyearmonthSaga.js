@@ -10,7 +10,7 @@ function hentSumyearmonth() {
     return axios.get('/handlereg/api/statistikk/sumyearmonth');
 }
 
-function* mottaSumyearmonth(action) {
+function* mottaSumyearmonth() {
     try {
         const response = yield call(hentSumyearmonth);
         const sumyearmonth = (response.headers['content-type'] === 'application/json') ? response.data : [];

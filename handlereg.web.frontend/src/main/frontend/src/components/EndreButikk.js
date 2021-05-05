@@ -1,20 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
-    BUTIKKER_HENT,
     BUTIKKNAVN_ENDRE,
     VELG_BUTIKK,
     BUTIKK_LAGRE,
-    NYBUTIKK_REGISTRER,
 } from '../actiontypes';
 
 function EndreButikk(props) {
     const { valgtButikk, butikk, butikker, velgButikk, endreNavn, onLagreEndretButikk } = props;
-    const { butikknavn, gruppe, rekkefolge } = butikk;
+    const { butikknavn } = butikk;
     const butikkerUnntattUndefined = butikker.filter(b => b.storeId > -1);
 
     return (
@@ -27,12 +23,12 @@ function EndreButikk(props) {
             <Container>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <select size="10" value={valgtButikk} onChange={e => velgButikk(e.target.value, butikkerUnntattUndefined)}>
-                        { butikkerUnntattUndefined.map((b, indeks) => <option value={indeks}>{b.butikknavn}</option>) }
+                        { butikkerUnntattUndefined.map((b, indeks) => <option key={'butikk_' + b.storeId.toString()} value={indeks}>{b.butikknavn}</option>) }
                     </select>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">Ny butikk</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="text" value={butikk.butikknavn} onChange={e => endreNavn(e.target.value)} />
+                            <input id="amount" className="form-control" type="text" value={butikknavn} onChange={e => endreNavn(e.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -64,5 +60,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-EndreButikk = connect(mapStateToProps, mapDispatchToProps)(EndreButikk);
-export default EndreButikk;
+export default connect(mapStateToProps, mapDispatchToProps)(EndreButikk);

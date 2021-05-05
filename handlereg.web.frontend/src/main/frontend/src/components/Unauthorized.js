@@ -1,16 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
     LOGOUT_HENT,
 } from '../actiontypes';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
-import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 
 
 function Unauthorized(props) {
@@ -28,7 +23,7 @@ function Unauthorized(props) {
             </nav>
             <Container>
                 <p>Hei {username}! Du har ikke tilgang til denne applikasjonen</p>
-                <p>Klikk "Gå hjem" for å navigere ut av applikasjonen, eller logg ut for å logge inn med en bruker som har tilgang</p>
+                <p>Klikk &quot;Gå hjem&quot; for å navigere ut av applikasjonen, eller logg ut for å logge inn med en bruker som har tilgang</p>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <div className="form-group row">
                         <div className="col-5"/>

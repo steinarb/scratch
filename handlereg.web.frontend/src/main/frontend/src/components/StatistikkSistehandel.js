@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 
 function StatistikkSistehandel(props) {
     const { sistehandel } = props;
@@ -48,5 +45,4 @@ const mapStateToProps = state => {
     };
 };
 
-StatistikkSistehandel = connect(mapStateToProps)(StatistikkSistehandel);
-export default StatistikkSistehandel;
+export default connect(mapStateToProps)(StatistikkSistehandel);

@@ -11,7 +11,7 @@ function hentFavoritter(username) {
     return axios.get('/handlereg/api/favoritter', { params: { username } });
 }
 
-function* mottaFavoritter(action) {
+function* mottaFavoritter() {
     try {
         const username = yield select(state => state.username);
         const response = yield call(hentFavoritter, username);

@@ -1,10 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 import {
     BELOP_ENDRE,
     NYHANDLING_REGISTRER,
@@ -34,7 +31,7 @@ function Hurtigregistrering(props) {
                             <input id="amount" className="form-control" type="text" value={nyhandling.belop} onChange={e => endreBelop(e.target.value)} />
                         </div>
                     </div>
-                    { favoritter.map(f => <button className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, username)}>{f.store.butikknavn}</button>) }
+                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, username)}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>
         </div>

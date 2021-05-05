@@ -42,4 +42,4 @@ export default function* rootSaga() {
         fork(favorittSlettSaga),
         fork(favoritterByttSaga),
     ]);
-};
+}

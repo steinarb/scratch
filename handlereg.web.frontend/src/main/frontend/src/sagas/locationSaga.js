@@ -1,5 +1,5 @@
-import { takeLatest, put, select } from 'redux-saga/effects';
-import { LOCATION_CHANGE, push } from 'connected-react-router';
+import { takeLatest, put } from 'redux-saga/effects';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import {
     OVERSIKT_HENT,
     BUTIKKER_HENT,
@@ -8,7 +8,6 @@ import {
     SISTEHANDEL_HENT,
     SUMYEAR_HENT,
     SUMYEARMONTH_HENT,
-    FAVORITTER_HENT,
 } from '../actiontypes';
 
 function* locationChange(action) {

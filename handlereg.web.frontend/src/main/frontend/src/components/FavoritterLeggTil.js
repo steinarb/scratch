@@ -1,11 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
-import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 import {
     VELG_FAVORITTBUTIKK,
     LEGG_TIL_FAVORITT,
@@ -25,11 +21,11 @@ function FavoritterLeggTil(props) {
             </nav>
             <Container>
                 <div>
-                    { favoritter.map(f => <div className="btn btn-primary w-75 m-1 left-align-cell">{f.store.butikknavn}</div>) }
+                    { favoritter.map(f => <div key={'favoritt_' + f.favouriteid} className="btn btn-primary w-75 m-1 left-align-cell">{f.store.butikknavn}</div>) }
                 </div>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <select value={favorittbutikk} onChange={e => velgButikk(e.target.value)}>
-                        { ledigeButikker.map(b => <option key={b.storeId} value={b.storeId}>{b.butikknavn}</option>) }
+                        { ledigeButikker.map(b => <option key={'butikk_' + b.storeId.toString()} value={b.storeId}>{b.butikknavn}</option>) }
                     </select>
                     <div>
                         <button className="btn btn-primary" disabled={ingenButikkValgt} onClick={onLeggTilFavoritt}>Legg til favoritt</button>

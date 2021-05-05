@@ -10,7 +10,7 @@ function hentSumbutikk() {
     return axios.get('/handlereg/api/statistikk/sumbutikk');
 }
 
-function* mottaSumbutikk(action) {
+function* mottaSumbutikk() {
     try {
         const response = yield call(hentSumbutikk);
         const sumbutikk = (response.headers['content-type'] === 'application/json') ? response.data : [];

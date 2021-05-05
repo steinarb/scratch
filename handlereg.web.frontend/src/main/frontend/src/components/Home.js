@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
@@ -11,7 +10,6 @@ import {
     DATO_ENDRE,
     NYHANDLING_REGISTRER,
 } from '../actiontypes';
-import { Header } from './bootstrap/Header';
 import { Container } from './bootstrap/Container';
 import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 
@@ -122,5 +120,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-Home = connect(mapStateToProps, mapDispatchToProps)(Home);
-export default Home;
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -1,5 +1,4 @@
 import { createReducer } from '@reduxjs/toolkit';
-import moment from 'moment';
 import {
     BUTIKKNAVN_ENDRE,
     NYBUTIKK_LAGRET,
@@ -17,8 +16,8 @@ const butikkReducer = createReducer(defaultState, {
             const butikknavn = action.payload;
             return { ...state, butikknavn };
         },
-        [NYBUTIKK_LAGRET]: (state, action) => ({ ...defaultState }),
-        [BUTIKK_LAGRET]: (state, action) => ({ ...defaultState }),
+        [NYBUTIKK_LAGRET]: () => ({ ...defaultState }),
+        [BUTIKK_LAGRET]: () => ({ ...defaultState }),
         [VELG_BUTIKK]: (state, action) => {
             const { indeks, butikker } = action.payload;
             const valgtButikk = butikker[indeks];
