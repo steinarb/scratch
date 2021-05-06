@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
-import { LOGOUT_REQUEST } from '../reduxactions';
 
 function ModifyButton(props) {
     const { webcontext, loginresult, item } = props;

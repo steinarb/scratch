@@ -1,4 +1,4 @@
-import { takeLatest, call, put, select } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import { ALLROUTES_REQUEST, ALLROUTES_RECEIVE, ALLROUTES_ERROR } from '../reduxactions';
 
@@ -6,7 +6,7 @@ function fetchAllRoutes() {
     return axios.get('/api/allroutes');
 }
 
-function* receiveRoutes(action) {
+function* receiveRoutes() {
     try {
         const response = yield call(fetchAllRoutes);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];

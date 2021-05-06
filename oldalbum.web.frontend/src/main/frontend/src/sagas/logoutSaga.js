@@ -6,7 +6,7 @@ import {
     LOGOUT_ERROR,
 } from '../reduxactions';
 
-function sendLogout(credentials) {
+function sendLogout() {
     return axios.get('/api/logout');
 }
 

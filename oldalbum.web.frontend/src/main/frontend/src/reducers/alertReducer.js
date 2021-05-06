@@ -6,7 +6,7 @@ import {
 
 const alertReducer = createReducer('', {
     [SET_ALERT]: (state, action) => action.payload,
-    [CLEAR_ALERT]: (state, action) => '',
+    [CLEAR_ALERT]: () => '',
 });
 
 export default alertReducer;

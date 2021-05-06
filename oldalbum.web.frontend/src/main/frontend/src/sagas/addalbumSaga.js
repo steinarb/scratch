@@ -12,7 +12,7 @@ function updateAddedAlbum(album) {
     return axios.post('/api/addalbum', body);
 }
 
-function* updateAlbumAndReceiveRoutes(action) {
+function* updateAlbumAndReceiveRoutes() {
     try {
         const webcontext = yield select(state => state.webcontext);
         const addalbum = yield select(state => state.addalbum);

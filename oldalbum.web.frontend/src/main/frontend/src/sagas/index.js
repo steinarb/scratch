@@ -26,4 +26,4 @@ export default function* rootSaga() {
         fork(logout),
         fork(location),
     ]);
-};
+}

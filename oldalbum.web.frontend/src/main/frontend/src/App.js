@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, NavLink } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'connected-react-router';
-import logo from './logo.svg';
 import './App.css';
 import Album from './components/Album';
 import Picture from './components/Picture';

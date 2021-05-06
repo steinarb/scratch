@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
-import { stringify } from 'qs';
 import { MOVE_ALBUMENTRY_UP } from '../reduxactions';
 
 function UpButton(props) {
@@ -14,7 +12,7 @@ function UpButton(props) {
     return(<button className={props.className} type="button" onClick={() => onMoveUp(item)}><span className="oi oi-chevron-top" title="chevron top" aria-hidden="true"></span></button>);
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     return {

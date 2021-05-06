@@ -20,7 +20,6 @@ function AddPicture(props) {
         loginresult,
         addpicture,
         albums,
-        onParentChange,
         onBasenameChange,
         onTitleChange,
         onDescriptionChange,
@@ -52,7 +51,7 @@ function AddPicture(props) {
                         </div>
                     </div>
                 </NavLink>
-                <h1>Add picture to "{parentalbum.title}"</h1>
+                <h1>Add picture to &quot;{parentalbum.title}&quot;</h1>
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
@@ -98,19 +97,19 @@ function AddPicture(props) {
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content length (bytes)</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={addpicture.contentLength}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={addpicture.contentLength}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content type</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={addpicture.contentType}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={addpicture.contentType}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Last modified</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={lastModified}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={lastModified}/>
                         </div>
                     </div>
                     <div>

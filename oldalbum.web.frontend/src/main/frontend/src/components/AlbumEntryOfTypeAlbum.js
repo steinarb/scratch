@@ -35,7 +35,7 @@ function AlbumEntryOfTypeAlbum(props) {
                     <div className="col-auto">
                         <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
                         <div className="d-flex">
-                            { childrenWithThumbnails.map(c => <Thumbnail entry={c} />) }
+                            { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
                         </div>
                     </div>
                     <div className="btn-group-vertical">

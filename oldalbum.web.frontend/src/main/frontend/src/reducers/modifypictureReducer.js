@@ -16,7 +16,7 @@ import { prepareAlbumentryForEdit, updateParent, updateBasename } from './common
 const modifypictureReducer = createReducer({}, {
     [ALLROUTES_RECEIVE]: (state, action) => prepareAlbumentryForEdit(action.payload.find(i => i.id === state.id)),
     [MODIFY_PICTURE]: (state, action) => prepareAlbumentryForEdit(action.payload),
-    [MODIFY_PICTURE_CLEAR]: (state, action) => ({}),
+    [MODIFY_PICTURE_CLEAR]: () => ({}),
     [MODIFY_PICTURE_PARENT]: (state, action) => updateParent(state, action, false),
     [MODIFY_PICTURE_BASENAME]: (state, action) => updateBasename(state, action, false),
     [MODIFY_PICTURE_TITLE]: (state, action) => ({ ...state, title: action.payload }),

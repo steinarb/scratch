@@ -12,7 +12,7 @@ function updateModifiedPicture(picture) {
     return axios.post('/api/modifypicture', body);
 }
 
-function* updatePictureAndReceiveRoutes(action) {
+function* updatePictureAndReceiveRoutes() {
     try {
         const modifypicture = yield select(state => state.modifypicture);
         const response = yield call(updateModifiedPicture, modifypicture);

@@ -6,7 +6,7 @@ export function pictureTitle(item) {
 
 export function formatMetadata(item) {
     const lastmodified = item.lastModified ? moment(item.lastModified).format("YYYY-MM-DD ") : '';
-    const imageType = item.contenttype = 'image/jpeg' ? 'JPEG ' : '';
+    const imageType = item.contenttype === 'image/jpeg' ? 'JPEG ' : '';
     const contentlengthInt = parseInt(item.contentLength, 10);
     let imagesize = '';
     if (contentlengthInt) {
@@ -22,5 +22,5 @@ export function formatMetadata(item) {
 }
 
 export function viewSize() {
-    return $('#sizer').find('div:visible').data('size');
+    return $('#sizer').find('div:visible').data('size'); // eslint-disable-line no-undef
 }

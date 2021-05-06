@@ -12,7 +12,7 @@ function updateModifiedAlbum(album) {
     return axios.post('/api/modifyalbum', body);
 }
 
-function* updateAlbumAndReceiveRoutes(action) {
+function* updateAlbumAndReceiveRoutes() {
     try {
         const modifyalbum = yield select(state => state.modifyalbum);
         const response = yield call(updateModifiedAlbum, modifyalbum);

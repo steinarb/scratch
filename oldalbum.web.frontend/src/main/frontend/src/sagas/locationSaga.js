@@ -11,7 +11,7 @@ import {
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
-    const { pathname = '', search = '' } = location;
+    const { pathname = '' } = location;
 
     yield put(CLEAR_ALERT());
 
@@ -73,5 +73,5 @@ export default function* locationSaga() {
 }
 
 function findAlbumentries(state) {
-    return state.albumentries || new Map([]);
+    return state.albumentries || [];
 }

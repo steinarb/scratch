@@ -7,16 +7,15 @@ import {
 } from '../reduxactions';
 import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
-function updateAddedPicture(picture, webcontext) {
+function updateAddedPicture(picture) {
     const body = stripFieldsNotInAlbumEntryJavaBean(picture);
     return axios.post('/api/addpicture', body);
 }
 
-function* updatePictureAndReceiveRoutes(action) {
+function* updatePictureAndReceiveRoutes() {
     try {
-        const webcontext = yield select(state => state.webcontext);
         const addpicture = yield select(state => state.addpicture);
-        const response = yield call(updateAddedPicture, addpicture, webcontext);
+        const response = yield call(updateAddedPicture, addpicture);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(ALLROUTES_RECEIVE(routes));
     } catch (error) {

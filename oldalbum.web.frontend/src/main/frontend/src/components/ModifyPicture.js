@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Redirect, NavLink } from 'react-router-dom';
-import { stringify } from 'qs';
 import moment from 'moment';
 import {
     MODIFY_PICTURE_PARENT,
@@ -107,19 +106,19 @@ function ModifyPicture(props) {
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content length (bytes)</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={modifypicture.contentLength}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={modifypicture.contentLength}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content type</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={modifypicture.contentType}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={modifypicture.contentType}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Last modified</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readonly className="form-control" type="text" value={lastmodified}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={lastmodified}/>
                         </div>
                     </div>
                     <div>

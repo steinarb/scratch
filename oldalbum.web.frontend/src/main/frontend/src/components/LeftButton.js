@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
-import { stringify } from 'qs';
 import { MOVE_ALBUMENTRY_LEFT } from '../reduxactions';
 import ChevronLeft from './bootstrap/ChevronLeft';
 
@@ -15,7 +13,7 @@ function LeftButton(props) {
     return(<button className={props.className} type="button" onClick={() => onMoveLeft(item)}><ChevronLeft/></button>);
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     return {

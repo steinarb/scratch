@@ -16,7 +16,6 @@ function AddAlbum(props) {
         loginresult,
         addalbum,
         albums,
-        onParentChange,
         onBasenameChange,
         onTitleChange,
         onDescriptionChange,
@@ -43,7 +42,7 @@ function AddAlbum(props) {
                         </div>
                     </div>
                 </NavLink>
-                <h1>Add album to "{parentalbum.title}"</h1>
+                <h1>Add album to &quot;{parentalbum.title}&quot;</h1>
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
@@ -81,7 +80,7 @@ function AddAlbum(props) {
     );
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
     const login = state.login || {};
     const loginresult = login.loginresult || { success: false };
     const addalbum = state.addalbum;

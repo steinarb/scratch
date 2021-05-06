@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Redirect, NavLink } from 'react-router-dom';
-import { stringify } from 'qs';
 import {
     MODIFY_ALBUM_PARENT,
     MODIFY_ALBUM_BASENAME,

@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
-import { stringify } from 'qs';
 import { MOVE_ALBUMENTRY_RIGHT } from '../reduxactions';
 import ChevronRight from './bootstrap/ChevronRight';
 

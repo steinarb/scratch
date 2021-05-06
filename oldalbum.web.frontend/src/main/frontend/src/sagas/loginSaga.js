@@ -7,7 +7,7 @@ import {
     LOGIN_ERROR,
 } from '../reduxactions';
 
-function checkLogin(credentials) {
+function checkLogin() {
     return axios.get('/api/login');
 }
 
@@ -15,7 +15,7 @@ function sendLogin(credentials) {
     return axios.post('/api/login', credentials);
 }
 
-function* receiveCheckLoginResult(action) {
+function* receiveCheckLoginResult() {
     try {
         const response = yield call(checkLogin);
         const loginresult = (response.headers['content-type'] === 'application/json') ? response.data : {};
