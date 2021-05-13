@@ -58,7 +58,7 @@ function Album(props) {
             </div>
             {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             <div className="row">
-                { children.sort((a,b) => a.sort - b.sort).map(renderChild) }
+                { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }
             </div>
         </div>
     );
