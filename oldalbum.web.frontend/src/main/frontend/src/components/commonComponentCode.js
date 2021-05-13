@@ -22,5 +22,9 @@ export function formatMetadata(item) {
 }
 
 export function viewSize() {
-    return $('#sizer').find('div:visible').data('size'); // eslint-disable-line no-undef
+    const sizer = document.getElementById('sizer') || {};
+    const divs = Array.prototype.slice.call(sizer.querySelectorAll('div'));
+    const visibleDiv = divs.find(elem => elem.offsetWidth > 0 || elem.offsetHeight > 0);
+    const selectedSize = (visibleDiv && visibleDiv.getAttribute('data-size'));
+    return selectedSize;
 }
