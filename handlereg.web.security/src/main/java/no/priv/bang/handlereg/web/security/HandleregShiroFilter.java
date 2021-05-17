@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Steinar Bang
+ * Copyright 2018-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package no.priv.bang.handlereg.web.security;
 
+import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+
 import javax.servlet.Filter;
 
 import org.apache.shiro.config.Ini;
@@ -27,19 +29,17 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPattern;
 
 /**
  * This is an OSGi DS component that provides a {@link Filter} service.  This filter service will
  * be put in front of the servlets in the "/handlereg" webcontext, and
  * will handle authentication and verify authorization to the servlet paths.
  */
-@Component(
-    property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_FILTER_PATTERN+"=/*",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=handlereg)"},
-    service=Filter.class,
-    immediate=true)
+@Component(service=Filter.class, immediate=true)
+@HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=handlereg)")
+@HttpWhiteboardFilterPattern("/*")
 public class HandleregShiroFilter extends AbstractShiroFilter { // NOSONAR
 
     private static final Ini INI_FILE = new Ini();

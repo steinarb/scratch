@@ -19,19 +19,18 @@ import javax.servlet.Servlet;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.servlet.frontend.FrontendServlet;
 
-@Component(
-    property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/*",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=handlereg)",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=handlereg"},
-    service=Servlet.class,
-    immediate=true
-)
+@Component(service=Servlet.class, immediate=true)
+@HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=handlereg)")
+@HttpWhiteboardServletName("handlereg")
+@HttpWhiteboardServletPattern("/*")
 public class HandleregServlet extends FrontendServlet {
     private static final long serialVersionUID = -3496606785818930881L;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Steinar Bang
+ * Copyright 2019-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,26 @@
  */
 package no.priv.bang.handlereg.web.api;
 
+import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+
 import javax.servlet.Servlet;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.servlet.jersey.JerseyServlet;
 
 
-@Component(
-    property= {
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN+"=/api/*",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_NAME +"=handlereg)",
-        HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME+"=handleregapi"},
-    service=Servlet.class,
-    immediate=true)
+@Component(service=Servlet.class, immediate=true)
+@HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=handlereg)")
+@HttpWhiteboardServletName("handleregapi")
+@HttpWhiteboardServletPattern("/api/*")
 public class HandleregWebApi extends JerseyServlet {
     private static final long serialVersionUID = 3391345571152153990L; // NOSONAR
 
