@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import { Helmet } from "react-helmet";
-import { Swipeable } from 'react-swipeable';
+import { useSwipeable } from 'react-swipeable';
 import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
@@ -17,6 +17,10 @@ function Picture(props) {
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: () => navigateTo(next),
+        onSwipedRight: () => navigateTo(previous),
+    });
 
     return (
         <div>
@@ -52,7 +56,7 @@ function Picture(props) {
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
             </div>
-            <Swipeable onSwipedLeft={() => navigateTo(next)} onSwipedRight={() => navigateTo(previous)}>
+            <div {...swipeHandlers}>
                 <img className="img-fluid d-lg-none" src={item.imageUrl} />
                 <div className="d-none d-lg-block">
                     <div className="row align-items-center d-flex justify-content-center">
@@ -68,7 +72,7 @@ function Picture(props) {
                     </div>
                 </div>
                 {description && <div className="alert alert-primary d-flex justify-content-center" role="alert">{description}</div> }
-            </Swipeable>
+            </div>
         </div>
     );
 }
