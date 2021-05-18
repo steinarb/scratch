@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                   |
 |------------------------+---------+------------------------------------------------------------------------------|
+| <2021-05-18 Tue 18:56> |   1.0.6 | OSGi 7 web whiteboard annotations in the BoM, jacoco-maven-plugin 0.8.7      |
 | <2021-04-26 Mon 21:25> |   1.0.5 | maven-clean-plugin 3.1.0                                                     |
 | <2021-04-21 Wed 21:19> |   1.0.4 | frontend-maven-plugin 1.11.3, node.js 14.16.1                                |
 | <2021-04-16 Fri 21:16> |   1.0.3 | Avoid undesirable inheritance of nexus-staging-maven-plugin config           |
@@ -22,6 +23,6 @@ Use the following parent in the project:
   <parent>
       <groupId>no.priv.bang.pom</groupId>
       <artifactId>bang-pom</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.6</version>
   </parent>
 #+end_src
