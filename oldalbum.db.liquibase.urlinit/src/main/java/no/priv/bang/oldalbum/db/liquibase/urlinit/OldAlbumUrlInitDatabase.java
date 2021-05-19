@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,18 +38,18 @@ import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
-import no.priv.bang.osgi.service.adapters.logservice.LogServiceAdapter;
+import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 
 @Component(immediate=true)
 public class OldAlbumUrlInitDatabase {
-    LogServiceAdapter logservice = new LogServiceAdapter();
+    LoggerAdapter logger = new LoggerAdapter(getClass());
     private DataSource datasource;
     private Environment environment;
     private HttpConnectionFactory connectionFactory;
 
     @Reference
     public void setLogService(LogService logservice) {
-        this.logservice.setLogService(logservice);
+        this.logger.setLogService(logservice);
     }
 
     @Reference(target = "(osgi.jndi.service.name=jdbc/oldalbum)")
@@ -82,15 +82,15 @@ public class OldAlbumUrlInitDatabase {
                     }
                     return builder.toString();
                 } else {
-                    logservice.log(LogService.LOG_ERROR, String.format("Failed to load oldalbum database content because HTTP statuscode of %s was %d", databaseContentUrl, statusCode));
+                    logger.error(String.format("Failed to load oldalbum database content because HTTP statuscode of %s was %d", databaseContentUrl, statusCode));
                     return null;
                 }
             } catch (IOException e) {
-                logservice.log(LogService.LOG_ERROR, String.format("Failed to load oldalbum database content because loading from %s failed", databaseContentUrl), e);
+                logger.error(String.format("Failed to load oldalbum database content because loading from %s failed", databaseContentUrl), e);
                 return null;
             }
         } else {
-            logservice.log(LogService.LOG_ERROR, "Failed to load oldalbum database content because DATABASE_CONTENT_URL wasn't set");
+            logger.error("Failed to load oldalbum database content because DATABASE_CONTENT_URL wasn't set");
             return null;
         }
     }
@@ -104,7 +104,7 @@ public class OldAlbumUrlInitDatabase {
             Liquibase liquibase = new Liquibase("dumproutes.sql", accessor, database);
             liquibase.update("");
         } catch (Exception e) {
-            logservice.log(LogService.LOG_ERROR, "Failed to insert oldalbum database content into the database");
+            logger.error("Failed to insert oldalbum database content into the database");
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,15 +28,15 @@ import org.osgi.service.log.LogService;
 
 import liquibase.exception.LiquibaseException;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
-import no.priv.bang.osgi.service.adapters.logservice.LogServiceAdapter;
+import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 
 @Component(immediate=true, property = "name=oldalbum")
 public class OldAlbumScheme implements PreHook {
-    LogServiceAdapter logservice = new LogServiceAdapter();
+    LoggerAdapter logger = new LoggerAdapter(getClass());
 
     @Reference
     public void setLogService(LogService logservice) {
-        this.logservice.setLogService(logservice);
+        this.logger.setLogService(logservice);
     }
 
     @Activate
@@ -54,7 +54,7 @@ public class OldAlbumScheme implements PreHook {
             OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
         } catch (LiquibaseException e) {
-            logservice.log(LogService.LOG_ERROR, "Error creating handlreg test database", e);
+            logger.error("Error creating handlreg test database", e);
         }
     }
 

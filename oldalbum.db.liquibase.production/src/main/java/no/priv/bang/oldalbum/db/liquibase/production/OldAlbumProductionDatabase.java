@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,15 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
-import no.priv.bang.osgi.service.adapters.logservice.LogServiceAdapter;
+import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 
 @Component(immediate=true, property = "name=oldalbum")
 public class OldAlbumProductionDatabase implements PreHook {
-    LogServiceAdapter logservice = new LogServiceAdapter();
+    LoggerAdapter logger = new LoggerAdapter(getClass());
 
     @Reference
     public void setLogService(LogService logservice) {
-        this.logservice.setLogService(logservice);
+        this.logger.setLogService(logservice);
     }
 
     @Activate
@@ -59,7 +59,7 @@ public class OldAlbumProductionDatabase implements PreHook {
             OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
         } catch (LiquibaseException e) {
-            logservice.log(LogService.LOG_ERROR, "Error creating oldalbum production database", e);
+            logger.error("Error creating oldalbum production database", e);
         }
     }
 
@@ -70,7 +70,7 @@ public class OldAlbumProductionDatabase implements PreHook {
             Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
         } catch (LiquibaseException e) {
-            logservice.log(LogService.LOG_ERROR, "Error populating database with initial data", e);
+            logger.error("Error populating database with initial data", e);
         }
     }
 

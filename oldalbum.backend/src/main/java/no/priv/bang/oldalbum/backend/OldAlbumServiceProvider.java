@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
@@ -45,13 +46,13 @@ import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 @Component(immediate = true)
 public class OldAlbumServiceProvider implements OldAlbumService {
 
-    private LogService logservice;
+    private Logger logger;
     private DataSource datasource;
     private HttpConnectionFactory connectionFactory;
 
     @Reference
     public void setLogService(LogService logservice) {
-        this.logservice = logservice;
+        this.logger = logservice.getLogger(getClass());
     }
 
     @Reference(target = "(osgi.jndi.service.name=jdbc/oldalbum)")
@@ -93,7 +94,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, "Failed to find the list of all routes", e);
+            logger.error("Failed to find the list of all routes", e);
         }
         return allroutes;
     }
@@ -111,7 +112,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, "Failed to find the list of paths the app can be entered in", e);
+            logger.error("Failed to find the list of paths the app can be entered in", e);
         }
         return paths;
     }
@@ -126,11 +127,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     while (results.next()) {
                         return unpackAlbumEntry(results);
                     }
-                    logservice.log(LogService.LOG_WARNING, String.format("Found no albumentry matching path \"%s\"", path));
+                    logger.warn(String.format("Found no albumentry matching path \"%s\"", path));
                 }
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("Failed to find albumentry with path \"%s\"", path), e);
+            logger.error(String.format("Failed to find albumentry with path \"%s\"", path), e);
         }
 
         return null;
@@ -151,7 +152,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("Failed to get list of children for id \"%d\"", parent), e);
+            logger.error(String.format("Failed to get list of children for id \"%d\"", parent), e);
         }
         return children;
     }
@@ -174,7 +175,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("Failed to update album entry for id \"%d\"", id), e);
+            logger.error(String.format("Failed to update album entry for id \"%d\"", id), e);
         }
         return fetchAllRoutes();
     }
@@ -203,7 +204,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("Failed to add album entry with path \"%s\"", path), e);
+            logger.error(String.format("Failed to add album entry with path \"%s\"", path), e);
         }
         return fetchAllRoutes();
     }
@@ -221,7 +222,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
             adjustSortValuesAfterEntryIsRemoved(connection, parentOfDeleted, sortOfDeleted);
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("Failed to delete album entry with id \"%d\"", id), e);
+            logger.error(String.format("Failed to delete album entry with id \"%d\"", id), e);
         }
         return fetchAllRoutes();
     }
@@ -235,7 +236,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 int previousEntryId = findPreviousEntryInTheSameAlbum(connection, movedEntry, sort);
                 swapSortValues(connection, entryId, sort - 1, previousEntryId, sort);
             } catch (SQLException e) {
-                logservice.log(LogService.LOG_ERROR, String.format("Failed to move album entry with id \"%d\"", entryId), e);
+                logger.error(String.format("Failed to move album entry with id \"%d\"", entryId), e);
             }
         }
         return fetchAllRoutes();
@@ -252,7 +253,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 swapSortValues(connection, entryId, sort + 1, nextEntryId, sort);
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, String.format("Failed to move album entry with id \"%d\"", entryId), e);
+            logger.error(String.format("Failed to move album entry with id \"%d\"", entryId), e);
         }
         return fetchAllRoutes();
     }
@@ -292,7 +293,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             }
         } catch (SQLException e) {
-            logservice.log(LogService.LOG_ERROR, "Failed to find the list of paths the app can be entered in", e);
+            logger.error("Failed to find the list of paths the app can be entered in", e);
         }
         return builder.toString();
     }
@@ -379,7 +380,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     .contentLength(getAndParseContentLengthHeader(connection))
                     .build();
             } catch (IOException e) {
-                logservice.log(LogService.LOG_WARNING, String.format("Error when reading metadata for %s",  imageUrl), e);
+                logger.warn(String.format("Error when reading metadata for %s",  imageUrl), e);
             }
         }
         return null;

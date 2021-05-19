@@ -123,7 +123,7 @@ class LoginResourceTest extends ShiroTestBase {
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.useradmin = useradmin;
         String username = "jd";
         String password = "feil";
@@ -141,7 +141,7 @@ class LoginResourceTest extends ShiroTestBase {
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.useradmin = useradmin;
         String username = "jdd";
         String password = "feil";
@@ -158,7 +158,7 @@ class LoginResourceTest extends ShiroTestBase {
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.useradmin = useradmin;
         String username = "lockeduser";
         String password = "lockpw";
@@ -175,7 +175,7 @@ class LoginResourceTest extends ShiroTestBase {
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.useradmin = useradmin;
         String username = "lockeduser";
         String password = "lockpw";
@@ -196,7 +196,7 @@ class LoginResourceTest extends ShiroTestBase {
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
-        resource.logservice = logservice;
+        resource.setLogservice(logservice);
         resource.useradmin = useradmin;
         String username = "lockeduser";
         String password = "lockpw";

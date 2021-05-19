@@ -33,6 +33,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.oldalbum.services.bean.Credentials;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
@@ -45,11 +46,15 @@ import no.priv.bang.osgiservice.users.UserManagementService;
 @Produces(MediaType.APPLICATION_JSON)
 public class LoginResource {
 
-    @Inject
-    LogService logservice;
+    Logger logger;
 
     @Inject
     public UserManagementService useradmin;
+
+    @Inject
+    void setLogservice(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
 
     @GET
     @Path("/login")
@@ -85,19 +90,19 @@ public class LoginResource {
                 .canLogin(canLogin)
                 .build();
         } catch(UnknownAccountException e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: unknown account", e);
+            logger.warn("Login error: unknown account", e);
             return LoginResult.with().success(false).errormessage("Unknown account").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (IncorrectCredentialsException  e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: wrong password", e);
+            logger.warn("Login error: wrong password", e);
             return LoginResult.with().success(false).errormessage("Wrong password").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (LockedAccountException  e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: locked account", e);
+            logger.warn("Login error: locked account", e);
             return LoginResult.with().success(false).errormessage("Locked account").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (AuthenticationException e) {
-            logservice.log(LogService.LOG_WARNING, "Login error: general authentication error", e);
+            logger.warn("Login error: general authentication error", e);
             return LoginResult.with().success(false).errormessage("Unknown login error").canModifyAlbum(false).canLogin(canLogin).build();
         } catch (Exception e) {
-            logservice.log(LogService.LOG_ERROR, "Login error: internal server error", e);
+            logger.error("Login error: internal server error", e);
             throw new InternalServerErrorException();
         } finally {
             token.clear();
