@@ -281,7 +281,6 @@ public class OldalbumServletTest {
         assertEquals(SC_INTERNAL_SERVER_ERROR, response.getStatus());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);

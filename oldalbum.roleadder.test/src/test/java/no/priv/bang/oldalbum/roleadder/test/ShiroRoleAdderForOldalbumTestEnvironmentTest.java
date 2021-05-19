@@ -55,7 +55,6 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         verify(useradmin, times(0)).getUser(anyString());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testActivateChangeAdminUsername() {
         UserManagementService useradmin = mock(UserManagementService.class);

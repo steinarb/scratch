@@ -78,7 +78,6 @@ class OldAlbumServiceProviderTest {
         assertThat(allroutes.size()).isGreaterThan(20);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testFetchAllRoutesWithDatabaseFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -104,7 +103,6 @@ class OldAlbumServiceProviderTest {
         assertThat(paths.size()).isGreaterThanOrEqualTo(20);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testGetPathsWithDatabaseFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -143,7 +141,6 @@ class OldAlbumServiceProviderTest {
         assertThat(logservice.getLogmessages().get(0)).contains("Found no albumentry matching path");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testGetAlbumEntryFromPathWithDatabaseFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -170,7 +167,6 @@ class OldAlbumServiceProviderTest {
         assertThat(children.size()).isGreaterThanOrEqualTo(3);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testFetchChildrenWithDatabaseFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -239,7 +235,6 @@ class OldAlbumServiceProviderTest {
         assertThat(imageInDestination.getSort()).isGreaterThan(sortValueOfLastItemInDestinationAlbum);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testUpdateEntryWithDataSourceFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -421,7 +416,6 @@ class OldAlbumServiceProviderTest {
         assertNull(addedPicture.getLastModified());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testAddEntryWithDataSourceFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -474,7 +468,6 @@ class OldAlbumServiceProviderTest {
         assertFalse(deletedPicture.isPresent());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testDeleteEntryWithDataSourceFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -537,7 +530,6 @@ class OldAlbumServiceProviderTest {
         assertEquals(2, originalFirstEntry.getSort());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testMoveAlbumEntriesUpWithDatabaseFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
@@ -587,7 +579,6 @@ class OldAlbumServiceProviderTest {
         assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.getSort());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     void testMoveAlbumEntriesDownWithDatabaseFailure() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
