@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,8 @@ package no.priv.bang.oldalbum.web.security;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.http.context.ServletContextHelper;
-import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContext;
 
-@Component(
-    property= {
-        HTTP_WHITEBOARD_CONTEXT_NAME+"=oldalbum",
-        HTTP_WHITEBOARD_CONTEXT_PATH+"=/oldalbum"},
-    service=ServletContextHelper.class,
-    immediate=true
-)
+@Component(service=ServletContextHelper.class, immediate=true)
+@HttpWhiteboardContext(name = "oldalbum", path = "/oldalbum")
 public class OldAlbumServletContextHelper extends ServletContextHelper { }

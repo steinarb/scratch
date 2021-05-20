@@ -27,6 +27,10 @@ import org.jsoup.select.Elements;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
+
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
 import java.io.IOException;
@@ -38,14 +42,10 @@ import org.osgi.service.log.LogService;import no.priv.bang.oldalbum.services.Old
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.servlet.frontend.FrontendServlet;
 
-@Component(
-    property= {
-        HTTP_WHITEBOARD_SERVLET_PATTERN+"=/*",
-        HTTP_WHITEBOARD_CONTEXT_SELECT + "=(" + HTTP_WHITEBOARD_CONTEXT_NAME +"=oldalbum)",
-        HTTP_WHITEBOARD_SERVLET_NAME+"=oldalbum"},
-    service=Servlet.class,
-    immediate=true
-)
+@Component(service=Servlet.class, immediate=true)
+@HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=oldalbum)")
+@HttpWhiteboardServletName("oldalbum")
+@HttpWhiteboardServletPattern("/*")
 public class OldalbumServlet extends FrontendServlet {
     private static final long serialVersionUID = -2378206477575636399L;
     private OldAlbumService oldalbum; // NOSONAR set by OSGi dependency injection and not touched after that
