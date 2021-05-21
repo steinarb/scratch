@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
     LOGOUT_HENT,
 } from '../actiontypes';
