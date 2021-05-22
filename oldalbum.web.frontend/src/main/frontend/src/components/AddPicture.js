@@ -123,8 +123,7 @@ function AddPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const login = state.login || {};
-    const loginresult = login.loginresult || { success: false };
+    const loginresult = state.loginresult;
     const addpicture = state.addpicture;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {

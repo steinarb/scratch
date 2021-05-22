@@ -14,10 +14,8 @@ function LeftButton(props) {
 }
 
 function mapStateToProps(state) {
-    const login = state.login || {};
-    const loginresult = login.loginresult || { success: false };
     return {
-        loginresult,
+        loginresult: state.loginresult,
     };
 }
 

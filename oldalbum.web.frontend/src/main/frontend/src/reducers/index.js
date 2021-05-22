@@ -11,7 +11,9 @@ import addalbum from './addalbumReducer';
 import modifypicture from './modifypictureReducer';
 import addpicture from './addpictureReducer';
 import errors from './errorsReducer';
-import login from './loginReducer';
+import loginresult from './loginresultReducer';
+import username from './usernameReducer';
+import password from './passwordReducer';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
@@ -26,5 +28,7 @@ export default (history) => combineReducers({
     modifypicture,
     addpicture,
     errors,
-    login,
+    loginresult,
+    username,
+    password,
 });

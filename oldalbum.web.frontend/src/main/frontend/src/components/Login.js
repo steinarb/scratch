@@ -51,12 +51,10 @@ function Login(props) {
 }
 
 function mapStateToProps(state) {
-    const login = state.login || {};
-    const { username, password, loginresult } = login;
     return {
-        username,
-        password,
-        loginresult,
+        username: state.username,
+        password: state.password,
+        loginresult: state.loginresult,
     };
 }
 

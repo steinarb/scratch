@@ -13,8 +13,7 @@ function DownButton(props) {
 }
 
 function mapStateToProps(state, ownProps) {
-    const login = state.login || {};
-    const loginresult = login.loginresult || { success: false };
+    const loginresult = state.loginresult;
     const { item } = ownProps;
     const albumentries = state.albumentries || {};
     const parentItem = albumentries[item.parent] || {};

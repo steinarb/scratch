@@ -132,8 +132,7 @@ function ModifyPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const login = state.login || {};
-    const loginresult = login.loginresult || { success: false };
+    const loginresult = state.loginresult;
     const modifypicture = state.modifypicture;
     const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifypicture.id) || [];
     const albumentries = state.albumentries || {};

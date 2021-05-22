@@ -18,8 +18,7 @@ function ModifyButton(props) {
 
 function mapStateToProps(state) {
     const webcontext = state.webcontext || '';
-    const login = state.login || {};
-    const loginresult = login.loginresult || { success: false };
+    const loginresult = state.loginresult;
     return {
         webcontext,
         loginresult,
