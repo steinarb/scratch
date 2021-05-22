@@ -11,6 +11,7 @@ import addalbum from './addalbumReducer';
 import modifypicture from './modifypictureReducer';
 import addpicture from './addpictureReducer';
 import errors from './errorsReducer';
+import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusReducer';
 import loginresult from './loginresultReducer';
 import username from './usernameReducer';
 import password from './passwordReducer';
@@ -28,6 +29,7 @@ export default (history) => combineReducers({
     modifypicture,
     addpicture,
     errors,
+    haveReceivedInitialLoginStatus,
     loginresult,
     username,
     password,

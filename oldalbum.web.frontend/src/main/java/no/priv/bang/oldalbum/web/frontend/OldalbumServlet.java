@@ -54,11 +54,11 @@ public class OldalbumServlet extends FrontendServlet {
         super();
         setRoutes(
             "/login",
+            "/unauthorized",
             "/modifyalbum",
             "/addalbum",
             "/modifypicture",
-            "/addpicture"
-                  );
+            "/addpicture");
     }
 
     @Override

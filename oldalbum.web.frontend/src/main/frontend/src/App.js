@@ -6,6 +6,7 @@ import './App.css';
 import Album from './components/Album';
 import Picture from './components/Picture';
 import Login from './components/Login';
+import Unauthorized from './components/Unauthorized';
 import ModifyAlbum from './components/ModifyAlbum';
 import AddAlbum from './components/AddAlbum';
 import ModifyPicture from './components/ModifyPicture';
@@ -21,6 +22,7 @@ class App extends Component {
                     <div>
                         { allroutes.map((item, index) => <Route exact key={index} path={item.path} component={() => albumOrPicture(item)} />) }
                         <Route exact key="login" path="/login" component={Login} />
+                        <Route exact key="unauthorized" path="/unauthorized" component={Unauthorized} />
                         <Route key="modifyalbum" path='/modifyalbum' component={ModifyAlbum} />
                         <Route key="addalbum" path='/addalbum' component={AddAlbum} />
                         <Route key="modifypicture" path='/modifypicture' component={ModifyPicture} />
