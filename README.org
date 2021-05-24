@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                        |
 |------------------------+---------+----------------------------------------------------------------------------------------------------|
+| <2021-05-24 Mon 19:15> |   1.7.4 | use eslint in frontend, upgrade npm dependecies and webpack, OSGi 7 web whiteboard                 |
 | <2021-05-02 Sun 20:14> |   1.7.3 | servlet 1.5.4, bootstrap 4.6.0, node.js 14.16.1                                                    |
 | <2021-04-19 Mon 22:26> |   1.7.2 | Get maven dependency versions from Bill of Material poms                                           |
 | <2021-04-17 Sat 10:57> |   1.7.1 | Get maven dependency versions and maven plugin config from paren POM                               |
