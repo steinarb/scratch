@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-bompom</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.0.8</version>
     </parent>
     <artifactId>bang-pom</artifactId>
 
@@ -31,7 +31,7 @@
             <dependency>
                 <groupId>no.priv.bang.pom</groupId>
                 <artifactId>bang-bom</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>1.0.8</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
