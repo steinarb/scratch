@@ -45,11 +45,6 @@
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
-                <artifactId>osgi.core</artifactId>
-                <version>${osgi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.service.component.annotations</artifactId>
                 <version>${osgi.service.version}</version>
             </dependency>
