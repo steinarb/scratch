@@ -44,21 +44,6 @@
                 <version>${mockrunner.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.service.component.annotations</artifactId>
-                <version>${osgi.service.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.service.http.whiteboard</artifactId>
-                <version>${osgi.web.annotations.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.service.log</artifactId>
-                <version>${osgi.log.service.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.ops4j.pax.jdbc</groupId>
                 <artifactId>pax-jdbc</artifactId>
                 <version>${pax.jdbc.version}</version>
