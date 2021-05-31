@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                   |
 |------------------------+---------+------------------------------------------------------------------------------|
+| <2021-05-31 Mon 21:15> |   1.0.8 | Remove OSGi 7 framework and compendium from the BoM                          |
 | <2021-05-23 Sun 13:36> |   1.0.7 | Use karaf 4.3.2 for the build and karaf BoM                                  |
 | <2021-05-18 Tue 18:56> |   1.0.6 | OSGi 7 web whiteboard annotations in the BoM, jacoco-maven-plugin 0.8.7      |
 | <2021-04-26 Mon 21:25> |   1.0.5 | maven-clean-plugin 3.1.0                                                     |
@@ -24,6 +25,6 @@ Use the following parent in the project:
   <parent>
       <groupId>no.priv.bang.pom</groupId>
       <artifactId>bang-pom</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.8</version>
   </parent>
 #+end_src
