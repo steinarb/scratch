@@ -91,6 +91,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
             <artifactId>adapters.logservice</artifactId>
             <scope>provided</scope>
@@ -102,11 +107,6 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.log</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
             <artifactId>service-mocks</artifactId>
             <scope>test</scope>
@@ -115,11 +115,6 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.jdbc</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.component.annotations</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
