@@ -82,7 +82,9 @@ function Home(props) {
                             <DatePicker
                                 selected={nyhandling.handletidspunkt.toDate()}
                                 dateFormat="yyyy-MM-dd"
-                                onChange={(selectedValue) => endreDato(selectedValue)} />
+                                onChange={(selectedValue) => endreDato(selectedValue)}
+                                onFocus={e => e.target.blur()}
+                            />
                         </div>
                     </div>
                     <div className="form-group row">
