@@ -88,6 +88,8 @@ class HandleregServiceProviderTest {
         assertEquals("John", jod.getFornavn());
         assertEquals("Doe", jod.getEtternavn());
         assertThat(jod.getBalanse()).isGreaterThan(0.0);
+        assertThat(jod.getSumPreviousMonth()).isGreaterThan(0.0);
+        assertThat(jod.getSumThisMonth()).isGreaterThan(0.0);
     }
 
     @Test
@@ -625,6 +627,7 @@ class HandleregServiceProviderTest {
         DataSource mockdb = mock(DataSource.class);
         Connection connection = mock(Connection.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(connection.prepareStatement(anyString(), anyInt(), anyInt())).thenReturn(statement);
         when(mockdb.getConnection()).thenReturn(connection);
         return mockdb;
     }
@@ -637,6 +640,7 @@ class HandleregServiceProviderTest {
         DataSource mockdb = mock(DataSource.class);
         Connection connection = mock(Connection.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(connection.prepareStatement(anyString(), anyInt(), anyInt())).thenReturn(statement);
         when(mockdb.getConnection()).thenReturn(connection);
         return mockdb;
     }

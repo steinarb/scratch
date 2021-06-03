@@ -22,6 +22,8 @@ public class Oversikt {
     private String fornavn;
     private String etternavn;
     private double balanse;
+    private double sumPreviousMonth;
+    private double sumThisMonth;
 
     private Oversikt() {}
 
@@ -49,9 +51,17 @@ public class Oversikt {
         return balanse;
     }
 
+    public double getSumPreviousMonth() {
+        return sumPreviousMonth;
+    }
+
+    public double getSumThisMonth() {
+        return sumThisMonth;
+    }
+
     @Override
     public String toString() {
-        return "Oversikt [user_id=" + accountid + ", brukernavn=" + brukernavn + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + "]";
+        return "Oversikt [user_id=" + accountid + ", brukernavn=" + brukernavn + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + ", sumPreviousMonth=" + sumPreviousMonth + ", sumThisMonth=" + sumThisMonth + "]";
     }
 
     public static OversiktBuilder with() {
@@ -66,6 +76,8 @@ public class Oversikt {
         private String fornavn;
         private String etternavn;
         private double balanse;
+        private double sumPreviousMonth;
+        private double sumThisMonth;
 
         private OversiktBuilder() {}
 
@@ -77,6 +89,8 @@ public class Oversikt {
             oversikt.fornavn = this.fornavn;
             oversikt.etternavn = this.etternavn;
             oversikt.balanse = this.balanse;
+            oversikt.sumPreviousMonth = this.sumPreviousMonth;
+            oversikt.sumThisMonth = this.sumThisMonth;
             return oversikt;
         }
 
@@ -107,6 +121,16 @@ public class Oversikt {
 
         public OversiktBuilder balanse(double balanse) {
             this.balanse = balanse;
+            return this;
+        }
+
+        public OversiktBuilder sumPreviousMonth(double sumPreviousMonth) {
+            this.sumPreviousMonth = sumPreviousMonth;
+            return this;
+        }
+
+        public OversiktBuilder sumThisMonth(double sumThisMonth) {
+            this.sumThisMonth = sumThisMonth;
             return this;
         }
     }

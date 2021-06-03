@@ -31,6 +31,8 @@ class OversiktTest {
             .fornavn("Jane")
             .etternavn("Doe")
             .balanse(1041)
+            .sumPreviousMonth(8900)
+            .sumThisMonth(310)
             .build();
         assertEquals(1, bean.getAccountid());
         assertEquals("jad", bean.getBrukernavn());
@@ -38,6 +40,8 @@ class OversiktTest {
         assertEquals("Jane", bean.getFornavn());
         assertEquals("Doe", bean.getEtternavn());
         assertEquals(1041.0, bean.getBalanse(), 0.1);
+        assertEquals(8900, bean.getSumPreviousMonth());
+        assertEquals(310, bean.getSumThisMonth());
         assertThat(bean.toString()).startsWith("Oversikt [");
     }
 

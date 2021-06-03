@@ -85,6 +85,27 @@ public class HandleregServiceProvider implements HandleregService {
     public Oversikt finnOversikt(String brukernavn) {
         String sql = "select a.account_id, a.username, (select sum(t1.transaction_amount) from transactions t1 where t1.account_id=a.account_id) - (select sum(t1.transaction_amount) from transactions t1 where t1.account_id!=a.account_id) as balance from accounts a where a.username=?";
         try(Connection connection = datasource.getConnection()) {
+            double sumPreviousMonth = 0;
+            double sumThisMonth = 0;
+            // We want the two last items of the resultset, but it's not possible to
+            // order a view in SQL, so this can't be done in SQL.
+            //
+            // Therefore we have to iterate backwards through the resultset.
+            try (PreparedStatement statement = connection.prepareStatement(
+                     "select * from sum_over_month_view",
+                     ResultSet.TYPE_SCROLL_INSENSITIVE,
+                     ResultSet.CONCUR_READ_ONLY))
+            {
+                try (ResultSet results = statement.executeQuery()) {
+                    if (results.last()) {
+                        sumThisMonth = results.getDouble(1);
+                    }
+                    if (results.previous()) {
+                        sumPreviousMonth = results.getDouble(1);
+                    }
+                }
+            }
+
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, brukernavn);
                 try(ResultSet results = statement.executeQuery()) {
@@ -100,6 +121,8 @@ public class HandleregServiceProvider implements HandleregService {
                             .fornavn(user.getFirstname())
                             .etternavn(user.getLastname())
                             .balanse(balanse)
+                            .sumPreviousMonth(sumPreviousMonth)
+                            .sumThisMonth(sumThisMonth)
                             .build();
                     }
 
