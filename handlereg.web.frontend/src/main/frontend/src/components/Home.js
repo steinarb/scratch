@@ -79,7 +79,10 @@ function Home(props) {
                     <div className="form-group row">
                         <label htmlFor="date" className="col-form-label col-5">Dato</label>
                         <div className="col-7">
-                            <DatePicker selected={nyhandling.handletidspunkt} dateFormat="YYYY-MM-DD" onChange={(selectedValue) => endreDato(selectedValue)} readOnly={true} />
+                            <DatePicker
+                                selected={nyhandling.handletidspunkt.toDate()}
+                                dateFormat="yyyy-MM-dd"
+                                onChange={(selectedValue) => endreDato(selectedValue)} />
                         </div>
                     </div>
                     <div className="form-group row">

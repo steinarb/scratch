@@ -24,7 +24,7 @@ const nyhandlingReducer = createReducer(defaultState, {
         return { ...state, storeId };
     },
     [DATO_ENDRE]: (state, action) => {
-        const handletidspunkt = action.payload;
+        const handletidspunkt = moment(action.payload);
         return { ...state, handletidspunkt };
     },
     [NYHANDLING_LAGRET]: (state) => ({ ...state, belop: 0, handletidspunkt: moment() }),
