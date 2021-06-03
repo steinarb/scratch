@@ -5,7 +5,6 @@ import {
     OVERSIKT_MOTTA,
     OVERSIKT_ERROR,
     HANDLINGER_HENT,
-    NYHANDLING_LAGRET,
 } from '../actiontypes';
 
 function hentOversikt() {
@@ -26,5 +25,4 @@ function* mottaOversikt() {
 
 export default function* oversiktSaga() {
     yield takeLatest(OVERSIKT_HENT, mottaOversikt);
-    yield takeLatest(NYHANDLING_LAGRET, mottaOversikt);
 }
