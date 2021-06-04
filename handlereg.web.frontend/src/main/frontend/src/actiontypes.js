@@ -80,3 +80,5 @@ export const SLETT_FAVORITT_ERROR = createAction('SLETT_FAVORITT_ERROR');
 
 export const BYTT_FAVORITTER = createAction('BYTT_FAVORITTER');
 export const BYTT_FAVORITTER_ERROR = createAction('BYTT_FAVORITTER_ERROR');
+
+export const VIS_KVITTERING = createAction('VIS_KVITTERING');

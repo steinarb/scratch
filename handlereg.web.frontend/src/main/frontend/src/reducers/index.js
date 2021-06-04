@@ -8,6 +8,7 @@ import butikker from './butikkerReducer';
 import butikk from './butikkReducer';
 import handlinger from './handlingerReducer';
 import nyhandling from './nyhandlingReducer';
+import viskvittering from './viskvitteringReducer';
 import sumbutikk from './sumbutikkReducer';
 import handlingerbutikk from './handlingerbutikkReducer';
 import sistehandel from './sistehandelReducer';
@@ -27,6 +28,7 @@ export default (history) => combineReducers({
     butikk,
     handlinger,
     nyhandling,
+    viskvittering,
     sumbutikk,
     handlingerbutikk,
     sistehandel,

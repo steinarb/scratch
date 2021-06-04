@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
+import Kvittering from './Kvittering';
 import {
     BELOP_ENDRE,
     NYHANDLING_REGISTRER,
@@ -31,6 +32,7 @@ function Hurtigregistrering(props) {
                             <input id="amount" className="form-control" type="number" pattern="\d+" value={nyhandling.belop} onChange={e => endreBelop(e.target.value)} />
                         </div>
                     </div>
+                    <Kvittering/>
                     { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, username)}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>

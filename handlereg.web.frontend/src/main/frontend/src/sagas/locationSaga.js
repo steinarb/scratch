@@ -8,6 +8,7 @@ import {
     SISTEHANDEL_HENT,
     SUMYEAR_HENT,
     SUMYEARMONTH_HENT,
+    VIS_KVITTERING,
 } from '../actiontypes';
 
 function* locationChange(action) {
@@ -22,6 +23,7 @@ function* locationChange(action) {
     if (pathname === '/handlereg/hurtigregistrering') {
         yield put(OVERSIKT_HENT());
         yield put(BUTIKKER_HENT());
+        yield put(VIS_KVITTERING(false));
     }
 
     if (pathname === '/handlereg/endrebutikk') {
