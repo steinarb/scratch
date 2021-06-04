@@ -106,6 +106,17 @@ public class HandleregServiceProvider implements HandleregService {
                 }
             }
 
+            double lastTransactionAmount = 0;
+            String lastTransactionAmountQuery = "select transaction_amount from transactions t join accounts a on t.account_id=a.account_id where a.username=? order by transaction_time desc fetch first 1 rows only";
+            try (PreparedStatement statement = connection.prepareStatement(lastTransactionAmountQuery)) {
+                statement.setString(1, brukernavn);
+                try(ResultSet results = statement.executeQuery()) {
+                    if (results.next()) {
+                        lastTransactionAmount = results.getDouble(1);
+                    }
+                }
+            }
+
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, brukernavn);
                 try(ResultSet results = statement.executeQuery()) {
@@ -123,6 +134,7 @@ public class HandleregServiceProvider implements HandleregService {
                             .balanse(balanse)
                             .sumPreviousMonth(sumPreviousMonth)
                             .sumThisMonth(sumThisMonth)
+                            .lastTransactionAmount(lastTransactionAmount)
                             .build();
                     }
 

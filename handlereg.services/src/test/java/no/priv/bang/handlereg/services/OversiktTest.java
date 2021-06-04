@@ -33,6 +33,7 @@ class OversiktTest {
             .balanse(1041)
             .sumPreviousMonth(8900)
             .sumThisMonth(310)
+            .lastTransactionAmount(92.0)
             .build();
         assertEquals(1, bean.getAccountid());
         assertEquals("jad", bean.getBrukernavn());

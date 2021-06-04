@@ -24,6 +24,7 @@ public class Oversikt {
     private double balanse;
     private double sumPreviousMonth;
     private double sumThisMonth;
+    private double lastTransactionAmount;
 
     private Oversikt() {}
 
@@ -59,9 +60,13 @@ public class Oversikt {
         return sumThisMonth;
     }
 
+    public double getLastTransactionAmount() {
+        return lastTransactionAmount;
+    }
+
     @Override
     public String toString() {
-        return "Oversikt [user_id=" + accountid + ", brukernavn=" + brukernavn + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + ", sumPreviousMonth=" + sumPreviousMonth + ", sumThisMonth=" + sumThisMonth + "]";
+        return "Oversikt [user_id=" + accountid + ", brukernavn=" + brukernavn + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + ", sumPreviousMonth=" + sumPreviousMonth + ", sumThisMonth=" + sumThisMonth + ", lastTransactionAmount=" + lastTransactionAmount + "]";
     }
 
     public static OversiktBuilder with() {
@@ -78,6 +83,7 @@ public class Oversikt {
         private double balanse;
         private double sumPreviousMonth;
         private double sumThisMonth;
+        private double lastTransactionAmount;
 
         private OversiktBuilder() {}
 
@@ -91,6 +97,7 @@ public class Oversikt {
             oversikt.balanse = this.balanse;
             oversikt.sumPreviousMonth = this.sumPreviousMonth;
             oversikt.sumThisMonth = this.sumThisMonth;
+            oversikt.lastTransactionAmount = this.lastTransactionAmount;
             return oversikt;
         }
 
@@ -131,6 +138,11 @@ public class Oversikt {
 
         public OversiktBuilder sumThisMonth(double sumThisMonth) {
             this.sumThisMonth = sumThisMonth;
+            return this;
+        }
+
+        public OversiktBuilder lastTransactionAmount(double lastTransactionAmount) {
+            this.lastTransactionAmount = lastTransactionAmount;
             return this;
         }
     }

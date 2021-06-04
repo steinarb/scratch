@@ -90,6 +90,7 @@ class HandleregServiceProviderTest {
         assertThat(jod.getBalanse()).isGreaterThan(0.0);
         assertThat(jod.getSumPreviousMonth()).isGreaterThan(0.0);
         assertThat(jod.getSumThisMonth()).isGreaterThan(0.0);
+        assertThat(jod.getLastTransactionAmount()).isGreaterThan(0.0);
     }
 
     @Test
