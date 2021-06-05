@@ -73,8 +73,9 @@ class FavorittResourceTest {
 
         List<Favoritt> favoritter = resource.slettFavoritt(favoritt1);
         assertThat(favoritter.size()).isPositive();
-        assertThat(favoritter).contains(favoritt2);
-        assertThat(favoritter).doesNotContain(favoritt1);
+        assertThat(favoritter)
+            .contains(favoritt2)
+            .doesNotContain(favoritt1);
         assertEquals(butikk, favoritter.get(0).getStore());
     }
 

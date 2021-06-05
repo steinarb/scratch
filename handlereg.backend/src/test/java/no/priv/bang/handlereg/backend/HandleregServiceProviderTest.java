@@ -508,12 +508,14 @@ class HandleregServiceProviderTest {
         assertThat(flippetFavoritt2.getRekkefolge()).isGreaterThan(flippetFavoritt1.getRekkefolge());
 
         // Slett en favoritt
-        assertThat(favoritter3).contains(flippetFavoritt1);
-        assertThat(favoritter3).contains(flippetFavoritt2);
+        assertThat(favoritter3)
+            .contains(flippetFavoritt1)
+            .contains(flippetFavoritt2);
         List<Favoritt> favoritter4 = handlereg.slettFavoritt(flippetFavoritt1);
         assertThat(favoritter4.size()).isLessThan(favoritter3.size());
-        assertThat(favoritter4).doesNotContain(flippetFavoritt1);
-        assertThat(favoritter4).contains(flippetFavoritt2);
+        assertThat(favoritter4)
+            .doesNotContain(flippetFavoritt1)
+            .contains(flippetFavoritt2);
     }
 
     @Test

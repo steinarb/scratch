@@ -399,8 +399,9 @@ class HandleregWebApiTest extends ShiroTestBase {
         assertEquals(200, response.getStatus());
         List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
         assertThat(favoritter.size()).isPositive();
-        assertThat(favoritter).contains(favoritt2);
-        assertThat(favoritter).doesNotContain(favoritt1);
+        assertThat(favoritter)
+            .contains(favoritt2)
+            .doesNotContain(favoritt1);
         assertEquals(butikk, favoritter.get(0).getStore());
     }
 
