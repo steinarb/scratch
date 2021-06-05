@@ -34,7 +34,7 @@ function Hurtigregistrering(props) {
                         </div>
                     </div>
                     <Kvittering/>
-                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, username)}>{f.store.butikknavn}</button>) }
+                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, username)}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>
         </div>
