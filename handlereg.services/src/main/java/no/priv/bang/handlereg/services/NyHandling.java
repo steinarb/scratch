@@ -53,8 +53,7 @@ public class NyHandling {
     }
 
     public static NyHandlingBuilder with() {
-        NyHandlingBuilder nyHandlingBuilder = new NyHandlingBuilder();
-        return nyHandlingBuilder;
+        return new NyHandlingBuilder();
     }
 
     public static class NyHandlingBuilder {

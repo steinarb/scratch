@@ -70,8 +70,7 @@ public class Oversikt {
     }
 
     public static OversiktBuilder with() {
-        OversiktBuilder oversiktBuilder = new OversiktBuilder();
-        return oversiktBuilder;
+        return new OversiktBuilder();
     }
 
     public static class OversiktBuilder {

@@ -38,8 +38,7 @@ public class SumYear {
     }
 
     public static SumYearBuilder with() {
-        SumYearBuilder sumYearBuilder = new SumYearBuilder();
-        return sumYearBuilder;
+        return new SumYearBuilder();
     }
 
     public static class SumYearBuilder {
