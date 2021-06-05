@@ -55,6 +55,9 @@
             **/HandleregTestDbLiquibaseRunner.java,
             **/HandleregProductionDbLiquibaseRunner.java,
         </sonar.cpd.exclusions>
+        <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S2160</sonar.issue.ignore.multicriteria.e1.ruleKey>
+        <sonar.issue.ignore.multicriteria.e1.resourceKey>**/handlereg.services/**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
