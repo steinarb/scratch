@@ -15,6 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,12 @@ class ButikkTest {
         assertNull(bean.getButikknavn());
         assertEquals(0, bean.getGruppe());
         assertEquals(0, bean.getRekkefolge());
+    }
+
+    @Test
+    void testToString() {
+        Butikk bean = Butikk.with().build();
+        assertThat(bean.toString()).startsWith("Butikk [");
     }
 
 }

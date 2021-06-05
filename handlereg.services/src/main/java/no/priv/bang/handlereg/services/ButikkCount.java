@@ -30,6 +30,11 @@ public class ButikkCount {
         return count;
     }
 
+    @Override
+    public String toString() {
+        return "ButikkCount [butikk=" + butikk + ", count=" + count + "]";
+    }
+
     public static ButikkCountBuilder with() {
         return new ButikkCountBuilder();
     }

@@ -35,6 +35,11 @@ public class Loginresultat {
         return authorized;
     }
 
+    @Override
+    public String toString() {
+        return "Loginresultat [suksess=" + suksess + ", feilmelding=" + feilmelding + ", authorized=" + authorized + "]";
+    }
+
     public static LoginresultatBuilder with() {
         return new LoginresultatBuilder();
     }

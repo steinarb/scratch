@@ -41,6 +41,11 @@ public class Favoritt extends Immutable {
         return rekkefolge;
     }
 
+    @Override
+    public String toString() {
+        return "Favoritt [favouriteid=" + favouriteid + ", accountid=" + accountid + ", store=" + store + ", rekkefolge=" + rekkefolge + "]";
+    }
+
     public static FavorittBuilder with() {
         return new FavorittBuilder();
     }

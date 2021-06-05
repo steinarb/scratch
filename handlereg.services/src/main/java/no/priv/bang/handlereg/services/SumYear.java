@@ -32,6 +32,11 @@ public class SumYear {
         return year;
     }
 
+    @Override
+    public String toString() {
+        return "SumYear [sum=" + sum + ", year=" + year + "]";
+    }
+
     public static SumYearBuilder with() {
         SumYearBuilder sumYearBuilder = new SumYearBuilder();
         return sumYearBuilder;

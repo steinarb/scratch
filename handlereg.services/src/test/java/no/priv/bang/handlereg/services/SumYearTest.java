@@ -15,6 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Year;
@@ -37,6 +38,12 @@ class SumYearTest {
         SumYear bean = SumYear.with().build();
         assertEquals(0, bean.getSum());
         assertNull(bean.getYear());
+    }
+
+    @Test
+    void testToString() {
+        SumYear bean = SumYear.with().build();
+        assertThat(bean.toString()).startsWith("SumYear [");
     }
 
 }

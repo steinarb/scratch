@@ -30,6 +30,11 @@ public class Credentials {
         return password;
     }
 
+    @Override
+    public String toString() {
+        return "Credentials [username=" + username + ", password=" + password + "]";
+    }
+
     public static CredentialsBuilder with() {
         return new CredentialsBuilder();
     }

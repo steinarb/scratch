@@ -46,6 +46,12 @@ public class Transaction {
         return belop;
     }
 
+    @Override
+    public String toString() {
+        return "Transaction [transactionId=" + transactionId + ", handletidspunkt=" + handletidspunkt + ", butikk="
+                + butikk + ", storeId=" + storeId + ", belop=" + belop + "]";
+    }
+
     public static TransactionBuilder with() {
         return new TransactionBuilder();
     }

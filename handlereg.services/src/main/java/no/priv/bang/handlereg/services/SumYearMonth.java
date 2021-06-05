@@ -28,6 +28,11 @@ public class SumYearMonth extends SumYear {
         return month;
     }
 
+    @Override
+    public String toString() {
+        return "SumYearMonth [month=" + month + "]";
+    }
+
     public static SumYearMonthBuilder with() {
         return new SumYearMonthBuilder();
     }

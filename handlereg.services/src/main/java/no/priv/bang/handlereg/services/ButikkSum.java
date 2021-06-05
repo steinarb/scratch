@@ -30,6 +30,11 @@ public class ButikkSum {
         return sum;
     }
 
+    @Override
+    public String toString() {
+        return "ButikkSum [butikk=" + butikk + ", sum=" + sum + "]";
+    }
+
     public static ButikkSumBuilder with() {
         return new ButikkSumBuilder();
     }

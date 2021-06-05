@@ -47,6 +47,11 @@ public class NyHandling {
         return handletidspunkt;
     }
 
+    @Override
+    public String toString() {
+        return "NyHandling [username=" + username + ", accountid=" + accountid + ", storeId=" + storeId + ", belop=" + belop + ", handletidspunkt=" + handletidspunkt + "]";
+    }
+
     public static NyHandlingBuilder with() {
         NyHandlingBuilder nyHandlingBuilder = new NyHandlingBuilder();
         return nyHandlingBuilder;

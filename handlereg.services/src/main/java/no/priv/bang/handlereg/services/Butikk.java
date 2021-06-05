@@ -42,6 +42,11 @@ public class Butikk extends Immutable {
         return rekkefolge;
     }
 
+    @Override
+    public String toString() {
+        return "Butikk [storeId=" + storeId + ", butikknavn=" + butikknavn + ", gruppe=" + gruppe + ", rekkefolge=" + rekkefolge + "]";
+    }
+
     public static ButikkBuilder with() {
         return new ButikkBuilder();
     }

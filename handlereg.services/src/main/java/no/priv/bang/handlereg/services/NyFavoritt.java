@@ -32,6 +32,11 @@ public class NyFavoritt extends Immutable {
         return butikk;
     }
 
+    @Override
+    public String toString() {
+        return "NyFavoritt [brukernavn=" + brukernavn + ", butikk=" + butikk + "]";
+    }
+
     public static NyFavorittBuilder with() {
         return new NyFavorittBuilder();
     }

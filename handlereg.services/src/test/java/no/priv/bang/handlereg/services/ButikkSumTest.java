@@ -15,6 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,12 @@ class ButikkSumTest {
         ButikkSum bean = ButikkSum.with().build();
         assertNull(bean.getButikk());
         assertEquals(0, bean.getSum());
+    }
+
+    @Test
+    void testToString() {
+        ButikkSum bean = ButikkSum.with().build();
+        assertThat(bean.toString()).startsWith("ButikkSum [");
     }
 
 }

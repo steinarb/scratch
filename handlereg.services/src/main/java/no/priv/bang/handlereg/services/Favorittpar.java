@@ -36,6 +36,11 @@ public class Favorittpar extends Immutable {
         return andre;
     }
 
+    @Override
+    public String toString() {
+        return "Favorittpar [forste=" + forste + ", andre=" + andre + "]";
+    }
+
     public static class FavorittparBuilder {
 
         private Favoritt forste;

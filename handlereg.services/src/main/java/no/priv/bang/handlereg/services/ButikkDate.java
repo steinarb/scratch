@@ -32,6 +32,11 @@ public class ButikkDate {
         return date;
     }
 
+    @Override
+    public String toString() {
+        return "ButikkDate [butikk=" + butikk + ", date=" + date + "]";
+    }
+
     public static ButikkDateBuilder with() {
         return new ButikkDateBuilder();
     }
