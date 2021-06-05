@@ -99,12 +99,10 @@ public class LoginResource {
         Subject subject = SecurityUtils.getSubject();
         boolean suksess = subject.isAuthenticated();
         boolean harRoleHandleregbruker = subject.hasRole(HANDLEREGBRUKER_ROLE);
-        String melding =
-            suksess ?
-            (harRoleHandleregbruker ?
-             "Bruker er logget inn og har tilgang" :
-             "Bruker er logget inn men mangler tilgang") :
-            "Bruker er ikke logget inn";
+        String brukerLoggetInnMelding = harRoleHandleregbruker ?
+            "Bruker er logget inn og har tilgang" :
+            "Bruker er logget inn men mangler tilgang";
+        String melding = suksess ? brukerLoggetInnMelding : "Bruker er ikke logget inn";
         return Loginresultat.with()
             .suksess(suksess)
             .feilmelding(melding)
