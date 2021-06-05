@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <!-- Copyright 2018-2019 Steinar Bang                                                -->
+    <!-- Copyright 2018-2021 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -17,5 +17,6 @@
     <include file="sql/data/accounts.sql"/>
     <include file="sql/data/stores.sql"/>
     <include file="sql/data/transactions.sql"/>
+    <include file="sql/data/favourites.sql"/>
 
 </databaseChangeLog>

@@ -482,10 +482,10 @@ class HandleregServiceProviderTest {
 
         // Opprett to favoritter
         List<Butikk> butikker = handlereg.finnButikker();
-        Butikk butikk1 = butikker.get(0);
+        Butikk butikk1 = butikker.get(1);
         List<Favoritt> favoritter1 = handlereg.leggTilFavoritt(NyFavoritt.with().brukernavn(username).butikk(butikk1).build());
         assertThat(favoritter1.size()).isGreaterThan(favoritterOpprinnelig.size());
-        Butikk butikk2 = butikker.get(1);
+        Butikk butikk2 = butikker.get(2);
         List<Favoritt> favoritter2 = handlereg.leggTilFavoritt(NyFavoritt.with().brukernavn(username).butikk(butikk2).build());
         assertThat(favoritter2.size()).isGreaterThan(favoritter1.size());
         int forsteFavorittIndeks = favoritter1.size() -1;
