@@ -99,6 +99,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
                     <releaseProfiles>release-sign-artifact</releaseProfiles>
+                    <tagNameFormat>beans-@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
             <plugin>
