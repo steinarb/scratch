@@ -20,7 +20,7 @@
         <version>1.0.9</version>
     </parent>
     <groupId>no.priv.bang.jdbc</groupId>
-    <artifactId>jdbc</artifactId>
+    <artifactId>jdbc-parent</artifactId>
     <version>1.2.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -29,26 +29,13 @@
     <description>Common code for JDBC</description>
 
     <modules>
-        <module>jdbc.datasourceproxy</module>
+        <module>jdbc</module>
         <module>jacoco-coverage-report</module>
     </modules>
 
     <properties>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
-
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.jupiter.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>
