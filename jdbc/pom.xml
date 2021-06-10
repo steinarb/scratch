@@ -34,6 +34,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>no.priv.bang.pom</groupId>
+                <artifactId>bang-bom</artifactId>
+                <version>${bang-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${junit.jupiter.version}</version>
