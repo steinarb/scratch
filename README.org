@@ -23,19 +23,30 @@ Common code related to JDBC.
 
 This is an implementation of the [[https://docs.oracle.com/javase/8/docs/api/javax/sql/DataSource.html][DataSource]] interface that has a different DataSource as a property and delegates all methods to the wrapped DataSource object.
 
-To use this in an OSGi maven project add the following dependencies:
+To use this in an OSGi maven project by first importing the BoM
+#+begin_src xml
+  <dependencies>
+      <dependency>
+          <groupId>no.priv.bang.jdbc</groupId>
+          <artifactId>jdbc-bom</artifactId>
+          <version>1.1.1</version>
+          <type>pom</type>
+          <classifier>import</classifier>
+      </dependency>
+  </dependencies>
+#+end_src
+
+And then adding a provided dependency for compilation and a feature repository dependency, to ensure the library is loaded at runtime:
 #+begin_src xml
   <dependencies>
       <dependency>
           <groupId>no.priv.bang.jdbc</groupId>
           <artifactId>jdbc.datasourceproxy</artifactId>
-          <version>1.1.0</version>
           <scope>provided</scope>
       </dependency>
       <dependency>
           <groupId>no.priv.bang.jdbc</groupId>
           <artifactId>jdbc.datasourceproxy</artifactId>
-          <version>1.1.0</version>
           <type>xml</type>
           <classifier>features</classifier>
       </dependency>
