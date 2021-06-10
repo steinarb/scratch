@@ -30,7 +30,6 @@
 
     <modules>
         <module>jdbc.datasourceproxy</module>
-        <module>karaf</module>
         <module>jacoco-coverage-report</module>
     </modules>
 
