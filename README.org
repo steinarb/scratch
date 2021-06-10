@@ -14,6 +14,7 @@ Common code related to JDBC.
 
 | Date                   | Version | Comment                                                                  |
 |------------------------+---------+--------------------------------------------------------------------------|
+| <2021-06-11 Fri 00:13> |   1.1.1 | Provide a Bill of Materials (BoM)                                        |
 | <2021-04-15 Thu 19:49> |   1.1.0 | Get dependencies and maven config from parent POM. New versions of stuff |
 | <2020-01-03 Fri 23:55> |   1.0.0 | Add JDBC DataSourceProxy                                                 |
 
