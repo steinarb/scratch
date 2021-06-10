@@ -26,6 +26,10 @@
     <name>Master parent POM</name>
     <description>Common maven plugin configurations and dependency management</description>
 
+    <modules>
+        <module>bang-app-pom</module>
+    </modules>
+
     <build>
         <pluginManagement>
             <plugins>
