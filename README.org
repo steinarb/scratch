@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                   |
 |------------------------+---------+------------------------------------------------------------------------------|
+| <2021-06-11 Fri 20:57> |  1.0.11 | Add a parent for application with versions for local libraries               |
 | <2021-06-08 Tue 22:51> |  1.0.10 | Remove bang-bom from the <dependencyManagement> of bang-pom                  |
 | <2021-06-06 Sun 11:51> |   1.0.9 | use junit 5.7.2                                                              |
 | <2021-05-31 Mon 21:15> |   1.0.8 | Remove OSGi 7 framework and compendium from the BoM                          |
@@ -27,6 +28,6 @@ Use the following parent in the project:
   <parent>
       <groupId>no.priv.bang.pom</groupId>
       <artifactId>bang-pom</artifactId>
-      <version>1.0.10</version>
+      <version>1.0.11</version>
   </parent>
 #+end_src
