@@ -27,7 +27,7 @@
     <description>Common maven plugin properties, configurations and dependency management, for applications</description>
 
     <properties>
-        <osgi-service-adaptors.version>1.1.4</osgi-service-adaptors.version>
+        <osgi-service-adapters.version>1.1.4</osgi-service-adapters.version>
         <bang-osgi-service.version>1.7.3</bang-osgi-service.version>
         <bang-servlet.version>1.5.6</bang-servlet.version>
         <datasourceproxy.version>1.1.1</datasourceproxy.version>
