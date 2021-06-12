@@ -83,6 +83,7 @@
                 <configuration>
                     <property>bang-bom.version</property>
                     <newVersion>${project.version}</newVersion>
+                    <generateBackupPoms>false</generateBackupPoms>
                 </configuration>
             </plugin>
             <plugin>
