@@ -28,7 +28,7 @@
 
     <properties>
         <osgi-service-adaptors.version>1.1.4</osgi-service-adaptors.version>
-        <bang-osgi-service>1.7.3</bang-osgi-service>
+        <bang-osgi-service.version>1.7.3</bang-osgi-service.version>
         <bang-servlet.version>1.5.6</bang-servlet.version>
         <datasourceproxy.version>1.1.1</datasourceproxy.version>
         <beans.version>1.1.4</beans.version>
