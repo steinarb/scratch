@@ -16,8 +16,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>no.priv.bang.pom</groupId>
-        <artifactId>bang-pom</artifactId>
-        <version>1.0.9</version>
+        <artifactId>bang-app-pom</artifactId>
+        <version>1.0.13</version>
     </parent>
     <groupId>no.priv.bang.oldalbum</groupId>
     <artifactId>oldalbum</artifactId>
@@ -46,18 +46,14 @@
     </modules>
 
     <properties>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-        <bang-osgi-service.version>1.7.2</bang-osgi-service.version>
-        <osgi-service-adapters.version>1.1.3</osgi-service-adapters.version>
-        <bang-servlet.version>1.5.5</bang-servlet.version>
         <authservice.version>1.13.5</authservice.version>
-        <beans.version>1.1.2</beans.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
             **/OldAlbumProductionDatabase.java,
             **/AlbumEntry.java,
         </sonar.cpd.exclusions>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
