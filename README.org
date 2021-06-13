@@ -32,7 +32,7 @@ To use this in an OSGi maven project by first importing the BoM
           <artifactId>jdbc-bom</artifactId>
           <version>1.1.1</version>
           <type>pom</type>
-          <classifier>import</classifier>
+          <scope>import</scope>
       </dependency>
   </dependencies>
 #+end_src
