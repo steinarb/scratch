@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                        |
 |------------------------+---------+----------------------------------------------------------------------------------------------------|
+| <2021-06-16 Wed 00:17> |   1.7.7 | Use jersey 2.34 and jackson 12.3                                                                   |
 | <2021-06-13 Sun 16:14> |   1.7.6 | Align dependency versions with other applications                                                  |
 | <2021-06-01 Tue 20:15> |   1.7.5 | Get OSGi 7 framework and OSGi 7 compendium versions from the karaf BoM                             |
 | <2021-05-24 Mon 19:15> |   1.7.4 | use eslint in frontend, upgrade npm dependecies and webpack, OSGi 7 web whiteboard                 |
