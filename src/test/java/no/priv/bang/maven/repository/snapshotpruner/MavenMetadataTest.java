@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Steinar Bang
+ * Copyright 2017-2021 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package no.priv.bang.maven.repository.snapshotpruner;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static no.priv.bang.maven.repository.snapshotpruner.MavenProperties.*;
 
 import java.io.File;
@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jdom2.JDOMException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MavenMetadataTest {
 
