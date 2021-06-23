@@ -16,12 +16,16 @@
 package no.priv.bang.maven.repository.snapshotpruner;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static no.priv.bang.maven.repository.snapshotpruner.MavenProperties.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jdom2.JDOMException;
 import org.junit.jupiter.api.Test;
 
@@ -67,6 +71,15 @@ public class MavenRepositoryTest {
 
         int totalNumberOfDeletedFiles = repository.pruneSnapshots();
         assertEquals(400, totalNumberOfDeletedFiles);
+    }
+
+    @Test
+    void testForeachOnBean() {
+        String saksbehandler1 = "k83036";
+        String saksbehandler2 = "k83937";
+        List<Bean> beans = Arrays.asList(new Bean(saksbehandler1), new Bean(saksbehandler2), new Bean(""), new Bean(null));
+        beans.forEach(bean -> bean.setLaast(bean.getSaksbehandler() != null && !bean.getSaksbehandler().isEmpty() && !saksbehandler1.equals(bean.getSaksbehandler())));
+        assertThat(beans.stream().map(bean -> Boolean.valueOf(bean.isLaast())).collect(Collectors.toList())).containsExactly(Boolean.FALSE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
     }
 
 }
