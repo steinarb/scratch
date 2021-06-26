@@ -45,16 +45,16 @@ function Home(props) {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th className="transaction-table-col transaction-table-col1">Dato</th>
-                                <th className="transaction-table-col transaction-table-col2">Beløp</th>
-                                <th className="transaction-table-col transaction-table-col-hide-overflow transaction-table-col3">Butikk</th>
+                                <th className="transaction-table-col1">Dato</th>
+                                <th className="transaction-table-col2">Beløp</th>
+                                <th className="transaction-table-col-hide-overflow transaction-table-col3">Butikk</th>
                             </tr>
                         </thead>
                         <tbody>
                             {handlinger.map((handling) =>
                                             <tr key={handling.transactionId}>
-                                                <td className="transaction-table-col">{moment(handling.handletidspunkt).format("YYYY-MM-DD")}</td>
-                                                <td className="transaction-table-col">{handling.belop}</td>
+                                                <td>{moment(handling.handletidspunkt).format("YYYY-MM-DD")}</td>
+                                                <td>{handling.belop}</td>
                                                 <td className="transaction-table-col transaction-table-col-hide-overflow">{handling.butikk}</td>
                                             </tr>
                                            )}
