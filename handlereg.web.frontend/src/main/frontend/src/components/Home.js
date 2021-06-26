@@ -12,6 +12,7 @@ import {
 } from '../actiontypes';
 import { Container } from './bootstrap/Container';
 import { StyledLinkRight } from './bootstrap/StyledLinkRight';
+import Kvittering from './Kvittering';
 
 
 function Home(props) {
@@ -26,7 +27,6 @@ function Home(props) {
         endreDato,
         onRegistrerHandling
     } = props;
-    const favordisfavor = oversikt.balanse >= 0 ? 'favør' : 'disfavør';
     if (!loginresultat.authorized) {
         return <Redirect to="/handlereg/unauthorized" />;
     }
@@ -39,7 +39,7 @@ function Home(props) {
                 <StyledLinkRight className="col-sm-2" to="/handlereg/hurtigregistrering">Hurtig</StyledLinkRight>
             </nav>
             <Container>
-                <p>Hei {oversikt.fornavn}! Totalsummen er for øyeblikket {Math.abs(oversikt.balanse)} i din {favordisfavor}.</p>
+                <p>Hei {oversikt.fornavn}!</p>
                 <p>Dine 5 siste innkjøp, er:</p>
                 <div className="table-responsive table-sm table-striped">
                     <table className="table">
@@ -94,6 +94,7 @@ function Home(props) {
                         </div>
                     </div>
                 </form>
+                <Kvittering/>
             </Container>
             <Container>
                 <StyledLinkRight to="/handlereg/statistikk">Statistikk</StyledLinkRight>
