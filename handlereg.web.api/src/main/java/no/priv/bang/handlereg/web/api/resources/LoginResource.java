@@ -66,7 +66,7 @@ public class LoginResource {
         try {
             subject.login(token);
             SavedRequest savedRequest = WebUtils.getSavedRequest(request);
-            String originalRequestUrl = savedRequest != null ? savedRequest.getRequestURI() : null;
+            String originalRequestUrl = savedRequest != null ? savedRequest.getRequestUrl() : null;
 
             return Loginresultat.with()
                 .suksess(true)
