@@ -16,12 +16,14 @@
 package no.priv.bang.handlereg.web.api.resources;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.SecurityUtils;
@@ -31,6 +33,8 @@ import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.util.SavedRequest;
+import org.apache.shiro.web.util.WebUtils;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
@@ -45,6 +49,9 @@ public class LoginResource {
 
     private Logger logger;
 
+    @Context
+    private HttpServletRequest request;
+
     @Inject
     void setLogservice(LogService logservice) {
         this.logger = logservice.getLogger(LoginResource.class);
@@ -58,11 +65,14 @@ public class LoginResource {
         UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
         try {
             subject.login(token);
+            SavedRequest savedRequest = WebUtils.getSavedRequest(request);
+            String originalRequestUrl = savedRequest != null ? savedRequest.getRequestURI() : null;
 
             return Loginresultat.with()
                 .suksess(true)
                 .feilmelding("")
                 .authorized(subject.hasRole(HANDLEREGBRUKER_ROLE))
+                .originalRequestUrl(originalRequestUrl)
                 .build();
         } catch(UnknownAccountException e) {
             logger.warn("Login error: unknown account", e);
