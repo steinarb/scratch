@@ -20,6 +20,7 @@ public class Loginresultat {
     private boolean suksess;
     private String feilmelding;
     private boolean authorized;
+    private String originalRequestUrl;
 
     private Loginresultat() {}
 
@@ -35,9 +36,13 @@ public class Loginresultat {
         return authorized;
     }
 
+    public String getOriginalRequestUrl() {
+        return originalRequestUrl;
+    }
+
     @Override
     public String toString() {
-        return "Loginresultat [suksess=" + suksess + ", feilmelding=" + feilmelding + ", authorized=" + authorized + "]";
+        return "Loginresultat [suksess=" + suksess + ", feilmelding=" + feilmelding + ", authorized=" + authorized + "originalRequestUrl=" + originalRequestUrl + "]";
     }
 
     public static LoginresultatBuilder with() {
@@ -48,6 +53,7 @@ public class Loginresultat {
         private boolean suksess;
         private String feilmelding;
         private boolean authorized;
+        private String originalRequestUrl;
 
         private LoginresultatBuilder() {}
 
@@ -56,6 +62,7 @@ public class Loginresultat {
             loginresultat.suksess = this.suksess;
             loginresultat.feilmelding = this.feilmelding;
             loginresultat.authorized = authorized;
+            loginresultat.originalRequestUrl = originalRequestUrl;
             return loginresultat;
         }
 
@@ -71,6 +78,11 @@ public class Loginresultat {
 
         public LoginresultatBuilder authorized(boolean authorized) {
             this.authorized = authorized;
+            return this;
+        }
+
+        public LoginresultatBuilder originalRequestUrl(String originalRequestUrl) {
+            this.originalRequestUrl = originalRequestUrl;
             return this;
         }
     }
