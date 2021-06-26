@@ -27,14 +27,17 @@ class LoginresultatTest {
         boolean suksess = true;
         boolean authorized = true;
         String feilmelding = "Feil passord";
+        String originalRequestUrl = "http://localhost:8181/handlereg/hurtigregistrering";
         Loginresultat bean = Loginresultat.with()
             .suksess(suksess)
             .feilmelding(feilmelding)
             .authorized(authorized)
+            .originalRequestUrl(originalRequestUrl)
             .build();
         assertTrue(bean.getSuksess());
         assertEquals(feilmelding, bean.getFeilmelding());
         assertTrue(bean.isAuthorized());
+        assertEquals(originalRequestUrl, bean.getOriginalRequestUrl());
     }
 
     @Test
@@ -43,6 +46,7 @@ class LoginresultatTest {
         assertFalse(bean.getSuksess());
         assertNull(bean.getFeilmelding());
         assertFalse(bean.isAuthorized());
+        assertNull(bean.getOriginalRequestUrl());
     }
 
     @Test
