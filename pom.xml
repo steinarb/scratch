@@ -28,12 +28,14 @@
 
     <modules>
         <module>fildele.definitions</module>
+        <module>jacoco-coverage-report</module>
     </modules>
 
     <properties>
         <authservice.version>1.13.8</authservice.version>
         <snakeyaml.version>1.17</snakeyaml.version>
         <open-iconic.version>1.1.1</open-iconic.version>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
