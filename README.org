@@ -1,0 +1,17 @@
+* Handlelapp
+
+Dette er en webapp som brukes til å lage en handlelapp og å oppdaterer handlelappen realtime mens man handler.
+
+** Utviklingsstatus
+[[https://travis-ci.org/steinarb/handlelapp][file:https://travis-ci.org/steinarb/handlelapp.svg?branch=master]]
+
+** Installasjon
+
+Kjør følgende i karaf console:
+#+BEGIN_EXAMPLE
+  feature:repo-add mvn:no.priv.bang.handlelapp/karaf/LATEST/xml/features
+  feature:install handlelapp-with-derby
+#+END_EXAMPLE
+** Lisens
+
+Denne software'n er lisensiert under Apache License v2.  Se fila LICENSE for detaljer
