@@ -31,3 +31,27 @@
 .table-condensed {
     font-size: 11px;
 }
+
+.img-fluid-landscape {
+    height: 100%;
+    width: auto;
+}
+
+.img-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+@media (orientation: portrait) {
+    .hide-on-portrait {
+        display: none;
+    }
+}
+
+@media (orientation: landscape) {
+    .hide-on-landscape {
+        display: none;
+    }
+}
