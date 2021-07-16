@@ -27,6 +27,7 @@ function Home(props) {
         endreDato,
         onRegistrerHandling
     } = props;
+    const belop = nyhandling.belop.toString();
     if (!loginresultat.authorized) {
         return <Redirect to="/handlereg/unauthorized" />;
     }
@@ -65,7 +66,7 @@ function Home(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">Nytt beløp</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="number" pattern="\d+" value={nyhandling.belop} onChange={e => endreBelop(e.target.value)} />
+                            <input id="amount" className="form-control" type="number" pattern="\d+" value={belop} onChange={e => endreBelop(e.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
