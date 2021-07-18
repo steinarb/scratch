@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.handlelapp.services.Loginresultat;
-
 class LoginresultatTest {
 
     @Test

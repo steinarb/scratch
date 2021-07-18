@@ -34,8 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-import no.priv.bang.handlelapp.db.liquibase.HandlelappLiquibase;
-
 class HandlelappLiquibaseTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
 

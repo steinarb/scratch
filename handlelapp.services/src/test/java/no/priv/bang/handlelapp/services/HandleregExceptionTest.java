@@ -21,8 +21,6 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.handlelapp.services.HandlelappException;
-
 class HandleregExceptionTest {
 
     @Test

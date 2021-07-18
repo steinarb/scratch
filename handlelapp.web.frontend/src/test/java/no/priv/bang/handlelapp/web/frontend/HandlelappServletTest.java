@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
-import no.priv.bang.handlelapp.web.frontend.HandlelappServlet;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 import static org.mockito.Mockito.*;

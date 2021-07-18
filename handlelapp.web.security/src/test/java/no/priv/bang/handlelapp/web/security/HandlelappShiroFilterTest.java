@@ -33,8 +33,6 @@ import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.handlelapp.web.security.HandlelappShiroFilter;
-
 class HandlelappShiroFilterTest {
 
     private static Realm realm;

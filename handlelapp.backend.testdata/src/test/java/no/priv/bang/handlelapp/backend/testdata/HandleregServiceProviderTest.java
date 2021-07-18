@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.handlelapp.backend.testdata.HandleregTestdata;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;

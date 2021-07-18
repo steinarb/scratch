@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import no.priv.bang.handlelapp.services.Credentials;
 import no.priv.bang.handlelapp.services.Loginresultat;
 import no.priv.bang.handlelapp.web.api.ShiroTestBase;
-import no.priv.bang.handlelapp.web.api.resources.LoginResource;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class LoginResourceTest extends ShiroTestBase {
