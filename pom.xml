@@ -40,7 +40,7 @@
         <pax.jdbc.version>1.5.1</pax.jdbc.version>
         <liquibase.version>3.8.0</liquibase.version>
         <derby.version>10.14.2.0</derby.version>
-        <postgresql.version>42.2.22</postgresql.version>
+        <postgresql.version>42.2.23</postgresql.version>
         <jersey-feature.version>1.8.4</jersey-feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
