@@ -51,7 +51,7 @@ public class HandleregTestdata {
     }
 
     void addRolesForTestusers() {
-        Role handleregbruker = useradmin.getRoles().stream().filter(r -> HANDLEREGBRUKER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
+        Role handleregbruker = useradmin.getRoles().stream().filter(r -> HANDLELAPPUSER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
         User jod = useradmin.getUser("jod");
         useradmin.addUserRoles(UserRoles.with().user(jod).roles(Arrays.asList(handleregbruker)).build());
         User jad = useradmin.getUser("jad");

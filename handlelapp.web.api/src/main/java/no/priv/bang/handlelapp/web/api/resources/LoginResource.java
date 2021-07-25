@@ -72,7 +72,7 @@ public class LoginResource {
             return Loginresultat.with()
                 .suksess(true)
                 .feilmelding("")
-                .authorized(subject.hasRole(HANDLEREGBRUKER_ROLE))
+                .authorized(subject.hasRole(HANDLELAPPUSER_ROLE))
                 .originalRequestUrl(originalRequestUrl)
                 .build();
         } catch(UnknownAccountException e) {
@@ -109,7 +109,7 @@ public class LoginResource {
     public Loginresultat logintilstand() {
         Subject subject = SecurityUtils.getSubject();
         boolean suksess = subject.isAuthenticated();
-        boolean harRoleHandleregbruker = subject.hasRole(HANDLEREGBRUKER_ROLE);
+        boolean harRoleHandleregbruker = subject.hasRole(HANDLELAPPUSER_ROLE);
         String brukerLoggetInnMelding = harRoleHandleregbruker ?
             "Bruker er logget inn og har tilgang" :
             "Bruker er logget inn men mangler tilgang";
