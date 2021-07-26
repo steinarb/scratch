@@ -27,8 +27,8 @@ function Picture(props) {
                 <title>{title}</title>
                 <meta name="description" content={description}/>
             </Helmet>
-            <PictureNavbar className="hide-on-landscape d-md-none" item={item} parent={parent} title={title}/>
-            <PictureNavbar className="d-none d-md-block" item={item} parent={parent} title={title}/>
+            <PictureNavbar className="hide-on-landscape d-lg-none" item={item} parent={parent} title={title}/>
+            <PictureNavbar className="d-none d-lg-block" item={item} parent={parent} title={title}/>
             <div className="btn-toolbar d-lg-none hide-on-landscape" role="toolbar">
                 <Previous previous={previous} />
                 <Next className="ml-auto" next={next} />
@@ -49,8 +49,8 @@ function Picture(props) {
                         <div className="col-auto"><Next className="ml-auto" next={next} /></div>
                     </div>
                 </div>
-                <PictureDescription className="hide-on-landscape d-md-none" description={description}/>
-                <PictureDescription className="d-none d-md-block" description={description}/>
+                <PictureDescription className="hide-on-landscape d-lg-none" description={description}/>
+                <PictureDescription className="d-none d-lg-block" description={description}/>
             </div>
         </div>
     );
