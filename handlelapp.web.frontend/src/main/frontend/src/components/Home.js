@@ -9,7 +9,7 @@ function Home(props) {
         loginresultat,
     } = props;
     if (!loginresultat.authorized) {
-        return <Redirect to="/handlereg/unauthorized" />;
+        return <Redirect to="/handlelapp/unauthorized" />;
     }
 
     return (

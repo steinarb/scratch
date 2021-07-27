@@ -16,9 +16,9 @@
 package no.priv.bang.handlelapp.services;
 
 public class HandlelappConstants {
-    public static final String HANDLEREG_JDBC_URL = "handlereg.db.jdbc.url";
-    public static final String HANDLEREG_JDBC_USER = "handlereg.db.jdbc.user";
-    public static final String HANDLEREG_JDBC_PASSWORD = "handlereg.db.jdbc.password"; // NOSONAR hard to write code to handle passwords without saying the word "password"
+    public static final String HANDLELAPP_JDBC_URL = "handlelapp.db.jdbc.url";
+    public static final String HANDLELAPP_JDBC_USER = "handlelapp.db.jdbc.user";
+    public static final String HANDLELAPP_JDBC_PASSWORD = "handlelapp.db.jdbc.password"; // NOSONAR hard to write code to handle passwords without saying the word "password"
 
     public static final String HANDLELAPPUSER_ROLE = "handlelappuser";
 

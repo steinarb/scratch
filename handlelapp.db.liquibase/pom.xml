@@ -21,7 +21,7 @@
     </parent>
     <artifactId>handlelapp.db.liquibase</artifactId>
 
-    <name>Handleregistrering database schema</name>
+    <name>Handlelapp database schema</name>
 
     <properties>
         <karaf-feature-name>handlelapp-db-liquibase</karaf-feature-name>

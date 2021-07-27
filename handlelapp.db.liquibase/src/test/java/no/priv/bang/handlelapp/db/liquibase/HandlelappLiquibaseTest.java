@@ -40,26 +40,26 @@ class HandlelappLiquibaseTest {
     @Test
     void testCreateSchema() throws Exception {
         Connection connection = createConnection();
-        HandlelappLiquibase handleregLiquibase = new HandlelappLiquibase();
-        handleregLiquibase.createInitialSchema(connection);
+        HandlelappLiquibase handlelappLiquibase = new HandlelappLiquibase();
+        handlelappLiquibase.createInitialSchema(connection);
         addAccounts(connection);
         assertAccounts(connection);
-        handleregLiquibase.updateSchema(connection);
+        handlelappLiquibase.updateSchema(connection);
     }
 
     @Test
     void testForceReleaseLocks() throws Exception {
         Connection connection = createConnection();
-        HandlelappLiquibase handleregLiquibase = new HandlelappLiquibase();
-        assertDoesNotThrow(() -> handleregLiquibase.forceReleaseLocks(connection));
+        HandlelappLiquibase handlelappLiquibase = new HandlelappLiquibase();
+        assertDoesNotThrow(() -> handlelappLiquibase.forceReleaseLocks(connection));
     }
 
     @Disabled("Pseudo-test that imports legacy data and turns them into SQL files that can be imported into an SQL database")
     @Test
     void createSqlFromOriginalData() throws Exception {
         Connection connection = createConnection();
-        HandlelappLiquibase handleregLiquibase = new HandlelappLiquibase();
-        handleregLiquibase.createInitialSchema(connection);
+        HandlelappLiquibase handlelappLiquibase = new HandlelappLiquibase();
+        handlelappLiquibase.createInitialSchema(connection);
         OldData oldData = new OldData();
         assertEquals(137, oldData.butikker.size());
         assertEquals(4501, oldData.handlinger.size());
@@ -188,7 +188,7 @@ class HandlelappLiquibaseTest {
 
     private Connection createConnection() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:handlereg;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:handlelapp;create=true");
         DataSource dataSource = derbyDataSourceFactory.createDataSource(properties);
         return dataSource.getConnection();
     }

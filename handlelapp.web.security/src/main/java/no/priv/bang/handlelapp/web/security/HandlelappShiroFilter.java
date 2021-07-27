@@ -34,7 +34,7 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPatter
 
 /**
  * This is an OSGi DS component that provides a {@link Filter} service.  This filter service will
- * be put in front of the servlets in the "/handlereg" webcontext, and
+ * be put in front of the servlets in the "/handlelapp" webcontext, and
  * will handle authentication and verify authorization to the servlet paths.
  */
 @Component(service=Filter.class, immediate=true)

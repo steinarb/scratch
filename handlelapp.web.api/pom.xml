@@ -21,7 +21,7 @@
     </parent>
     <artifactId>handlelapp.web.api</artifactId>
 
-    <name>Handleregistrering web-api</name>
+    <name>Handlelapp web-api</name>
 
     <properties>
         <karaf-feature-name>handlelapp-web-api</karaf-feature-name>

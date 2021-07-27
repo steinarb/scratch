@@ -32,7 +32,7 @@ import no.priv.bang.handlelapp.services.Vare;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
-class HandleregServiceProviderTest {
+class HandlelappServiceProviderTest {
     private static DataSource datasource;
 
     @BeforeAll
@@ -52,7 +52,7 @@ class HandleregServiceProviderTest {
     void testGetHandlelapp() {
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
-        HandleregServiceProvider provider = new HandleregServiceProvider();
+        HandlelappServiceProvider provider = new HandlelappServiceProvider();
         provider.setLogservice(logservice);
         provider.setDatasource(datasource);
         provider.setUseradmin(useradmin);

@@ -109,15 +109,15 @@ public class LoginResource {
     public Loginresultat logintilstand() {
         Subject subject = SecurityUtils.getSubject();
         boolean suksess = subject.isAuthenticated();
-        boolean harRoleHandleregbruker = subject.hasRole(HANDLELAPPUSER_ROLE);
-        String brukerLoggetInnMelding = harRoleHandleregbruker ?
+        boolean harRoleHandlelappuser = subject.hasRole(HANDLELAPPUSER_ROLE);
+        String brukerLoggetInnMelding = harRoleHandlelappuser ?
             "Bruker er logget inn og har tilgang" :
             "Bruker er logget inn men mangler tilgang";
         String melding = suksess ? brukerLoggetInnMelding : "Bruker er ikke logget inn";
         return Loginresultat.with()
             .suksess(suksess)
             .feilmelding(melding)
-            .authorized(harRoleHandleregbruker)
+            .authorized(harRoleHandlelappuser)
             .build();
     }
 

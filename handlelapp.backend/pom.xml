@@ -21,7 +21,7 @@
     </parent>
     <artifactId>handlelapp.backend</artifactId>
 
-    <name>Handleregistrering business-logikk</name>
+    <name>Handlelapp business-logikk</name>
 
     <properties>
         <karaf-feature-name>handlelapp-backend</karaf-feature-name>

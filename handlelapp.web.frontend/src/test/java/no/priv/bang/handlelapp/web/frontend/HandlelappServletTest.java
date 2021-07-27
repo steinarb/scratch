@@ -43,7 +43,7 @@ public class HandlelappServletTest {
         servlet.setLogService(logservice);
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlelapp/useradmin/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -60,7 +60,7 @@ public class HandlelappServletTest {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/handlereg/useradmin"));
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/handlelapp/useradmin"));
         when(request.getServletPath()).thenReturn("/frontend-karaf-demo");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -77,7 +77,7 @@ public class HandlelappServletTest {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlelapp/useradmin/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
         response.resetAll();
@@ -98,7 +98,7 @@ public class HandlelappServletTest {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlelapp/useradmin/");
         when(request.getPathInfo()).thenReturn("/");
         MockHttpServletResponse response = mock(MockHttpServletResponse.class, CALLS_REAL_METHODS);
         response.resetAll();
@@ -117,7 +117,7 @@ public class HandlelappServletTest {
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/static/nosuchname.png");
+        when(request.getRequestURI()).thenReturn("http://localhost:8181/handlelapp/useradmin/static/nosuchname.png");
         when(request.getPathInfo()).thenReturn("/static/nosuchname.png");
         MockHttpServletResponse response = new MockHttpServletResponse();
 

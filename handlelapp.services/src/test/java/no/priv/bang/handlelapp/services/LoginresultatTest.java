@@ -27,7 +27,7 @@ class LoginresultatTest {
         boolean suksess = true;
         boolean authorized = true;
         String feilmelding = "Feil passord";
-        String originalRequestUrl = "http://localhost:8181/handlereg/hurtigregistrering";
+        String originalRequestUrl = "http://localhost:8181/handlelapp/hurtigregistrering";
         Loginresultat bean = Loginresultat.with()
             .suksess(suksess)
             .feilmelding(feilmelding)

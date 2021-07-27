@@ -25,15 +25,15 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 public class HandlelappLiquibase {
 
     public void createInitialSchema(Connection connection) throws LiquibaseException {
-        applyLiquibaseChangelist(connection, "handlereg-db-changelog/db-changelog-1.0.0.xml");
+        applyLiquibaseChangelist(connection, "handlelapp-db-changelog/db-changelog-1.0.0.xml");
     }
 
     public void updateSchema(Connection connection) throws LiquibaseException {
-        applyLiquibaseChangelist(connection, "handlereg-db-changelog/db-changelog-1.0.1.xml");
+        applyLiquibaseChangelist(connection, "handlelapp-db-changelog/db-changelog-1.0.1.xml");
     }
 
     public void forceReleaseLocks(Connection connection) throws LiquibaseException {
-        Liquibase liquibase = createLiquibaseInstance(connection, "handlereg-db-changelog/db-changelog-1.0.0.xml");
+        Liquibase liquibase = createLiquibaseInstance(connection, "handlelapp-db-changelog/db-changelog-1.0.0.xml");
         liquibase.forceReleaseLocks();
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="handlereg.web.frontend">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="handlelapp.web.frontend">
 
     <!-- Copyright 2021 Steinar Bang                                                     -->
     <!--                                                                                 -->
@@ -13,7 +13,7 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <feature name="handlereg-web-frontend">
+    <feature name="handlelapp-web-frontend">
         <feature>scr</feature>
     </feature>
 </features>

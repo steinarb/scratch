@@ -11,7 +11,7 @@ import LoginMessage from './LoginMessage';
 function Login(props) {
     const { username, password, loginresultat, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
     if (loginresultat.suksess) {
-        const originalRequestUrl = loginresultat.originalRequestUrl || '/handlereg/';
+        const originalRequestUrl = loginresultat.originalRequestUrl || '/handlelapp/';
         return (<Redirect to={originalRequestUrl} />);
     }
 
@@ -19,7 +19,7 @@ function Login(props) {
         <div className="Login">
             <header>
                 <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
-                    <h1>Handleregistrering login</h1>
+                    <h1>Handlelapp login</h1>
                     <p id="messagebanner"></p>
                 </div>
             </header>

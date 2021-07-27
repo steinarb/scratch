@@ -10,7 +10,7 @@ import { Container } from './bootstrap/Container';
 function Unauthorized(props) {
     const { username, loginresultat, onLogout } = props;
     if (!loginresultat.suksess) {
-        return <Redirect to="/handlereg/login" />;
+        return <Redirect to="/handlelapp/login" />;
     }
 
     return (

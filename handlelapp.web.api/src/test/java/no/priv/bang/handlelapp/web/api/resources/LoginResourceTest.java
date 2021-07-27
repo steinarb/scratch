@@ -102,7 +102,7 @@ class LoginResourceTest extends ShiroTestBase {
     }
 
     @Test
-    void testGetLogintilstandWhenLoggedInButUserDoesntHaveRoleHandleregbruker() {
+    void testGetLogintilstandWhenLoggedInButUserDoesntHaveRoleHandlelappuser() {
         LoginResource resource = new LoginResource();
         String username = "jad";
         String password = "1ad";

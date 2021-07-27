@@ -45,8 +45,8 @@ public class HandlelappWebApi extends JerseyServlet {
     }
 
     @Reference
-    public void setHandlelappService(HandlelappService handlereg) {
-        addInjectedOsgiService(HandlelappService.class, handlereg);
+    public void setHandlelappService(HandlelappService handlelapp) {
+        addInjectedOsgiService(HandlelappService.class, handlelapp);
     }
 
     @Activate

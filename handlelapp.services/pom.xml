@@ -21,7 +21,7 @@
     </parent>
     <artifactId>handlelapp.services</artifactId>
 
-    <name>Handleregistrering OSGi service definitions</name>
+    <name>Handlelapp OSGi service definitions</name>
 
     <properties>
         <karaf-feature-name>handlelapp-services</karaf-feature-name>

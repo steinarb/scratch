@@ -13,9 +13,9 @@ class App extends Component {
         return (
             <Router history={history}>
                 <Switch>
-                    <Route exact path="/handlereg/" component={Home} />
-                    <Route exact path="/handlereg/login" component={Login} />
-                    <Route exact path="/handlereg/unauthorized" component={Unauthorized} />
+                    <Route exact path="/handlelapp/" component={Home} />
+                    <Route exact path="/handlelapp/login" component={Login} />
+                    <Route exact path="/handlelapp/unauthorized" component={Unauthorized} />
                 </Switch>
             </Router>
         );

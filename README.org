@@ -3,7 +3,7 @@
 Dette er en webapp som brukes til å lage en handlelapp og å oppdaterer handlelappen realtime mens man handler.
 
 ** Utviklingsstatus
-[[https://travis-ci.org/steinarb/handlereg][file:https://travis-ci.org/steinarb/handlelapp.svg?branch=master]]
+[[https://travis-ci.org/steinarb/handlelapp][file:https://travis-ci.org/steinarb/handlelapp.svg?branch=master]]
 
 ** Installasjon
 

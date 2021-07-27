@@ -23,7 +23,7 @@
 
     <packaging>pom</packaging>
 
-    <name>Handleregistrering aggregate feature repository</name>
+    <name>Handlelapp aggregate feature repository</name>
 
     <dependencies>
         <dependency>

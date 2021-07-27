@@ -33,7 +33,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.handlelapp.db.liquibase.HandlelappLiquibase;
 
-@Component(immediate=true, property = "name=handleregdb")
+@Component(immediate=true, property = "name=handlelappdb")
 public class HandlelapProductionDbLiquibaseRunner implements PreHook {
 
     private Logger logger;
@@ -51,12 +51,12 @@ public class HandlelapProductionDbLiquibaseRunner implements PreHook {
     @Override
     public void prepare(DataSource datasource) throws SQLException {
         try (Connection connect = datasource.getConnection()) {
-            HandlelappLiquibase handleregLiquibase = new HandlelappLiquibase();
-            handleregLiquibase.createInitialSchema(connect);
+            HandlelappLiquibase handlelappLiquibase = new HandlelappLiquibase();
+            handlelappLiquibase.createInitialSchema(connect);
             insertMockData(connect);
-            handleregLiquibase.updateSchema(connect);
+            handlelappLiquibase.updateSchema(connect);
         } catch (Exception e) {
-            logError("Failed to create handlereg derby test database", e);
+            logError("Failed to create handlelapp derby test database", e);
         }
     }
 

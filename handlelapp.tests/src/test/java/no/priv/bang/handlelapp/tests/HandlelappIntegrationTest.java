@@ -35,9 +35,9 @@ public class HandlelappIntegrationTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
-        final MavenArtifactUrlReference handleregFeatureRepo = maven().groupId("no.priv.bang.handlelapp").artifactId("karaf").version("LATEST").type("xml").classifier("features");
+        final MavenArtifactUrlReference handlelappFeatureRepo = maven().groupId("no.priv.bang.handlelapp").artifactId("karaf").version("LATEST").type("xml").classifier("features");
         Option[] options = new Option[] {
-            features(handleregFeatureRepo)
+            features(handlelappFeatureRepo)
         };
         return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
     }

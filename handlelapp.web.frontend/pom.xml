@@ -21,7 +21,7 @@
     </parent>
     <artifactId>handlelapp.web.frontend</artifactId>
 
-    <name>Handleregistrering web frontend</name>
+    <name>Handlelapp web frontend</name>
 
     <properties>
         <karaf-feature-name>handlelapp-web-frontend</karaf-feature-name>

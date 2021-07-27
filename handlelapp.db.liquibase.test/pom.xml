@@ -21,7 +21,7 @@
     </parent>
     <artifactId>handlelapp.db.liquibase.test</artifactId>
 
-    <name>Handleregistrering webapp test database setup</name>
+    <name>Handlelapp webapp test database setup</name>
 
     <properties>
         <karaf-feature-name>handlelapp-db-liquibase-test</karaf-feature-name>

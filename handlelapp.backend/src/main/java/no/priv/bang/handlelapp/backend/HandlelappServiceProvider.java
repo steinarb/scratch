@@ -33,7 +33,7 @@ import no.priv.bang.handlelapp.services.Vare;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 @Component(service=HandlelappService.class, immediate=true)
-public class HandleregServiceProvider implements HandlelappService {
+public class HandlelappServiceProvider implements HandlelappService {
 
     private Logger logger;
     private DataSource datasource;
@@ -41,10 +41,10 @@ public class HandleregServiceProvider implements HandlelappService {
 
     @Reference
     public void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(HandleregServiceProvider.class);
+        this.logger = logservice.getLogger(HandlelappServiceProvider.class);
     }
 
-    @Reference(target = "(osgi.jndi.service.name=jdbc/handlereg)")
+    @Reference(target = "(osgi.jndi.service.name=jdbc/handlelapp)")
     public void setDatasource(DataSource datasource) {
         this.datasource = datasource;
     }

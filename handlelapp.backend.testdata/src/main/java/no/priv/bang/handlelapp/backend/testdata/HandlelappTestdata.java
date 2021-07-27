@@ -29,15 +29,15 @@ import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.osgiservice.users.UserRoles;
 
 @Component(immediate=true)
-public class HandleregTestdata {
+public class HandlelappTestdata {
 
     private UserManagementService useradmin;
 
     @Reference
-    public void setHandleregService(HandlelappService handlereg) {
+    public void setHandlelappService(HandlelappService handlelapp) {
         // Brukes bare til å bestemme rekkefølge på kjøring
         // Når denne blir kalt vet vi at authservice har
-        // rollen handleregbruker lagt til
+        // rollen handlelappuser lagt til
     }
 
     @Reference
@@ -51,11 +51,11 @@ public class HandleregTestdata {
     }
 
     void addRolesForTestusers() {
-        Role handleregbruker = useradmin.getRoles().stream().filter(r -> HANDLELAPPUSER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
+        Role handlelappuser = useradmin.getRoles().stream().filter(r -> HANDLELAPPUSER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
         User jod = useradmin.getUser("jod");
-        useradmin.addUserRoles(UserRoles.with().user(jod).roles(Arrays.asList(handleregbruker)).build());
+        useradmin.addUserRoles(UserRoles.with().user(jod).roles(Arrays.asList(handlelappuser)).build());
         User jad = useradmin.getUser("jad");
-        useradmin.addUserRoles(UserRoles.with().user(jad).roles(Arrays.asList(handleregbruker)).build());
+        useradmin.addUserRoles(UserRoles.with().user(jad).roles(Arrays.asList(handlelappuser)).build());
     }
 
 }

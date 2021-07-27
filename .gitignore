@@ -4,6 +4,6 @@
 .settings/
 /README.md
 /TAGS
-/handlereg.db.liquibase/src/test/resources/olddata
+/handlelapp.db.liquibase/src/test/resources/olddata
 node_modules/
 target/

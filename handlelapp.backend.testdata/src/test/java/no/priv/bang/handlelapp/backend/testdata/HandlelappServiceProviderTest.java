@@ -32,11 +32,11 @@ import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.osgiservice.users.UserRoles;
 
-class HandleregTestdataTest {
+class HandlelappTestdataTest {
 
     @Test
     void testActivate() {
-        HandleregTestdata testdata = new HandleregTestdata();
+        HandlelappTestdata testdata = new HandlelappTestdata();
 
         UserManagementService useradmin = mock(MockUserManagementService.class, CALLS_REAL_METHODS);
         when(useradmin.getUser("jod")).thenReturn(User.with().userid(1).username("jod").email("jd@gmail.com").firstname("John").lastname("Doe").build());

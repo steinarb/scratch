@@ -21,7 +21,7 @@
     </parent>
     <artifactId>handlelapp.web.security</artifactId>
 
-    <name>Handleregistrering web-sikkerhet</name>
+    <name>Handlelapp web-sikkerhet</name>
 
     <properties>
         <karaf-feature-name>handlelapp-web-security</karaf-feature-name>
