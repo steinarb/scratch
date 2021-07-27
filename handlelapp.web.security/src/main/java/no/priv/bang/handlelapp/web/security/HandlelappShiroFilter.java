@@ -38,7 +38,7 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPatter
  * will handle authentication and verify authorization to the servlet paths.
  */
 @Component(service=Filter.class, immediate=true)
-@HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=handllapp)")
+@HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=handlelapp)")
 @HttpWhiteboardFilterPattern("/*")
 public class HandlelappShiroFilter extends AbstractShiroFilter { // NOSONAR
 
