@@ -15,10 +15,12 @@
  */
 package no.priv.bang.handlelapp.backend;
 
+import static no.priv.bang.handlelapp.services.HandlelappConstants.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -30,6 +32,7 @@ import org.osgi.service.log.Logger;
 
 import no.priv.bang.handlelapp.services.HandlelappService;
 import no.priv.bang.handlelapp.services.Vare;
+import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 @Component(service=HandlelappService.class, immediate=true)
@@ -56,7 +59,7 @@ public class HandlelappServiceProvider implements HandlelappService {
 
     @Activate
     public void activate() {
-        // Will be called when component is activated
+        addRolesIfNotpresent();
     }
 
     @Override
@@ -70,6 +73,15 @@ public class HandlelappServiceProvider implements HandlelappService {
         }
 
         return handlelapp;
+    }
+
+    private void addRolesIfNotpresent() {
+        String handlelappuser = HANDLELAPPUSER_ROLE;
+        List<Role> roles = useradmin.getRoles();
+        Optional<Role> existingRole = roles.stream().filter(r -> handlelappuser.equals(r.getRolename())).findFirst();
+        if (!existingRole.isPresent()) {
+            useradmin.addRole(Role.with().id(-1).rolename(handlelappuser).description("Bruker av applikasjonen handlelapp").build());
+        }
     }
 
 }
