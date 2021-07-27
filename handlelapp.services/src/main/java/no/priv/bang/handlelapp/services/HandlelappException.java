@@ -16,7 +16,7 @@
 package no.priv.bang.handlelapp.services;
 
 /**
- * Unchecked exception for the handlereg application
+ * Unchecked exception for the handlelapp application
  *
  * Application specific unchecked exception.
  *
