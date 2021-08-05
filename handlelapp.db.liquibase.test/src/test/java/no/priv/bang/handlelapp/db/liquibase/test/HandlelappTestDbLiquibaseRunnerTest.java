@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -40,7 +41,7 @@ class HandlelappTestDbLiquibaseRunnerTest {
         MockLogService logservice = new MockLogService();
         HandlelappTestDbLiquibaseRunner runner = new HandlelappTestDbLiquibaseRunner();
         runner.setLogService(logservice);
-        runner.activate();
+        runner.activate(Collections.emptyMap());
         runner.prepare(datasource);
         assertAccounts(datasource);
     }

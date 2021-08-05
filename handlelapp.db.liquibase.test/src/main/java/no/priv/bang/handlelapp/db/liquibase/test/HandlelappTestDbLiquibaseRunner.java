@@ -17,6 +17,8 @@ package no.priv.bang.handlelapp.db.liquibase.test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
+
 import javax.sql.DataSource;
 import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.service.component.annotations.Activate;
@@ -35,7 +37,9 @@ import no.priv.bang.handlelapp.db.liquibase.HandlelappLiquibase;
 @Component(immediate=true, property = "name=handlelappdb")
 public class HandlelappTestDbLiquibaseRunner implements PreHook {
 
+    private static final String DEFAULT_DUMMY_DATA_CHANGELOG = "sql/data/db-changelog.xml";
     private Logger logger;
+    private String databaselanguage;
 
     @Reference
     public void setLogService(LogService logservice) {
@@ -43,8 +47,8 @@ public class HandlelappTestDbLiquibaseRunner implements PreHook {
     }
 
     @Activate
-    public void activate() {
-        // Called after all injections have been satisfied and before the PreHook service is exposed
+    public void activate(Map<String, Object> config) {
+        databaselanguage = (String) config.get("databaselanguage");
     }
 
     @Override
@@ -62,8 +66,22 @@ public class HandlelappTestDbLiquibaseRunner implements PreHook {
     public void insertMockData(Connection connect) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+        Liquibase liquibase = new Liquibase(dummyDataResourceName(), classLoaderResourceAccessor, databaseConnection);
         liquibase.update("");
+    }
+
+    String dummyDataResourceName() {
+        if (databaselanguage == null) {
+            return DEFAULT_DUMMY_DATA_CHANGELOG;
+        }
+
+        String resourceName = DEFAULT_DUMMY_DATA_CHANGELOG.replace(".xml", "_" + databaselanguage + ".xml");
+        if (getClass().getClassLoader().getResource(resourceName) == null) {
+            logger.warn(String.format("Failed to find data for %s defaulting to Norwegian", databaselanguage));
+            return DEFAULT_DUMMY_DATA_CHANGELOG;
+        }
+
+        return resourceName;
     }
 
 }

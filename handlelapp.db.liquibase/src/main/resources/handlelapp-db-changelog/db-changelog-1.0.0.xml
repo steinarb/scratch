@@ -39,4 +39,135 @@
 
     </changeSet>
 
+    <changeSet author="sb" id="handlelapp-1.0.0-categories">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="categories" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="category_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="category_primary_key"/>
+            </column>
+            <column name="name" type="VARCHAR(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="categories_id_index" tableName="categories">
+            <column name="category_id"/>
+        </createIndex>
+
+    </changeSet>
+
+    <changeSet author="sb" id="handlelapp-1.0.0-articles">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="articles" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="articles">
+            <column autoIncrement="true" name="article_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="article_primary_key"/>
+            </column>
+            <column name="name" type="VARCHAR(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="category_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="article_category_foreign_key" references="categories(category_id)"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="articles_id_index" tableName="articles">
+            <column name="article_id"/>
+        </createIndex>
+
+    </changeSet>
+
+    <changeSet author="sb" id="handlelapp-1.0.0-store_category_order">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="store_category_order" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="store_category_order">
+            <column name="store_id" type="INTEGER" />
+            <column name="category_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="storeorder_category_foreign_key" references="categories(category_id)"/>
+            </column>
+            <column name="sort" type="INTEGER" />
+        </createTable>
+
+        <createIndex indexName="store_category_order_storeid_index" tableName="store_category_order">
+            <column name="store_id"/>
+        </createIndex>
+
+        <createIndex indexName="store_category_order_categoryid_index" tableName="store_category_order">
+            <column name="category_id"/>
+        </createIndex>
+
+        <createIndex indexName="store_category_order_sort_index" tableName="store_category_order">
+            <column name="sort"/>
+        </createIndex>
+
+    </changeSet>
+
+    <changeSet author="sb" id="handlelapp-1.0.0-shoppingcarts">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="shoppingcarts" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="shoppingcarts">
+            <column autoIncrement="true" name="shoppingcart_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="shoppingcarts_primary_key"/>
+            </column>
+            <column name="account_id" type="INTEGER" >
+                <constraints nullable="false" foreignKeyName="shoppingcart_account_foreign_key" references="accounts(account_id)"/>
+            </column>
+            <column name="store_id" type="INTEGER" />
+            <column name="shopping_start_time" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" />
+            <column name="checkout_time" type="TIMESTAMP" />
+        </createTable>
+
+        <createIndex indexName="shoppingcarts_shoppingcartid_index" tableName="shoppingcarts">
+            <column name="shoppingcart_id"/>
+        </createIndex>
+
+    </changeSet>
+
+    <changeSet author="sb" id="handlelapp-1.0.0-shoppinglist">
+        <preConditions onFail="CONTINUE" >
+            <not>
+                <tableExists tableName="shoppinglist" />
+            </not>
+        </preConditions>
+
+        <createTable tableName="shoppinglist">
+            <column autoIncrement="true" name="shoppinglistitem_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="shoppinglist_primary_key"/>
+            </column>
+            <column name="article_id" type="INTEGER" >
+                <constraints nullable="false" foreignKeyName="shoppinglist_article_foreign_key" references="articles(article_id)"/>
+            </column>
+            <column name="amount" type="INTEGER" />
+            <column name="shoppingcart_id" type="INTEGER" >
+                <constraints nullable="true" foreignKeyName="shoppinglist_shoppingcart_foreign_key" references="shoppingcarts(shoppingcart_id)"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="shoppinglist_shoppinglistid_index" tableName="shoppinglist">
+            <column name="shoppinglistitem_id"/>
+        </createIndex>
+
+        <createIndex indexName="shoppinglist_shoppingcartid_index" tableName="shoppinglist">
+            <column name="shoppingcart_id"/>
+        </createIndex>
+
+    </changeSet>
+
 </databaseChangeLog>

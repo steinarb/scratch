@@ -5,6 +5,29 @@ Dette er en webapp som brukes til å lage en handlelapp og å oppdaterer handlel
 ** Utviklingsstatus
 [[https://travis-ci.org/steinarb/handlelapp][file:https://travis-ci.org/steinarb/handlelapp.svg?branch=master]]
 
+** Using English in the shopping list app
+
+The default language for the shopping list app, is Norwegian (ISO locale nb_NO).
+
+If you wish to use English instead, you /should/ do the following in the karaf console, /before/ installing the application:
+#+begin_example
+  config:edit no.priv.bang.handlelapp.db.liquibase.production.HandlelappProductionDbLiquibaseRunner
+  config:property-set databaselanguage en_GB
+  config:update
+#+end_example
+
+The reason it's important to do this before installing anything is that this makes the language of the initial data in the PostgreSQL database be in English instead of Norwegian.
+
+You might also wish to set the GUI language and the language in the test database to English, but this is can be done at any point in time (doesn't have to be done before installation):
+#+begin_example
+  config:edit no.priv.bang.handlelapp.backend.HandlelappServiceProvider
+  config:property-set defaultlocale en_GB
+  config:update
+  config:edit no.priv.bang.handlelapp.db.liquibase.test.HandlelappTestDbLiquibaseRunner
+  config:property-set databaselanguage en_GB
+  config:update
+#+end_example
+
 ** Installasjon
 
 Kjør følgende i karaf console:
