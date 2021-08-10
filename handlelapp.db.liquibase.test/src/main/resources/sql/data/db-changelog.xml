@@ -15,5 +15,6 @@
     <!-- under the License.                                                              -->
 
     <include file="sql/data/accounts.sql"/>
+    <include file="sql/data/categories.sql"/>
 
 </databaseChangeLog>

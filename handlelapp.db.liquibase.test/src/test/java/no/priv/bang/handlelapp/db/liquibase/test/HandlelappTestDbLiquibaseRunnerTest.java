@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -44,6 +45,7 @@ class HandlelappTestDbLiquibaseRunnerTest {
         runner.activate(Collections.emptyMap());
         runner.prepare(datasource);
         assertAccounts(datasource);
+        assertCategories(datasource);
     }
 
     private void assertAccounts(DataSource datasource) throws Exception {
@@ -59,6 +61,22 @@ class HandlelappTestDbLiquibaseRunnerTest {
     private void assertAccount(ResultSet results, String username) throws Exception {
         assertTrue(results.next());
         assertEquals(username, results.getString(2)); // column 1 is the id
+    }
+
+    private void assertCategories(DataSource datasource) throws Exception {
+        try (Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from categories")) {
+                try (ResultSet results = statement.executeQuery()) {
+                    assertCategory(results, "Grønnsaker");
+                    assertCategory(results, "Frukt");
+                }
+            }
+        }
+    }
+
+    private void assertCategory(ResultSet results, String name) throws Exception {
+        assertTrue(results.next(), "Expected a row in table categories but found none");
+        assertEquals(name, results.getString(2)); // column 1 is the id
     }
 
 }
