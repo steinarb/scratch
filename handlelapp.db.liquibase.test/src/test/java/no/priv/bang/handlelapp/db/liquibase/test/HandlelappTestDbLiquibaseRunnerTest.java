@@ -46,6 +46,7 @@ class HandlelappTestDbLiquibaseRunnerTest {
         runner.prepare(datasource);
         assertAccounts(datasource);
         assertCategories(datasource);
+        assertArticles(datasource);
     }
 
     private void assertAccounts(DataSource datasource) throws Exception {
@@ -77,6 +78,27 @@ class HandlelappTestDbLiquibaseRunnerTest {
     private void assertCategory(ResultSet results, String name) throws Exception {
         assertTrue(results.next(), "Expected a row in table categories but found none");
         assertEquals(name, results.getString(2)); // column 1 is the id
+    }
+
+    private void assertArticles(DataSource datasource) throws Exception {
+        try (Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from articles")) {
+                try (ResultSet results = statement.executeQuery()) {
+                    assertArticle(results, "Gulrøtter", 1);
+                    assertTrue(results.next());
+                    assertTrue(results.next());
+                    assertTrue(results.next());
+                    assertTrue(results.next());
+                    assertArticle(results, "Epler", 2);
+                }
+            }
+        }
+    }
+
+    private void assertArticle(ResultSet results, String name, int categoryid) throws Exception {
+        assertTrue(results.next(), "Expected a row in table articles but found none");
+        assertEquals(name, results.getString(2)); // column 1 is the id
+        assertEquals(categoryid, results.getInt(3));
     }
 
 }
