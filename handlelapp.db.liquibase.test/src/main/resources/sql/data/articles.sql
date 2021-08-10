@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset sb:example_categories
+--changeset sb:example_articles
 insert into articles (name, category_id) values ('Gulrøtter', 1);
 insert into articles (name, category_id) values ('Poteter', 1);
 insert into articles (name, category_id) values ('Brokkoli', 1);

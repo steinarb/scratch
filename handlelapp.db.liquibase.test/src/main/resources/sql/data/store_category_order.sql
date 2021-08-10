@@ -1,0 +1,29 @@
+--liquibase formatted sql
+--changeset sb:example_store_category_order
+insert into store_category_order (store_id, category_id, sort) values (1, 1, 10);
+insert into store_category_order (store_id, category_id, sort) values (1, 2, 20);
+insert into store_category_order (store_id, category_id, sort) values (1, 3, 40);
+insert into store_category_order (store_id, category_id, sort) values (1, 4, 50);
+insert into store_category_order (store_id, category_id, sort) values (1, 5, 60);
+insert into store_category_order (store_id, category_id, sort) values (1, 6, 70);
+insert into store_category_order (store_id, category_id, sort) values (1, 7, 80);
+insert into store_category_order (store_id, category_id, sort) values (1, 8, 100);
+insert into store_category_order (store_id, category_id, sort) values (1, 9, 110);
+insert into store_category_order (store_id, category_id, sort) values (1, 10, 120);
+insert into store_category_order (store_id, category_id, sort) values (1, 11, 130);
+insert into store_category_order (store_id, category_id, sort) values (1, 12, 140);
+insert into store_category_order (store_id, category_id, sort) values (1, 13, 150);
+insert into store_category_order (store_id, category_id, sort) values (1, 14, 160);
+insert into store_category_order (store_id, category_id, sort) values (1, 15, 170);
+insert into store_category_order (store_id, category_id, sort) values (1, 16, 180);
+insert into store_category_order (store_id, category_id, sort) values (1, 17, 190);
+insert into store_category_order (store_id, category_id, sort) values (1, 18, 200);
+insert into store_category_order (store_id, category_id, sort) values (1, 19, 210);
+insert into store_category_order (store_id, category_id, sort) values (1, 20, 220);
+insert into store_category_order (store_id, category_id, sort) values (1, 21, 230);
+insert into store_category_order (store_id, category_id, sort) values (1, 22, 240);
+insert into store_category_order (store_id, category_id, sort) values (1, 24, 250);
+insert into store_category_order (store_id, category_id, sort) values (1, 23, 260);
+insert into store_category_order (store_id, category_id, sort) values (1, 25, 270);
+insert into store_category_order (store_id, category_id, sort) values (1, 26, 280);
+insert into store_category_order (store_id, category_id, sort) values (1, 27, 290);

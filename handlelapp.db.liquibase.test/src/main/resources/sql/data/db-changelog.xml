@@ -17,5 +17,6 @@
     <include file="sql/data/accounts.sql"/>
     <include file="sql/data/categories.sql"/>
     <include file="sql/data/articles.sql"/>
+    <include file="sql/data/store_category_order.sql"/>
 
 </databaseChangeLog>
