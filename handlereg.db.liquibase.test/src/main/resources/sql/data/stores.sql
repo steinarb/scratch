@@ -135,3 +135,4 @@ insert into stores (store_name, gruppe, rekkefolge, deaktivert) values ('Ultra S
 insert into stores (store_name, gruppe, rekkefolge, deaktivert) values ('Meny Skedsmokorset', 2, 1210, false);
 insert into stores (store_name, gruppe, rekkefolge, deaktivert) values ('Coop Extra Gruben', 2, 1220, false);
 insert into stores (store_name, gruppe, rekkefolge, deaktivert) values ('Annet', 2, 1230, true);
+insert into stores (store_name, gruppe, rekkefolge, deaktivert) values ('Extra Vestli', 1, 20, true);
