@@ -416,7 +416,7 @@ public class HandleregServiceProvider implements HandleregService {
                             .favouriteid(results.getInt(3))
                             .accountid(results.getInt(4))
                             .store(butikk)
-                            .rekkefolge(results.getInt(5))
+                            .rekkefolge(results.getInt(6))
                             .build();
                         favoritter.add(favoritt);
                     }
