@@ -18,5 +18,6 @@
     <include file="sql/data/categories.sql"/>
     <include file="sql/data/articles.sql"/>
     <include file="sql/data/store_category_order.sql"/>
+    <include file="sql/data/shoppingcarts.sql"/>
 
 </databaseChangeLog>

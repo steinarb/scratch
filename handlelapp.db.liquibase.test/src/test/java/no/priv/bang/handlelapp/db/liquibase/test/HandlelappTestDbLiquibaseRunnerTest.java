@@ -48,6 +48,7 @@ class HandlelappTestDbLiquibaseRunnerTest {
         assertCategories(datasource);
         assertArticles(datasource);
         assertCategoryOrder(datasource);
+        assertShoppingCarts(datasource);
     }
 
     private void assertAccounts(DataSource datasource) throws Exception {
@@ -118,6 +119,24 @@ class HandlelappTestDbLiquibaseRunnerTest {
         assertEquals(storeid, results.getInt(1));
         assertEquals(categoryid, results.getInt(2));
         assertEquals(sort, results.getInt(3));
+    }
+
+    private void assertShoppingCarts(DataSource datasource) throws Exception {
+        try (Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from shoppingcarts")) {
+                try (ResultSet results = statement.executeQuery()) {
+                    assertShoppingCart(results, 1, 134);
+                }
+            }
+        }
+    }
+
+    private void assertShoppingCart(ResultSet results, int accountid, int storeid) throws Exception {
+        assertTrue(results.next(), "Expected a row in table shoppingcarts but found none");
+        assertEquals(accountid, results.getInt(2));
+        assertEquals(storeid, results.getInt(3));
+        assertNotNull(results.getTimestamp(4), "Expected start time to exist");
+        assertNull(results.getTimestamp(5), "Expected checkout time not to exist");
     }
 
 }
