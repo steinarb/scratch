@@ -107,6 +107,7 @@ class HandlelappTestDbLiquibaseRunnerTest {
             try(PreparedStatement statement = connection.prepareStatement("select * from store_category_order")) {
                 try (ResultSet results = statement.executeQuery()) {
                     assertCategorySortItem(results, 1, 1, 10);
+                    assertCategorySortItem(results, 1, 2, 20);
                 }
             }
         }
