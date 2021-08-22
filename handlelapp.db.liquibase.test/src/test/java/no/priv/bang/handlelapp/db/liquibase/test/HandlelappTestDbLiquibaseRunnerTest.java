@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -48,12 +47,13 @@ class HandlelappTestDbLiquibaseRunnerTest {
         assertCategories(datasource);
         assertArticles(datasource);
         assertCategoryOrder(datasource);
-        assertShoppingCarts(datasource);
+        assertShoppingcarts(datasource);
+        assertShoppinglist(datasource);
     }
 
     private void assertAccounts(DataSource datasource) throws Exception {
         try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from accounts")) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from handlelapp_accounts")) {
                 try (ResultSet results = statement.executeQuery()) {
                     assertAccount(results, "jod");
                 }
@@ -121,22 +121,45 @@ class HandlelappTestDbLiquibaseRunnerTest {
         assertEquals(sort, results.getInt(3));
     }
 
-    private void assertShoppingCarts(DataSource datasource) throws Exception {
+    private void assertShoppingcarts(DataSource datasource) throws Exception {
         try (Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement("select * from shoppingcarts")) {
                 try (ResultSet results = statement.executeQuery()) {
-                    assertShoppingCart(results, 1, 134);
+                    assertShoppingcart(results, 1, 134);
                 }
             }
         }
     }
 
-    private void assertShoppingCart(ResultSet results, int accountid, int storeid) throws Exception {
+    private void assertShoppingcart(ResultSet results, int accountid, int storeid) throws Exception {
         assertTrue(results.next(), "Expected a row in table shoppingcarts but found none");
         assertEquals(accountid, results.getInt(2));
         assertEquals(storeid, results.getInt(3));
         assertNotNull(results.getTimestamp(4), "Expected start time to exist");
         assertNull(results.getTimestamp(5), "Expected checkout time not to exist");
+    }
+
+    private void assertShoppinglist(DataSource datasource) throws Exception {
+        try (Connection connection = datasource.getConnection()) {
+            try(PreparedStatement statement = connection.prepareStatement("select * from shoppinglist")) {
+                try (ResultSet results = statement.executeQuery()) {
+                    assertShoppinglistItem(results, 1, 1, 1);
+                    assertShoppinglistItem(results, 5, 1, null);
+                }
+            }
+        }
+    }
+
+    private void assertShoppinglistItem(ResultSet results, int articleid, int amount, Integer shoppinglistid) throws Exception {
+        assertTrue(results.next(), "Expected a row in table shoppinglist but found none");
+        assertEquals(articleid, results.getInt(2));
+        assertEquals(amount, results.getInt(3));
+        int actualShoppinglistid = results.getInt(4);
+        if (shoppinglistid == null) {
+            assertTrue(results.wasNull(), "Expected shoppinglistid to be null");
+        } else {
+            assertEquals(shoppinglistid, actualShoppinglistid);
+        }
     }
 
 }

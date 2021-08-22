@@ -66,7 +66,7 @@ class HandlelappLiquibaseTest {
     }
 
     private void assertAccounts(Connection connection) throws Exception {
-        String sql = "select count(*) from accounts";
+        String sql = "select count(*) from handlelapp_accounts";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             try(ResultSet results = statement.executeQuery()) {
                 if (results.next()) {
@@ -78,7 +78,7 @@ class HandlelappLiquibaseTest {
     }
 
     private int addAccount(Connection connection, String username) throws Exception {
-        String sql = "insert into accounts (username) values (?)";
+        String sql = "insert into handlelapp_accounts (username) values (?)";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
             statement.executeUpdate();
@@ -88,7 +88,7 @@ class HandlelappLiquibaseTest {
     }
 
     private int findAccountId(Connection connection, String username) throws Exception {
-        String sql = "select account_id from accounts where username=?";
+        String sql = "select account_id from handlelapp_accounts where username=?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
             try(ResultSet results = statement.executeQuery()) {

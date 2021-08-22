@@ -14,10 +14,11 @@
     <!-- See the License for the specific language governing permissions and limitations -->
     <!-- under the License.                                                              -->
 
-    <include file="sql/data/accounts.sql"/>
+    <include file="sql/data/handlelapp_accounts.sql"/>
     <include file="sql/data/categories.sql"/>
     <include file="sql/data/articles.sql"/>
     <include file="sql/data/store_category_order.sql"/>
     <include file="sql/data/shoppingcarts.sql"/>
+    <include file="sql/data/shoppinglist.sql"/>
 
 </databaseChangeLog>
