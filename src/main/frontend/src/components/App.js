@@ -5,6 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import { Provider } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
+import axios from 'axios';
 import createRootReducer from '../reducers';
 import rootSaga from '../sagas/';
 import Home from './Home';
@@ -12,8 +13,11 @@ import About from './About';
 import Counter from './Counter';
 
 
+const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('bundle.js'))[0].replace('/bundle.js', '');
+const basename = new URL(baseUrl).pathname;
+axios.defaults.baseURL = baseUrl;
 const sagaMiddleware = createSagaMiddleware();
-const history = createBrowserHistory();
+const history = createBrowserHistory({ basename });
 const store = configureStore({
     reducer: createRootReducer(history),
     middleware: [
