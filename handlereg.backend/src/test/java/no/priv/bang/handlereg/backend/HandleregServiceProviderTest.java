@@ -29,7 +29,6 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeAll;
