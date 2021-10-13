@@ -16,7 +16,6 @@
 package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.io.InputStream;
