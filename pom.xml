@@ -46,7 +46,7 @@
     </modules>
 
     <properties>
-        <authservice.version>1.13.10</authservice.version>
+        <authservice.version>1.13.11</authservice.version>
         <open-iconic.version>1.1.1</open-iconic.version>
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
