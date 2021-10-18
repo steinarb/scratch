@@ -13,7 +13,7 @@
         <liquibase.feature.version>${liquibase.version}</liquibase.feature.version>
         <karaf-feature-name>liquibase-sample-hook</karaf-feature-name>
         <karaf.version>4.3.3</karaf.version>
-        <maven.bundle.plugin.version>5.1.1</maven.bundle.plugin.version>
+        <maven.bundle.plugin.version>5.1.2</maven.bundle.plugin.version>
         <junit.jupiter.version>5.4.2</junit.jupiter.version>
         <junit.platform.version>1.4.2</junit.platform.version>
         <mockrunner.version>2.0.1</mockrunner.version>
