@@ -15,7 +15,7 @@ What the project does is to create a derby database with a liquibase schema.  Th
       feature:install liquibase-sample
     #+end_example
  3. If the bundle loads without problem the feature probably works
- 4. Check the data/logs/karaf.log file for liquibase output (because that means that the log redirecto of
+ 4. Check the data/logs/karaf.log file for liquibase output (because that means that the log redirect of liquibase has worked)
 
 ** License
 The license of this karaf feature, is Apache Public License v 2.0
