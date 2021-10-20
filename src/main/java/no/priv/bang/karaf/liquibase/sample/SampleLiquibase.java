@@ -27,8 +27,8 @@ public class SampleLiquibase implements PreHook {
     public void prepare(DataSource datasource) throws SQLException {
         try(Connection connection = datasource.getConnection()) {
             createSchema(connection);
-        } catch (LiquibaseException e) {
-            throw new SQLException("Failed to create liquibase schema", e);
+        } catch (Exception e) {
+            throw new SQLException("Failed to create liquibase schema for liquibase-sample", e);
         }
     }
 
