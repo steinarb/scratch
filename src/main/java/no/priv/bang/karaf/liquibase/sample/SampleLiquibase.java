@@ -18,19 +18,19 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 @Component(immediate = true, property = "name=liquibasesampledb")
 public class SampleLiquibase implements PreHook {
 
-	@Activate
-	public void activate() {
-		// Called when component is activated
-	}
+    @Activate
+    public void activate() {
+        // Called when component is activated
+    }
 
-	@Override
-	public void prepare(DataSource datasource) throws SQLException {
-		try(Connection connection = datasource.getConnection()) {
-			createSchema(connection);
-		} catch (LiquibaseException e) {
-			throw new SQLException("Failed to create liquibase schema", e);
-		}
-	}
+    @Override
+    public void prepare(DataSource datasource) throws SQLException {
+        try(Connection connection = datasource.getConnection()) {
+            createSchema(connection);
+        } catch (LiquibaseException e) {
+            throw new SQLException("Failed to create liquibase schema", e);
+        }
+    }
 
     public void createSchema(Connection connection) throws LiquibaseException {
         applyLiquibaseChangeLog(connection, "liquibasesample/changelog01.xml");

@@ -18,7 +18,7 @@ class SampleLiquibaseTest {
 
     @Test
     void testCreateSchema() throws Exception {
-    	DataSource datasource = createDataSource("liquibasesample");
+        DataSource datasource = createDataSource("liquibasesample");
         SampleLiquibase liquibase = new SampleLiquibase();
         liquibase.activate();
 
