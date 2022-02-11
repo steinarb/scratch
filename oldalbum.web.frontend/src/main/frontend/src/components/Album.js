@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { push } from 'connected-react-router';
 import { Helmet } from "react-helmet";
+import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
@@ -15,8 +17,12 @@ import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
 import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
 function Album(props) {
-    const { item, parent, children, previous, next } = props;
+    const { item, parent, children, previous, next, navigateTo } = props;
     const title = pictureTitle(item);
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: () => navigateTo(next),
+        onSwipedRight: () => navigateTo(previous),
+    });
 
     return (
         <div>
@@ -57,7 +63,7 @@ function Album(props) {
                 <DeleteButton className="mx-1 my-1" item={item} />
             </div>
             {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
-            <div className="row">
+            <div className="row" {...swipeHandlers}>
                 { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }
             </div>
         </div>
@@ -87,4 +93,10 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(mapStateToProps)(Album);
+function mapDispatchToProps(dispatch) {
+    return {
+        navigateTo: (item) => item && dispatch(push(item.path)),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Album);
