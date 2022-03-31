@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
@@ -7,7 +7,8 @@ import {
 } from '../actiontypes';
 
 function FavoritterSlett(props) {
-    const { favoritter, onSlettFavoritt } = props;
+    const { favoritter } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -17,7 +18,7 @@ function FavoritterSlett(props) {
                 <div className="col-sm-2"></div>
             </nav>
             <Container>
-                { favoritter.map(f => <button key={'favoritt_' + f.favouriteid} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onSlettFavoritt(f)}>{f.store.butikknavn}</button>) }
+                { favoritter.map(f => <button key={'favoritt_' + f.favouriteid} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => dispatch(SLETT_FAVORITT(f))}>{f.store.butikknavn}</button>) }
             </Container>
         </div>
     );
@@ -30,10 +31,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onSlettFavoritt: favoritt => dispatch(SLETT_FAVORITT(favoritt))
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FavoritterSlett);
+export default connect(mapStateToProps)(FavoritterSlett);

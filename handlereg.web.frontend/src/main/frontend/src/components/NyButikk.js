@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
@@ -8,7 +8,8 @@ import {
 } from '../actiontypes';
 
 function NyButikk(props) {
-    const { butikk, endreNavn, onRegistrerNyButikk } = props;
+    const { butikk } = props;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -22,13 +23,13 @@ function NyButikk(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">Ny butikk</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="text" value={butikk.butikknavn} onChange={e => endreNavn(e.target.value)} />
+                            <input id="amount" className="form-control" type="text" value={butikk.butikknavn} onChange={e => dispatch(BUTIKKNAVN_ENDRE(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onRegistrerNyButikk(butikk)}>Legg til butikk</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(NYBUTIKK_REGISTRER(butikk))}>Legg til butikk</button>
                         </div>
                     </div>
                 </form>
@@ -44,11 +45,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        endreNavn: (butikknavn) => dispatch(BUTIKKNAVN_ENDRE(butikknavn)),
-        onRegistrerNyButikk: (nybutikk) => dispatch(NYBUTIKK_REGISTRER(nybutikk)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NyButikk);
+export default connect(mapStateToProps)(NyButikk);

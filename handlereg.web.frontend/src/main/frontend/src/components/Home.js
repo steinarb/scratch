@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -22,12 +22,9 @@ function Home(props) {
         handlinger,
         butikker,
         nyhandling,
-        endreBelop,
-        endreButikk,
-        endreDato,
-        onRegistrerHandling
     } = props;
     const belop = nyhandling.belop.toString();
+    const dispatch = useDispatch();
     if (!loginresultat.authorized) {
         return <Redirect to="/handlereg/unauthorized" />;
     }
@@ -66,13 +63,13 @@ function Home(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">Nytt beløp</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="number" pattern="\d+" value={belop} onChange={e => endreBelop(e.target.value)} />
+                            <input id="amount" className="form-control" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="jobtype" className="col-form-label col-5">Velg butikk</label>
                         <div className="col-7">
-                            <select value={nyhandling.storeId} onChange={e => endreButikk(e.target.value)}>
+                            <select value={nyhandling.storeId} onChange={e => dispatch(BUTIKK_ENDRE(e.target.value))}>
                                 {butikker.map(butikk => <option key={butikk.storeId} value={butikk.storeId}>{butikk.butikknavn}</option>)}
                             </select>
                         </div>
@@ -83,7 +80,7 @@ function Home(props) {
                             <DatePicker
                                 selected={nyhandling.handletidspunkt.toDate()}
                                 dateFormat="yyyy-MM-dd"
-                                onChange={(selectedValue) => endreDato(selectedValue)}
+                                onChange={selectedValue => dispatch(DATO_ENDRE(selectedValue))}
                                 onFocus={e => e.target.blur()}
                             />
                         </div>
@@ -91,7 +88,7 @@ function Home(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" disabled={nyhandling.belop <= 0} onClick={() => onRegistrerHandling(nyhandling, oversikt.brukernavn)}>Registrer handling</button>
+                            <button className="btn btn-primary" disabled={nyhandling.belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ ...nyhandling, username: oversikt.brukernavn }))}>Registrer handling</button>
                         </div>
                     </div>
                 </form>
@@ -118,13 +115,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        endreBelop: (belop) => dispatch(BELOP_ENDRE(belop)),
-        endreButikk: (butikk) => dispatch(BUTIKK_ENDRE(butikk)),
-        endreDato: (dato) => dispatch(DATO_ENDRE(dato)),
-        onRegistrerHandling: (handling, username) => dispatch(NYHANDLING_REGISTRER({ ...handling, username })),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps)(Home);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
@@ -9,7 +9,8 @@ import {
 } from '../actiontypes';
 
 function EndreButikk(props) {
-    const { valgtButikk, butikk, butikker, velgButikk, endreNavn, onLagreEndretButikk } = props;
+    const { valgtButikk, butikk, butikker } = props;
+    const dispatch = useDispatch();
     const { butikknavn } = butikk;
     const butikkerUnntattUndefined = butikker.filter(b => b.storeId > -1);
 
@@ -22,19 +23,19 @@ function EndreButikk(props) {
             </nav>
             <Container>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <select size="10" value={valgtButikk} onChange={e => velgButikk(e.target.value, butikkerUnntattUndefined)}>
+                    <select size="10" value={valgtButikk} onChange={e => dispatch(VELG_BUTIKK({ indeks: e.target.value, butikker: butikkerUnntattUndefined}))}>
                         { butikkerUnntattUndefined.map((b, indeks) => <option key={'butikk_' + b.storeId.toString()} value={indeks}>{b.butikknavn}</option>) }
                     </select>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">Ny butikk</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="text" value={butikknavn} onChange={e => endreNavn(e.target.value)} />
+                            <input id="amount" className="form-control" type="text" value={butikknavn} onChange={e => dispatch(BUTIKKNAVN_ENDRE(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => onLagreEndretButikk(butikk)}>Lagre endret butikk</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(BUTIKK_LAGRE(butikk))}>Lagre endret butikk</button>
                         </div>
                     </div>
                 </form>
@@ -52,12 +53,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        velgButikk: (indeks, butikker) => dispatch(VELG_BUTIKK({ indeks, butikker })),
-        endreNavn: (butikknavn) => dispatch(BUTIKKNAVN_ENDRE(butikknavn)),
-        onLagreEndretButikk: (nybutikk) => dispatch(BUTIKK_LAGRE(nybutikk)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(EndreButikk);
+export default connect(mapStateToProps)(EndreButikk);

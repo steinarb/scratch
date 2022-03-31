@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import {
     USERNAME_ENDRE,
@@ -9,7 +9,8 @@ import {
 import LoginMessage from './LoginMessage';
 
 function Login(props) {
-    const { username, password, loginresultat, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
+    const { username, password, loginresultat } = props;
+    const dispatch = useDispatch();
     if (loginresultat.suksess) {
         const originalRequestUrl = loginresultat.originalRequestUrl || '/handlereg/';
         return (<Redirect to={originalRequestUrl} />);
@@ -29,18 +30,18 @@ function Login(props) {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Username:</label>
                         <div className="col-8">
-                            <input id="username" className="form-control" type="text" name="username" value={username} onChange={e => onUsernameEndre(e.target.value)} />
+                            <input id="username" className="form-control" type="text" name="username" value={username} onChange={e => dispatch(USERNAME_ENDRE(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Password:</label>
                         <div className="col-8">
-                            <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => onPasswordEndre(e.target.value)}/>
+                            <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => dispatch(PASSWORD_ENDRE(e.target.value))}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="offset-xs-3 col-xs-9">
-                            <input className="btn btn-primary" type="submit" value="Login" onClick={() => onSendLogin(username, password)}/>
+                            <input className="btn btn-primary" type="submit" value="Login" onClick={() => dispatch(LOGIN_HENT({ username, password }))}/>
                         </div>
                     </div>
                 </form>
@@ -58,12 +59,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onUsernameEndre: (username) => dispatch(USERNAME_ENDRE(username)),
-        onPasswordEndre: (password) => dispatch(PASSWORD_ENDRE(password)),
-        onSendLogin: (username, password) => dispatch(LOGIN_HENT({ username, password })),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps)(Login);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
@@ -8,7 +8,8 @@ import {
 } from '../actiontypes';
 
 function FavoritterLeggTil(props) {
-    const { butikker, favoritter, favorittbutikk, velgButikk, onLeggTilFavoritt } = props;
+    const { butikker, favoritter, favorittbutikk } = props;
+    const dispatch = useDispatch();
     const ledigeButikker = butikker.filter(butikk => !favoritter.find(fav => fav.store.storeId === butikk.storeId));
     const ingenButikkValgt = favorittbutikk === -1;
 
@@ -24,11 +25,11 @@ function FavoritterLeggTil(props) {
                     { favoritter.map(f => <div key={'favoritt_' + f.favouriteid} className="btn btn-primary w-75 m-1 left-align-cell">{f.store.butikknavn}</div>) }
                 </div>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <select value={favorittbutikk} onChange={e => velgButikk(e.target.value)}>
+                    <select value={favorittbutikk} onChange={e => dispatch(VELG_FAVORITTBUTIKK(e.target.value))}>
                         { ledigeButikker.map(b => <option key={'butikk_' + b.storeId.toString()} value={b.storeId}>{b.butikknavn}</option>) }
                     </select>
                     <div>
-                        <button className="btn btn-primary" disabled={ingenButikkValgt} onClick={onLeggTilFavoritt}>Legg til favoritt</button>
+                        <button className="btn btn-primary" disabled={ingenButikkValgt} onClick={() => dispatch(LEGG_TIL_FAVORITT())}>Legg til favoritt</button>
                     </div>
                 </form>
             </Container>
@@ -47,11 +48,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        velgButikk: storeId => dispatch(VELG_FAVORITTBUTIKK(storeId)),
-        onLeggTilFavoritt: () => dispatch(LEGG_TIL_FAVORITT())
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FavoritterLeggTil);
+export default connect(mapStateToProps)(FavoritterLeggTil);

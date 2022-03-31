@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import Kvittering from './Kvittering';
@@ -13,10 +13,9 @@ function Hurtigregistrering(props) {
         username,
         favoritter,
         nyhandling,
-        endreBelop,
-        onRegistrerHandling,
     } = props;
     const belop = nyhandling.belop.toString();
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -30,11 +29,11 @@ function Hurtigregistrering(props) {
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">Nytt beløp</label>
                         <div className="col-7">
-                            <input id="amount" className="form-control" type="number" pattern="\d+" value={belop} onChange={e => endreBelop(e.target.value)} />
+                            <input id="amount" className="form-control" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
                         </div>
                     </div>
                     <Kvittering/>
-                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => onRegistrerHandling(nyhandling, f, username)}>{f.store.butikknavn}</button>) }
+                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => dispatch(NYHANDLING_REGISTRER({ ...nyhandling, storeId: f.store.storeId, username }))}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>
         </div>
@@ -50,12 +49,4 @@ function mapStateToProps(state) {
     };
 }
 
-
-function mapDispatchToProps(dispatch) {
-    return {
-        endreBelop: (belop) => dispatch(BELOP_ENDRE(belop)),
-        onRegistrerHandling: (handling, favoritt, username) => dispatch(NYHANDLING_REGISTRER({ ...handling, storeId: favoritt.store.storeId, username })),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Hurtigregistrering);
+export default connect(mapStateToProps)(Hurtigregistrering);
