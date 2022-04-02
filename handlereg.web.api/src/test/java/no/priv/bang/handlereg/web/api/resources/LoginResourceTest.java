@@ -17,6 +17,8 @@ package no.priv.bang.handlereg.web.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Base64;
+
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.web.subject.WebSubject;
 
@@ -27,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import no.priv.bang.handlereg.services.Credentials;
 import no.priv.bang.handlereg.services.Loginresultat;
 import no.priv.bang.handlereg.web.api.ShiroTestBase;
-import no.priv.bang.handlereg.web.api.resources.LoginResource;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class LoginResourceTest extends ShiroTestBase {
@@ -36,7 +37,7 @@ class LoginResourceTest extends ShiroTestBase {
     void testLogin() {
         LoginResource resource = new LoginResource();
         String username = "jd";
-        String password = "johnnyBoi";
+        String password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
@@ -49,7 +50,7 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResource resource = new LoginResource();
         resource.setLogservice(logservice);
         String username = "jd";
-        String password = "feil";
+        String password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
@@ -63,7 +64,7 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResource resource = new LoginResource();
         resource.setLogservice(logservice);
         String username = "jdd";
-        String password = "feil";
+        String password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);

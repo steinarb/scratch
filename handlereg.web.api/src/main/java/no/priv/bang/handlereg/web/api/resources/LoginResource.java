@@ -42,6 +42,8 @@ import no.priv.bang.handlereg.services.Credentials;
 import no.priv.bang.handlereg.services.Loginresultat;
 import static no.priv.bang.handlereg.services.HandleregConstants.*;
 
+import java.util.Base64;
+
 @Path("")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -61,8 +63,9 @@ public class LoginResource {
     @Path("/login")
     public Loginresultat login(Credentials credentials) {
         Subject subject = SecurityUtils.getSubject();
+        var decodedPassword = new String(Base64.getDecoder().decode(credentials.getPassword()));
 
-        UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
+        UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), decodedPassword, true);
         try {
             subject.login(token);
             SavedRequest savedRequest = WebUtils.getSavedRequest(request);

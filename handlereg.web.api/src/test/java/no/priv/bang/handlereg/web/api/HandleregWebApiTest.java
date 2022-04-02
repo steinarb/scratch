@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.time.Month;
 import java.time.Year;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -69,7 +70,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testLogin() throws Exception {
         String username = "jd";
-        String password = "johnnyBoi";
+        String password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         Credentials credentials = Credentials.with().username(username).password(password).build();
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
@@ -88,7 +89,7 @@ class HandleregWebApiTest extends ShiroTestBase {
     @Test
     void testLoginWrongPassword() throws Exception {
         String username = "jd";
-        String password = "johnniBoi";
+        String password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         Credentials credentials = Credentials.with().username(username).password(password).build();
         MockLogService logservice = new MockLogService();
         HandleregService handlereg = mock(HandleregService.class);
