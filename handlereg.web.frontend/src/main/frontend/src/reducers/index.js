@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import username from './usernameReducer';
-import password from './passwordReducer';
 import loginresultat from './loginresultatReducer';
 import oversikt from './oversiktReducer';
 import butikker from './butikkerReducer';
@@ -21,7 +20,6 @@ import errors from './errorsReducer';
 export default (history) => combineReducers({
     router: connectRouter(history),
     username,
-    password,
     loginresultat,
     oversikt,
     butikker,

@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import {
-    USERNAME_ENDRE,
-    PASSWORD_ENDRE,
     LOGIN_HENT,
 } from '../actiontypes';
 import LoginMessage from './LoginMessage';
 
 function Login(props) {
-    const { username, password, loginresultat } = props;
+    const { loginresultat } = props;
+    const [ username, setUsername ] = useState('');
+    const [ password, setPassword ] = useState('');
     const dispatch = useDispatch();
+
     if (loginresultat.suksess) {
         const originalRequestUrl = loginresultat.originalRequestUrl || '/handlereg/';
         return (<Redirect to={originalRequestUrl} />);
@@ -30,13 +31,13 @@ function Login(props) {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Username:</label>
                         <div className="col-8">
-                            <input id="username" className="form-control" type="text" name="username" value={username} onChange={e => dispatch(USERNAME_ENDRE(e.target.value))} />
+                            <input id="username" className="form-control" type="text" name="username" value={username} onChange={e => setUsername(e.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Password:</label>
                         <div className="col-8">
-                            <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => dispatch(PASSWORD_ENDRE(e.target.value))}/>
+                            <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => setPassword(e.target.value)}/>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -51,10 +52,8 @@ function Login(props) {
 }
 
 function mapStateToProps(state) {
-    const { username, password, loginresultat } = state;
+    const { loginresultat } = state;
     return {
-        username,
-        password,
         loginresultat,
     };
 }

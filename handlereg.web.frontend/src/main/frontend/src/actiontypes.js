@@ -1,8 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const USERNAME_ENDRE = createAction('USERNAME_ENDRE');
-export const PASSWORD_ENDRE = createAction('PASSWORD_ENDRE');
-
 export const LOGIN_HENT = createAction('LOGIN_HENT');
 export const LOGIN_MOTTA = createAction('LOGIN_MOTTA');
 export const LOGIN_ERROR = createAction('LOGIN_ERROR');
