@@ -18,12 +18,12 @@ function leggPaaTomButikkIStarten(action) {
     const butikker = action.payload;
     butikker.unshift({ ...tomButikk });
     return butikker;
- }
+}
 
 const butikkerReducer = createReducer(defaultState, {
-        [BUTIKKER_MOTTA]: (state, action) => leggPaaTomButikkIStarten(action),
-        [NYBUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
-        [BUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
+    [BUTIKKER_MOTTA]: (state, action) => leggPaaTomButikkIStarten(action),
+    [NYBUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
+    [BUTIKK_LAGRET]: (state, action) => leggPaaTomButikkIStarten(action),
 });
 
 
