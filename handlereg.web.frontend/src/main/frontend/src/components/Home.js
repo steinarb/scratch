@@ -20,9 +20,11 @@ function Home(props) {
         oversikt,
         handlinger,
         butikker,
-        nyhandling,
+        storeId,
+        handletidspunkt,
+        belop,
     } = props;
-    const belop = nyhandling.belop.toString();
+    const username = oversikt.brukernavn;
     const dispatch = useDispatch();
     if (!loginresultat.authorized) {
         return <Redirect to="/handlereg/unauthorized" />;
@@ -68,7 +70,8 @@ function Home(props) {
                     <div className="form-group row">
                         <label htmlFor="jobtype" className="col-form-label col-5">Velg butikk</label>
                         <div className="col-7">
-                            <select value={nyhandling.storeId} onChange={e => dispatch(BUTIKK_ENDRE(e.target.value))}>
+                            <select value={storeId} onChange={e => dispatch(BUTIKK_ENDRE(e.target.value))}>
+                                <option key="-1" value="-1" />
                                 {butikker.map(butikk => <option key={butikk.storeId} value={butikk.storeId}>{butikk.butikknavn}</option>)}
                             </select>
                         </div>
@@ -77,7 +80,7 @@ function Home(props) {
                         <label htmlFor="date" className="col-form-label col-5">Dato</label>
                         <div className="col-7">
                             <DatePicker
-                                selected={new Date(nyhandling.handletidspunkt)}
+                                selected={new Date(handletidspunkt)}
                                 dateFormat="yyyy-MM-dd"
                                 onChange={selectedValue => dispatch(DATO_ENDRE(selectedValue))}
                                 onFocus={e => e.target.blur()}
@@ -87,7 +90,7 @@ function Home(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" disabled={nyhandling.belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ ...nyhandling, username: oversikt.brukernavn }))}>Registrer handling</button>
+                            <button className="btn btn-primary" disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId, belop, handletidspunkt, username }))}>Registrer handling</button>
                         </div>
                     </div>
                 </form>
@@ -104,13 +107,23 @@ function Home(props) {
 }
 
 const mapStateToProps = state => {
-    const { loginresultat, oversikt, handlinger, butikker, nyhandling } = state;
+    const {
+        loginresultat,
+        oversikt,
+        handlinger,
+        butikker,
+        storeId,
+        handletidspunkt,
+        belop,
+    } = state;
     return {
         loginresultat,
         oversikt,
         handlinger,
         butikker,
-        nyhandling,
+        storeId,
+        handletidspunkt,
+        belop: belop.toString(),
     };
 };
 

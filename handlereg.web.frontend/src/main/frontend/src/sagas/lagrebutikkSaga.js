@@ -1,4 +1,4 @@
-import { takeLatest, call, put } from 'redux-saga/effects';
+import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     BUTIKK_LAGRE,
@@ -12,8 +12,9 @@ function lagreButikk(butikk) {
 
 function* mottaLagreButikk(action) {
     try {
-        const butikk = action.payload;
-        const response = yield call(lagreButikk, butikk);
+        const butikknavn = action.payload;
+        const butikk = yield select(state => state.butikk);
+        const response = yield call(lagreButikk, { ...butikk, butikknavn });
         const oversikt = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(BUTIKK_LAGRET(oversikt));
     } catch (error) {

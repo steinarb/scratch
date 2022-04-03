@@ -17,6 +17,7 @@ export const OVERSIKT_MOTTA = createAction('OVERSIKT_MOTTA');
 export const OVERSIKT_ERROR = createAction('OVERSIKT_ERROR');
 
 export const VELG_BUTIKK = createAction('VELG_BUTIKK');
+export const VALGT_BUTIKK = createAction('VALGT_BUTIKK');
 
 export const BUTIKKNAVN_ENDRE = createAction('BUTIKKNAVN_ENDRE');
 

@@ -3,16 +3,14 @@ import { connect, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
-    BUTIKKNAVN_ENDRE,
     VELG_BUTIKK,
+    BUTIKKNAVN_ENDRE,
     BUTIKK_LAGRE,
 } from '../actiontypes';
 
 function EndreButikk(props) {
-    const { valgtButikk, butikk, butikker } = props;
+    const { valgtButikk, butikknavn, butikker } = props;
     const dispatch = useDispatch();
-    const { butikknavn } = butikk;
-    const butikkerUnntattUndefined = butikker.filter(b => b.storeId > -1);
 
     return (
         <div>
@@ -23,8 +21,8 @@ function EndreButikk(props) {
             </nav>
             <Container>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <select size="10" value={valgtButikk} onChange={e => dispatch(VELG_BUTIKK({ indeks: e.target.value, butikker: butikkerUnntattUndefined}))}>
-                        { butikkerUnntattUndefined.map((b, indeks) => <option key={'butikk_' + b.storeId.toString()} value={indeks}>{b.butikknavn}</option>) }
+                    <select size="10" value={valgtButikk} onChange={e => dispatch(VELG_BUTIKK(e.target.value))}>
+                        { butikker.map((b, indeks) => <option key={'butikk_' + b.storeId.toString()} value={indeks}>{b.butikknavn}</option>) }
                     </select>
                     <div className="form-group row">
                         <label htmlFor="amount" className="col-form-label col-5">Ny butikk</label>
@@ -35,7 +33,7 @@ function EndreButikk(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => dispatch(BUTIKK_LAGRE(butikk))}>Lagre endret butikk</button>
+                            <button className="btn btn-primary" onClick={() => dispatch(BUTIKK_LAGRE(butikknavn))}>Lagre endret butikk</button>
                         </div>
                     </div>
                 </form>
@@ -45,10 +43,10 @@ function EndreButikk(props) {
 }
 
 const mapStateToProps = state => {
-    const { valgtButikk, butikk, butikker } = state;
+    const { valgtButikk, butikknavn, butikker } = state;
     return {
         valgtButikk,
-        butikk,
+        butikknavn,
         butikker,
     };
 };

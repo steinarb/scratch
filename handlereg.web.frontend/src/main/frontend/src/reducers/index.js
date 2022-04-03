@@ -5,8 +5,11 @@ import loginresultat from './loginresultatReducer';
 import oversikt from './oversiktReducer';
 import butikker from './butikkerReducer';
 import butikk from './butikkReducer';
+import butikknavn from './butikknavnReducer';
 import handlinger from './handlingerReducer';
-import nyhandling from './nyhandlingReducer';
+import storeId from './storeIdReducer';
+import handletidspunkt from './handletidspunktReducer';
+import belop from './belopReducer';
 import viskvittering from './viskvitteringReducer';
 import sumbutikk from './sumbutikkReducer';
 import handlingerbutikk from './handlingerbutikkReducer';
@@ -24,8 +27,11 @@ export default (history) => combineReducers({
     oversikt,
     butikker,
     butikk,
+    butikknavn,
     handlinger,
-    nyhandling,
+    storeId,
+    handletidspunkt,
+    belop,
     viskvittering,
     sumbutikk,
     handlingerbutikk,

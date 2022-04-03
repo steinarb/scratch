@@ -12,8 +12,8 @@ function registrerNybutikk(butikk) {
 
 function* mottaNybutikk(action) {
     try {
-        const butikk = action.payload;
-        const response = yield call(registrerNybutikk, butikk);
+        const butikknavn = action.payload;
+        const response = yield call(registrerNybutikk, { butikknavn, gruppe: 2 });
         const oversikt = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(NYBUTIKK_LAGRET(oversikt));
     } catch (error) {

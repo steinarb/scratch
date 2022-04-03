@@ -5,6 +5,7 @@ import {
     OVERSIKT_MOTTA,
     OVERSIKT_ERROR,
     HANDLINGER_HENT,
+    LOGINTILSTAND_MOTTA,
 } from '../actiontypes';
 
 function hentOversikt() {
@@ -23,6 +24,14 @@ function* mottaOversikt() {
     }
 }
 
+function* hentOversiktDersomInnloggetOgAutorisert(action) {
+    const { suksess, authorized } = action.payload;
+    if (suksess && authorized) {
+        yield put(OVERSIKT_HENT());
+    }
+}
+
 export default function* oversiktSaga() {
     yield takeLatest(OVERSIKT_HENT, mottaOversikt);
+    yield takeLatest(LOGINTILSTAND_MOTTA, hentOversiktDersomInnloggetOgAutorisert);
 }

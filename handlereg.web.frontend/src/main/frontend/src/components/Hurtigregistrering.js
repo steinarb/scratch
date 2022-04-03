@@ -12,9 +12,9 @@ function Hurtigregistrering(props) {
     const {
         username,
         favoritter,
-        nyhandling,
+        handletidspunkt,
+        belop,
     } = props;
-    const belop = nyhandling.belop.toString();
     const dispatch = useDispatch();
 
     return (
@@ -33,7 +33,7 @@ function Hurtigregistrering(props) {
                         </div>
                     </div>
                     <Kvittering/>
-                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => dispatch(NYHANDLING_REGISTRER({ ...nyhandling, storeId: f.store.storeId, username }))}>{f.store.butikknavn}</button>) }
+                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} className="btn btn-primary w-75 m-1 left-align-cell" onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId: f.store.storeId, belop, handletidspunkt, username }))}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>
         </div>
@@ -41,11 +41,17 @@ function Hurtigregistrering(props) {
 }
 
 function mapStateToProps(state) {
-    const { username, favoritter, nyhandling } = state;
-    return {
-        username,
+    const {
+        oversikt,
         favoritter,
-        nyhandling,
+        handletidspunkt,
+        belop,
+    } = state;
+    return {
+        username: oversikt.brukernavn,
+        favoritter,
+        handletidspunkt,
+        belop: belop.toString(),
     };
 }
 

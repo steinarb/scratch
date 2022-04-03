@@ -1,9 +1,11 @@
-import { takeLatest, call, put } from 'redux-saga/effects';
+import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     BUTIKKER_HENT,
     BUTIKKER_MOTTA,
     BUTIKKER_ERROR,
+    VELG_BUTIKK,
+    VALGT_BUTIKK,
 } from '../actiontypes';
 
 function hentButikker() {
@@ -20,6 +22,16 @@ function* mottaButikker() {
     }
 }
 
+const uvalgtButikk = { storeId: -1, butikknavn: '', gruppe: 2 };
+
+function* velgButikk(action) {
+    const indeks = action.payload;
+    const butikker = yield select(state => state.butikker);
+    const butikk = butikker[indeks] || uvalgtButikk;
+    yield put(VALGT_BUTIKK({ ...butikk }));
+}
+
 export default function* butikkerSaga() {
     yield takeLatest(BUTIKKER_HENT, mottaButikker);
+    yield takeLatest(VELG_BUTIKK, velgButikk);
 }
