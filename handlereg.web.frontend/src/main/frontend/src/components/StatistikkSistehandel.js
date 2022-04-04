@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
@@ -27,7 +26,7 @@ function StatistikkSistehandel(props) {
                             {sistehandel.map((sh) =>
                                              <tr key={'butikk' + sh.butikk.storeId}>
                                                  <td>{sh.butikk.butikknavn}</td>
-                                                 <td>{moment(sh.date).format("YYYY-MM-DD")}</td>
+                                                 <td>{new Date(sh.date).toISOString().split('T')[0]}</td>
                                              </tr>
                                             )}
                         </tbody>

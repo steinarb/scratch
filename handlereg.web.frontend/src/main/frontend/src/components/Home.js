@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
-import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
@@ -51,7 +50,7 @@ function Home(props) {
                         <tbody>
                             {handlinger.map((handling) =>
                                             <tr key={handling.transactionId}>
-                                                <td>{moment(handling.handletidspunkt).format("YYYY-MM-DD")}</td>
+                                                <td>{new Date(handling.handletidspunkt).toISOString().split('T')[0]}</td>
                                                 <td>{handling.belop}</td>
                                                 <td className="transaction-table-col transaction-table-col-hide-overflow">{handling.butikk}</td>
                                             </tr>
@@ -78,7 +77,7 @@ function Home(props) {
                         <label htmlFor="date" className="col-form-label col-5">Dato</label>
                         <div className="col-7">
                             <DatePicker
-                                selected={nyhandling.handletidspunkt.toDate()}
+                                selected={new Date(nyhandling.handletidspunkt)}
                                 dateFormat="yyyy-MM-dd"
                                 onChange={selectedValue => dispatch(DATO_ENDRE(selectedValue))}
                                 onFocus={e => e.target.blur()}

@@ -6,10 +6,9 @@ import {
     NYHANDLING_LAGRET,
     HANDLINGER_MOTTA,
 } from '../actiontypes';
-import moment from 'moment';
 
 const defaultState = {
-    handletidspunkt: moment(),
+    handletidspunkt: new Date().toISOString(),
     belop: 0.0,
     storeId: -1,
 };
@@ -24,10 +23,10 @@ const nyhandlingReducer = createReducer(defaultState, {
         return { ...state, storeId };
     },
     [DATO_ENDRE]: (state, action) => {
-        const handletidspunkt = moment(action.payload);
+        const handletidspunkt = new Date(action.payload).toISOString();
         return { ...state, handletidspunkt };
     },
-    [NYHANDLING_LAGRET]: (state) => ({ ...state, belop: 0, handletidspunkt: moment() }),
+    [NYHANDLING_LAGRET]: (state) => ({ ...state, belop: 0, handletidspunkt: (new Date()).toISOString() }),
     [HANDLINGER_MOTTA]: (state, action) => {
         const sistebutikk = [...action.payload].pop();
         const storeId = sistebutikk.storeId;
