@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ public class Loginresultat {
     private String feilmelding;
     private boolean authorized;
     private String originalRequestUrl;
+    public String brukernavn;
 
     private Loginresultat() {}
 
@@ -40,9 +41,13 @@ public class Loginresultat {
         return originalRequestUrl;
     }
 
+    public String getBrukernavn() {
+        return brukernavn;
+    }
+
     @Override
     public String toString() {
-        return "Loginresultat [suksess=" + suksess + ", feilmelding=" + feilmelding + ", authorized=" + authorized + "originalRequestUrl=" + originalRequestUrl + "]";
+        return "Loginresultat [suksess=" + suksess + ", feilmelding=" + feilmelding + ", authorized=" + authorized + ", originalRequestUrl=" + originalRequestUrl + ", brukernavn=" + brukernavn + "]";
     }
 
     public static LoginresultatBuilder with() {
@@ -54,6 +59,7 @@ public class Loginresultat {
         private String feilmelding;
         private boolean authorized;
         private String originalRequestUrl;
+        private String brukernavn;
 
         private LoginresultatBuilder() {}
 
@@ -63,6 +69,7 @@ public class Loginresultat {
             loginresultat.feilmelding = this.feilmelding;
             loginresultat.authorized = authorized;
             loginresultat.originalRequestUrl = originalRequestUrl;
+            loginresultat.brukernavn = brukernavn;
             return loginresultat;
         }
 
@@ -83,6 +90,11 @@ public class Loginresultat {
 
         public LoginresultatBuilder originalRequestUrl(String originalRequestUrl) {
             this.originalRequestUrl = originalRequestUrl;
+            return this;
+        }
+
+        public LoginresultatBuilder brukernavn(String brukernavn) {
+            this.brukernavn = brukernavn;
             return this;
         }
     }

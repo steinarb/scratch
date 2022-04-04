@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@ class LoginresultatTest {
         boolean authorized = true;
         String feilmelding = "Feil passord";
         String originalRequestUrl = "http://localhost:8181/handlereg/hurtigregistrering";
+        String brukernavn = "jad";
         Loginresultat bean = Loginresultat.with()
+            .brukernavn(brukernavn)
             .suksess(suksess)
             .feilmelding(feilmelding)
             .authorized(authorized)
@@ -38,6 +40,7 @@ class LoginresultatTest {
         assertEquals(feilmelding, bean.getFeilmelding());
         assertTrue(bean.isAuthorized());
         assertEquals(originalRequestUrl, bean.getOriginalRequestUrl());
+        assertEquals(brukernavn, bean.getBrukernavn());
     }
 
     @Test

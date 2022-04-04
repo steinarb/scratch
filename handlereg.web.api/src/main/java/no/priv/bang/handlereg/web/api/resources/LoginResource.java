@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,7 @@ public class LoginResource {
                 .feilmelding("")
                 .authorized(subject.hasRole(HANDLEREGBRUKER_ROLE))
                 .originalRequestUrl(originalRequestUrl)
+                .brukernavn((String) subject.getPrincipal())
                 .build();
         } catch(UnknownAccountException e) {
             logger.warn("Login error: unknown account", e);
@@ -120,6 +121,7 @@ public class LoginResource {
             .suksess(suksess)
             .feilmelding(melding)
             .authorized(harRoleHandleregbruker)
+            .brukernavn((String) subject.getPrincipal())
             .build();
     }
 

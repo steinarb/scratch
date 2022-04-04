@@ -13,7 +13,7 @@ function hentFavoritter(username) {
 
 function* mottaFavoritter() {
     try {
-        const username = yield select(state => state.username);
+        const username = yield select(state => state.loginresultat.brukernavn);
         const response = yield call(hentFavoritter, username);
         const favoritter = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(FAVORITTER_MOTTA(favoritter));

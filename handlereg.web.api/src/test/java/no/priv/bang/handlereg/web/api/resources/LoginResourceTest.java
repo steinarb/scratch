@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ class LoginResourceTest extends ShiroTestBase {
         Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
         assertTrue(resultat.getSuksess());
+        assertEquals(username, resultat.getBrukernavn());
     }
 
     @Test
@@ -101,6 +102,7 @@ class LoginResourceTest extends ShiroTestBase {
         assertTrue(loginresultat.getSuksess());
         assertEquals("Bruker er logget inn og har tilgang", loginresultat.getFeilmelding());
         assertTrue(loginresultat.isAuthorized());
+        assertEquals(username, loginresultat.getBrukernavn());
     }
 
     @Test

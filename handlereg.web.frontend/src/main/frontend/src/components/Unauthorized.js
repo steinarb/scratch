@@ -8,7 +8,8 @@ import { Container } from './bootstrap/Container';
 
 
 function Unauthorized(props) {
-    const { username, loginresultat } = props;
+    const { loginresultat } = props;
+    const { brukernavn } = loginresultat;
     const dispatch = useDispatch();
     if (!loginresultat.suksess) {
         return <Redirect to="/handlereg/login" />;
@@ -22,7 +23,7 @@ function Unauthorized(props) {
                 <div className="col-sm-2"></div>
             </nav>
             <Container>
-                <p>Hei {username}! Du har ikke tilgang til denne applikasjonen</p>
+                <p>Hei {brukernavn}! Du har ikke tilgang til denne applikasjonen</p>
                 <p>Klikk &quot;Gå hjem&quot; for å navigere ut av applikasjonen, eller logg ut for å logge inn med en bruker som har tilgang</p>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <div className="form-group row">
@@ -38,9 +39,8 @@ function Unauthorized(props) {
 }
 
 const mapStateToProps = state => {
-    const { username, loginresultat } = state;
+    const { loginresultat } = state;
     return {
-        username,
         loginresultat,
     };
 };
