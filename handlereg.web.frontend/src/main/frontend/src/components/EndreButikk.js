@@ -25,7 +25,7 @@ function EndreButikk(props) {
                         { butikker.map((b, indeks) => <option key={'butikk_' + b.storeId.toString()} value={indeks}>{b.butikknavn}</option>) }
                     </select>
                     <div className="form-group row">
-                        <label htmlFor="amount" className="col-form-label col-5">Ny butikk</label>
+                        <label htmlFor="amount" className="col-form-label col-5">Butikknavn</label>
                         <div className="col-7">
                             <input id="amount" className="form-control" type="text" value={butikknavn} onChange={e => dispatch(BUTIKKNAVN_ENDRE(e.target.value))} />
                         </div>
