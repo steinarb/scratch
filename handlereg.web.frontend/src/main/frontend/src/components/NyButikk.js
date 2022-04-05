@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
@@ -7,8 +7,8 @@ import {
     NYBUTIKK_REGISTRER,
 } from '../actiontypes';
 
-function NyButikk(props) {
-    const { butikknavn } = props;
+export default function NyButikk() {
+    const butikknavn = useSelector(state => state.butikknavn);
     const dispatch = useDispatch();
 
     return (
@@ -37,12 +37,3 @@ function NyButikk(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const { butikknavn } = state;
-    return {
-        butikknavn,
-    };
-}
-
-export default connect(mapStateToProps)(NyButikk);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
@@ -8,8 +8,10 @@ import {
     BUTIKK_LAGRE,
 } from '../actiontypes';
 
-function EndreButikk(props) {
-    const { valgtButikk, butikknavn, butikker } = props;
+export default function EndreButikk() {
+    const valgtButikk = useSelector(state => state.valgtButikk);
+    const butikknavn = useSelector(state => state.butikknavn);
+    const butikker = useSelector(state => state.butikker);
     const dispatch = useDispatch();
 
     return (
@@ -41,14 +43,3 @@ function EndreButikk(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const { valgtButikk, butikknavn, butikker } = state;
-    return {
-        valgtButikk,
-        butikknavn,
-        butikker,
-    };
-};
-
-export default connect(mapStateToProps)(EndreButikk);

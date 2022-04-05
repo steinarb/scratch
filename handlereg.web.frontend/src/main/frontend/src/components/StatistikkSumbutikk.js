@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
-function StatistikkSumbutikk(props) {
-    const { sumbutikk } = props;
+export default function StatistikkSumbutikk() {
+    const sumbutikk = useSelector(state => state.sumbutikk);
 
     return (
         <div>
@@ -36,12 +36,3 @@ function StatistikkSumbutikk(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const sumbutikk = state.sumbutikk;
-    return {
-        sumbutikk,
-    };
-};
-
-export default connect(mapStateToProps)(StatistikkSumbutikk);

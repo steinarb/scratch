@@ -1,15 +1,14 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     LOGOUT_HENT,
 } from '../actiontypes';
 import { Container } from './bootstrap/Container';
 
 
-function Unauthorized(props) {
-    const { loginresultat } = props;
-    const { brukernavn } = loginresultat;
+export default function Unauthorized() {
+    const loginresultat = useSelector(state => state.loginresultat);
     const dispatch = useDispatch();
     if (!loginresultat.suksess) {
         return <Redirect to="/handlereg/login" />;
@@ -23,7 +22,7 @@ function Unauthorized(props) {
                 <div className="col-sm-2"></div>
             </nav>
             <Container>
-                <p>Hei {brukernavn}! Du har ikke tilgang til denne applikasjonen</p>
+                <p>Hei {loginresultat.brukernavn}! Du har ikke tilgang til denne applikasjonen</p>
                 <p>Klikk &quot;Gå hjem&quot; for å navigere ut av applikasjonen, eller logg ut for å logge inn med en bruker som har tilgang</p>
                 <form onSubmit={ e => { e.preventDefault(); }}>
                     <div className="form-group row">
@@ -37,12 +36,3 @@ function Unauthorized(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const { loginresultat } = state;
-    return {
-        loginresultat,
-    };
-};
-
-export default connect(mapStateToProps)(Unauthorized);

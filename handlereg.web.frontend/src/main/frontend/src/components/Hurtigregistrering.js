@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import Kvittering from './Kvittering';
@@ -8,13 +8,11 @@ import {
     NYHANDLING_REGISTRER,
 } from '../actiontypes';
 
-function Hurtigregistrering(props) {
-    const {
-        username,
-        favoritter,
-        handletidspunkt,
-        belop,
-    } = props;
+export default function Hurtigregistrering() {
+    const username = useSelector(state => state.loginresultat.brukernavn);
+    const favoritter = useSelector(state => state.favoritter);
+    const handletidspunkt = useSelector(state => state.handletidspunkt);
+    const belop = useSelector(state => state.belop).toString();
     const dispatch = useDispatch();
 
     return (
@@ -39,20 +37,3 @@ function Hurtigregistrering(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const {
-        oversikt,
-        favoritter,
-        handletidspunkt,
-        belop,
-    } = state;
-    return {
-        username: oversikt.brukernavn,
-        favoritter,
-        handletidspunkt,
-        belop: belop.toString(),
-    };
-}
-
-export default connect(mapStateToProps)(Hurtigregistrering);

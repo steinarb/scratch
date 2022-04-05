@@ -1,13 +1,13 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
     SLETT_FAVORITT,
 } from '../actiontypes';
 
-function FavoritterSlett(props) {
-    const { favoritter } = props;
+export default function FavoritterSlett() {
+    const favoritter = useSelector(state => state.favoritter);
     const dispatch = useDispatch();
 
     return (
@@ -23,12 +23,3 @@ function FavoritterSlett(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const favoritter = state.favoritter;
-    return {
-        favoritter,
-    };
-}
-
-export default connect(mapStateToProps)(FavoritterSlett);

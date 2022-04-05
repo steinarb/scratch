@@ -1,8 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-function Kvittering(props) {
-    const { viskvittering, oversikt } = props;
+export default function Kvittering() {
+    const viskvittering = useSelector(state => state.viskvittering);
+    const oversikt = useSelector(state => state.oversikt);
     if (!viskvittering) {
         return null;
     }
@@ -14,13 +15,3 @@ function Kvittering(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const { viskvittering, oversikt } = state;
-    return {
-        viskvittering,
-        oversikt,
-    };
-}
-
-export default connect(mapStateToProps)(Kvittering);

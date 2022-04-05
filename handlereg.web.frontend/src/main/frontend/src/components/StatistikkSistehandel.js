@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
-function StatistikkSistehandel(props) {
-    const { sistehandel } = props;
+export default function StatistikkSistehandel() {
+    const sistehandel = useSelector(state => state.sistehandel);
 
     return (
         <div>
@@ -36,12 +36,3 @@ function StatistikkSistehandel(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const sistehandel = state.sistehandel;
-    return {
-        sistehandel,
-    };
-};
-
-export default connect(mapStateToProps)(StatistikkSistehandel);

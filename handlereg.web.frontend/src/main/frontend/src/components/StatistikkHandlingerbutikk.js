@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
-function StatistikkHandlingerbutikk(props) {
-    const { handlingerbutikk } = props;
+export default function StatistikkHandlingerbutikk() {
+    const handlingerbutikk = useSelector(state => state.handlingerbutikk);
 
     return (
         <div>
@@ -36,12 +36,3 @@ function StatistikkHandlingerbutikk(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const handlingerbutikk = state.handlingerbutikk;
-    return {
-        handlingerbutikk,
-    };
-};
-
-export default connect(mapStateToProps)(StatistikkHandlingerbutikk);

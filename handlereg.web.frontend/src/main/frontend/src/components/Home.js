@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
@@ -14,21 +14,20 @@ import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 import Kvittering from './Kvittering';
 
 
-function Home(props) {
-    const {
-        loginresultat,
-        oversikt,
-        handlinger,
-        butikker,
-        storeId,
-        handletidspunkt,
-        belop,
-    } = props;
-    const username = oversikt.brukernavn;
-    const dispatch = useDispatch();
+export default function Home() {
+    const loginresultat = useSelector(state => state.loginresultat);
     if (!loginresultat.authorized) {
         return <Redirect to="/handlereg/unauthorized" />;
     }
+
+    const oversikt = useSelector(state => state.oversikt);
+    const username = oversikt.brukernavn;
+    const handlinger = useSelector(state => state.handlinger);
+    const butikker = useSelector(state => state.butikker);
+    const storeId = useSelector(state => state.storeId);
+    const handletidspunkt = useSelector(state => state.handletidspunkt);
+    const belop = useSelector(state => state.belop).toString();
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -105,26 +104,3 @@ function Home(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const {
-        loginresultat,
-        oversikt,
-        handlinger,
-        butikker,
-        storeId,
-        handletidspunkt,
-        belop,
-    } = state;
-    return {
-        loginresultat,
-        oversikt,
-        handlinger,
-        butikker,
-        storeId,
-        handletidspunkt,
-        belop: belop.toString(),
-    };
-};
-
-export default connect(mapStateToProps)(Home);

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 import {
     LOGIN_HENT,
 } from '../actiontypes';
 import LoginMessage from './LoginMessage';
 
-function Login(props) {
-    const { loginresultat } = props;
+export default function Login() {
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
+    const loginresultat = useSelector(state => state.loginresultat);
     const dispatch = useDispatch();
 
     if (loginresultat.suksess) {
@@ -50,12 +50,3 @@ function Login(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const { loginresultat } = state;
-    return {
-        loginresultat,
-    };
-}
-
-export default connect(mapStateToProps)(Login);

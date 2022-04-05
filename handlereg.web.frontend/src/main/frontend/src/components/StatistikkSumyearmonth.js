@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
-function StatistikkSumyearmonth(props) {
-    const { sumyearmonth } = props;
+export default function StatistikkSumyearmonth() {
+    const sumyearmonth = useSelector(state => state.sumyearmonth);
 
     return (
         <div>
@@ -38,12 +38,3 @@ function StatistikkSumyearmonth(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const sumyearmonth = state.sumyearmonth;
-    return {
-        sumyearmonth,
-    };
-};
-
-export default connect(mapStateToProps)(StatistikkSumyearmonth);

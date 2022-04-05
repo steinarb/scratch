@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import ChevronTop from './bootstrap/ChevronTop';
@@ -8,8 +8,8 @@ import {
     BYTT_FAVORITTER,
 } from '../actiontypes';
 
-function FavoritterSorter(props) {
-    const { favoritter } = props;
+export default function FavoritterSorter() {
+    const favoritter = useSelector(state => state.favoritter);
     const dispatch = useDispatch();
 
     return (
@@ -40,12 +40,3 @@ function FavoritterSorter(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const favoritter = state.favoritter;
-    return {
-        favoritter,
-    };
-}
-
-export default connect(mapStateToProps)(FavoritterSorter);

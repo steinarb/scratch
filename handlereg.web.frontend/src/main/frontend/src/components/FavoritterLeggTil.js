@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
@@ -7,11 +7,13 @@ import {
     LEGG_TIL_FAVORITT,
 } from '../actiontypes';
 
-function FavoritterLeggTil(props) {
-    const { butikker, favoritter, favorittbutikk } = props;
-    const dispatch = useDispatch();
+export default function FavoritterLeggTil() {
+    const butikker = useSelector(state => state.butikker);
+    const favoritter = useSelector(state => state.favoritter);
+    const favorittbutikk = useSelector(state => state.favorittbutikk);
     const ledigeButikker = butikker.filter(butikk => !favoritter.find(fav => fav.store.storeId === butikk.storeId));
     const ingenButikkValgt = favorittbutikk === -1;
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -37,16 +39,3 @@ function FavoritterLeggTil(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const butikker = state.butikker;
-    const favoritter = state.favoritter;
-    const favorittbutikk = state.favorittbutikk;
-    return {
-        butikker,
-        favoritter,
-        favorittbutikk,
-    };
-}
-
-export default connect(mapStateToProps)(FavoritterLeggTil);
