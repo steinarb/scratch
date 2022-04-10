@@ -4,19 +4,27 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE_TRANSACTIONTYPE,
+    MODIFY_TRANSACTION_TYPE_NAME,
+    MODIFY_JOB_AMOUNT,
     CREATE_PAYMENTTYPE_REQUEST,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
-import Amount from './Amount';
 
 function AdminPaymenttypesCreate(props) {
+    const {
+        text,
+        transactionTypeName,
+        transactionAmount,
+        onNameFieldChange,
+        onAmountFieldChange,
+        onSaveUpdatedPaymentType,
+        onLogout,
+    } = props;
+
     if (userIsNotLoggedIn(props)) {
         return <Redirect to="/ukelonn/login" />;
     }
-
-    let { text, transactiontype, onNameFieldChange, onAmountFieldChange, onSaveUpdatedPaymentType, onLogout } = props;
 
     return (
         <div>
@@ -34,19 +42,19 @@ function AdminPaymenttypesCreate(props) {
                     <div>
                         <label htmlFor="amount">{text.paymentTypeName}</label>
                         <div>
-                            <input id="name" type="text" value={transactiontype.transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
+                            <input id="name" type="text" value={transactionTypeName} onChange={(event) => onNameFieldChange(event.target.value)} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.paymentTypeAmount}</label>
                         <div>
-                            <Amount id="amount" payment={transactiontype} onAmountFieldChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={(event) => onAmountFieldChange(event.target.value)} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveUpdatedPaymentType(transactiontype)}>{text.createNewPaymentType}</button>
+                            <button onClick={() => onSaveUpdatedPaymentType({ transactionTypeName, transactionAmount })}>{text.createNewPaymentType}</button>
                         </div>
                     </div>
                 </div>
@@ -70,8 +78,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onNameFieldChange: (transactionTypeName) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionTypeName })),
-        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_TRANSACTIONTYPE({ transactionAmount })),
+        onNameFieldChange: (transactionTypeName) => dispatch(MODIFY_TRANSACTION_TYPE_NAME(transactionTypeName)),
+        onAmountFieldChange: (transactionAmount) => dispatch(MODIFY_JOB_AMOUNT(transactionAmount)),
         onSaveUpdatedPaymentType: (transactiontype) => dispatch(CREATE_PAYMENTTYPE_REQUEST(transactiontype)),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };

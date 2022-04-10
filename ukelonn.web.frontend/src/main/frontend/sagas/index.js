@@ -5,14 +5,16 @@ import locationSaga from './locationSaga';
 import accountSaga from './accountSaga';
 import { requestJobtypeListSaga } from './jobtypelistSaga';
 import { requestRegisterJobSaga } from './registerjobSaga';
+import jobSaga from './jobSaga';
+import paymentSaga from './paymentSaga';
 import { requestRecentJobsSaga } from './recentjobsSaga';
 import { requestRecentPaymentsSaga } from  './recentpaymentsSaga';
 import { requestAccountsSaga } from './accountsSaga';
-import { requestPaymenttypesSaga } from './paymenttypesSaga';
-import { requestRegisterPaymentSaga } from './registerpaymentSaga';
+import paymenttypesSaga from './paymenttypesSaga';
+import registerPaymentSaga from './registerpaymentSaga';
 import { requestModifyJobtypeSaga } from './modifyjobtypeSaga';
 import { requestCreatePaymenttypeSaga } from './createpaymenttypeSaga';
-import { requestCreateJobtypeSaga } from './createjobtypeSaga';
+import createJobtypeSaga from './createjobtypeSaga';
 import { requestDeleteJobsSaga } from './deletejobsSaga';
 import { requestUpdateJobSaga } from './updatejobSaga';
 import { requestModifyPaymenttypeSaga } from './modifypaymenttypeSaga';
@@ -44,13 +46,15 @@ export function* rootSaga() {
         fork(accountSaga),
         fork(requestJobtypeListSaga),
         fork(requestRegisterJobSaga),
+        fork(jobSaga),
+        fork(paymentSaga),
         fork(requestRecentJobsSaga),
         fork(requestRecentPaymentsSaga),
         fork(requestAccountsSaga),
-        fork(requestPaymenttypesSaga),
-        fork(requestRegisterPaymentSaga),
+        fork(paymenttypesSaga),
+        fork(registerPaymentSaga),
         fork(requestModifyJobtypeSaga),
-        fork(requestCreateJobtypeSaga),
+        fork(createJobtypeSaga),
         fork(requestDeleteJobsSaga),
         fork(requestUpdateJobSaga),
         fork(requestModifyPaymenttypeSaga),

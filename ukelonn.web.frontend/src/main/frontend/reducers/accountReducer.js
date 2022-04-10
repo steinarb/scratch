@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
+    MODIFY_ACCOUNT,
     UPDATE_ACCOUNT,
     ACCOUNT_RECEIVE,
     REGISTERJOB_RECEIVE,
@@ -11,6 +12,7 @@ import { emptyAccount } from '../constants';
 import { isAdmin } from '../common/roles';
 
 const accountReducer = createReducer(emptyAccount, {
+    [MODIFY_ACCOUNT]: (state, action) => ({ ...action.payload }),
     [UPDATE_ACCOUNT]: (state, action) => ({ ...action.payload }),
     [ACCOUNT_RECEIVE]: (state, action) => action.payload,
     [REGISTERJOB_RECEIVE]: (state, action) => action.payload,

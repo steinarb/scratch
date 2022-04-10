@@ -6,38 +6,38 @@ import { stringify } from 'qs';
 import { userIsNotLoggedIn } from '../common/login';
 import {
     LOGOUT_REQUEST,
-    UPDATE_ACCOUNT,
-    UPDATE_PAYMENT,
+    SELECT_ACCOUNT,
+    SELECT_PAYMENT_TYPE,
+    MODIFY_PAYMENT_AMOUNT,
     REGISTERPAYMENT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
 import BonusBanner from './BonusBanner';
 import Accounts from './Accounts';
 import Paymenttypes from './Paymenttypes';
-import Amount from './Amount';
 import EarningsMessage from './EarningsMessage';
 
 function Admin(props) {
-    if (userIsNotLoggedIn(props)) {
-        return <Redirect to="/ukelonn/login" />;
-    }
-
     let {
         text,
-        account = {},
-        payment,
-        paymenttype,
+        accountId,
+        username,
+        balance,
+        transactionTypeId,
+        transactionAmount,
         accounts,
         paymenttypes,
         onAccountsFieldChange,
         onPaymenttypeFieldChange,
         onAmountFieldChange,
         onRegisterPayment,
-        onLogout } = props;
+        onLogout
+    } = props;
+    if (userIsNotLoggedIn(props)) {
+        return <Redirect to="/ukelonn/login" />;
+    }
 
     const parentTitle = 'Tilbake til ukelonn admin';
-    const accountId = account.accountId;
-    const username = account.username;
     const noUser = !username;
     const performedjobs = noUser ? '#' : '/ukelonn/performedjobs?' + stringify({ parentTitle, accountId, username });
     const performedpayments = noUser ? '#' : '/ukelonn/performedpayments?' + stringify({ parentTitle, accountId, username });
@@ -58,7 +58,7 @@ function Admin(props) {
                     <div>
                         <label htmlFor="account-selector">{text.chooseWhoToPayTo}:</label>
                         <div>
-                            <Accounts  id="account-selector" value={account.accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
+                            <Accounts  id="account-selector" value={accountId} accounts={accounts} onAccountsFieldChange={onAccountsFieldChange}/>
                         </div>
                     </div>
                     <EarningsMessage />
@@ -66,24 +66,24 @@ function Admin(props) {
                     <div>
                         <label htmlFor="account-balance">{text.owedAmount}:</label>
                         <div>
-                            <input id="account-balance" type="text" value={account.balance} readOnly={true} />
+                            <input id="account-balance" type="text" value={balance} readOnly={true} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="paymenttype-selector">{text.paymentType}:</label>
                         <div>
-                            <Paymenttypes id="paymenttype-selector" value={payment.transactionTypeId} paymenttypes={paymenttypes} account={account} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
+                            <Paymenttypes id="paymenttype-selector" value={transactionTypeId} paymenttypes={paymenttypes} onPaymenttypeFieldChange={onPaymenttypeFieldChange} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="amount">{text.amount}:</label>
                         <div>
-                            <Amount id="amount" payment={payment} onAmountFieldChange={onAmountFieldChange} />
+                            <input id="amount" type="text" value={transactionAmount} onChange={(event) => onAmountFieldChange(event.target.value)} />
                         </div>
                     </div>
                     <div>
                         <div>
-                            <button disabled={noUser} onClick={() => onRegisterPayment(payment, paymenttype)}>{text.registerPayment}</button>
+                            <button disabled={noUser} onClick={() => onRegisterPayment({ account: { accountId, username }, transactionTypeId, transactionAmount })}>{text.registerPayment}</button>
                         </div>
                     </div>
                 </div>
@@ -144,9 +144,11 @@ function mapStateToProps(state) {
         text: state.displayTexts,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
-        account: state.account,
-        payment: state.payment,
-        paymenttype: state.paymenttype,
+        accountId: state.accountId,
+        username: state.accountUsername,
+        balance: state.accountBalance,
+        transactionTypeId: state.transactionTypeId,
+        transactionAmount: state.transactionAmount,
         accounts: state.accounts,
         paymenttypes: state.paymenttypes,
     };
@@ -155,23 +157,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onLogout: () => dispatch(LOGOUT_REQUEST()),
-        onAccountsFieldChange: (selectedValue, accounts) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let account = accounts.find(account => account.accountId === selectedValueInt);
-            dispatch(UPDATE_ACCOUNT(account));
-        },
-        onPaymenttypeFieldChange: (selectedValue, paymenttypes, account) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let paymenttype = paymenttypes.find(pt => pt.id === selectedValueInt);
-            let amount = (paymenttype.transactionAmount > 0) ? paymenttype.transactionAmount : account.balance;
-            dispatch(UPDATE_PAYMENT({
-                transactionTypeId: paymenttype.id,
-                transactionAmount: amount,
-                account: account,
-            }));
-        },
-        onAmountFieldChange: (transactionAmount) => dispatch(UPDATE_PAYMENT({ transactionAmount })),
-        onRegisterPayment: (payment) => dispatch(REGISTERPAYMENT_REQUEST({ ...payment })),
+        onAccountsFieldChange: (selectedValue) => dispatch(SELECT_ACCOUNT(parseInt(selectedValue))),
+        onPaymenttypeFieldChange: (selectedValue) => dispatch(SELECT_PAYMENT_TYPE(parseInt(selectedValue))),
+        onAmountFieldChange: (transactionAmount) => dispatch(MODIFY_PAYMENT_AMOUNT(transactionAmount)),
+        onRegisterPayment: (payment) => dispatch(REGISTERPAYMENT_REQUEST(payment)),
     };
 }
 
