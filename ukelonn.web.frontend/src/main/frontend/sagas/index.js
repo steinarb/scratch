@@ -13,7 +13,7 @@ import { requestAccountsSaga } from './accountsSaga';
 import paymenttypesSaga from './paymenttypesSaga';
 import registerPaymentSaga from './registerpaymentSaga';
 import { requestModifyJobtypeSaga } from './modifyjobtypeSaga';
-import { requestCreatePaymenttypeSaga } from './createpaymenttypeSaga';
+import createPaymenttypeSaga from './createpaymenttypeSaga';
 import createJobtypeSaga from './createjobtypeSaga';
 import { requestDeleteJobsSaga } from './deletejobsSaga';
 import { requestUpdateJobSaga } from './updatejobSaga';
@@ -58,7 +58,7 @@ export function* rootSaga() {
         fork(requestDeleteJobsSaga),
         fork(requestUpdateJobSaga),
         fork(requestModifyPaymenttypeSaga),
-        fork(requestCreatePaymenttypeSaga),
+        fork(createPaymenttypeSaga),
         fork(requestUsersSaga),
         fork(requestModifyUserSaga),
         fork(adminstatusSaga),

@@ -70,6 +70,8 @@ function AdminPaymenttypesCreate(props) {
 function mapStateToProps(state) {
     return {
         text: state.displayTexts,
+        transactionTypeName: state.transactionTypeName,
+        transactionAmount: state.transactionAmount,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
         loginResponse: state.loginResponse,
         transactiontype: state.transactiontype,
