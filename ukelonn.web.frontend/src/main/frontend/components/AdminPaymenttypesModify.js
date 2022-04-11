@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    SELECT_PAYMENT_TYPE,
+    SELECT_PAYMENT_TYPE_FOR_EDIT,
     MODIFY_TRANSACTION_TYPE_NAME,
     MODIFY_PAYMENT_AMOUNT,
     MODIFY_PAYMENTTYPE_REQUEST,
@@ -92,7 +92,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onPaymenttypeFieldChange: selectedValue => dispatch(SELECT_PAYMENT_TYPE(selectedValue)),
+        onPaymenttypeFieldChange: selectedValue => dispatch(SELECT_PAYMENT_TYPE_FOR_EDIT(parseInt(selectedValue))),
         onNameFieldChange: transactionTypeName => dispatch(MODIFY_TRANSACTION_TYPE_NAME(transactionTypeName)),
         onAmountFieldChange: transactionAmount => dispatch(MODIFY_PAYMENT_AMOUNT(transactionAmount)),
         onSaveUpdatedPaymentType: transactiontype => dispatch(MODIFY_PAYMENTTYPE_REQUEST(transactiontype)),

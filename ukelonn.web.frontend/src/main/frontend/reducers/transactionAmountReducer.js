@@ -8,6 +8,7 @@ import {
     JOB_TABLE_ROW_CLICK,
     CLEAR_JOB_FORM,
     CLEAR_JOB_TYPE_CREATE_FORM,
+    CLEAR_PAYMENT_TYPE_FORM,
     CLEAR_ACCOUNT,
 } from '../actiontypes';
 const emptyAmount = 0;
@@ -21,6 +22,7 @@ const transactionAmountReducer = createReducer(emptyAmount, {
     [JOB_TABLE_ROW_CLICK]: (state, action) => parseInt(action.payload.transactionAmount),
     [CLEAR_JOB_FORM]: () => emptyAmount,
     [CLEAR_JOB_TYPE_CREATE_FORM]: () => emptyAmount,
+    [CLEAR_PAYMENT_TYPE_FORM]: () => emptyAmount,
     [CLEAR_ACCOUNT]: () => emptyAmount,
 });
 

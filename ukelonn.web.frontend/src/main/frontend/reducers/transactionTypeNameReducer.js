@@ -4,6 +4,7 @@ import {
     REGISTERJOB_RECEIVE,
     CLEAR_JOB_FORM,
     CLEAR_JOB_TYPE_CREATE_FORM,
+    CLEAR_PAYMENT_TYPE_FORM,
 } from '../actiontypes';
 const emptyName = '';
 
@@ -12,6 +13,7 @@ const transactionTypeNameReducer = createReducer(emptyName, {
     [REGISTERJOB_RECEIVE]: () => emptyName,
     [CLEAR_JOB_FORM]: () => emptyName,
     [CLEAR_JOB_TYPE_CREATE_FORM]: () => emptyName,
+    [CLEAR_PAYMENT_TYPE_FORM]: () => emptyName,
 });
 
 export default transactionTypeNameReducer;
