@@ -4,15 +4,16 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { userIsNotLoggedIn } from '../common/login';
 import {
-    UPDATE_USER,
-    UPDATE_USER_IS_ADMINISTRATOR,
-    REQUEST_ADMIN_STATUS,
-    MODIFY_USER_REQUEST,
-    CHANGE_ADMIN_STATUS,
+    SELECT_USER,
+    MODIFY_USER_USERNAME,
+    MODIFY_USER_EMAIL,
+    MODIFY_USER_FIRSTNAME,
+    MODIFY_USER_LASTNAME,
+    MODIFY_USER_IS_ADMINISTRATOR,
+    SAVE_USER_BUTTON_CLICKED,
     LOGOUT_REQUEST,
 } from '../actiontypes';
 import Locale from './Locale';
-import Users from './Users';
 
 function AdminUsersModify(props) {
     if (userIsNotLoggedIn(props)) {
@@ -21,7 +22,11 @@ function AdminUsersModify(props) {
 
     let {
         text,
-        user,
+        userid,
+        userUsername,
+        userEmail,
+        userFirstname,
+        userLastname,
         userIsAdministrator,
         users,
         onUsersFieldChange,
@@ -30,7 +35,7 @@ function AdminUsersModify(props) {
         onFirstnameChange,
         onLastnameChange,
         onUpdateUserIsAdministrator,
-        onSaveUpdatedUser,
+        onSaveUserButtonClicked,
         onLogout,
     } = props;
 
@@ -50,43 +55,46 @@ function AdminUsersModify(props) {
                     <div>
                         <label htmlFor="users">{text.chooseUser}</label>
                         <div>
-                            <Users id="users" value={user.userid} users={users} onUsersFieldChange={onUsersFieldChange} />
+                            <select id="users" onChange={onUsersFieldChange} value={userid}>
+                                <option key="-1" value="-1"/>
+                                {users.map((val) => <option key={val.userid} value={val.userid}>{val.fullname}</option>)}
+                            </select>
                         </div>
                     </div>
                     <div>
                         <label htmlFor="username">{text.username}</label>
                         <div>
-                            <input id="username" type="text" value={user.username} onChange={(event) => onUsernameChange(event.target.value)} />
+                            <input id="username" type="text" value={userUsername} onChange={onUsernameChange} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="email">{text.emailAddress}</label>
                         <div>
-                            <input id="email" type="text" value={user.email} onChange={(event) => onEmailChange(event.target.value)} />
+                            <input id="email" type="text" value={userEmail} onChange={onEmailChange} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="firstname">{text.firstName}</label>
                         <div>
-                            <input id="firstname" type="text" value={user.firstname} onChange={(event) => onFirstnameChange(event.target.value)} />
+                            <input id="firstname" type="text" value={userFirstname} onChange={onFirstnameChange} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="lastname">{text.lastName}</label>
                         <div>
-                            <input id="lastname" type="text" value={user.lastname} onChange={(event) => onLastnameChange(event.target.value)} />
+                            <input id="lastname" type="text" value={userLastname} onChange={onLastnameChange} />
                         </div>
                     </div>
                     <div>
                         <label htmlFor="administrator">{text.administrator}</label>
                         <div>
-                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={e => onUpdateUserIsAdministrator(e)} />
+                            <input id="administrator" type="checkbox" checked={userIsAdministrator} onChange={onUpdateUserIsAdministrator} />
                         </div>
                     </div>
                     <div>
                         <div/>
                         <div>
-                            <button onClick={() => onSaveUpdatedUser(user, userIsAdministrator)}>{text.saveUserModifications}</button>
+                            <button onClick={onSaveUserButtonClicked}>{text.saveUserModifications}</button>
                         </div>
                     </div>
                 </div>
@@ -102,7 +110,11 @@ function AdminUsersModify(props) {
 function mapStateToProps(state) {
     return {
         text: state.displayTexts,
-        user: state.user,
+        userid: state.userid,
+        userUsername: state.userUsername,
+        userEmail: state.userEmail,
+        userFirstname: state.userFirstname,
+        userLastname: state.userLastname,
         userIsAdministrator: state.userIsAdministrator,
         users: state.users,
         haveReceivedResponseFromLogin: state.haveReceivedResponseFromLogin,
@@ -112,22 +124,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUsersFieldChange: (selectedValue, users) => {
-            const selectedValueInt = parseInt(selectedValue, 10);
-            let user = users.find(u => u.userid === selectedValueInt);
-            dispatch(UPDATE_USER({ ...user }));
-            dispatch(REQUEST_ADMIN_STATUS({ username: user.username }));
-        },
-        onUsernameChange: (username) => dispatch(UPDATE_USER({ username })),
-        onEmailChange: (email) => dispatch(UPDATE_USER({ email })),
-        onFirstnameChange: (firstname) => dispatch(UPDATE_USER({ firstname })),
-        onLastnameChange: (lastname) => dispatch(UPDATE_USER({ lastname })),
-        onUpdateUserIsAdministrator: e => dispatch(UPDATE_USER_IS_ADMINISTRATOR(e.target.checked)),
-        onSaveUpdatedUser: (user, administrator) => {
-            const { userid, username, email, firstname, lastname } = user;
-            dispatch(MODIFY_USER_REQUEST({ userid, username, email, firstname, lastname }));
-            dispatch(CHANGE_ADMIN_STATUS({ user: { username }, administrator }));
-        },
+        onUsersFieldChange: e => dispatch(SELECT_USER(parseInt(e.target.value))),
+        onUsernameChange: e => dispatch(MODIFY_USER_USERNAME(e.target.value)),
+        onEmailChange: e => dispatch(MODIFY_USER_EMAIL(e.target.value)),
+        onFirstnameChange: e => dispatch(MODIFY_USER_FIRSTNAME(e.target.value)),
+        onLastnameChange: e => dispatch(MODIFY_USER_LASTNAME(e.target.value)),
+        onUpdateUserIsAdministrator: e => dispatch(MODIFY_USER_IS_ADMINISTRATOR(e.target.checked)),
+        onSaveUserButtonClicked: () => dispatch(SAVE_USER_BUTTON_CLICKED()),
         onLogout: () => dispatch(LOGOUT_REQUEST()),
     };
 }

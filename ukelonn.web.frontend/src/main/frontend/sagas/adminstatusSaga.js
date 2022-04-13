@@ -6,10 +6,6 @@ import {
     RECEIVE_ADMIN_STATUS_ERROR,
 } from '../actiontypes';
 
-export default function* () {
-    yield takeLatest(REQUEST_ADMIN_STATUS, requestAdminStatus);
-}
-
 function* requestAdminStatus(action) {
     const user = action.payload;
     try {
@@ -23,4 +19,8 @@ function* requestAdminStatus(action) {
 
 function fetchAdminStatus(user) {
     return axios.post('/ukelonn/api/admin/user/adminstatus', user);
+}
+
+export default function* adminStatusSaga() {
+    yield takeLatest(REQUEST_ADMIN_STATUS, requestAdminStatus);
 }

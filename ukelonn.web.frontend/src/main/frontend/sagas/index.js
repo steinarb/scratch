@@ -18,8 +18,8 @@ import createJobtypeSaga from './createjobtypeSaga';
 import { requestDeleteJobsSaga } from './deletejobsSaga';
 import { requestUpdateJobSaga } from './updatejobSaga';
 import { requestModifyPaymenttypeSaga } from './modifypaymenttypeSaga';
-import { requestUsersSaga } from './usersSaga';
-import { requestModifyUserSaga } from './modifyuserSaga';
+import usersSaga from './usersSaga';
+import modifyUserSaga from './modifyUserSaga';
 import { requestCreateUserSaga } from './createuserSaga';
 import adminstatusSaga from './adminstatusSaga';
 import changeadminstatusSaga from './changeadminstatusSaga';
@@ -59,8 +59,8 @@ export function* rootSaga() {
         fork(requestUpdateJobSaga),
         fork(requestModifyPaymenttypeSaga),
         fork(createPaymenttypeSaga),
-        fork(requestUsersSaga),
-        fork(requestModifyUserSaga),
+        fork(usersSaga),
+        fork(modifyUserSaga),
         fork(adminstatusSaga),
         fork(changeadminstatusSaga),
         fork(requestActivebonusesSaga),

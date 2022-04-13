@@ -28,8 +28,12 @@ import accounts from './accountsReducer';
 import paymenttypes from './paymenttypesReducer';
 import users from './usersReducer';
 import usernames from './usernamesReducer';
-import user from './userReducer';
 import passwords from './passwordsReducer';
+import userid from './useridReducer';
+import userUsername from './userUsernameReducer';
+import userEmail from './userEmailReducer';
+import userFirstname from './userFirstnameReducer';
+import userLastname from './userLastnameReducer';
 import userIsAdministrator from './userIsAdministratorReducer';
 import activebonuses from './activebonusesReducer';
 import allbonuses from './allbonusesReducer';
@@ -73,8 +77,12 @@ export default (history) => combineReducers({
     paymenttypes,
     users,
     usernames,
-    user,
     passwords,
+    userid,
+    userUsername,
+    userEmail,
+    userFirstname,
+    userLastname,
     userIsAdministrator,
     activebonuses,
     allbonuses,
