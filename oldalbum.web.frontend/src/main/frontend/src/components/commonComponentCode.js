@@ -1,11 +1,10 @@
-import moment from 'moment';
 
 export function pictureTitle(item) {
     return item.title || (item.path && item.path.replace(/\/$/, "").split(/\//).pop()) || '';
 }
 
 export function formatMetadata(item) {
-    const lastmodified = item.lastModified ? moment(item.lastModified).format("YYYY-MM-DD ") : '';
+    const lastmodified = item.lastModified ? new Date(item.lastModified).toISOString().split('T')[0] + ' ' : '';
     const imageType = item.contenttype === 'image/jpeg' ? 'JPEG ' : '';
     const contentlengthInt = parseInt(item.contentLength, 10);
     let imagesize = '';

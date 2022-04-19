@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Redirect, NavLink } from 'react-router-dom';
-import moment from 'moment';
 import {
     MODIFY_PICTURE_PARENT,
     MODIFY_PICTURE_BASENAME,
@@ -32,7 +31,7 @@ function ModifyPicture(props) {
         onCancel,
     } = props;
     const imageUrl = modifypicture.imageUrl;
-    const lastmodified = modifypicture.lastModified ? moment(modifypicture.lastModified).format("YYYY-MM-DD hh:mm:ss") : '';
+    const lastmodified = modifypicture.lastModified ? new Date(modifypicture.lastModified).toISOString() : '';
     if (!loginresult.canModifyAlbum) {
         if (modifypicture.path) {
             return <Redirect to={modifypicture.path} />;

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Redirect, NavLink } from 'react-router-dom';
 import { parse } from 'qs';
-import moment from 'moment';
 import {
     ADD_PICTURE_BASENAME,
     ADD_PICTURE_TITLE,
@@ -35,7 +34,7 @@ function AddPicture(props) {
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';
     const imageUrl = addpicture.imageUrl;
-    const lastModified = addpicture.lastModified ? moment(addpicture.lastModified).format("YYYY-MM-DD hh:mm:ss") : '';
+    const lastModified = addpicture.lastModified ? new Date(addpicture.lastModified).toISOString() : '';
     if (!loginresult.canModifyAlbum) {
         return <Redirect to={uplocation} />;
     }
