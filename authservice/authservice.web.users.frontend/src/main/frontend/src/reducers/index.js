@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import userid from './useridReducer';
 import users from './usersReducer';
 import user from './userReducer';
 import userroles from './userrolesReducer';
@@ -20,6 +21,7 @@ import formfield from './formfieldReducer';
 import errors from './errorsReducer';
 
 const rootsReducer = combineReducers({
+    userid,
     users,
     user,
     userroles,

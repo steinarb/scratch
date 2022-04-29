@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+export const SELECT_USER = createAction('SELECT_USER');
+export const SELECTED_USER = createAction('SELECTED_USER');
 export const USERS_REQUEST = createAction('USERS_REQUEST');
 export const USERS_RECEIVED = createAction('USERS_RECEIVED');
 export const USERS_ERROR = createAction('USERS_ERROR');

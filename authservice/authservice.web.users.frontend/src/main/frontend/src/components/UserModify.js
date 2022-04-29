@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
+    SELECT_USER,
     USERS_REQUEST,
     USER_UPDATE,
     USER_CLEAR,
@@ -43,7 +44,7 @@ function UserModify(props) {
                     <FormRow>
                         <FormLabel htmlFor="users">Select user</FormLabel>
                         <FormField>
-                            <select id="users" className="form-control" onChange={e => onUsersChange(e, users)} value={user.userid}>
+                            <select id="users" className="form-control" onChange={onUsersChange} value={user.userid}>
                                 {users.map((val) => <option key={val.userid} value={val.userid}>{val.firstname} {val.lastname}</option>)}
                             </select>
                         </FormField>
@@ -86,6 +87,7 @@ function UserModify(props) {
 
 const mapStateToProps = (state) => {
     return {
+        userid: state.userid,
         users: state.users,
         user: state.user,
     };
@@ -95,11 +97,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onUsers: () => dispatch(USERS_REQUEST()),
         onUserClear: () => dispatch(USER_CLEAR()),
-        onUsersChange: (e, users) => {
-            const userid = parseInt(e.target.value, 10);
-            const user = users.find(u => u.userid === userid);
-            dispatch(USER_UPDATE({ ...user }));
-        },
+        onUsersChange: e => dispatch(SELECT_USER(parseInt(e.target.value))),
         onUsername: e => dispatch(USER_UPDATE({ username: e.target.value })),
         onEmail: e => dispatch(USER_UPDATE({ email: e.target.value })),
         onFirstname: e => dispatch(USER_UPDATE({ firstname: e.target.value })),
