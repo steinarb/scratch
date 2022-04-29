@@ -1,13 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { emptyUser } from '../constants';
-import { USERS_RECEIVED } from '../actiontypes';
+import {
+    USERS_RECEIVE,
+    SAVE_MODIFIED_USER_RECEIVE,
+} from '../actiontypes';
 
 const usersReducer = createReducer([], {
-    [USERS_RECEIVED]: (state, action) => {
-        const users = action.payload;
-        users.unshift(emptyUser);
-        return users;
-    },
+    [USERS_RECEIVE]: (state, action) => action.payload,
+    [SAVE_MODIFIED_USER_RECEIVE]: (state, action) => action.payload,
 });
 
 export default usersReducer;

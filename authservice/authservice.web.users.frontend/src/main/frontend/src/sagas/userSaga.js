@@ -2,6 +2,8 @@ import { takeLatest, select, put } from 'redux-saga/effects';
 import {
     SELECT_USER,
     SELECTED_USER,
+    MODIFY_USER_BUTTON_CLICKED,
+    SAVE_MODIFIED_USER_REQUEST,
 } from '../actiontypes';
 
 function* selectedUser(action) {
@@ -12,6 +14,18 @@ function* selectedUser(action) {
     }
 }
 
+function* saveModifiedUser() {
+    const user = yield select(state => ({
+        userid: state.userid,
+        username: state.username,
+        email: state.email,
+        firstname: state.firstname,
+        lastname: state.lastname,
+    }));
+    yield put(SAVE_MODIFIED_USER_REQUEST(user));
+}
+
 export default function* userSaga() {
     yield takeLatest(SELECT_USER, selectedUser);
+    yield takeLatest(MODIFY_USER_BUTTON_CLICKED, saveModifiedUser);
 }
