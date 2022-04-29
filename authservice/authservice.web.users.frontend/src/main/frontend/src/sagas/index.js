@@ -2,6 +2,7 @@ import { fork, all } from 'redux-saga/effects';
 import userSaga from './userSaga';
 import usersSaga from './usersSaga';
 import userModifySaga from './userModifySaga';
+import passwordsSaga from './passwordsSaga';
 import passwordsModifySaga from './passwordsModifySaga';
 import userAddSaga from './userAddSaga';
 import userRolesSaga from './userRolesSaga';
@@ -24,6 +25,7 @@ export default function* rootSaga() {
         fork(userSaga),
         fork(usersSaga),
         fork(userModifySaga),
+        fork(passwordsSaga),
         fork(passwordsModifySaga),
         fork(userAddSaga),
         fork(userRolesSaga),

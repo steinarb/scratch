@@ -11,7 +11,9 @@ import rolesNotOnUser from './rolesNotOnUserReducer';
 import selectedInRolesNotOnUser from './selectedInRolesNotOnUserReducer';
 import rolesOnUser from './rolesOnUserReducer';
 import selectedInRolesOnUser from './selectedInRolesOnUserReducer';
-import passwords from './passwordsReducer';
+import password1 from './password1Reducer';
+import password2 from './password2Reducer';
+import passwordsNotIdentical from './passwordsNotIdenticalReducer';
 import roles from './rolesReducer';
 import role from './roleReducer';
 import rolepermissions from './rolepermissionsReducer';
@@ -37,7 +39,9 @@ const rootsReducer = combineReducers({
     selectedInRolesNotOnUser,
     rolesOnUser,
     selectedInRolesOnUser,
-    passwords,
+    password1,
+    password2,
+    passwordsNotIdentical,
     roles,
     role,
     rolepermissions,

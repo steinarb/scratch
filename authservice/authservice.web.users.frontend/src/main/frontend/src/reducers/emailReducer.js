@@ -4,6 +4,7 @@ import {
     MODIFY_EMAIL,
     USER_CLEAR,
     SAVE_MODIFIED_USER_RECEIVE,
+    SAVE_PASSWORDS_MODIFY_RECEIVE,
 } from '../actiontypes';
 import { isUnselected } from './common';
 
@@ -14,6 +15,7 @@ const emailReducer = createReducer(defaultValue, {
     [MODIFY_EMAIL]: (state, action) => action.payload,
     [USER_CLEAR]: () => defaultValue,
     [SAVE_MODIFIED_USER_RECEIVE]: () => defaultValue,
+    [SAVE_PASSWORDS_MODIFY_RECEIVE]: () => defaultValue,
 });
 
 export default emailReducer;

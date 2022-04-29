@@ -4,6 +4,7 @@ import {
     MODIFY_LASTNAME,
     USER_CLEAR,
     SAVE_MODIFIED_USER_RECEIVE,
+    SAVE_PASSWORDS_MODIFY_RECEIVE,
 } from '../actiontypes';
 import { isUnselected } from './common';
 
@@ -14,6 +15,7 @@ const lastnameReducer = createReducer(defaultValue, {
     [MODIFY_LASTNAME]: (state, action) => action.payload,
     [USER_CLEAR]: () => defaultValue,
     [SAVE_MODIFIED_USER_RECEIVE]: () => defaultValue,
+    [SAVE_PASSWORDS_MODIFY_RECEIVE]: () => defaultValue,
 });
 
 export default lastnameReducer;

@@ -1,5 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
+export const USERS_REQUEST = createAction('USERS_REQUEST');
+export const USERS_RECEIVE = createAction('USERS_RECEIVE');
+export const USERS_FAILURE = createAction('USERS_FAILURE');
 export const SELECT_USER = createAction('SELECT_USER');
 export const SELECTED_USER = createAction('SELECTED_USER');
 export const MODIFY_USERNAME = createAction('MODIFY_USERNAME');
@@ -10,9 +13,13 @@ export const MODIFY_USER_BUTTON_CLICKED = createAction('MODIFY_USER_BUTTON_CLICK
 export const SAVE_MODIFIED_USER_REQUEST = createAction('SAVE_MODIFIED_USER_REQUEST');
 export const SAVE_MODIFIED_USER_RECEIVE = createAction('SAVE_MODIFIED_USER_RECEIVE');
 export const SAVE_MODIFIED_USER_FAILURE = createAction('SAVE_MODIFIED_USER_FAILURE');
-export const USERS_REQUEST = createAction('USERS_REQUEST');
-export const USERS_RECEIVE = createAction('USERS_RECEIVE');
-export const USERS_FAILURE = createAction('USERS_FAILURE');
+export const MODIFY_PASSWORD1 = createAction('MODIFY_PASSWORD1');
+export const MODIFY_PASSWORD2 = createAction('MODIFY_PASSWORD2');
+export const MODIFY_PASSWORDS_NOT_IDENTICAL = createAction('MODIFY_PASSWORDS_NOT_IDENTICAL');
+export const CHANGE_PASSWORD_BUTTON_CLICKED = createAction('CHANGE_PASSWORD_BUTTON_CLICKED');
+export const SAVE_PASSWORDS_MODIFY_REQUEST = createAction('SAVE_PASSWORDS_MODIFY_REQUEST');
+export const SAVE_PASSWORDS_MODIFY_RECEIVE = createAction('SAVE_PASSWORDS_MODIFY_RECEIVE');
+export const SAVE_PASSWORDS_MODIFY_FAILURE = createAction('SAVE_PASSWORDS_MODIFY_FAILURE');
 export const USER_UPDATE = createAction('USER_UPDATE');
 export const USER_CLEAR = createAction('USER_CLEAR');
 export const USER_MODIFY = createAction('USER_MODIFY');

@@ -7,10 +7,14 @@ import {
 } from '../actiontypes';
 
 function* selectedUser(action) {
-    const users = yield select(state => state.users);
-    const user = users.find(u => u.userid === action.payload);
-    if (user) {
-        yield put(SELECTED_USER(user));
+    if (action.payload === -1) {
+        yield put(SELECTED_USER({ userid: -1 }));
+    } else {
+        const users = yield select(state => state.users);
+        const user = users.find(u => u.userid === action.payload);
+        if (user) {
+            yield put(SELECTED_USER(user));
+        }
     }
 }
 
