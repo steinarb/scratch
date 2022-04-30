@@ -1,6 +1,6 @@
 import { takeLatest, select, put } from 'redux-saga/effects';
 import {
-    USER_SELECTED,
+    SELECTED_USER,
     USERROLES_RECEIVED,
     ROLES_ON_USER_UPDATE,
     ROLES_NOT_ON_USER_UPDATE,
@@ -20,5 +20,5 @@ function* findRolesOnUsersAndFindRolesNotOnUsers() {
 
 export default function* rolesOnUserSaga() {
     yield takeLatest(USERROLES_RECEIVED, findRolesOnUsersAndFindRolesNotOnUsers);
-    yield takeLatest(USER_SELECTED, findRolesOnUsersAndFindRolesNotOnUsers);
+    yield takeLatest(SELECTED_USER, findRolesOnUsersAndFindRolesNotOnUsers);
 }
