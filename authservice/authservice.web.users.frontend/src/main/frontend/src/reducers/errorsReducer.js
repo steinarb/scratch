@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    USERS_ERROR,
+    USERS_FAILURE,
     USERROLES_ERROR,
     ROLES_ERROR,
     ROLEPERMISSIONS_ERROR,
@@ -8,7 +8,7 @@ import {
 } from '../actiontypes';
 
 const errorsReducer = createReducer({}, {
-    [USERS_ERROR]: (state, action) => {
+    [USERS_FAILURE]: (state, action) => {
         const users = action.payload;
         return { ...state, users };
     },
