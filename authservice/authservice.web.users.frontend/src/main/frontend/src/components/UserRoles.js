@@ -8,8 +8,9 @@ import {
     USERROLES_REQUEST,
     ROLES_NOT_ON_USER_SELECTED,
     ROLES_ON_USER_SELECTED,
-    USER_ADD_ROLES,
-    USER_REMOVE_ROLES,
+    ADD_USER_ROLE_BUTTON_CLICKED,
+    REMOVE_USER_ROLE_BUTTON_CLICKED,
+
 } from '../actiontypes';
 import { emptyRole } from '../constants';
 import { Container } from './bootstrap/Container';
@@ -75,8 +76,8 @@ function UserRoles(props) {
                             </select>
                         </div>
                         <div className="no-gutters col-sm-4">
-                            <button disabled={addRoleDisabled} className="btn btn-primary form-control" onClick={() => onAddRole(selectedInRolesNotOnUser)}>Add role &nbsp;<ChevronRight/></button>
-                            <button disabled={removeRoleDisabled} className="btn btn-primary form-control" onClick={() => onRemoveRole(selectedInRolesOnUser)}><ChevronLeft/>&nbsp; Remove role</button>
+                            <button disabled={addRoleDisabled} className="btn btn-primary form-control" onClick={onAddRole}>Add role &nbsp;<ChevronRight/></button>
+                            <button disabled={removeRoleDisabled} className="btn btn-primary form-control" onClick={onRemoveRole}><ChevronLeft/>&nbsp; Remove role</button>
                         </div>
                         <div className="no-gutters col-sm-4">
                             <label htmlFor="rolesonuser">Role on user</label>
@@ -110,9 +111,9 @@ const mapDispatchToProps = dispatch => {
         onUserRoles: () => dispatch(USERROLES_REQUEST()),
         onUsersChange: e => dispatch(SELECT_USER(parseInt(e.target.value))),
         onRolesNotOnUserSelected: e => dispatch(ROLES_NOT_ON_USER_SELECTED(parseInt(e.target.value, 10))),
-        onAddRole: roleid => dispatch(USER_ADD_ROLES(roleid)),
+        onAddRole: () => dispatch(ADD_USER_ROLE_BUTTON_CLICKED()),
         onRolesOnUserSelected: e => dispatch(ROLES_ON_USER_SELECTED(parseInt(e.target.value, 10))),
-        onRemoveRole: roleid => dispatch(USER_REMOVE_ROLES(roleid)),
+        onRemoveRole: () => dispatch(REMOVE_USER_ROLE_BUTTON_CLICKED()),
     };
 };
 
