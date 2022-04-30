@@ -1,11 +1,10 @@
 import { combineReducers } from 'redux';
+import users from './usersReducer';
 import userid from './useridReducer';
 import username from './usernameReducer';
 import email from './emailReducer';
 import firstname from './firstnameReducer';
 import lastname from './lastnameReducer';
-import users from './usersReducer';
-import user from './userReducer';
 import userroles from './userrolesReducer';
 import rolesNotOnUser from './rolesNotOnUserReducer';
 import selectedInRolesNotOnUser from './selectedInRolesNotOnUserReducer';
@@ -27,13 +26,12 @@ import formfield from './formfieldReducer';
 import errors from './errorsReducer';
 
 const rootsReducer = combineReducers({
+    users,
     userid,
     username,
     email,
     firstname,
     lastname,
-    users,
-    user,
     userroles,
     rolesNotOnUser,
     selectedInRolesNotOnUser,
