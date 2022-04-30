@@ -1,9 +1,9 @@
-import { takeLatest, call, put, select } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
-    USER_REMOVE_ROLES,
+    USER_REMOVE_ROLE_REQUEST,
+    USER_REMOVE_ROLE_RECEIVE,
     USERROLES_RECEIVED,
-    USERROLES_ERROR,
 } from '../actiontypes';
 
 function postUserRemoveRoles(userAndRoles) {
@@ -12,18 +12,14 @@ function postUserRemoveRoles(userAndRoles) {
 
 function* userRemoveRoles(action) {
     try {
-        const user = yield select(state => state.user);
-        const allRoles = yield select(state => state.roles);
-        const roles = allRoles.filter(r => r.id === action.payload);
-        const userAndRoles = { user, roles };
-        const response = yield call(postUserRemoveRoles, userAndRoles);
+        const response = yield call(postUserRemoveRoles, action.payload);
         const userroles = (response.headers['content-type'] === 'application/json') ? response.data : [];
-        yield put(USERROLES_RECEIVED(userroles));
+        yield put(USER_REMOVE_ROLE_RECEIVE(userroles));
     } catch (error) {
-        yield put(USERROLES_ERROR(error));
+        yield put(USERROLES_RECEIVED(error));
     }
 }
 
 export default function* userRemoveRolesSaga() {
-    yield takeLatest(USER_REMOVE_ROLES, userRemoveRoles);
+    yield takeLatest(USER_REMOVE_ROLE_REQUEST, userRemoveRoles);
 }

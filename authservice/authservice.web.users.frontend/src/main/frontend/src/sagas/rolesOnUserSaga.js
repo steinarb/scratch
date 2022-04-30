@@ -3,11 +3,13 @@ import {
     SELECTED_USER,
     USERROLES_RECEIVED,
     USER_ADD_ROLE_RECEIVE,
+    USER_REMOVE_ROLE_RECEIVE,
     ROLES_ON_USER_UPDATE,
     ROLES_NOT_ON_USER_UPDATE,
     ADD_USER_ROLE_BUTTON_CLICKED,
     USER_ADD_ROLE_REQUEST,
-    //REMOVE_USER_ROLE_BUTTON_CLICKED,
+    REMOVE_USER_ROLE_BUTTON_CLICKED,
+    USER_REMOVE_ROLE_REQUEST,
 } from '../actiontypes';
 import { emptyRole } from '../constants';
 
@@ -32,9 +34,21 @@ function* addRoleToUser() {
     yield put(USER_ADD_ROLE_REQUEST(userAndRoles));
 }
 
+function* removeRoleToUser() {
+    const userAndRoles = yield select(state => ({
+        user: {
+            username: state.username,
+        },
+        roles: state.roles.filter(r => r.id === state.selectedInRolesOnUser),
+    }));
+    yield put(USER_REMOVE_ROLE_REQUEST(userAndRoles));
+}
+
 export default function* rolesOnUserSaga() {
     yield takeLatest(USERROLES_RECEIVED, findRolesOnUsersAndFindRolesNotOnUsers);
     yield takeLatest(USER_ADD_ROLE_RECEIVE, findRolesOnUsersAndFindRolesNotOnUsers);
+    yield takeLatest(USER_REMOVE_ROLE_RECEIVE, findRolesOnUsersAndFindRolesNotOnUsers);
     yield takeLatest(SELECTED_USER, findRolesOnUsersAndFindRolesNotOnUsers);
     yield takeLatest(ADD_USER_ROLE_BUTTON_CLICKED, addRoleToUser);
+    yield takeLatest(REMOVE_USER_ROLE_BUTTON_CLICKED, removeRoleToUser);
 }
