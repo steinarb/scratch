@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
     USERS_REQUEST,
-    USER_UPDATE,
     USER_CLEAR,
+    SELECT_USER,
     ROLES_REQUEST,
     USERROLES_REQUEST,
     ROLES_NOT_ON_USER_SELECTED,
@@ -23,7 +23,7 @@ import {FormField } from './bootstrap/FormField';
 function UserRoles(props) {
     const {
         users,
-        user,
+        userid,
         rolesNotOnUser,
         selectedInRolesNotOnUser,
         rolesOnUser,
@@ -61,7 +61,8 @@ function UserRoles(props) {
                     <FormRow>
                         <FormLabel htmlFor="users">Select user</FormLabel>
                         <FormField>
-                            <select id="users" className="form-control" onChange={e => onUsersChange(e, users)} value={user.userid}>
+                            <select id="users" className="form-control" onChange={onUsersChange} value={userid}>
+                                <option key="-1" value="-1" />
                                 {users.map((val) => <option key={val.userid} value={val.userid}>{val.firstname} {val.lastname}</option>)}
                             </select>
                         </FormField>
@@ -93,7 +94,7 @@ function UserRoles(props) {
 function mapStateToProps(state) {
     return {
         users: state.users,
-        user: state.user,
+        userid: state.userid,
         rolesNotOnUser: state.rolesNotOnUser,
         selectedInRolesNotOnUser: state.selectedInRolesNotOnUser,
         rolesOnUser: state.rolesOnUser,
@@ -107,11 +108,7 @@ const mapDispatchToProps = dispatch => {
         onEmptyUser: () => dispatch(USER_CLEAR()),
         onRoles: () => dispatch(ROLES_REQUEST()),
         onUserRoles: () => dispatch(USERROLES_REQUEST()),
-        onUsersChange: (e, users) => {
-            const userid = parseInt(e.target.value, 10);
-            const user = users.find(u => u.userid === userid);
-            dispatch(USER_UPDATE({ ...user }));
-        },
+        onUsersChange: e => dispatch(SELECT_USER(parseInt(e.target.value))),
         onRolesNotOnUserSelected: e => dispatch(ROLES_NOT_ON_USER_SELECTED(parseInt(e.target.value, 10))),
         onAddRole: roleid => dispatch(USER_ADD_ROLES(roleid)),
         onRolesOnUserSelected: e => dispatch(ROLES_ON_USER_SELECTED(parseInt(e.target.value, 10))),
