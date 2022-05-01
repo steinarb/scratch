@@ -6,9 +6,9 @@ import {
     ROLE_CLEAR,
     PERMISSIONS_REQUEST,
     ROLEPERMISSIONS_REQUEST,
-    PERMISSIONS_NOT_ON_ROLE_SELECTED,
+    PERMISSIONS_NOT_ON_ROLE_SELECT,
     ROLE_ADD_PERMISSIONS,
-    PERMISSIONS_ON_ROLE_SELECTED,
+    PERMISSIONS_ON_ROLE_SELECT,
     ROLE_REMOVE_PERMISSIONS,
 } from '../actiontypes';
 import { emptyPermission } from '../constants';
@@ -109,9 +109,9 @@ const mapDispatchToProps = dispatch => {
         onPermissions: () => dispatch(PERMISSIONS_REQUEST()),
         onRolePermissions: () => dispatch(ROLEPERMISSIONS_REQUEST()),
         onRolesChange: e => dispatch(SELECT_ROLE(parseInt(e.target.value))),
-        onPermissionsNotOnRoleSelected: e => dispatch(PERMISSIONS_NOT_ON_ROLE_SELECTED(parseInt(e.target.value, 10))),
+        onPermissionsNotOnRoleSelected: e => dispatch(PERMISSIONS_NOT_ON_ROLE_SELECT(parseInt(e.target.value, 10))),
         onAddPermission: permissionid => dispatch(ROLE_ADD_PERMISSIONS(permissionid)),
-        onPermissionsOnRoleSelected: e => dispatch(PERMISSIONS_ON_ROLE_SELECTED(parseInt(e.target.value, 10))),
+        onPermissionsOnRoleSelected: e => dispatch(PERMISSIONS_ON_ROLE_SELECT(parseInt(e.target.value, 10))),
         onRemovePermission: permissionid => dispatch(ROLE_REMOVE_PERMISSIONS(permissionid)),
     };
 };
