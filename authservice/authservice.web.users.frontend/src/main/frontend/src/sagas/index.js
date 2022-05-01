@@ -9,6 +9,7 @@ import userRolesSaga from './userRolesSaga';
 import rolesOnUserSaga from './rolesOnUserSaga';
 import userAddRolesSaga from './userAddRolesSaga';
 import userRemoveRolesSaga from './userRemoveRolesSaga';
+import roleSaga from './roleSaga';
 import rolesSaga from './rolesSaga';
 import roleModifySaga from './roleModifySaga';
 import roleAddSaga from './roleAddSaga';
@@ -32,6 +33,7 @@ export default function* rootSaga() {
         fork(rolesOnUserSaga),
         fork(userAddRolesSaga),
         fork(userRemoveRolesSaga),
+        fork(roleSaga),
         fork(rolesSaga),
         fork(roleModifySaga),
         fork(roleAddSaga),
