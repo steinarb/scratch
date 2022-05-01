@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
     ROLES_REQUEST,
-    ROLE_UPDATE,
+    SELECT_ROLE,
     ROLE_CLEAR,
     PERMISSIONS_REQUEST,
     ROLEPERMISSIONS_REQUEST,
@@ -23,7 +23,7 @@ import {FormField } from './bootstrap/FormField';
 function RolePermissions(props) {
     const {
         roles,
-        role,
+        roleid,
         permissionsNotOnRole,
         selectedInPermissionsNotOnRole,
         permissionsOnRole,
@@ -61,7 +61,8 @@ function RolePermissions(props) {
                     <FormRow>
                         <FormLabel htmlFor="roles">Select role</FormLabel>
                         <FormField>
-                            <select id="roles" className="form-control" onChange={e => onRolesChange(e, roles)} value={role.id}>
+                            <select id="roles" className="form-control" onChange={onRolesChange} value={roleid}>
+                                <option key="-1" value="-1" />
                                 {roles.map((val) => <option key={val.id} value={val.id}>{val.rolename}</option>)}
                             </select>
                         </FormField>
@@ -93,7 +94,7 @@ function RolePermissions(props) {
 const mapStateToProps = (state) => {
     return {
         roles: state.roles,
-        role: state.role,
+        roleid: state.roleid,
         permissionsNotOnRole: state.permissionsNotOnRole,
         selectedInPermissionsNotOnRole: state.selectedInPermissionsNotOnRole,
         permissionsOnRole: state.permissionsOnRole,
@@ -107,11 +108,7 @@ const mapDispatchToProps = dispatch => {
         onRoleClear: () => dispatch(ROLE_CLEAR()),
         onPermissions: () => dispatch(PERMISSIONS_REQUEST()),
         onRolePermissions: () => dispatch(ROLEPERMISSIONS_REQUEST()),
-        onRolesChange: (e, roles) => {
-            const id = parseInt(e.target.value, 10);
-            const role = roles.find(r => r.id === id);
-            dispatch(ROLE_UPDATE(role));
-        },
+        onRolesChange: e => dispatch(SELECT_ROLE(parseInt(e.target.value))),
         onPermissionsNotOnRoleSelected: e => dispatch(PERMISSIONS_NOT_ON_ROLE_SELECTED(parseInt(e.target.value, 10))),
         onAddPermission: permissionid => dispatch(ROLE_ADD_PERMISSIONS(permissionid)),
         onPermissionsOnRoleSelected: e => dispatch(PERMISSIONS_ON_ROLE_SELECTED(parseInt(e.target.value, 10))),
