@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
     SELECTED_ROLE,
-    MODIFY_ROLE_DESCRIPTION,
+    ROLE_DESCRIPTION_FIELD_MODIFIED,
     ROLE_CLEAR,
     SAVE_MODIFIED_ROLE_RECEIVE,
     SAVE_PASSWORDS_MODIFY_RECEIVE,
@@ -13,7 +13,7 @@ const defaultValue = '';
 
 const roleDescriptionReducer = createReducer(defaultValue, {
     [SELECTED_ROLE]: (state, action) => isUnselected(action.payload.id) ? defaultValue : action.payload.description,
-    [MODIFY_ROLE_DESCRIPTION]: (state, action) => action.payload,
+    [ROLE_DESCRIPTION_FIELD_MODIFIED]: (state, action) => action.payload,
     [ROLE_CLEAR]: () => defaultValue,
     [SAVE_MODIFIED_ROLE_RECEIVE]: () => defaultValue,
     [SAVE_PASSWORDS_MODIFY_RECEIVE]: () => defaultValue,

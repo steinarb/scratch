@@ -4,8 +4,8 @@ import {
     ROLES_REQUEST,
     ROLE_CLEAR,
     SELECT_ROLE,
-    MODIFY_ROLENAME,
-    MODIFY_ROLE_DESCRIPTION,
+    ROLENAME_FIELD_MODIFIED,
+    ROLE_DESCRIPTION_FIELD_MODIFIED,
     MODIFY_ROLE_BUTTON_CLICKED,
 } from '../actiontypes';
 import { Container } from './bootstrap/Container';
@@ -86,8 +86,8 @@ const mapDispatchToProps = dispatch => {
         onRoles: () => dispatch(ROLES_REQUEST()),
         onRoleClear: () => dispatch(ROLE_CLEAR()),
         onRolesChange: e => dispatch(SELECT_ROLE(parseInt(e.target.value))),
-        onRolename: e => dispatch(MODIFY_ROLENAME(e.target.value)),
-        onDescription: e => dispatch(MODIFY_ROLE_DESCRIPTION(e.target.value)),
+        onRolename: e => dispatch(ROLENAME_FIELD_MODIFIED(e.target.value)),
+        onDescription: e => dispatch(ROLE_DESCRIPTION_FIELD_MODIFIED(e.target.value)),
         onSaveUpdatedRole: () => dispatch(MODIFY_ROLE_BUTTON_CLICKED()),
     };
 };

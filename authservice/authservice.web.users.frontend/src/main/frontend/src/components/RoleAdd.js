@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
     ROLE_CLEAR,
-    MODIFY_ROLENAME,
-    MODIFY_ROLE_DESCRIPTION,
+    ROLENAME_FIELD_MODIFIED,
+    ROLE_DESCRIPTION_FIELD_MODIFIED,
     ADD_ROLE_BUTTON_CLICKED,
 } from '../actiontypes';
 import { Container } from './bootstrap/Container';
@@ -67,8 +67,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     return {
         onRoleClear: () => dispatch(ROLE_CLEAR()),
-        onRolename: e => dispatch(MODIFY_ROLENAME(e.target.value)),
-        onDescription: e => dispatch(MODIFY_ROLE_DESCRIPTION(e.target.value)),
+        onRolename: e => dispatch(ROLENAME_FIELD_MODIFIED(e.target.value)),
+        onDescription: e => dispatch(ROLE_DESCRIPTION_FIELD_MODIFIED(e.target.value)),
         onAddRole: () => dispatch(ADD_ROLE_BUTTON_CLICKED()),
     };
 };
