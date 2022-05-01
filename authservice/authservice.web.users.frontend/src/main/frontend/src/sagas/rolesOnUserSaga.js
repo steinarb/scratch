@@ -4,24 +4,31 @@ import {
     USERROLES_RECEIVED,
     USER_ADD_ROLE_RECEIVE,
     USER_REMOVE_ROLE_RECEIVE,
-    ROLES_ON_USER_UPDATE,
-    ROLES_NOT_ON_USER_UPDATE,
+    SET_ROLES_ON_USER,
+    SET_ROLES_NOT_ON_USER,
     ADD_USER_ROLE_BUTTON_CLICKED,
     USER_ADD_ROLE_REQUEST,
     REMOVE_USER_ROLE_BUTTON_CLICKED,
     USER_REMOVE_ROLE_REQUEST,
 } from '../actiontypes';
-import { emptyRole } from '../constants';
+import { isUnselected } from '../reducers/common';
 
 function* findRolesOnUsersAndFindRolesNotOnUsers() {
-    const username = yield select(state => state.username);
-    const allRoles = yield select(state => state.roles);
-    const roles = allRoles.filter(r => r.id !== emptyRole.id);
-    const userroles = yield select(state => state.userroles);
-    const rolesOnUser = userroles[username] || [];
-    yield put(ROLES_ON_USER_UPDATE(rolesOnUser));
-    const rolesNotOnUser = roles.filter(r => !rolesOnUser.find(rou => rou.id === r.id));
-    yield put(ROLES_NOT_ON_USER_UPDATE(rolesNotOnUser));
+    const userid = yield select(state => state.userid);
+    if (isUnselected(userid)) {
+        yield put(SET_ROLES_ON_USER([]));
+        yield put(SET_ROLES_NOT_ON_USER([]));
+    } else {
+        const { rolesOnUser, rolesNotOnUser } = yield select(state => {
+            const rolesOnUser = state.userroles[state.username] || [];
+            return {
+                rolesOnUser,
+                rolesNotOnUser: state.roles.filter(r => !rolesOnUser.find(rou => rou.id === r.id)),
+            };
+        });
+        yield put(SET_ROLES_ON_USER(rolesOnUser));
+        yield put(SET_ROLES_NOT_ON_USER(rolesNotOnUser));
+    }
 }
 
 function* addRoleToUser() {
