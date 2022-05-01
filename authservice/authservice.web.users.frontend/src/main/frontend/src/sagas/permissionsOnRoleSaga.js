@@ -3,22 +3,29 @@ import {
     SELECTED_ROLE,
     ROLEPERMISSIONS_RECEIVE,
     ADD_PERMISSON_TO_ROLE_RECEIVE,
-    PERMISSIONS_ON_ROLE_UPDATE,
-    PERMISSIONS_NOT_ON_ROLE_UPDATE,
+    SET_PERMISSIONS_ON_ROLE,
+    SET_PERMISSIONS_NOT_ON_ROLE,
     ADD_PERMISSION_BUTTON_CLICKED,
     ADD_PERMISSON_TO_ROLE_REQUEST,
 } from '../actiontypes';
+import { isUnselected } from '../reducers/common';
 
 function* findPermissionsOnRolesAndFindPermissionsNotOnRoles() {
-    const { permissionsOnRole, permissionsNotOnRole } = yield select(state => {
-        const permissionsOnRole = state.rolepermissions[state.rolename] || [];
-        return {
-            permissionsOnRole,
-            permissionsNotOnRole: state.permissions.filter(p => !permissionsOnRole.find(por => por.id === p.id)),
-        };
-    });
-    yield put(PERMISSIONS_ON_ROLE_UPDATE(permissionsOnRole));
-    yield put(PERMISSIONS_NOT_ON_ROLE_UPDATE(permissionsNotOnRole));
+    const roleid = yield select(state => state.roleid);
+    if (isUnselected(roleid)) {
+        yield put(SET_PERMISSIONS_ON_ROLE([]));
+        yield put(SET_PERMISSIONS_NOT_ON_ROLE([]));
+    } else {
+        const { permissionsOnRole, permissionsNotOnRole } = yield select(state => {
+            const permissionsOnRole = state.rolepermissions[state.rolename] || [];
+            return {
+                permissionsOnRole,
+                permissionsNotOnRole: state.permissions.filter(p => !permissionsOnRole.find(por => por.id === p.id)),
+            };
+        });
+        yield put(SET_PERMISSIONS_ON_ROLE(permissionsOnRole));
+        yield put(SET_PERMISSIONS_NOT_ON_ROLE(permissionsNotOnRole));
+    }
 }
 
 function* addPermissionToRole() {

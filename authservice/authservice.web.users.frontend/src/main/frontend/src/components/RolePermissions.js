@@ -11,14 +11,14 @@ import {
     PERMISSIONS_ON_ROLE_SELECT,
     REMOVE_PERMISSION_BUTTON_CLICKED,
 } from '../actiontypes';
-import { emptyPermission } from '../constants';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import { ChevronLeft } from './bootstrap/ChevronLeft';
 import { ChevronRight } from './bootstrap/ChevronRight';
-import {FormRow } from './bootstrap/FormRow';
-import {FormLabel } from './bootstrap/FormLabel';
-import {FormField } from './bootstrap/FormField';
+import { FormRow } from './bootstrap/FormRow';
+import { FormLabel } from './bootstrap/FormLabel';
+import { FormField } from './bootstrap/FormField';
+import { isUnselected } from '../reducers/common';
 
 function RolePermissions(props) {
     const {
@@ -46,8 +46,8 @@ function RolePermissions(props) {
         onRolePermissions();
     },[onRoles, onRoleClear, onPermissions, onRolePermissions]);
 
-    const addPermissionDisabled = selectedInPermissionsNotOnRole === emptyPermission.id;
-    const removePermissionDisabled = selectedInPermissionsOnRole === emptyPermission.id;
+    const addPermissionDisabled = isUnselected(selectedInPermissionsNotOnRole);
+    const removePermissionDisabled = isUnselected(selectedInPermissionsOnRole);
 
     return (
         <div>
@@ -71,6 +71,7 @@ function RolePermissions(props) {
                         <div className="no-gutters col-sm-4">
                             <label htmlFor="permissionsnotonrole">Permissions not on role</label>
                             <select id="permissionsnotonrole" className="form-control" multiselect="true" size="10" onChange={onPermissionsNotOnRoleSelected} value={selectedInPermissionsNotOnRole}>
+                                <option key="-1" value="-1" />
                                 {permissionsNotOnRole.map((val) => <option key={val.id} value={val.id}>{val.permissionname}</option>)}
                             </select>
                         </div>
@@ -81,6 +82,7 @@ function RolePermissions(props) {
                         <div className="no-gutters col-sm-4">
                             <label htmlFor="permissionsonrole">Permission on role</label>
                             <select id="permissionsonrole" className="form-control" multiselect="true" size="10" onChange={onPermissionsOnRoleSelected} value={selectedInPermissionsOnRole}>
+                                <option key="-1" value="-1" />
                                 {permissionsOnRole.map((val) => <option key={val.id} value={val.id}>{val.permissionname}</option>)}
                             </select>
                         </div>
