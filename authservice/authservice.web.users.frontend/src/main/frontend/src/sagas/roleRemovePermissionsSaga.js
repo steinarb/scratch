@@ -2,8 +2,8 @@ import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     ROLE_REMOVE_PERMISSIONS,
-    ROLEPERMISSIONS_RECEIVED,
-    ROLEPERMISSIONS_ERROR,
+    ROLEPERMISSIONS_RECEIVE,
+    ROLEPERMISSIONS_FAILURE,
     PERMISSIONS_ON_ROLE_CLEAR,
 } from '../actiontypes';
 
@@ -20,9 +20,9 @@ function* roleRemovePermissions(action) {
         const response = yield call(postRoleRemovePermissions, roleAndPermissions);
         const rolepermissions = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(PERMISSIONS_ON_ROLE_CLEAR());
-        yield put(ROLEPERMISSIONS_RECEIVED(rolepermissions));
+        yield put(ROLEPERMISSIONS_RECEIVE(rolepermissions));
     } catch (error) {
-        yield put(ROLEPERMISSIONS_ERROR(error));
+        yield put(ROLEPERMISSIONS_FAILURE(error));
     }
 }
 

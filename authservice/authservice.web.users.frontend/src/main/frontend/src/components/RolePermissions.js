@@ -7,9 +7,9 @@ import {
     PERMISSIONS_REQUEST,
     ROLEPERMISSIONS_REQUEST,
     PERMISSIONS_NOT_ON_ROLE_SELECT,
-    ROLE_ADD_PERMISSIONS,
+    ADD_PERMISSION_BUTTON_CLICKED,
     PERMISSIONS_ON_ROLE_SELECT,
-    ROLE_REMOVE_PERMISSIONS,
+    REMOVE_PERMISSION_BUTTON_CLICKED,
 } from '../actiontypes';
 import { emptyPermission } from '../constants';
 import { Container } from './bootstrap/Container';
@@ -75,8 +75,8 @@ function RolePermissions(props) {
                             </select>
                         </div>
                         <div className="no-gutters col-sm-4">
-                            <button disabled={addPermissionDisabled} className="btn btn-primary form-control" onClick={() => onAddPermission(selectedInPermissionsNotOnRole)}>Add permission &nbsp;<ChevronRight/></button>
-                            <button disabled={removePermissionDisabled} className="btn btn-primary form-control" onClick={() => onRemovePermission(selectedInPermissionsOnRole)}><ChevronLeft/>&nbsp; Remove permission</button>
+                            <button disabled={addPermissionDisabled} className="btn btn-primary form-control" onClick={onAddPermission}>Add permission &nbsp;<ChevronRight/></button>
+                            <button disabled={removePermissionDisabled} className="btn btn-primary form-control" onClick={onRemovePermission}><ChevronLeft/>&nbsp; Remove permission</button>
                         </div>
                         <div className="no-gutters col-sm-4">
                             <label htmlFor="permissionsonrole">Permission on role</label>
@@ -110,9 +110,9 @@ const mapDispatchToProps = dispatch => {
         onRolePermissions: () => dispatch(ROLEPERMISSIONS_REQUEST()),
         onRolesChange: e => dispatch(SELECT_ROLE(parseInt(e.target.value))),
         onPermissionsNotOnRoleSelected: e => dispatch(PERMISSIONS_NOT_ON_ROLE_SELECT(parseInt(e.target.value, 10))),
-        onAddPermission: permissionid => dispatch(ROLE_ADD_PERMISSIONS(permissionid)),
+        onAddPermission: () => dispatch(ADD_PERMISSION_BUTTON_CLICKED()),
         onPermissionsOnRoleSelected: e => dispatch(PERMISSIONS_ON_ROLE_SELECT(parseInt(e.target.value, 10))),
-        onRemovePermission: permissionid => dispatch(ROLE_REMOVE_PERMISSIONS(permissionid)),
+        onRemovePermission: () => dispatch(REMOVE_PERMISSION_BUTTON_CLICKED()),
     };
 };
 

@@ -1,11 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { ROLEPERMISSIONS_RECEIVED } from '../actiontypes';
+import {
+    ROLEPERMISSIONS_RECEIVE,
+    ADD_PERMISSON_TO_ROLE_RECEIVE,
+} from '../actiontypes';
 
 const rolepermissionsReducer = createReducer([], {
-    [ROLEPERMISSIONS_RECEIVED]: (state, action) => {
-        const rolepermissions = action.payload;
-        return rolepermissions;
-    },
+    [ROLEPERMISSIONS_RECEIVE]: (state, action) => action.payload,
+    [ADD_PERMISSON_TO_ROLE_RECEIVE]: (state, action) => action.payload,
 });
 
 export default rolepermissionsReducer;
