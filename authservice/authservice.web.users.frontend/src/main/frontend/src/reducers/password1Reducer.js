@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    MODIFY_PASSWORD1,
+    PASSWORD1_FIELD_MODIFIED,
     PASSWORDS_CLEAR,
     SAVE_PASSWORDS_MODIFY_RECEIVE,
     SAVE_ADDED_USER_RECEIVE,
@@ -8,7 +8,7 @@ import {
 const defaultValue = '';
 
 const password1Reducer = createReducer(defaultValue, {
-    [MODIFY_PASSWORD1]: (state, action) => action.payload,
+    [PASSWORD1_FIELD_MODIFIED]: (state, action) => action.payload,
     [PASSWORDS_CLEAR]: () => defaultValue,
     [SAVE_PASSWORDS_MODIFY_RECEIVE]: () => defaultValue,
     [SAVE_ADDED_USER_RECEIVE]: () => defaultValue,

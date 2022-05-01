@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
-    MODIFY_USERNAME,
-    MODIFY_EMAIL,
-    MODIFY_FIRSTNAME,
-    MODIFY_LASTNAME,
-    MODIFY_PASSWORD1,
-    MODIFY_PASSWORD2,
+    USERNAME_FIELD_MODIFIED,
+    EMAIL_FIELD_MODIFIED,
+    FIRSTNAME_FIELD_MODIFIED,
+    LASTNAME_FIELD_MODIFIED,
+    PASSWORD1_FIELD_MODIFIED,
+    PASSWORD2_FIELD_MODIFIED,
     ADD_USER_BUTTON_CLICKED,
     USER_CLEAR,
     PASSWORDS_CLEAR,
@@ -113,12 +113,12 @@ const mapDispatchToProps = dispatch => {
     return {
         onUserClear: () => dispatch(USER_CLEAR()),
         onPasswordsClear: () => dispatch(PASSWORDS_CLEAR()),
-        onUsername: e => dispatch(MODIFY_USERNAME(e.target.value)),
-        onEmail: e => dispatch(MODIFY_EMAIL(e.target.value)),
-        onFirstname: e => dispatch(MODIFY_FIRSTNAME(e.target.value)),
-        onLastname: e => dispatch(MODIFY_LASTNAME(e.target.value)),
-        onPassword1: e => dispatch(MODIFY_PASSWORD1(e.target.value)),
-        onPassword2: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
+        onUsername: e => dispatch(USERNAME_FIELD_MODIFIED(e.target.value)),
+        onEmail: e => dispatch(EMAIL_FIELD_MODIFIED(e.target.value)),
+        onFirstname: e => dispatch(FIRSTNAME_FIELD_MODIFIED(e.target.value)),
+        onLastname: e => dispatch(LASTNAME_FIELD_MODIFIED(e.target.value)),
+        onPassword1: e => dispatch(PASSWORD1_FIELD_MODIFIED(e.target.value)),
+        onPassword2: e => dispatch(PASSWORD2_FIELD_MODIFIED(e.target.value)),
         onAddUser: () => dispatch(ADD_USER_BUTTON_CLICKED()),
     };
 };

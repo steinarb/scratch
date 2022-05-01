@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
     SELECT_USER,
-    MODIFY_USERNAME,
-    MODIFY_EMAIL,
-    MODIFY_FIRSTNAME,
-    MODIFY_LASTNAME,
+    USERNAME_FIELD_MODIFIED,
+    EMAIL_FIELD_MODIFIED,
+    FIRSTNAME_FIELD_MODIFIED,
+    LASTNAME_FIELD_MODIFIED,
     MODIFY_USER_BUTTON_CLICKED,
     USERS_REQUEST,
     USER_CLEAR,
@@ -109,10 +109,10 @@ const mapDispatchToProps = dispatch => {
         onUsers: () => dispatch(USERS_REQUEST()),
         onUserClear: () => dispatch(USER_CLEAR()),
         onUsersChange: e => dispatch(SELECT_USER(parseInt(e.target.value))),
-        onUsername: e => dispatch(MODIFY_USERNAME(e.target.value)),
-        onEmail: e => dispatch(MODIFY_EMAIL(e.target.value)),
-        onFirstname: e => dispatch(MODIFY_FIRSTNAME(e.target.value)),
-        onLastname: e => dispatch(MODIFY_LASTNAME(e.target.value)),
+        onUsername: e => dispatch(USERNAME_FIELD_MODIFIED(e.target.value)),
+        onEmail: e => dispatch(EMAIL_FIELD_MODIFIED(e.target.value)),
+        onFirstname: e => dispatch(FIRSTNAME_FIELD_MODIFIED(e.target.value)),
+        onLastname: e => dispatch(LASTNAME_FIELD_MODIFIED(e.target.value)),
         onSaveUpdatedUser: () => dispatch(MODIFY_USER_BUTTON_CLICKED()),
     };
 };

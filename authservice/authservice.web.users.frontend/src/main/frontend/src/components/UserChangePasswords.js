@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import {
     USERS_REQUEST,
     SELECT_USER,
-    MODIFY_PASSWORD1,
-    MODIFY_PASSWORD2,
+    PASSWORD1_FIELD_MODIFIED,
+    PASSWORD2_FIELD_MODIFIED,
     CHANGE_PASSWORD_BUTTON_CLICKED,
     USER_CLEAR,
     PASSWORDS_CLEAR,
@@ -95,8 +95,8 @@ const mapDispatchToProps = dispatch => {
         onUserClear: () => dispatch(USER_CLEAR()),
         onPasswordsClear: () => dispatch(PASSWORDS_CLEAR()),
         onUsersChange: e => dispatch(SELECT_USER(parseInt(e.target.value))),
-        onPassword1: e => dispatch(MODIFY_PASSWORD1(e.target.value)),
-        onPassword2: e => dispatch(MODIFY_PASSWORD2(e.target.value)),
+        onPassword1: e => dispatch(PASSWORD1_FIELD_MODIFIED(e.target.value)),
+        onPassword2: e => dispatch(PASSWORD2_FIELD_MODIFIED(e.target.value)),
         onSaveUpdatedPassword: () => dispatch(CHANGE_PASSWORD_BUTTON_CLICKED()),
     };
 };

@@ -1,7 +1,7 @@
 import { takeLatest, select, put } from 'redux-saga/effects';
 import {
-    MODIFY_PASSWORD1,
-    MODIFY_PASSWORD2,
+    PASSWORD1_FIELD_MODIFIED,
+    PASSWORD2_FIELD_MODIFIED,
     MODIFY_PASSWORDS_NOT_IDENTICAL,
     CHANGE_PASSWORD_BUTTON_CLICKED,
     SAVE_PASSWORDS_MODIFY_REQUEST,
@@ -32,7 +32,7 @@ function* saveModifiedPasswords() {
 }
 
 export default function* passwordsSaga() {
-    yield takeLatest(MODIFY_PASSWORD1, comparePasswords);
-    yield takeLatest(MODIFY_PASSWORD2, comparePasswords);
+    yield takeLatest(PASSWORD1_FIELD_MODIFIED, comparePasswords);
+    yield takeLatest(PASSWORD2_FIELD_MODIFIED, comparePasswords);
     yield takeLatest(CHANGE_PASSWORD_BUTTON_CLICKED, saveModifiedPasswords);
 }
