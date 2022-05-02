@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
+    SELECT_PERMISSION,
     PERMISSIONS_REQUEST,
     PERMISSION_CLEAR,
     PERMISSION_UPDATE,
@@ -41,7 +42,8 @@ function PermissionModify(props) {
                     <FormRow>
                         <FormLabel htmlFor="permissions">Select permission</FormLabel>
                         <FormField>
-                            <select id="permissions" className="form-control" onChange={e => onPermissionsChange(e, permissions)} value={permission.id}>
+                            <select id="permissions" className="form-control" onChange={onPermissionsChange} value={permission.id}>
+                                <option key="-1" value="-1" />
                                 {permissions.map((val) => <option key={val.id} value={val.id}>{val.permissionname}</option>)}
                             </select>
                         </FormField>
@@ -78,11 +80,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onPermissions: () => dispatch(PERMISSIONS_REQUEST()),
         onPermissionClear: () => dispatch(PERMISSION_CLEAR()),
-        onPermissionsChange: (e, permissions) => {
-            const id = parseInt(e.target.value, 10);
-            const permission = permissions.find(p => p.id === id);
-            dispatch(PERMISSION_UPDATE({ ...permission }));
-        },
+        onPermissionsChange: e => dispatch(SELECT_PERMISSION(parseInt(e.target.value))),
         onPermissionname: e => dispatch(PERMISSION_UPDATE({ permissionname: e.target.value })),
         onDescription: e => dispatch(PERMISSION_UPDATE({ description: e.target.value })),
         onSaveUpdatedPermission: permission => dispatch(PERMISSION_MODIFY(permission)),

@@ -17,6 +17,7 @@ import rolePermissionsSaga from './rolePermissionsSaga';
 import permissionsOnRoleSaga from './permissionsOnRoleSaga';
 import roleAddPermissionsSaga from './roleAddPermissionsSaga';
 import roleRemovePermissionsSaga from './roleRemovePermissionsSaga';
+import permissionSaga from './permissionSaga';
 import permissionsSaga from './permissionsSaga';
 import permissionModifySaga from './permissionModifySaga';
 import permissionAddSaga from './permissionAddSaga';
@@ -41,6 +42,7 @@ export default function* rootSaga() {
         fork(permissionsOnRoleSaga),
         fork(roleAddPermissionsSaga),
         fork(roleRemovePermissionsSaga),
+        fork(permissionSaga),
         fork(permissionsSaga),
         fork(permissionModifySaga),
         fork(permissionAddSaga),

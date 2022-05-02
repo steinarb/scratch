@@ -5,7 +5,8 @@ import {
     ROLES_ERROR,
     ADD_PERMISSON_TO_ROLE_FAILURE,
     REMOVE_PERMISSON_FROM_ROLE_FAILURE,
-    PERMISSIONS_ERROR,
+    SAVE_MODIFIED_PERMISSION_FAILURE,
+    SAVE_ADDED_PERMISSION_FAILURE,
 } from '../actiontypes';
 
 const errorsReducer = createReducer({}, {
@@ -29,7 +30,11 @@ const errorsReducer = createReducer({}, {
         const rolepermissions = action.payload;
         return { ...state, rolepermissions };
     },
-    [PERMISSIONS_ERROR]: (state, action) => {
+    [SAVE_MODIFIED_PERMISSION_FAILURE]: (state, action) => {
+        const permissions = action.payload;
+        return { ...state, permissions };
+    },
+    [SAVE_ADDED_PERMISSION_FAILURE]: (state, action) => {
         const permissions = action.payload;
         return { ...state, permissions };
     },
