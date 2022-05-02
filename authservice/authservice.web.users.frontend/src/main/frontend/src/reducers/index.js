@@ -23,7 +23,9 @@ import selectedInPermissionsNotOnRole from './selectedInPermissionsNotOnRoleRedu
 import permissionsOnRole from './permissionsOnRoleReducer';
 import selectedInPermissionsOnRole from './selectedInPermissionsOnRoleReducer';
 import permissions from './permissionsReducer';
-import permission from './permissionReducer';
+import permissionid from './permissionidReducer';
+import permissionname from './permissionnameReducer';
+import permissionDescription from './permissionDescriptionReducer';
 import formfield from './formfieldReducer';
 import errors from './errorsReducer';
 
@@ -52,7 +54,9 @@ const rootsReducer = combineReducers({
     permissionsOnRole,
     selectedInPermissionsOnRole,
     permissions,
-    permission,
+    permissionid,
+    permissionname,
+    permissionDescription,
     formfield,
     errors,
 });
