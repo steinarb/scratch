@@ -3,7 +3,7 @@ import {
     SELECT_PERMISSION,
     SELECTED_PERMISSION,
     MODIFY_PERMISSION_BUTTON_CLICKED,
-    ADD_PERMISSION_BUTTON_CLICKED,
+    ADD_NEW_PERMISSION_BUTTON_CLICKED,
     SAVE_MODIFIED_PERMISSION_REQUEST,
     SAVE_ADDED_PERMISSION_REQUEST
 } from '../actiontypes';
@@ -40,5 +40,5 @@ function* saveAddedPermission() {
 export default function* permissionSaga() {
     yield takeLatest(SELECT_PERMISSION, selectedPermission);
     yield takeLatest(MODIFY_PERMISSION_BUTTON_CLICKED, saveModifiedPermission);
-    yield takeLatest(ADD_PERMISSION_BUTTON_CLICKED, saveAddedPermission);
+    yield takeLatest(ADD_NEW_PERMISSION_BUTTON_CLICKED, saveAddedPermission);
 }
