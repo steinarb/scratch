@@ -6,9 +6,9 @@ import {
     REMOVE_PERMISSON_FROM_ROLE_RECEIVE,
     SET_PERMISSIONS_ON_ROLE,
     SET_PERMISSIONS_NOT_ON_ROLE,
-    ADD_PERMISSION_BUTTON_CLICKED,
+    ADD_PERMISSION_TO_ROLE_BUTTON_CLICKED,
     ADD_PERMISSON_TO_ROLE_REQUEST,
-    REMOVE_PERMISSION_BUTTON_CLICKED,
+    REMOVE_PERMISSION_FROM_ROLE_BUTTON_CLICKED,
     REMOVE_PERMISSON_FROM_ROLE_REQUEST,
 } from '../actiontypes';
 import { isUnselected } from '../reducers/common';
@@ -52,6 +52,6 @@ export default function* permissionsOnRoleSaga() {
     yield takeLatest(ADD_PERMISSON_TO_ROLE_RECEIVE, findPermissionsOnRolesAndFindPermissionsNotOnRoles);
     yield takeLatest(REMOVE_PERMISSON_FROM_ROLE_RECEIVE, findPermissionsOnRolesAndFindPermissionsNotOnRoles);
     yield takeLatest(SELECTED_ROLE, findPermissionsOnRolesAndFindPermissionsNotOnRoles);
-    yield takeLatest(ADD_PERMISSION_BUTTON_CLICKED, addPermissionToRole);
-    yield takeLatest(REMOVE_PERMISSION_BUTTON_CLICKED, removePermissionFromRole);
+    yield takeLatest(ADD_PERMISSION_TO_ROLE_BUTTON_CLICKED, addPermissionToRole);
+    yield takeLatest(REMOVE_PERMISSION_FROM_ROLE_BUTTON_CLICKED, removePermissionFromRole);
 }
