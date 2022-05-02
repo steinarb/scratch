@@ -26,7 +26,6 @@ import permissions from './permissionsReducer';
 import permissionid from './permissionidReducer';
 import permissionname from './permissionnameReducer';
 import permissionDescription from './permissionDescriptionReducer';
-import formfield from './formfieldReducer';
 import errors from './errorsReducer';
 
 const rootsReducer = combineReducers({
@@ -57,7 +56,6 @@ const rootsReducer = combineReducers({
     permissionid,
     permissionname,
     permissionDescription,
-    formfield,
     errors,
 });
 

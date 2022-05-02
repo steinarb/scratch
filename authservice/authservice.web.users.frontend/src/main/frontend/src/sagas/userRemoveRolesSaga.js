@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     USER_REMOVE_ROLE_REQUEST,
     USER_REMOVE_ROLE_RECEIVE,
-    USERROLES_RECEIVED,
+    USER_REMOVE_ROLE_FAILURE,
 } from '../actiontypes';
 
 function postUserRemoveRoles(userAndRoles) {
@@ -16,7 +16,7 @@ function* userRemoveRoles(action) {
         const userroles = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(USER_REMOVE_ROLE_RECEIVE(userroles));
     } catch (error) {
-        yield put(USERROLES_RECEIVED(error));
+        yield put(USER_REMOVE_ROLE_FAILURE(error));
     }
 }
 

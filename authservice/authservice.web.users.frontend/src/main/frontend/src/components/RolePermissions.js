@@ -6,9 +6,9 @@ import {
     ROLE_CLEAR,
     PERMISSIONS_REQUEST,
     ROLEPERMISSIONS_REQUEST,
-    PERMISSIONS_NOT_ON_ROLE_SELECT,
+    SELECT_PERMISSIONS_NOT_ON_ROLE,
     ADD_PERMISSION_TO_ROLE_BUTTON_CLICKED,
-    PERMISSIONS_ON_ROLE_SELECT,
+    SELECT_PERMISSIONS_ON_ROLE,
     REMOVE_PERMISSION_FROM_ROLE_BUTTON_CLICKED,
 } from '../actiontypes';
 import { Container } from './bootstrap/Container';
@@ -111,9 +111,9 @@ const mapDispatchToProps = dispatch => {
         onPermissions: () => dispatch(PERMISSIONS_REQUEST()),
         onRolePermissions: () => dispatch(ROLEPERMISSIONS_REQUEST()),
         onRolesChange: e => dispatch(SELECT_ROLE(parseInt(e.target.value))),
-        onPermissionsNotOnRoleSelected: e => dispatch(PERMISSIONS_NOT_ON_ROLE_SELECT(parseInt(e.target.value, 10))),
+        onPermissionsNotOnRoleSelected: e => dispatch(SELECT_PERMISSIONS_NOT_ON_ROLE(parseInt(e.target.value, 10))),
         onAddPermission: () => dispatch(ADD_PERMISSION_TO_ROLE_BUTTON_CLICKED()),
-        onPermissionsOnRoleSelected: e => dispatch(PERMISSIONS_ON_ROLE_SELECT(parseInt(e.target.value, 10))),
+        onPermissionsOnRoleSelected: e => dispatch(SELECT_PERMISSIONS_ON_ROLE(parseInt(e.target.value, 10))),
         onRemovePermission: () => dispatch(REMOVE_PERMISSION_FROM_ROLE_BUTTON_CLICKED()),
     };
 };

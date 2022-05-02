@@ -2,7 +2,7 @@ import { takeLatest, select, put } from 'redux-saga/effects';
 import {
     PASSWORD1_FIELD_MODIFIED,
     PASSWORD2_FIELD_MODIFIED,
-    MODIFY_PASSWORDS_NOT_IDENTICAL,
+    SET_PASSWORDS_NOT_IDENTICAL,
     CHANGE_PASSWORD_BUTTON_CLICKED,
     SAVE_PASSWORDS_MODIFY_REQUEST,
 } from '../actiontypes';
@@ -16,7 +16,7 @@ function* comparePasswords() {
 
         return password1 !== password2;
     });
-    yield put(MODIFY_PASSWORDS_NOT_IDENTICAL(passwordsNotIdentical));
+    yield put(SET_PASSWORDS_NOT_IDENTICAL(passwordsNotIdentical));
 }
 
 function* saveModifiedPasswords() {
