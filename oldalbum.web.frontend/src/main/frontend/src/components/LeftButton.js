@@ -10,7 +10,12 @@ function LeftButton(props) {
         return null;
     }
 
-    return(<button className={props.className} type="button" onClick={() => onMoveLeft(item)}><ChevronLeft/></button>);
+    return(<button
+               className={props.className}
+               type="button"
+               onClick={() => onMoveLeft(item)}>
+               <ChevronLeft/>
+           </button>);
 }
 
 function mapStateToProps(state) {

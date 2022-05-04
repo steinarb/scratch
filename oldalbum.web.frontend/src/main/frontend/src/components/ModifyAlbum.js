@@ -50,7 +50,11 @@ function ModifyAlbum(props) {
                     <div className="form-group row">
                         <label htmlFor="parent" className="col-form-label col-5">Parent</label>
                         <div className="col-7">
-                            <select id="parent" className="form-control" value={modifyalbum.parent} onChange={(event) => onParentChange(parseInt(event.target.value, 10), albums)}>
+                            <select
+                                id="parent"
+                                className="form-control"
+                                value={modifyalbum.parent}
+                                onChange={(event) => onParentChange(parseInt(event.target.value, 10), albums)}>
                                 { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
                             </select>
                         </div>
@@ -64,24 +68,47 @@ function ModifyAlbum(props) {
                     <div className="form-group row">
                         <label htmlFor="basename" className="col-form-label col-5">Base file name</label>
                         <div className="col-7">
-                            <input id="basename" className="form-control" type="text" value={modifyalbum.basename} onChange={(event) => onBasenameChange(event.target.value, albums.find(a => a.id === modifyalbum.parent))}/>
+                            <input
+                                id="basename"
+                                className="form-control"
+                                type="text"
+                                value={modifyalbum.basename}
+                                onChange={(event) => onBasenameChange(event.target.value, albums.find(a => a.id === modifyalbum.parent))} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="title" className="col-form-label col-5">Title</label>
                         <div className="col-7">
-                            <input id="title" className="form-control" type="text" value={modifyalbum.title} onChange={(event) => onTitleChange(event.target.value)}/>
+                            <input
+                                id="title"
+                                className="form-control"
+                                type="text"
+                                value={modifyalbum.title}
+                                onChange={(event) => onTitleChange(event.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="description" className="col-form-label col-5">Description</label>
                         <div className="col-7">
-                            <input id="description" className="form-control" type="text" value={modifyalbum.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
+                            <input
+                                id="description"
+                                className="form-control"
+                                type="text"
+                                value={modifyalbum.description}
+                                onChange={(event) => onDescriptionChange(event.target.value)} />
                         </div>
                     </div>
                     <div className="container">
-                        <button className="btn btn-primary ml-1" type="button" onClick={() => onUpdate(modifyalbum.path)}>Update</button>
-                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(modifyalbum.path)}>Cancel</button>
+                        <button
+                            className="btn btn-primary ml-1"
+                            type="button"
+                            onClick={() => onUpdate(modifyalbum.path)}>
+                            Update</button>
+                        <button
+                            className="btn btn-primary ml-1"
+                            type="button"
+                            onClick={() => onCancel(modifyalbum.path)}>
+                            Cancel</button>
                     </div>
                 </div>
             </form>

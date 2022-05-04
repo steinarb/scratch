@@ -26,7 +26,10 @@ function Unauthorized(props) {
                     <div className="form-group row">
                         <div className="col-5"/>
                         <div className="col-7">
-                            <button className="btn btn-primary" onClick={onLogout}>Log out</button>
+                            <button
+                                className="btn btn-primary"
+                                onClick={onLogout}>
+                                Log out</button>
                         </div>
                     </div>
                 </form>

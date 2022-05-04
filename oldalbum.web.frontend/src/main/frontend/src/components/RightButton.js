@@ -10,7 +10,11 @@ function RightButton(props) {
         return null;
     }
 
-    return(<button className={props.className} type="button" onClick={() => onMoveRight(item)}><ChevronRight/></button>);
+    return(<button
+               className={props.className}
+               type="button"
+               onClick={() => onMoveRight(item)}>
+               <ChevronRight/></button>);
 }
 
 function mapStateToProps(state, ownProps) {

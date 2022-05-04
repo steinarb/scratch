@@ -11,7 +11,9 @@ function LoginLogoutButton(props) {
     }
 
     if (loginresult.success) {
-        return (<span className="{props.styleName} alert alert-primary" role="alert">Logged in as {loginresult.username} <span className="alert-link" onClick={() => onLogout()}>Logout</span></span>);
+        return (<span className="{props.styleName} alert alert-primary" role="alert">
+                    Logged in as {loginresult.username} <span className="alert-link" onClick={() => onLogout()}>Logout</span>
+                </span>);
     }
 
     const returnpath = item.path || '/';

@@ -55,24 +55,47 @@ function AddAlbum(props) {
                     <div className="form-group row">
                         <label htmlFor="basename" className="col-form-label col-5">Base file name</label>
                         <div className="col-7">
-                            <input id="basename" className="form-control" type="text" value={addalbum.basename} onChange={(event) => onBasenameChange(event.target.value, parentalbum)}/>
+                            <input
+                                id="basename"
+                                className="form-control"
+                                type="text"
+                                value={addalbum.basename}
+                                onChange={(event) => onBasenameChange(event.target.value, parentalbum)} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="title" className="col-form-label col-5">Title</label>
                         <div className="col-7">
-                            <input id="title" className="form-control" type="text" value={addalbum.title} onChange={(event) => onTitleChange(event.target.value)}/>
+                            <input
+                                id="title"
+                                className="form-control"
+                                type="text"
+                                value={addalbum.title}
+                                onChange={(event) => onTitleChange(event.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="description" className="col-form-label col-5">Description</label>
                         <div className="col-7">
-                            <input id="description" className="form-control" type="text" value={addalbum.description} onChange={(event) => onDescriptionChange(event.target.value)}/>
+                            <input
+                                id="description"
+                                className="form-control"
+                                type="text"
+                                value={addalbum.description}
+                                onChange={(event) => onDescriptionChange(event.target.value)}/>
                         </div>
                     </div>
                     <div>
-                        <button className="btn btn-primary ml-1" type="button" onClick={() => onUpdate(addalbum.path)}>Add</button>
-                        <button className="btn btn-primary ml-1" type="button" onClick={() => onCancel(uplocation)}>Cancel</button>
+                        <button
+                            className="btn btn-primary ml-1"
+                            type="button"
+                            onClick={() => onUpdate(addalbum.path)}>
+                            Add</button>
+                        <button
+                            className="btn btn-primary ml-1"
+                            type="button"
+                            onClick={() => onCancel(uplocation)}>
+                            Cancel</button>
                     </div>
                 </div>
             </form>
