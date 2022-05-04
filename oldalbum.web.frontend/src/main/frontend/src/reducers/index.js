@@ -13,8 +13,6 @@ import addpicture from './addpictureReducer';
 import errors from './errorsReducer';
 import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusReducer';
 import loginresult from './loginresultReducer';
-import username from './usernameReducer';
-import password from './passwordReducer';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
@@ -31,6 +29,4 @@ export default (history) => combineReducers({
     errors,
     haveReceivedInitialLoginStatus,
     loginresult,
-    username,
-    password,
 });

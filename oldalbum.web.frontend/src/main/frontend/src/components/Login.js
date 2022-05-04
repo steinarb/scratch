@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import { parse } from 'qs';
-import {
-    LOGIN_REQUEST,
-    USERNAME_MODIFY,
-    PASSWORD_MODIFY,
-} from '../reduxactions';
+import { LOGIN_REQUEST } from '../reduxactions';
 
 function Login(props) {
-    const { username, password, loginresult, location, onUsernameEndre, onPasswordEndre, onSendLogin } = props;
+    const {
+        loginresult,
+        location,
+        onSendLogin,
+    } = props;
+    const [ username, setUsername ] = useState('');
+    const [ password, setPassword ] = useState('');
     const errormessage = loginresult && loginresult.errormessage;
     const queryParams = (location.search && parse(location.search, { ignoreQueryPrefix: true })) || {};
     const { returnpath = '/' } = queryParams;
@@ -30,13 +32,14 @@ function Login(props) {
                     <div className="form-group row">
                         <label htmlFor="username" className="col-form-label col-3 mr-2">Username:</label>
                         <div className="col-8">
-                            <input id="username" className="form-control" type="text" name="username" value={username} onChange={e => onUsernameEndre(e.target.value)} />
+                            <input id="username" className="form-control" type="text" name="username" value={username} onChange={e => setUsername(e.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Password:</label>
                         <div className="col-8">
-                            <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => onPasswordEndre(e.target.value)}/>
+                            <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => setPassword(e.target.value)}/>
+
                         </div>
                     </div>
                     <div className="btn-group row right-align-cell">
@@ -52,16 +55,12 @@ function Login(props) {
 
 function mapStateToProps(state) {
     return {
-        username: state.username,
-        password: state.password,
         loginresult: state.loginresult,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onUsernameEndre: (username) => dispatch(USERNAME_MODIFY(username)),
-        onPasswordEndre: (password) => dispatch(PASSWORD_MODIFY(password)),
         onSendLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
     };
 }
