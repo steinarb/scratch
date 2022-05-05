@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { Redirect, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
     MODIFY_ALBUM_PARENT,
     MODIFY_ALBUM_BASENAME,
@@ -13,7 +13,6 @@ import {
 
 function ModifyAlbum(props) {
     const {
-        loginresult,
         modifyalbum,
         albums,
         uplocation,
@@ -24,13 +23,6 @@ function ModifyAlbum(props) {
         onUpdate,
         onCancel,
     } = props;
-    if (!loginresult.canModifyAlbum) {
-        if (modifyalbum.path) {
-            return <Redirect to={modifyalbum.path} />;
-        }
-
-        return <Redirect to="/" />;
-    }
 
     return(
         <div>
@@ -117,14 +109,12 @@ function ModifyAlbum(props) {
 }
 
 function mapStateToProps(state) {
-    const loginresult = state.loginresult;
     const modifyalbum = state.modifyalbum;
     const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifyalbum.id) || [];
     const albumentries = state.albumentries || {};
     const originalalbum = albumentries[modifyalbum.id] || {};
     const uplocation = originalalbum.path || '/';
     return {
-        loginresult,
         modifyalbum,
         albums,
         uplocation,

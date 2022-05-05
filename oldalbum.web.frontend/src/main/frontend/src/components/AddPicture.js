@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { Redirect, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
     ADD_PICTURE_BASENAME,
@@ -16,7 +16,6 @@ import {
 
 function AddPicture(props) {
     const {
-        loginresult,
         addpicture,
         albums,
         onBasenameChange,
@@ -35,9 +34,6 @@ function AddPicture(props) {
     const uplocation = parentalbum.path || '/';
     const imageUrl = addpicture.imageUrl;
     const lastModified = addpicture.lastModified ? new Date(addpicture.lastModified).toISOString() : '';
-    if (!loginresult.canModifyAlbum) {
-        return <Redirect to={uplocation} />;
-    }
 
     return(
         <div>
@@ -158,11 +154,9 @@ function AddPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const loginresult = state.loginresult;
     const addpicture = state.addpicture;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
-        loginresult,
         addpicture,
         albums,
     };

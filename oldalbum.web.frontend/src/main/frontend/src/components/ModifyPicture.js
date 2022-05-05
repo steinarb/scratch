@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { Redirect, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
     MODIFY_PICTURE_PARENT,
     MODIFY_PICTURE_BASENAME,
@@ -16,7 +16,6 @@ import {
 
 function ModifyPicture(props) {
     const {
-        loginresult,
         modifypicture,
         albums,
         uplocation,
@@ -32,13 +31,6 @@ function ModifyPicture(props) {
     } = props;
     const imageUrl = modifypicture.imageUrl;
     const lastmodified = modifypicture.lastModified ? new Date(modifypicture.lastModified).toISOString() : '';
-    if (!loginresult.canModifyAlbum) {
-        if (modifypicture.path) {
-            return <Redirect to={modifypicture.path} />;
-        }
-
-        return <Redirect to="/" />;
-    }
 
     return(
         <div>
@@ -171,14 +163,12 @@ function ModifyPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const loginresult = state.loginresult;
     const modifypicture = state.modifypicture;
     const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifypicture.id) || [];
     const albumentries = state.albumentries || {};
     const originalalbum = albumentries[modifypicture.id] || {};
     const uplocation = originalalbum.path || '/';
     return {
-        loginresult,
         modifypicture,
         albums,
         uplocation,

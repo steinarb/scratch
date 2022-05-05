@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { Redirect, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
     ADD_ALBUM_BASENAME,
@@ -13,7 +13,6 @@ import {
 
 function AddAlbum(props) {
     const {
-        loginresult,
         addalbum,
         albums,
         onBasenameChange,
@@ -27,9 +26,6 @@ function AddAlbum(props) {
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';
-    if (!loginresult.canModifyAlbum) {
-        return <Redirect to={uplocation} />;
-    }
 
     return(
         <div>
@@ -104,11 +100,9 @@ function AddAlbum(props) {
 }
 
 function mapStateToProps(state) {
-    const loginresult = state.loginresult;
     const addalbum = state.addalbum;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
-        loginresult,
         addalbum,
         albums,
     };
