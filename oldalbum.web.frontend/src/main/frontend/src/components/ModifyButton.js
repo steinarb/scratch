@@ -4,8 +4,13 @@ import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
 
 function ModifyButton(props) {
-    const { webcontext, loginresult, item } = props;
-    if (!loginresult.canModifyAlbum) {
+    const { item } = props;
+    const {
+        webcontext,
+        canModifyAlbum,
+    } = props;
+
+    if (!canModifyAlbum) {
         return null;
     }
 
@@ -18,10 +23,10 @@ function ModifyButton(props) {
 
 function mapStateToProps(state) {
     const webcontext = state.webcontext || '';
-    const loginresult = state.loginresult;
+    const canModifyAlbum = state.canModifyAlbum;
     return {
         webcontext,
-        loginresult,
+        canModifyAlbum,
     };
 }
 

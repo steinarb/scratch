@@ -1,12 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { DELETE_ITEM } from '../reduxactions';
+import { DELETE_ITEM_REQUEST } from '../reduxactions';
 
 function DeleteButton(props) {
-    const { loginresult, parentpath, children, item, onDelete } = props;
+    const { item } = props;
+    const {
+        canModifyAlbum,
+        parentpath,
+        children,
+        onDelete,
+    } = props;
+
     // Button doesn't show up if: 1. edit not allowed, 2: this is the root album, 3: this is an album with content
-    if (!loginresult.canModifyAlbum || !item.parent || children.length) {
+    if (!canModifyAlbum || !item.parent || children.length) {
         return null;
     }
 
@@ -18,7 +25,7 @@ function DeleteButton(props) {
 }
 
 function mapStateToProps(state, ownProps) {
-    const loginresult = state.loginresult;
+    const canModifyAlbum = state.canModifyAlbum;
     const { item } = ownProps;
     const albumentries = state.albumentries || {};
     const parentItem = albumentries[item.parent] || {};
@@ -26,14 +33,14 @@ function mapStateToProps(state, ownProps) {
     const childentries = state.childentries || {};
     const children = childentries[item.id] || [];
     return {
-        loginresult,
+        canModifyAlbum,
         parentpath,
         children,
     };
 }
 function mapDispatchToProps(dispatch) {
     return {
-        onDelete: (item, parentpath) => { dispatch(DELETE_ITEM(item)); dispatch(push(parentpath)); },
+        onDelete: (item, parentpath) => { dispatch(DELETE_ITEM_REQUEST(item)); dispatch(push(parentpath)); },
     };
 }
 

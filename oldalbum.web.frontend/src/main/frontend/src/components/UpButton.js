@@ -1,11 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { MOVE_ALBUMENTRY_UP } from '../reduxactions';
+import { MOVE_ALBUMENTRY_UP_REQUEST } from '../reduxactions';
 
 function UpButton(props) {
-    const { loginresult, item, onMoveUp } = props;
+    const { item } = props;
+    const {
+        canModifyAlbum,
+        onMoveUp,
+    } = props;
+
     // Button doesn't show up if: 1. edit not allowed, 2: this is the first entry in the album
-    if (!loginresult.canModifyAlbum || item.sort < 2) {
+    if (!canModifyAlbum || item.sort < 2) {
         return null;
     }
 
@@ -19,13 +24,13 @@ function UpButton(props) {
 
 function mapStateToProps(state) {
     return {
-        loginresult: state.loginresult,
+        canModifyAlbum: state.canModifyAlbum,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onMoveUp: (item) => { dispatch(MOVE_ALBUMENTRY_UP(item)); },
+        onMoveUp: (item) => { dispatch(MOVE_ALBUMENTRY_UP_REQUEST(item)); },
     };
 }
 

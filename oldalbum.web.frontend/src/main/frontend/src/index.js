@@ -12,7 +12,7 @@ import { createBrowserHistory } from 'history';
 import createRootReducer from './reducers';
 import rootSaga from './sagas';
 import {
-    LOGIN_CHECK,
+    LOGIN_CHECK_REQUEST,
     ALLROUTES_REQUEST,
 } from './reduxactions';
 
@@ -31,7 +31,7 @@ const store = configureStore({
 sagaMiddleware.run(rootSaga);
 
 // Initial actions to fetch data
-store.dispatch(LOGIN_CHECK());
+store.dispatch(LOGIN_CHECK_REQUEST());
 store.dispatch(ALLROUTES_REQUEST());
 
 ReactDOM.render(

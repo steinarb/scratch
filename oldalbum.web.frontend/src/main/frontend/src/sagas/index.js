@@ -1,10 +1,12 @@
 import 'regenerator-runtime/runtime';
 import { fork, all } from "redux-saga/effects";
 import allroutes from './allroutesSaga';
-import modifyalbum from './modifyalbumSaga';
-import addalbum from './addalbumSaga';
-import modifypicture from './modifypictureSaga';
-import addpicture from './addpictureSaga';
+import albumSaga from './albumSaga';
+import modifyAlbumSaga from './modifyAlbumSaga';
+import addAlbumSaga from './addAlbumSaga';
+import pictureSaga from './pictureSaga';
+import modifyPicture from './modifyPictureSaga';
+import addPicture from './addPictureSaga';
 import imageMetadata from './imageMetadataSaga';
 import deleteSaga from './deleteSaga';
 import movealbumentry from './movealbumentrySaga';
@@ -15,10 +17,12 @@ import location from './locationSaga';
 export default function* rootSaga() {
     yield all([
         fork(allroutes),
-        fork(modifyalbum),
-        fork(addalbum),
-        fork(modifypicture),
-        fork(addpicture),
+        fork(albumSaga),
+        fork(modifyAlbumSaga),
+        fork(addAlbumSaga),
+        fork(pictureSaga),
+        fork(modifyPicture),
+        fork(addPicture),
         fork(imageMetadata),
         fork(deleteSaga),
         fork(movealbumentry),

@@ -4,6 +4,7 @@ import ChevronLeft from './bootstrap/ChevronLeft';
 
 export default function Previous(props) {
     const { className = '', previous } = props;
+
     if (!previous) {
         return null;
     }

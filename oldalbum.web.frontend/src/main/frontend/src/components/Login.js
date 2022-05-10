@@ -6,16 +6,17 @@ import { LOGIN_REQUEST } from '../reduxactions';
 
 function Login(props) {
     const {
-        loginresult,
+        loggedIn,
+        errormessage,
         location,
         onSendLogin,
     } = props;
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
-    const errormessage = loginresult && loginresult.errormessage;
     const queryParams = (location.search && parse(location.search, { ignoreQueryPrefix: true })) || {};
     const { returnpath = '/' } = queryParams;
-    if (loginresult.success) {
+
+    if (loggedIn) {
         return (<Redirect to={returnpath} />);
     }
 
@@ -39,11 +40,14 @@ function Login(props) {
                         <label htmlFor="password" className="col-form-label col-3 mr-2">Password:</label>
                         <div className="col-8">
                             <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => setPassword(e.target.value)}/>
-
                         </div>
                     </div>
                     <div className="btn-group row right-align-cell">
-                        <input className="btn btn-primary mx-2" type="submit" value="Login" onClick={() => onSendLogin(username, password)}/>
+                        <input
+                            className="btn btn-primary mx-2"
+                            type="submit"
+                            value="Login"
+                            onClick={() => onSendLogin(username, password)}/>
                         <NavLink className="btn btn-primary mx-2" to={returnpath}>Cancel</NavLink>
                     </div>
                 </form>
@@ -55,7 +59,8 @@ function Login(props) {
 
 function mapStateToProps(state) {
     return {
-        loginresult: state.loginresult,
+        loggedIn: state.loggedIn,
+        errormessage: state.errormessage,
     };
 }
 

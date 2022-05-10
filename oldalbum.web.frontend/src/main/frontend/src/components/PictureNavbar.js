@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import CopyLinkButton from './CopyLinkButton';
 import LoginLogoutButton from './LoginLogoutButton';
 
-function PictureNavbar(props) {
+export default function PictureNavbar(props) {
     const { className, item, parent, title } = props;
 
     return (
@@ -31,5 +31,3 @@ function PictureNavbar(props) {
         </div>
     );
 }
-
-export default PictureNavbar;

@@ -1,9 +1,9 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
-    DELETE_ITEM,
-    ALLROUTES_RECEIVE,
-    DELETE_ITEM_ERROR,
+    DELETE_ITEM_REQUEST,
+    DELETE_ITEM_RECEIVE,
+    DELETE_ITEM_FAILURE,
 } from '../reduxactions';
 
 function deleteAlbumItem(item) {
@@ -14,12 +14,12 @@ function* deleteItemAndReceiveRoutes(action) {
     try {
         const response = yield call(deleteAlbumItem, action.payload);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
-        yield put(ALLROUTES_RECEIVE(routes));
+        yield put(DELETE_ITEM_RECEIVE(routes));
     } catch (error) {
-        yield put(DELETE_ITEM_ERROR(error));
+        yield put(DELETE_ITEM_FAILURE(error));
     }
 }
 
 export default function* deleteSaga() {
-    yield takeLatest(DELETE_ITEM, deleteItemAndReceiveRoutes);
+    yield takeLatest(DELETE_ITEM_REQUEST, deleteItemAndReceiveRoutes);
 }

@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
 
 function AddAlbumButton(props) {
-    const { loginresult, item } = props;
-    if (!loginresult.canModifyAlbum) {
+    const { canModifyAlbum, item } = props;
+    if (!canModifyAlbum) {
         return null;
     }
 
@@ -19,7 +19,7 @@ function AddAlbumButton(props) {
 
 function mapStateToProps(state) {
     return {
-        loginresult: state.loginresult,
+        canModifyAlbum: state.canModifyAlbum,
     };
 }
 

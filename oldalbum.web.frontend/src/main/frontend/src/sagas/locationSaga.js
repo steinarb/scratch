@@ -3,10 +3,10 @@ import { LOCATION_CHANGE } from 'connected-react-router';
 import { parse } from 'qs';
 import {
     CLEAR_ALERT,
-    MODIFY_ALBUM,
-    ADD_ALBUM,
-    MODIFY_PICTURE,
-    ADD_PICTURE,
+    FILL_MODIFY_ALBUM_FORM,
+    FILL_ADD_ALBUM_FORM,
+    FILL_MODIFY_PICTURE_FORM,
+    FILL_ADD_PICTURE_FORM,
 } from '../reduxactions';
 
 function* locationChange(action) {
@@ -21,8 +21,10 @@ function* locationChange(action) {
         const albumentries = yield select(findAlbumentries);
         const idInt = parseInt(id, 10);
         const album = albumentries[idInt];
+        const parent = albumentries[album.parent];
+        const albumWithParent = { ...album, parent };
 
-        yield put(MODIFY_ALBUM(album || { id: idInt } ));
+        yield put(FILL_MODIFY_ALBUM_FORM(albumWithParent || { id: idInt } ));
     }
 
     if (pathname === '/addalbum') {
@@ -31,13 +33,12 @@ function* locationChange(action) {
         const albumentries = yield select(findAlbumentries);
         const parentId = parseInt(parent, 10);
         const parentalbum = albumentries[parentId];
-        const path = parentalbum.path || '';
+        const path = (parentalbum.path ? parentalbum.path : '/') + '/';
         const sort = (parentalbum.childcount || 0) + 1;
-        const basename = '';
         const title = '';
         const description = '';
 
-        yield put(ADD_ALBUM({ parent: parentId, path, album: true, basename, title, description, sort }));
+        yield put(FILL_ADD_ALBUM_FORM({ parent: parentId, path, album: true, title, description, sort }));
     }
 
     if (pathname === '/modifypicture') {
@@ -46,8 +47,10 @@ function* locationChange(action) {
         const albumentries = yield select(findAlbumentries);
         const idInt = parseInt(id, 10);
         const picture = albumentries[idInt];
+        const parent = albumentries[picture.parent];
+        const pictureWithParent = { ...picture, parent };
 
-        yield put(MODIFY_PICTURE(picture || { id: idInt } ));
+        yield put(FILL_MODIFY_PICTURE_FORM(pictureWithParent || { id: idInt } ));
     }
 
     if (pathname === '/addpicture') {
@@ -64,7 +67,7 @@ function* locationChange(action) {
         const imageUrl = '';
         const thumbnailUrl = '';
 
-        yield put(ADD_PICTURE({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort }));
+        yield put(FILL_ADD_PICTURE_FORM({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort }));
     }
 }
 

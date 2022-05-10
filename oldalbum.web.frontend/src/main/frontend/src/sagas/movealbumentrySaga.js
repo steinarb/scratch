@@ -1,12 +1,18 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import {
-    MOVE_ALBUMENTRY_UP,
-    MOVE_ALBUMENTRY_LEFT,
-    MOVE_ALBUMENTRY_DOWN,
-    MOVE_ALBUMENTRY_RIGHT,
-    ALLROUTES_RECEIVE,
-    MOVE_ALBUMENTRY_ERROR,
+    MOVE_ALBUMENTRY_UP_REQUEST,
+    MOVE_ALBUMENTRY_UP_RECEIVE,
+    MOVE_ALBUMENTRY_UP_FAILURE,
+    MOVE_ALBUMENTRY_LEFT_REQUEST,
+    MOVE_ALBUMENTRY_LEFT_RECEIVE,
+    MOVE_ALBUMENTRY_LEFT_FAILURE,
+    MOVE_ALBUMENTRY_DOWN_REQUEST,
+    MOVE_ALBUMENTRY_DOWN_RECEIVE,
+    MOVE_ALBUMENTRY_DOWN_FAILURE,
+    MOVE_ALBUMENTRY_RIGHT_REQUEST,
+    MOVE_ALBUMENTRY_RIGHT_RECEIVE,
+    MOVE_ALBUMENTRY_RIGHT_FAILURE,
 } from '../reduxactions';
 import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
@@ -19,9 +25,20 @@ function* moveAlbumentryUpAndReceiveRoutes(action) {
     try {
         const response = yield call(moveAlbumentryUp, action.payload);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
-        yield put(ALLROUTES_RECEIVE(routes));
+        yield put(MOVE_ALBUMENTRY_UP_RECEIVE(routes));
     } catch (error) {
-        yield put(MOVE_ALBUMENTRY_ERROR(error));
+        yield put(MOVE_ALBUMENTRY_UP_FAILURE(error));
+    }
+}
+
+
+function* moveAlbumentryLeftAndReceiveRoutes(action) {
+    try {
+        const response = yield call(moveAlbumentryUp, action.payload);
+        const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(MOVE_ALBUMENTRY_LEFT_RECEIVE(routes));
+    } catch (error) {
+        yield put(MOVE_ALBUMENTRY_LEFT_FAILURE(error));
     }
 }
 
@@ -34,15 +51,25 @@ function* moveAlbumentryDownAndReceiveRoutes(action) {
     try {
         const response = yield call(moveAlbumentryDown, action.payload);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
-        yield put(ALLROUTES_RECEIVE(routes));
+        yield put(MOVE_ALBUMENTRY_DOWN_RECEIVE(routes));
     } catch (error) {
-        yield put(MOVE_ALBUMENTRY_ERROR(error));
+        yield put(MOVE_ALBUMENTRY_DOWN_FAILURE(error));
+    }
+}
+
+function* moveAlbumentryRightAndReceiveRoutes(action) {
+    try {
+        const response = yield call(moveAlbumentryDown, action.payload);
+        const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
+        yield put(MOVE_ALBUMENTRY_RIGHT_RECEIVE(routes));
+    } catch (error) {
+        yield put(MOVE_ALBUMENTRY_RIGHT_FAILURE(error));
     }
 }
 
 export default function* allroutesSaga() {
-    yield takeLatest(MOVE_ALBUMENTRY_UP, moveAlbumentryUpAndReceiveRoutes);
-    yield takeLatest(MOVE_ALBUMENTRY_LEFT, moveAlbumentryUpAndReceiveRoutes);
-    yield takeLatest(MOVE_ALBUMENTRY_DOWN, moveAlbumentryDownAndReceiveRoutes);
-    yield takeLatest(MOVE_ALBUMENTRY_RIGHT, moveAlbumentryDownAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_UP_REQUEST, moveAlbumentryUpAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_LEFT_REQUEST, moveAlbumentryLeftAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_DOWN_REQUEST, moveAlbumentryDownAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_RIGHT_REQUEST, moveAlbumentryRightAndReceiveRoutes);
 }

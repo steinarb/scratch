@@ -6,13 +6,25 @@ import albumentries from './albumentriesReducer';
 import childentries from './childentriesReducer';
 import previousentry from './previousentryReducer';
 import nextentry from './nextentryReducer';
-import modifyalbum from './modifyalbumReducer';
-import addalbum from './addalbumReducer';
-import modifypicture from './modifypictureReducer';
-import addpicture from './addpictureReducer';
+import albumentryid from './albumentryidReducer';
+import albumentryParent from './albumentryParentReducer';
+import albumentryPath from './albumentryPathReducer';
+import albumentryBasename from './albumentryBasenameReducer';
+import albumentryTitle from './albumentryTitleReducer';
+import albumentryDescription from './albumentryDescriptionReducer';
+import albumentryImageUrl from './albumentryImageUrlReducer';
+import albumentryThumbnailUrl from './albumentryThumbnailUrlReducer';
+import albumentryLastModified from './albumentryLastModifiedReducer';
+import albumentryContentLength from './albumentryContentLengthReducer';
+import albumentryContentType from './albumentryContentTypeReducer';
+import albumentrySort from './albumentrySortReducer';
 import errors from './errorsReducer';
 import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusReducer';
-import loginresult from './loginresultReducer';
+import loggedIn from './loggedInReducer';
+import username from './usernameReducer';
+import logstatusMessage from './logstatusMessageReducer';
+import canModifyAlbum from './canModifyAlbumReducer';
+import canLogin from './canLoginReducer';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
@@ -22,11 +34,23 @@ export default (history) => combineReducers({
     childentries,
     previousentry,
     nextentry,
-    modifyalbum,
-    addalbum,
-    modifypicture,
-    addpicture,
+    albumentryid,
+    albumentryParent,
+    albumentryPath,
+    albumentryBasename,
+    albumentryTitle,
+    albumentryDescription,
+    albumentryImageUrl,
+    albumentryThumbnailUrl,
+    albumentryLastModified,
+    albumentryContentLength,
+    albumentryContentType,
+    albumentrySort,
     errors,
     haveReceivedInitialLoginStatus,
-    loginresult,
+    loggedIn,
+    username,
+    logstatusMessage,
+    canModifyAlbum,
+    canLogin,
 });

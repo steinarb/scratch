@@ -4,6 +4,7 @@ import ChevronRight from './bootstrap/ChevronRight';
 
 export default function Next(props) {
     const { className = '', next } = props;
+
     if (!next) {
         return null;
     }

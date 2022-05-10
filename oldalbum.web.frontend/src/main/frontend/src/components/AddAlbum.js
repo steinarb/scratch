@@ -1,19 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
-    ADD_ALBUM_BASENAME,
-    ADD_ALBUM_TITLE,
-    ADD_ALBUM_DESCRIPTION,
-    ADD_ALBUM_UPDATE,
-    ADD_ALBUM_CLEAR,
+    MODIFY_ALBUM_BASENAME_FIELD_CHANGED,
+    MODIFY_ALBUM_TITLE_FIELD_CHANGED,
+    MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED,
+    ADD_ALBUM_UPDATE_BUTTON_CLICKED,
+    ADD_ALBUM_CANCEL_BUTTON_CLICKED,
 } from '../reduxactions';
 
 function AddAlbum(props) {
     const {
-        addalbum,
+        path,
+        basename,
+        title,
+        description,
         albums,
         onBasenameChange,
         onTitleChange,
@@ -45,7 +47,7 @@ function AddAlbum(props) {
                     <div className="form-group row">
                         <label htmlFor="path" className="col-form-label col-5">Path</label>
                         <div className="col-7">
-                            <input id="path" className="form-control" type="text" value={addalbum.path} readOnly={true} />
+                            <input id="path" className="form-control" type="text" value={path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -55,8 +57,8 @@ function AddAlbum(props) {
                                 id="basename"
                                 className="form-control"
                                 type="text"
-                                value={addalbum.basename}
-                                onChange={(event) => onBasenameChange(event.target.value, parentalbum)} />
+                                value={basename}
+                                onChange={onBasenameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -66,8 +68,8 @@ function AddAlbum(props) {
                                 id="title"
                                 className="form-control"
                                 type="text"
-                                value={addalbum.title}
-                                onChange={(event) => onTitleChange(event.target.value)} />
+                                value={title}
+                                onChange={onTitleChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -77,20 +79,20 @@ function AddAlbum(props) {
                                 id="description"
                                 className="form-control"
                                 type="text"
-                                value={addalbum.description}
-                                onChange={(event) => onDescriptionChange(event.target.value)}/>
+                                value={description}
+                                onChange={onDescriptionChange}/>
                         </div>
                     </div>
                     <div>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onUpdate(addalbum.path)}>
+                            onClick={onUpdate}>
                             Add</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onCancel(uplocation)}>
+                            onClick={onCancel}>
                             Cancel</button>
                     </div>
                 </div>
@@ -100,21 +102,27 @@ function AddAlbum(props) {
 }
 
 function mapStateToProps(state) {
-    const addalbum = state.addalbum;
+    const path = state.albumentryPath;
+    const basename = state.albumentryBasename;
+    const title = state.albumentryTitle;
+    const description = state.albumentryDescription;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
-        addalbum,
+        path,
+        basename,
+        title,
+        description,
         albums,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onBasenameChange: (basename, parentalbum) => dispatch(ADD_ALBUM_BASENAME({ basename, parentalbum })),
-        onTitleChange: (title) => dispatch(ADD_ALBUM_TITLE(title)),
-        onDescriptionChange: (description) => dispatch(ADD_ALBUM_DESCRIPTION(description)),
-        onUpdate: (path) => { dispatch(ADD_ALBUM_UPDATE()); dispatch(push(path)); },
-        onCancel: (path) => { dispatch(ADD_ALBUM_CLEAR()); dispatch(push(path)); },
+        onBasenameChange: e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value)),
+        onTitleChange: e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value)),
+        onDescriptionChange: e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value)),
+        onUpdate: () => dispatch(ADD_ALBUM_UPDATE_BUTTON_CLICKED()),
+        onCancel: () => dispatch(ADD_ALBUM_CANCEL_BUTTON_CLICKED()),
     };
 }
 

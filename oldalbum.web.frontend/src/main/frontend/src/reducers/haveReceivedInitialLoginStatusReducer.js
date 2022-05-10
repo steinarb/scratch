@@ -1,10 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    LOGIN_RECEIVE,
+    LOGIN_CHECK_RECEIVE,
 } from '../reduxactions';
 
 const haveReceivedInitialLoginStatusReducer = createReducer(false, {
-    [LOGIN_RECEIVE]: () => true,
+    [LOGIN_CHECK_RECEIVE]: () => true,
 });
 
 export default haveReceivedInitialLoginStatusReducer;

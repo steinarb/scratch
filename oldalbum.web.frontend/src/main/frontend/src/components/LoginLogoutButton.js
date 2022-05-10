@@ -5,14 +5,21 @@ import { stringify } from 'qs';
 import { LOGOUT_REQUEST } from '../reduxactions';
 
 function LoginLogoutButton(props) {
-    const { loginresult, item, onLogout } = props;
-    if (!loginresult.canLogin) {
+    const { item } = props;
+    const {
+        loggedIn,
+        username,
+        canLogin,
+        onLogout,
+    } = props;
+
+    if (!canLogin) {
         return null;
     }
 
-    if (loginresult.success) {
+    if (loggedIn) {
         return (<span className="{props.styleName} alert alert-primary" role="alert">
-                    Logged in as {loginresult.username} <span className="alert-link" onClick={() => onLogout()}>Logout</span>
+                    Logged in as {username} <span className="alert-link" onClick={() => onLogout()}>Logout</span>
                 </span>);
     }
 
@@ -23,7 +30,9 @@ function LoginLogoutButton(props) {
 
 function mapStateToProps(state) {
     return {
-        loginresult: state.loginresult,
+        loggedIn: state.loggedIn,
+        username: state.username,
+        canLogin: state.canLogin,
     };
 }
 

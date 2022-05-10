@@ -1,22 +1,29 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
-    ADD_PICTURE_BASENAME,
-    ADD_PICTURE_TITLE,
-    ADD_PICTURE_DESCRIPTION,
-    ADD_PICTURE_IMAGEURL,
-    ADD_PICTURE_THUMBNAILURL,
-    ADD_PICTURE_UPDATE,
-    ADD_PICTURE_CLEAR,
-    IMAGE_LOADED,
+    ADD_PICTURE_BASENAME_FIELD_CHANGED,
+    ADD_PICTURE_TITLE_FIELD_CHANGED,
+    ADD_PICTURE_DESCRIPTION_FIELD_CHANGED,
+    ADD_PICTURE_IMAGEURL_FIELD_CHANGED,
+    ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED,
+    ADD_PICTURE_UPDATE_BUTTON_CLICKED,
+    ADD_PICTURE_CANCEL_BUTTON_CLICKED,
+    IMAGE_METADATA_REQUEST,
 } from '../reduxactions';
 
 function AddPicture(props) {
     const {
-        addpicture,
+        path,
+        basename,
+        title,
+        description,
+        imageUrl,
+        thumbnailUrl,
+        lastModified,
+        contentLength,
+        contentType,
         albums,
         onBasenameChange,
         onTitleChange,
@@ -32,8 +39,7 @@ function AddPicture(props) {
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';
-    const imageUrl = addpicture.imageUrl;
-    const lastModified = addpicture.lastModified ? new Date(addpicture.lastModified).toISOString() : '';
+    const lastmodified = lastModified ? new Date(lastModified).toISOString() : '';
 
     return(
         <div>
@@ -59,7 +65,7 @@ function AddPicture(props) {
                     <div className="form-group row">
                         <label htmlFor="path" className="col-form-label col-5">Path</label>
                         <div className="col-7">
-                            <input id="path" className="form-control" type="text" value={addpicture.path} readOnly={true} />
+                            <input id="path" className="form-control" type="text" value={path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -69,8 +75,8 @@ function AddPicture(props) {
                                 id="basename"
                                 className="form-control"
                                 type="text"
-                                value={addpicture.basename}
-                                onChange={(event) => onBasenameChange(event.target.value, parentalbum)} />
+                                value={basename}
+                                onChange={onBasenameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -80,8 +86,8 @@ function AddPicture(props) {
                                 id="title"
                                 className="form-control"
                                 type="text"
-                                value={addpicture.title}
-                                onChange={(event) => onTitleChange(event.target.value)} />
+                                value={title}
+                                onChange={onTitleChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -91,8 +97,8 @@ function AddPicture(props) {
                                 id="description"
                                 className="form-control"
                                 type="text"
-                                value={addpicture.description}
-                                onChange={(event) => onDescriptionChange(event.target.value)} />
+                                value={description}
+                                onChange={onDescriptionChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -102,8 +108,8 @@ function AddPicture(props) {
                                 id="imageUrl"
                                 className="form-control"
                                 type="text"
-                                value={addpicture.imageUrl}
-                                onChange={(event) => onImageUrlChange(event.target.value, parentalbum)} />
+                                value={imageUrl}
+                                onChange={onImageUrlChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -113,38 +119,38 @@ function AddPicture(props) {
                                 id="thumbnailUrl"
                                 className="form-control"
                                 type="text"
-                                value={addpicture.thumbnailUrl}
-                                onChange={(event) => onThumbnailUrlChange(event.target.value, parentalbum)} />
+                                value={thumbnailUrl}
+                                onChange={onThumbnailUrlChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content length (bytes)</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={addpicture.contentLength}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={contentLength}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content type</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={addpicture.contentType}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={contentType}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Last modified</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={lastModified}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={lastmodified}/>
                         </div>
                     </div>
                     <div>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onUpdate(addpicture.path)}>
+                            onClick={onUpdate}>
                             Add</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onCancel(uplocation)}>
+                            onClick={onCancel}>
                             Cancel</button>
                     </div>
                 </div>
@@ -154,24 +160,42 @@ function AddPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const addpicture = state.addpicture;
+    const parent = state.albumentryParent;
+    const path = state.albumentryPath;
+    const basename = state.albumentryBasename;
+    const title = state.albumentryTitle;
+    const description = state.albumentryDescription;
+    const imageUrl = state.albumentryImageUrl;
+    const thumbnailUrl = state.albumentryThumbnailUrl;
+    const lastModified = state.albumentryLastModified;
+    const contentLength = state.albumentryContentLength;
+    const contentType = state.albumentryContentType;
     const albums = state.allroutes.filter(r => r.album) || [];
     return {
-        addpicture,
+        parent,
+        path,
+        basename,
+        title,
+        description,
+        imageUrl,
+        thumbnailUrl,
+        lastModified,
+        contentLength,
+        contentType,
         albums,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onBasenameChange: (basename, parentalbum) => dispatch(ADD_PICTURE_BASENAME({ basename, parentalbum })),
-        onTitleChange: (title) => dispatch(ADD_PICTURE_TITLE(title)),
-        onDescriptionChange: (description) => dispatch(ADD_PICTURE_DESCRIPTION(description)),
-        onImageUrlChange: (imageUrl, parentalbum) => dispatch(ADD_PICTURE_IMAGEURL({ imageUrl, parentalbum })),
-        onImageLoaded: (imageUrl) => dispatch(IMAGE_LOADED(imageUrl)),
-        onThumbnailUrlChange: (thumbnailUrl, parentalbum) => dispatch(ADD_PICTURE_THUMBNAILURL({ thumbnailUrl, parentalbum })),
-        onUpdate: (path) => { dispatch(ADD_PICTURE_UPDATE()); dispatch(push(path)); },
-        onCancel: (path) => { dispatch(ADD_PICTURE_CLEAR()); dispatch(push(path)); },
+        onBasenameChange: e => dispatch(ADD_PICTURE_BASENAME_FIELD_CHANGED(e.target.value)),
+        onTitleChange: e => dispatch(ADD_PICTURE_TITLE_FIELD_CHANGED(e.target.value)),
+        onDescriptionChange: e => dispatch(ADD_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value)),
+        onImageUrlChange: e => dispatch(ADD_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value)),
+        onImageLoaded: e => dispatch(IMAGE_METADATA_REQUEST(e.target.value)),
+        onThumbnailUrlChange: e => dispatch(ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value)),
+        onUpdate: () => dispatch(ADD_PICTURE_UPDATE_BUTTON_CLICKED()),
+        onCancel: () => dispatch(ADD_PICTURE_CANCEL_BUTTON_CLICKED()),
     };
 }
 

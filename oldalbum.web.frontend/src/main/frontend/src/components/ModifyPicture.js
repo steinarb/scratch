@@ -1,22 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 import { NavLink } from 'react-router-dom';
 import {
-    MODIFY_PICTURE_PARENT,
-    MODIFY_PICTURE_BASENAME,
-    MODIFY_PICTURE_TITLE,
-    MODIFY_PICTURE_DESCRIPTION,
-    MODIFY_PICTURE_IMAGEURL,
-    MODIFY_PICTURE_THUMBNAILURL,
-    MODIFY_PICTURE_UPDATE,
-    MODIFY_PICTURE_CLEAR,
-    IMAGE_LOADED,
+    MODIFY_PICTURE_PARENT_SELECTED,
+    MODIFY_PICTURE_BASENAME_FIELD_CHANGED,
+    MODIFY_PICTURE_TITLE_FIELD_CHANGED,
+    MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED,
+    MODIFY_PICTURE_IMAGEURL_FIELD_CHANGED,
+    MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED,
+    MODIFY_PICTURE_UPDATE_BUTTON_CLICKED,
+    MODIFY_PICTURE_CANCEL_BUTTON_CLICKED,
+    IMAGE_METADATA_REQUEST,
 } from '../reduxactions';
 
 function ModifyPicture(props) {
     const {
-        modifypicture,
+        parent,
+        path,
+        basename,
+        title,
+        description,
+        imageUrl,
+        thumbnailUrl,
+        lastModified,
+        contentLength,
+        contentType,
         albums,
         uplocation,
         onParentChange,
@@ -29,8 +37,7 @@ function ModifyPicture(props) {
         onUpdate,
         onCancel,
     } = props;
-    const imageUrl = modifypicture.imageUrl;
-    const lastmodified = modifypicture.lastModified ? new Date(modifypicture.lastModified).toISOString() : '';
+    const lastmodified = lastModified ? new Date(lastModified).toISOString() : '';
 
     return(
         <div>
@@ -59,16 +66,16 @@ function ModifyPicture(props) {
                             <select
                                 id="parent"
                                 className="form-control"
-                                value={modifypicture.parent}
-                                onChange={(event) => onParentChange(parseInt(event.target.value, 10), albums)}>
-                                { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
+                                value={parent}
+                                onChange={onParentChange}>
+                                { albums.map((val) => <option key={'album_' + val.id} value={JSON.stringify(val)}>{val.title}</option>) }
                             </select>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="path" className="col-form-label col-5">Path</label>
                         <div className="col-7">
-                            <input id="path" type="text" value={modifypicture.path} readOnly={true} />
+                            <input id="path" type="text" value={path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -78,8 +85,8 @@ function ModifyPicture(props) {
                                 id="basename"
                                 className="form-control"
                                 type="text"
-                                value={modifypicture.basename}
-                                onChange={(event) => onBasenameChange(event.target.value, albums.find(a => a.id === modifypicture.parent))} />
+                                value={basename}
+                                onChange={onBasenameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -89,8 +96,8 @@ function ModifyPicture(props) {
                                 id="title"
                                 className="form-control"
                                 type="text"
-                                value={modifypicture.title}
-                                onChange={(event) => onTitleChange(event.target.value)} />
+                                value={title}
+                                onChange={onTitleChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -100,8 +107,8 @@ function ModifyPicture(props) {
                                 id="description"
                                 className="form-control"
                                 type="text"
-                                value={modifypicture.description}
-                                onChange={(event) => onDescriptionChange(event.target.value)} />
+                                value={description}
+                                onChange={onDescriptionChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -111,8 +118,8 @@ function ModifyPicture(props) {
                                 id="imageUrl"
                                 className="form-control"
                                 type="text"
-                                value={modifypicture.imageUrl}
-                                onChange={(event) => onImageUrlChange(event.target.value)} />
+                                value={imageUrl}
+                                onChange={onImageUrlChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -122,20 +129,20 @@ function ModifyPicture(props) {
                                 id="thumbnailUrl"
                                 className="form-control"
                                 type="text"
-                                value={modifypicture.thumbnailUrl}
-                                onChange={(event) => onThumbnailUrlChange(event.target.value)} />
+                                value={thumbnailUrl}
+                                onChange={onThumbnailUrlChange} />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content length (bytes)</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={modifypicture.contentLength}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={contentLength}/>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content type</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={modifypicture.contentType}/>
+                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={contentType}/>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -148,12 +155,12 @@ function ModifyPicture(props) {
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onUpdate(modifypicture.path)}>
+                            onClick={onUpdate}>
                             Update</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onCancel(modifypicture.path)}>
+                            onClick={onCancel}>
                             Cancel</button>
                     </div>
                 </div>
@@ -163,13 +170,32 @@ function ModifyPicture(props) {
 }
 
 function mapStateToProps(state) {
-    const modifypicture = state.modifypicture;
-    const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifypicture.id) || [];
+    const albumentryid = state.albumentryid;
+    const parent = state.albumentryParent;
+    const path = state.albumentryPath;
+    const basename = state.albumentryBasename;
+    const title = state.albumentryTitle;
+    const description = state.albumentryDescription;
+    const imageUrl = state.albumentryImageUrl;
+    const thumbnailUrl = state.albumentryThumbnailUrl;
+    const lastModified = state.albumentryLastModified;
+    const contentLength = state.albumentryContentLength;
+    const contentType = state.albumentryContentType;
+    const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== albumentryid) || [];
     const albumentries = state.albumentries || {};
-    const originalalbum = albumentries[modifypicture.id] || {};
+    const originalalbum = albumentries[albumentryid] || {};
     const uplocation = originalalbum.path || '/';
     return {
-        modifypicture,
+        parent,
+        path,
+        basename,
+        title,
+        description,
+        imageUrl,
+        thumbnailUrl,
+        lastModified,
+        contentLength,
+        contentType,
         albums,
         uplocation,
     };
@@ -177,15 +203,15 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onParentChange: (parent, albums) => dispatch(MODIFY_PICTURE_PARENT(albums.find(a => a.id === parent))),
-        onBasenameChange: (basename, parentalbum) => dispatch(MODIFY_PICTURE_BASENAME({ basename, parentalbum })),
-        onTitleChange: (title) => dispatch(MODIFY_PICTURE_TITLE(title)),
-        onDescriptionChange: (description) => dispatch(MODIFY_PICTURE_DESCRIPTION(description)),
-        onImageUrlChange: (imageUrl) => dispatch(MODIFY_PICTURE_IMAGEURL(imageUrl)),
-        onImageLoaded: (imageUrl) => dispatch(IMAGE_LOADED(imageUrl)),
-        onThumbnailUrlChange: (thumbnailUrl) => dispatch(MODIFY_PICTURE_THUMBNAILURL(thumbnailUrl)),
-        onUpdate: (path) => { dispatch(MODIFY_PICTURE_UPDATE()); dispatch(push(path)); },
-        onCancel: (path) => { dispatch(MODIFY_PICTURE_CLEAR()); dispatch(push(path)); },
+        onParentChange: e => dispatch(MODIFY_PICTURE_PARENT_SELECTED(JSON.parse(e.target.value))),
+        onBasenameChange: e => dispatch(MODIFY_PICTURE_BASENAME_FIELD_CHANGED(e.target.value)),
+        onTitleChange: e => dispatch(MODIFY_PICTURE_TITLE_FIELD_CHANGED(e.target.value)),
+        onDescriptionChange: e => dispatch(MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value)),
+        onImageUrlChange: e => dispatch(MODIFY_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value)),
+        onImageLoaded: imageUrl => dispatch(IMAGE_METADATA_REQUEST(imageUrl)),
+        onThumbnailUrlChange: e => dispatch(MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value)),
+        onUpdate: () => dispatch(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED()),
+        onCancel: () => dispatch(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED()),
     };
 }
 

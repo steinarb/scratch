@@ -1,19 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 import { NavLink } from 'react-router-dom';
 import {
-    MODIFY_ALBUM_PARENT,
-    MODIFY_ALBUM_BASENAME,
-    MODIFY_ALBUM_TITLE,
-    MODIFY_ALBUM_DESCRIPTION,
-    MODIFY_ALBUM_UPDATE,
-    MODIFY_ALBUM_CLEAR,
+    MODIFY_ALBUM_PARENT_SELECTED,
+    MODIFY_ALBUM_BASENAME_FIELD_CHANGED,
+    MODIFY_ALBUM_TITLE_FIELD_CHANGED,
+    MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED,
+    MODIFY_ALBUM_UPDATE_BUTTON_CLICKED,
+    MODIFY_ALBUM_CANCEL_BUTTON_CLICKED,
 } from '../reduxactions';
 
 function ModifyAlbum(props) {
     const {
-        modifyalbum,
+        parent,
+        path,
+        basename,
+        title,
+        description,
         albums,
         uplocation,
         onParentChange,
@@ -45,16 +48,16 @@ function ModifyAlbum(props) {
                             <select
                                 id="parent"
                                 className="form-control"
-                                value={modifyalbum.parent}
-                                onChange={(event) => onParentChange(parseInt(event.target.value, 10), albums)}>
-                                { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
+                                value={parent}
+                                onChange={onParentChange}>
+                                { albums.map((val) => <option key={'album_' + val.id} value={JSON.stringify(val)}>{val.title}</option>) }
                             </select>
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="path" className="col-form-label col-5">Path</label>
                         <div className="col-7">
-                            <input id="path" className="form-control" type="text" value={modifyalbum.path} readOnly={true} />
+                            <input id="path" className="form-control" type="text" value={path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -62,10 +65,11 @@ function ModifyAlbum(props) {
                         <div className="col-7">
                             <input
                                 id="basename"
+                                disabled={path === '/'}
                                 className="form-control"
                                 type="text"
-                                value={modifyalbum.basename}
-                                onChange={(event) => onBasenameChange(event.target.value, albums.find(a => a.id === modifyalbum.parent))} />
+                                value={basename}
+                                onChange={onBasenameChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -75,8 +79,8 @@ function ModifyAlbum(props) {
                                 id="title"
                                 className="form-control"
                                 type="text"
-                                value={modifyalbum.title}
-                                onChange={(event) => onTitleChange(event.target.value)} />
+                                value={title}
+                                onChange={onTitleChange} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -86,20 +90,20 @@ function ModifyAlbum(props) {
                                 id="description"
                                 className="form-control"
                                 type="text"
-                                value={modifyalbum.description}
-                                onChange={(event) => onDescriptionChange(event.target.value)} />
+                                value={description}
+                                onChange={onDescriptionChange} />
                         </div>
                     </div>
                     <div className="container">
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onUpdate(modifyalbum.path)}>
+                            onClick={onUpdate}>
                             Update</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={() => onCancel(modifyalbum.path)}>
+                            onClick={onCancel}>
                             Cancel</button>
                     </div>
                 </div>
@@ -109,13 +113,22 @@ function ModifyAlbum(props) {
 }
 
 function mapStateToProps(state) {
-    const modifyalbum = state.modifyalbum;
-    const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== modifyalbum.id) || [];
+    const albumentryid = state.albumentryid;
+    const parent = state.albumentryParent;
+    const path = state.albumentryPath;
+    const basename = state.albumentryBasename;
+    const title = state.albumentryTitle;
+    const description = state.albumentryDescription;
+    const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== albumentryid) || [];
     const albumentries = state.albumentries || {};
-    const originalalbum = albumentries[modifyalbum.id] || {};
+    const originalalbum = albumentries[albumentryid] || {};
     const uplocation = originalalbum.path || '/';
     return {
-        modifyalbum,
+        parent,
+        path,
+        basename,
+        title,
+        description,
         albums,
         uplocation,
     };
@@ -123,12 +136,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onParentChange: (parent, albums) => dispatch(MODIFY_ALBUM_PARENT(albums.find(a => a.id === parent))),
-        onBasenameChange: (basename, parentalbum) => dispatch(MODIFY_ALBUM_BASENAME({ basename, parentalbum })),
-        onTitleChange: (title) => dispatch(MODIFY_ALBUM_TITLE(title)),
-        onDescriptionChange: (description) => dispatch(MODIFY_ALBUM_DESCRIPTION(description)),
-        onUpdate: (path) => { dispatch(MODIFY_ALBUM_UPDATE()); dispatch(push(path)); },
-        onCancel: (path) => { dispatch(MODIFY_ALBUM_CLEAR()); dispatch(push(path)); },
+        onParentChange: e => dispatch(MODIFY_ALBUM_PARENT_SELECTED(JSON.parse(e.target.value))),
+        onBasenameChange: e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value)),
+        onTitleChange: e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value)),
+        onDescriptionChange: e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value)),
+        onUpdate: () => dispatch(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED()),
+        onCancel: () => dispatch(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED()),
     };
 }
 

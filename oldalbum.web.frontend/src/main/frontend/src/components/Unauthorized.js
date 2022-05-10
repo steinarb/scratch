@@ -7,8 +7,13 @@ import {
 
 
 function Unauthorized(props) {
-    const { haveReceivedInitialLoginStatus, username, loginresult, onLogout } = props;
-    if (haveReceivedInitialLoginStatus && !loginresult.success) {
+    const {
+        haveReceivedInitialLoginStatus,
+        username,
+        loggedIn,
+        onLogout,
+    } = props;
+    if (haveReceivedInitialLoginStatus && !loggedIn) {
         return <Redirect to="/login" />;
     }
 
@@ -39,11 +44,11 @@ function Unauthorized(props) {
 }
 
 const mapStateToProps = state => {
-    const { haveReceivedInitialLoginStatus, username, loginresult } = state;
+    const { haveReceivedInitialLoginStatus, username, loggedIn } = state;
     return {
         haveReceivedInitialLoginStatus,
         username,
-        loginresult,
+        loggedIn,
     };
 };
 

@@ -1,6 +1,6 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
-import { ALLROUTES_REQUEST, ALLROUTES_RECEIVE, ALLROUTES_ERROR } from '../reduxactions';
+import { ALLROUTES_REQUEST, ALLROUTES_RECEIVE, ALLROUTES_FAILURE } from '../reduxactions';
 
 function fetchAllRoutes() {
     return axios.get('/api/allroutes');
@@ -12,7 +12,7 @@ function* receiveRoutes() {
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(ALLROUTES_RECEIVE(routes));
     } catch (error) {
-        yield put(ALLROUTES_ERROR(error));
+        yield put(ALLROUTES_FAILURE(error));
     }
 }
 
