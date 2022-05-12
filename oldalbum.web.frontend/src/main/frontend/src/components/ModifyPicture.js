@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import {
     MODIFY_PICTURE_PARENT_SELECTED,
@@ -27,16 +27,8 @@ function ModifyPicture(props) {
         contentType,
         albums,
         uplocation,
-        onParentChange,
-        onBasenameChange,
-        onTitleChange,
-        onDescriptionChange,
-        onImageUrlChange,
-        onImageLoaded,
-        onThumbnailUrlChange,
-        onUpdate,
-        onCancel,
     } = props;
+    const dispatch = useDispatch();
     const lastmodified = lastModified ? new Date(lastModified).toISOString() : '';
 
     return(
@@ -58,7 +50,7 @@ function ModifyPicture(props) {
                         <img
                             className="img-thumbnail fullsize-img-thumbnail"
                             src={imageUrl}
-                            onLoad={() => onImageLoaded(imageUrl)} />
+                            onLoad={() => dispatch(IMAGE_METADATA_REQUEST(imageUrl))} />
                     </div>
                     <div className="form-group row">
                         <label htmlFor="parent" className="col-form-label col-5">Parent</label>
@@ -67,7 +59,7 @@ function ModifyPicture(props) {
                                 id="parent"
                                 className="form-control"
                                 value={parent}
-                                onChange={onParentChange}>
+                                onChange={e => dispatch(MODIFY_PICTURE_PARENT_SELECTED(JSON.parse(e.target.value)))}>
                                 { albums.map((val) => <option key={'album_' + val.id} value={JSON.stringify(val)}>{val.title}</option>) }
                             </select>
                         </div>
@@ -86,7 +78,7 @@ function ModifyPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={basename}
-                                onChange={onBasenameChange} />
+                                onChange={e => dispatch(MODIFY_PICTURE_BASENAME_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -97,7 +89,7 @@ function ModifyPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={title}
-                                onChange={onTitleChange} />
+                                onChange={e => dispatch(MODIFY_PICTURE_TITLE_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -108,7 +100,7 @@ function ModifyPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={description}
-                                onChange={onDescriptionChange} />
+                                onChange={e => dispatch(MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -119,7 +111,7 @@ function ModifyPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={imageUrl}
-                                onChange={onImageUrlChange} />
+                                onChange={e => dispatch(MODIFY_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -130,7 +122,7 @@ function ModifyPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={thumbnailUrl}
-                                onChange={onThumbnailUrlChange} />
+                                onChange={e => dispatch(MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -155,12 +147,12 @@ function ModifyPicture(props) {
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onUpdate}>
+                            onClick={() => dispatch(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED())}>
                             Update</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onCancel}>
+                            onClick={() => dispatch(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED())}>
                             Cancel</button>
                     </div>
                 </div>
@@ -201,18 +193,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onParentChange: e => dispatch(MODIFY_PICTURE_PARENT_SELECTED(JSON.parse(e.target.value))),
-        onBasenameChange: e => dispatch(MODIFY_PICTURE_BASENAME_FIELD_CHANGED(e.target.value)),
-        onTitleChange: e => dispatch(MODIFY_PICTURE_TITLE_FIELD_CHANGED(e.target.value)),
-        onDescriptionChange: e => dispatch(MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value)),
-        onImageUrlChange: e => dispatch(MODIFY_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value)),
-        onImageLoaded: imageUrl => dispatch(IMAGE_METADATA_REQUEST(imageUrl)),
-        onThumbnailUrlChange: e => dispatch(MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value)),
-        onUpdate: () => dispatch(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED()),
-        onCancel: () => dispatch(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyPicture);
+export default connect(mapStateToProps)(ModifyPicture);

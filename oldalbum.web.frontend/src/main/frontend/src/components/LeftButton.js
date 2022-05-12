@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { MOVE_ALBUMENTRY_LEFT_REQUEST } from '../reduxactions';
 import ChevronLeft from './bootstrap/ChevronLeft';
 
@@ -7,8 +7,8 @@ function LeftButton(props) {
     const { item } = props;
     const {
         canModifyAlbum,
-        onMoveLeft,
     } = props;
+    const dispatch = useDispatch();
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the first entry in the album
     if (!canModifyAlbum || item.sort < 2) {
@@ -18,7 +18,7 @@ function LeftButton(props) {
     return(<button
                className={props.className}
                type="button"
-               onClick={() => onMoveLeft(item)}>
+               onClick={() => dispatch(MOVE_ALBUMENTRY_LEFT_REQUEST(item))}>
                <ChevronLeft/>
            </button>);
 }
@@ -29,10 +29,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onMoveLeft: (item) => { dispatch(MOVE_ALBUMENTRY_LEFT_REQUEST(item)); },
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LeftButton);
+export default connect(mapStateToProps)(LeftButton);

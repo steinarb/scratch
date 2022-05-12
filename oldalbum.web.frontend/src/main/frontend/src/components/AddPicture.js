@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
@@ -25,15 +25,8 @@ function AddPicture(props) {
         contentLength,
         contentType,
         albums,
-        onBasenameChange,
-        onTitleChange,
-        onDescriptionChange,
-        onImageUrlChange,
-        onImageLoaded,
-        onThumbnailUrlChange,
-        onUpdate,
-        onCancel,
     } = props;
+    const dispatch = useDispatch();
     const queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parent } = queryParams;
     const parentId = parseInt(parent, 10);
@@ -60,7 +53,7 @@ function AddPicture(props) {
                         <img
                             className="img-thumbnail fullsize-img-thumbnail"
                             src={imageUrl}
-                            onLoad={() => onImageLoaded(imageUrl)} />
+                            onLoad={() => dispatch(IMAGE_METADATA_REQUEST(imageUrl))} />
                     </div>
                     <div className="form-group row">
                         <label htmlFor="path" className="col-form-label col-5">Path</label>
@@ -76,7 +69,7 @@ function AddPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={basename}
-                                onChange={onBasenameChange} />
+                                onChange={e => dispatch(ADD_PICTURE_BASENAME_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -87,7 +80,7 @@ function AddPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={title}
-                                onChange={onTitleChange} />
+                                onChange={e => dispatch(ADD_PICTURE_TITLE_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -98,7 +91,7 @@ function AddPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={description}
-                                onChange={onDescriptionChange} />
+                                onChange={e => dispatch(ADD_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -109,7 +102,7 @@ function AddPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={imageUrl}
-                                onChange={onImageUrlChange} />
+                                onChange={e => dispatch(ADD_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -120,7 +113,7 @@ function AddPicture(props) {
                                 className="form-control"
                                 type="text"
                                 value={thumbnailUrl}
-                                onChange={onThumbnailUrlChange} />
+                                onChange={e => dispatch(ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -145,12 +138,12 @@ function AddPicture(props) {
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onUpdate}>
+                            onClick={() => dispatch(ADD_PICTURE_UPDATE_BUTTON_CLICKED())}>
                             Add</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onCancel}>
+                            onClick={() => dispatch(ADD_PICTURE_CANCEL_BUTTON_CLICKED())}>
                             Cancel</button>
                     </div>
                 </div>
@@ -186,17 +179,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onBasenameChange: e => dispatch(ADD_PICTURE_BASENAME_FIELD_CHANGED(e.target.value)),
-        onTitleChange: e => dispatch(ADD_PICTURE_TITLE_FIELD_CHANGED(e.target.value)),
-        onDescriptionChange: e => dispatch(ADD_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value)),
-        onImageUrlChange: e => dispatch(ADD_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value)),
-        onImageLoaded: e => dispatch(IMAGE_METADATA_REQUEST(e.target.value)),
-        onThumbnailUrlChange: e => dispatch(ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value)),
-        onUpdate: () => dispatch(ADD_PICTURE_UPDATE_BUTTON_CLICKED()),
-        onCancel: () => dispatch(ADD_PICTURE_CANCEL_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddPicture);
+export default connect(mapStateToProps)(AddPicture);

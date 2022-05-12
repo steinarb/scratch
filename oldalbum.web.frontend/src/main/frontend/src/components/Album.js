@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import { Helmet } from "react-helmet";
@@ -17,11 +17,12 @@ import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
 import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
 function Album(props) {
-    const { item, parent, children, previous, next, navigateTo } = props;
+    const { item, parent, children, previous, next } = props;
+    const dispatch = useDispatch();
     const title = pictureTitle(item);
     const swipeHandlers = useSwipeable({
-        onSwipedLeft: () => navigateTo(next),
-        onSwipedRight: () => navigateTo(previous),
+        onSwipedLeft: () => next && dispatch(push(next.path)),
+        onSwipedRight: () => previous && dispatch(push(previous.path)),
     });
 
     return (
@@ -93,10 +94,4 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        navigateTo: (item) => item && dispatch(push(item.path)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Album);
+export default connect(mapStateToProps)(Album);

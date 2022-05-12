@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
@@ -17,12 +17,8 @@ function AddAlbum(props) {
         title,
         description,
         albums,
-        onBasenameChange,
-        onTitleChange,
-        onDescriptionChange,
-        onUpdate,
-        onCancel,
     } = props;
+    const dispatch = useDispatch();
     const queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parent } = queryParams;
     const parentId = parseInt(parent, 10);
@@ -58,7 +54,7 @@ function AddAlbum(props) {
                                 className="form-control"
                                 type="text"
                                 value={basename}
-                                onChange={onBasenameChange} />
+                                onChange={e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -69,7 +65,7 @@ function AddAlbum(props) {
                                 className="form-control"
                                 type="text"
                                 value={title}
-                                onChange={onTitleChange} />
+                                onChange={e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -80,19 +76,19 @@ function AddAlbum(props) {
                                 className="form-control"
                                 type="text"
                                 value={description}
-                                onChange={onDescriptionChange}/>
+                                onChange={e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))}/>
                         </div>
                     </div>
                     <div>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onUpdate}>
+                            onClick={() => dispatch(ADD_ALBUM_UPDATE_BUTTON_CLICKED())}>
                             Add</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onCancel}>
+                            onClick={() => dispatch(ADD_ALBUM_CANCEL_BUTTON_CLICKED())}>
                             Cancel</button>
                     </div>
                 </div>
@@ -116,14 +112,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onBasenameChange: e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value)),
-        onTitleChange: e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value)),
-        onDescriptionChange: e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value)),
-        onUpdate: () => dispatch(ADD_ALBUM_UPDATE_BUTTON_CLICKED()),
-        onCancel: () => dispatch(ADD_ALBUM_CANCEL_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddAlbum);
+export default connect(mapStateToProps)(AddAlbum);

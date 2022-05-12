@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { MOVE_ALBUMENTRY_DOWN_REQUEST } from '../reduxactions';
 
 function DownButton(props) {
@@ -7,8 +7,8 @@ function DownButton(props) {
     const {
         canModifyAlbum,
         albumchildcount,
-        onMoveDown,
     } = props;
+    const dispatch = useDispatch();
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the last entry in the album
     if (!canModifyAlbum || item.sort >= albumchildcount) {
@@ -18,7 +18,7 @@ function DownButton(props) {
     return(<button
                className={props.className}
                type="button"
-               onClick={() => onMoveDown(item)}>
+               onClick={() => dispatch(MOVE_ALBUMENTRY_DOWN_REQUEST(item))}>
                <span className="oi oi-chevron-bottom" title="chevron top" aria-hidden="true"></span>
            </button>);
 }
@@ -35,10 +35,4 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onMoveDown: (item) => { dispatch(MOVE_ALBUMENTRY_DOWN_REQUEST(item)); },
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DownButton);
+export default connect(mapStateToProps)(DownButton);

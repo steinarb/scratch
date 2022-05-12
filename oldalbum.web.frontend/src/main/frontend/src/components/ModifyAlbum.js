@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import {
     MODIFY_ALBUM_PARENT_SELECTED,
@@ -19,13 +19,8 @@ function ModifyAlbum(props) {
         description,
         albums,
         uplocation,
-        onParentChange,
-        onBasenameChange,
-        onTitleChange,
-        onDescriptionChange,
-        onUpdate,
-        onCancel,
     } = props;
+    const dispatch = useDispatch();
 
     return(
         <div>
@@ -49,7 +44,7 @@ function ModifyAlbum(props) {
                                 id="parent"
                                 className="form-control"
                                 value={parent}
-                                onChange={onParentChange}>
+                                onChange={e => dispatch(MODIFY_ALBUM_PARENT_SELECTED(JSON.parse(e.target.value)))}>
                                 { albums.map((val) => <option key={'album_' + val.id} value={JSON.stringify(val)}>{val.title}</option>) }
                             </select>
                         </div>
@@ -69,7 +64,7 @@ function ModifyAlbum(props) {
                                 className="form-control"
                                 type="text"
                                 value={basename}
-                                onChange={onBasenameChange} />
+                                onChange={e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -80,7 +75,7 @@ function ModifyAlbum(props) {
                                 className="form-control"
                                 type="text"
                                 value={title}
-                                onChange={onTitleChange} />
+                                onChange={e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -91,19 +86,19 @@ function ModifyAlbum(props) {
                                 className="form-control"
                                 type="text"
                                 value={description}
-                                onChange={onDescriptionChange} />
+                                onChange={e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="container">
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onUpdate}>
+                            onClick={() => dispatch(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED())}>
                             Update</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
-                            onClick={onCancel}>
+                            onClick={() => dispatch(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED())}>
                             Cancel</button>
                     </div>
                 </div>
@@ -134,15 +129,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onParentChange: e => dispatch(MODIFY_ALBUM_PARENT_SELECTED(JSON.parse(e.target.value))),
-        onBasenameChange: e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value)),
-        onTitleChange: e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value)),
-        onDescriptionChange: e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value)),
-        onUpdate: () => dispatch(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED()),
-        onCancel: () => dispatch(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyAlbum);
+export default connect(mapStateToProps)(ModifyAlbum);

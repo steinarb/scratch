@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import { LOGIN_REQUEST } from '../reduxactions';
@@ -9,8 +9,8 @@ function Login(props) {
         loggedIn,
         errormessage,
         location,
-        onSendLogin,
     } = props;
+    const dispatch = useDispatch();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const queryParams = (location.search && parse(location.search, { ignoreQueryPrefix: true })) || {};
@@ -47,7 +47,7 @@ function Login(props) {
                             className="btn btn-primary mx-2"
                             type="submit"
                             value="Login"
-                            onClick={() => onSendLogin(username, password)}/>
+                            onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
                         <NavLink className="btn btn-primary mx-2" to={returnpath}>Cancel</NavLink>
                     </div>
                 </form>
@@ -64,10 +64,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onSendLogin: (username, password) => dispatch(LOGIN_REQUEST({ username, password })),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps)(Login);

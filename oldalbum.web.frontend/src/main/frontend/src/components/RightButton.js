@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { MOVE_ALBUMENTRY_RIGHT_REQUEST } from '../reduxactions';
 import ChevronRight from './bootstrap/ChevronRight';
 
@@ -8,8 +8,8 @@ function RightButton(props) {
     const {
         canModifyAlbum,
         albumchildcount,
-        onMoveRight,
     } = props;
+    const dispatch = useDispatch();
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the last entry in the album
     if (!canModifyAlbum || item.sort >= albumchildcount) {
@@ -19,7 +19,7 @@ function RightButton(props) {
     return(<button
                className={props.className}
                type="button"
-               onClick={() => onMoveRight(item)}>
+               onClick={() => dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item))}>
                <ChevronRight/></button>);
 }
 
@@ -35,10 +35,4 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onMoveRight: (item) => { dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item)); },
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RightButton);
+export default connect(mapStateToProps)(RightButton);

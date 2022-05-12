@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import { DELETE_ITEM_REQUEST } from '../reduxactions';
 
@@ -9,8 +9,12 @@ function DeleteButton(props) {
         canModifyAlbum,
         parentpath,
         children,
-        onDelete,
     } = props;
+    const dispatch = useDispatch();
+    const onDelete = (item, parentpath) => {
+        dispatch(DELETE_ITEM_REQUEST(item));
+        dispatch(push(parentpath));
+    };
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the root album, 3: this is an album with content
     if (!canModifyAlbum || !item.parent || children.length) {
@@ -38,10 +42,5 @@ function mapStateToProps(state, ownProps) {
         children,
     };
 }
-function mapDispatchToProps(dispatch) {
-    return {
-        onDelete: (item, parentpath) => { dispatch(DELETE_ITEM_REQUEST(item)); dispatch(push(parentpath)); },
-    };
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteButton);
+export default connect(mapStateToProps)(DeleteButton);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import {
     LOGOUT_REQUEST,
 } from '../reduxactions';
@@ -11,8 +11,8 @@ function Unauthorized(props) {
         haveReceivedInitialLoginStatus,
         username,
         loggedIn,
-        onLogout,
     } = props;
+    const dispatch = useDispatch();
     if (haveReceivedInitialLoginStatus && !loggedIn) {
         return <Redirect to="/login" />;
     }
@@ -33,7 +33,7 @@ function Unauthorized(props) {
                         <div className="col-7">
                             <button
                                 className="btn btn-primary"
-                                onClick={onLogout}>
+                                onClick={() => dispatch(LOGOUT_REQUEST())}>
                                 Log out</button>
                         </div>
                     </div>
@@ -52,10 +52,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onLogout: () => dispatch(LOGOUT_REQUEST()),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Unauthorized);
+export default connect(mapStateToProps)(Unauthorized);

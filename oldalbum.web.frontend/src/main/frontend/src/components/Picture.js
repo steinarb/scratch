@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
@@ -12,13 +12,14 @@ import PictureNavbar from './PictureNavbar';
 import PictureDescription from './PictureDescription';
 
 function Picture(props) {
-    const { item, parent, previous, next, navigateTo } = props;
+    const { item, parent, previous, next } = props;
+    const dispatch = useDispatch();
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
     const swipeHandlers = useSwipeable({
-        onSwipedLeft: () => navigateTo(next),
-        onSwipedRight: () => navigateTo(previous),
+        onSwipedLeft: () => next && dispatch(push(next.path)),
+        onSwipedRight: () => previous && dispatch(push(previous.path)),
     });
 
     return (
@@ -69,10 +70,4 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        navigateTo: (item) => item && dispatch(push(item.path)),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Picture);
+export default connect(mapStateToProps)(Picture);

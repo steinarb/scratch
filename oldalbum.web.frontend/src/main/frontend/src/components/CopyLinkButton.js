@@ -1,12 +1,17 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import LinkIntact from './bootstrap/LinkIntact';
 import {
     SET_ALERT,
 } from '../reduxactions';
 
 function CopyLinkButton(props) {
-    const { alert, onCopyUrl } = props;
+    const { alert } = props;
+    const dispatch = useDispatch();
+    const onCopyUrl = () => {
+            copyCurrentUrlToClipboard();
+            dispatch(SET_ALERT('URL copied to clipboard'));
+    };
     const displayedAlert = alert ? '- ' + alert : '';
 
     return (
@@ -21,16 +26,7 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onCopyUrl: () => {
-            copyCurrentUrlToClipboard();
-            dispatch(SET_ALERT('URL copied to clipboard'));
-        },
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CopyLinkButton);
+export default connect(mapStateToProps)(CopyLinkButton);
 
 function copyCurrentUrlToClipboard() {
     const currentLocation = document.createElement('textarea');
