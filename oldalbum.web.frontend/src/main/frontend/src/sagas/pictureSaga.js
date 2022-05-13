@@ -15,7 +15,7 @@ import {
 function* saveModifiedPicture() {
     const picture = yield select(state => ({
         id: state.albumentryid,
-        parent: JSON.parse(state.albumentryParent).id,
+        parent: state.albumentryParent,
         path: state.albumentryPath,
         album: false,
         title: state.albumentryTitle,

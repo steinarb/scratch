@@ -21,10 +21,7 @@ function* locationChange(action) {
         const albumentries = yield select(findAlbumentries);
         const idInt = parseInt(id, 10);
         const album = albumentries[idInt];
-        const parent = albumentries[album.parent];
-        const albumWithParent = { ...album, parent };
-
-        yield put(FILL_MODIFY_ALBUM_FORM(albumWithParent || { id: idInt } ));
+        yield put(FILL_MODIFY_ALBUM_FORM(album));
     }
 
     if (pathname === '/addalbum') {
@@ -47,10 +44,7 @@ function* locationChange(action) {
         const albumentries = yield select(findAlbumentries);
         const idInt = parseInt(id, 10);
         const picture = albumentries[idInt];
-        const parent = albumentries[picture.parent];
-        const pictureWithParent = { ...picture, parent };
-
-        yield put(FILL_MODIFY_PICTURE_FORM(pictureWithParent || { id: idInt } ));
+        yield put(FILL_MODIFY_PICTURE_FORM(picture));
     }
 
     if (pathname === '/addpicture') {

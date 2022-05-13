@@ -57,8 +57,8 @@ export default function ModifyPicture() {
                                 id="parent"
                                 className="form-control"
                                 value={parent}
-                                onChange={e => dispatch(MODIFY_PICTURE_PARENT_SELECTED(JSON.parse(e.target.value)))}>
-                                { albums.map((val) => <option key={'album_' + val.id} value={JSON.stringify(val)}>{val.title}</option>) }
+                                onChange={e => dispatch(MODIFY_PICTURE_PARENT_SELECTED(albums.find(a => a.id === parseInt(e.target.value))))}>
+                                { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
                             </select>
                         </div>
                     </div>

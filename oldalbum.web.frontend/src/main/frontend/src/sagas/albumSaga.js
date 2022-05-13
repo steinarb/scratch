@@ -15,7 +15,7 @@ import {
 function* saveModifiedAlbum() {
     const album = yield select(state => ({
         id: state.albumentryid,
-        parent: JSON.parse(state.albumentryParent).id,
+        parent: state.albumentryParent,
         path: state.albumentryPath,
         album: true,
         title: state.albumentryTitle,
