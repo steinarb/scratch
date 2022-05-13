@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'connected-react-router';
 import './App.css';
@@ -12,37 +12,26 @@ import AddAlbum from './components/AddAlbum';
 import ModifyPicture from './components/ModifyPicture';
 import AddPicture from './components/AddPicture';
 
-class App extends Component {
-    render() {
-        const { history, allroutes } = this.props;
+export default function App(props) {
+    const { history } = props;
+    const allroutes = useSelector(state => state.allroutes);
 
-        return (
-            <Router history={history}>
+    return (
+        <Router history={history}>
+            <div>
                 <div>
-                    <div>
-                        { allroutes.map((item, index) => <Route exact key={index} path={item.path} component={() => albumOrPicture(item)} />) }
-                        <Route exact key="login" path="/login" component={Login} />
-                        <Route exact key="unauthorized" path="/unauthorized" component={Unauthorized} />
-                        <Route key="modifyalbum" path='/modifyalbum' component={ModifyAlbum} />
-                        <Route key="addalbum" path='/addalbum' component={AddAlbum} />
-                        <Route key="modifypicture" path='/modifypicture' component={ModifyPicture} />
-                        <Route key="addpicture" path='/addpicture' component={AddPicture} />
-                    </div>
+                    { allroutes.map((item, index) => <Route exact key={index} path={item.path} component={() => albumOrPicture(item)} />) }
+                    <Route exact key="login" path="/login" component={Login} />
+                    <Route exact key="unauthorized" path="/unauthorized" component={Unauthorized} />
+                    <Route key="modifyalbum" path='/modifyalbum' component={ModifyAlbum} />
+                    <Route key="addalbum" path='/addalbum' component={AddAlbum} />
+                    <Route key="modifypicture" path='/modifypicture' component={ModifyPicture} />
+                    <Route key="addpicture" path='/addpicture' component={AddPicture} />
                 </div>
-            </Router>
-        );
-    }
+            </div>
+        </Router>
+    );
 }
-
-
-function mapStateToProps(state) {
-    const allroutes = state.allroutes || [];
-    return {
-        allroutes,
-    };
-}
-
-export default connect(mapStateToProps)(App);
 
 function albumOrPicture(item) {
     if (item.album) {

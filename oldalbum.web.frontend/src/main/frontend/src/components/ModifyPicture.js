@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import {
     MODIFY_PICTURE_PARENT_SELECTED,
@@ -13,21 +13,19 @@ import {
     IMAGE_METADATA_REQUEST,
 } from '../reduxactions';
 
-function ModifyPicture(props) {
-    const {
-        parent,
-        path,
-        basename,
-        title,
-        description,
-        imageUrl,
-        thumbnailUrl,
-        lastModified,
-        contentLength,
-        contentType,
-        albums,
-        uplocation,
-    } = props;
+export default function ModifyPicture() {
+    const parent = useSelector(state => state.albumentryParent);
+    const path = useSelector(state => state.albumentryPath);
+    const basename = useSelector(state => state.albumentryBasename);
+    const title = useSelector(state => state.albumentryTitle);
+    const description = useSelector(state => state.albumentryDescription);
+    const imageUrl = useSelector(state => state.albumentryImageUrl);
+    const thumbnailUrl = useSelector(state => state.albumentryThumbnailUrl);
+    const lastModified = useSelector(state => state.albumentryLastModified);
+    const contentLength = useSelector(state => state.albumentryContentLength);
+    const contentType = useSelector(state => state.albumentryContentType);
+    const albums = useSelector(state => state.allroutes.filter(r => r.album).filter(r => r.id !== state.albumentryid) || []);
+    const uplocation = useSelector(state => (state.albumentries[state.albumentryid] || {}).path || '/');
     const dispatch = useDispatch();
     const lastmodified = lastModified ? new Date(lastModified).toISOString() : '';
 
@@ -160,37 +158,3 @@ function ModifyPicture(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const albumentryid = state.albumentryid;
-    const parent = state.albumentryParent;
-    const path = state.albumentryPath;
-    const basename = state.albumentryBasename;
-    const title = state.albumentryTitle;
-    const description = state.albumentryDescription;
-    const imageUrl = state.albumentryImageUrl;
-    const thumbnailUrl = state.albumentryThumbnailUrl;
-    const lastModified = state.albumentryLastModified;
-    const contentLength = state.albumentryContentLength;
-    const contentType = state.albumentryContentType;
-    const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== albumentryid) || [];
-    const albumentries = state.albumentries || {};
-    const originalalbum = albumentries[albumentryid] || {};
-    const uplocation = originalalbum.path || '/';
-    return {
-        parent,
-        path,
-        basename,
-        title,
-        description,
-        imageUrl,
-        thumbnailUrl,
-        lastModified,
-        contentLength,
-        contentType,
-        albums,
-        uplocation,
-    };
-}
-
-export default connect(mapStateToProps)(ModifyPicture);

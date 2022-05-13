@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
@@ -11,8 +11,11 @@ import Next from './Next';
 import PictureNavbar from './PictureNavbar';
 import PictureDescription from './PictureDescription';
 
-function Picture(props) {
-    const { item, parent, previous, next } = props;
+export default function Picture(props) {
+    const { item } = props;
+    const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
+    const previous = useSelector(state => state.previousentry[item.id]);
+    const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
@@ -56,18 +59,3 @@ function Picture(props) {
         </div>
     );
 }
-
-function mapStateToProps(state, ownProps) {
-    const { item } = ownProps;
-    const parentEntry = state.albumentries[item.parent] || {};
-    const parent = parentEntry.path;
-    const previous = state.previousentry[item.id];
-    const next = state.nextentry[item.id];
-    return {
-        parent,
-        previous,
-        next,
-    };
-}
-
-export default connect(mapStateToProps)(Picture);

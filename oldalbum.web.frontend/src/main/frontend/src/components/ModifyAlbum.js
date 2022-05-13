@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import {
     MODIFY_ALBUM_PARENT_SELECTED,
@@ -10,16 +10,14 @@ import {
     MODIFY_ALBUM_CANCEL_BUTTON_CLICKED,
 } from '../reduxactions';
 
-function ModifyAlbum(props) {
-    const {
-        parent,
-        path,
-        basename,
-        title,
-        description,
-        albums,
-        uplocation,
-    } = props;
+export default function ModifyAlbum() {
+    const parent = useSelector(state => state.albumentryParent);
+    const path = useSelector(state => state.albumentryPath);
+    const basename = useSelector(state => state.albumentryBasename);
+    const title = useSelector(state => state.albumentryTitle);
+    const description = useSelector(state => state.albumentryDescription);
+    const albums = useSelector(state => state.allroutes.filter(r => r.album).filter(r => r.id !== state.albumentryid) || []);
+    const uplocation = useSelector(state => (state.albumentries[state.albumentryid] || {}).path || '/');
     const dispatch = useDispatch();
 
     return(
@@ -106,27 +104,3 @@ function ModifyAlbum(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const albumentryid = state.albumentryid;
-    const parent = state.albumentryParent;
-    const path = state.albumentryPath;
-    const basename = state.albumentryBasename;
-    const title = state.albumentryTitle;
-    const description = state.albumentryDescription;
-    const albums = state.allroutes.filter(r => r.album).filter(r => r.id !== albumentryid) || [];
-    const albumentries = state.albumentries || {};
-    const originalalbum = albumentries[albumentryid] || {};
-    const uplocation = originalalbum.path || '/';
-    return {
-        parent,
-        path,
-        basename,
-        title,
-        description,
-        albums,
-        uplocation,
-    };
-}
-
-export default connect(mapStateToProps)(ModifyAlbum);

@@ -1,17 +1,13 @@
 import React from 'react';
 import { Redirect } from 'react-router';
-import { connect, useDispatch } from 'react-redux';
-import {
-    LOGOUT_REQUEST,
-} from '../reduxactions';
+import { useSelector, useDispatch } from 'react-redux';
+import { LOGOUT_REQUEST } from '../reduxactions';
 
 
-function Unauthorized(props) {
-    const {
-        haveReceivedInitialLoginStatus,
-        username,
-        loggedIn,
-    } = props;
+export default function Unauthorized() {
+    const haveReceivedInitialLoginStatus = useSelector(state => state.haveReceivedInitialLoginStatus);
+    const username = useSelector(state => state.username);
+    const loggedIn = useSelector(state => state.loggedIn);
     const dispatch = useDispatch();
     if (haveReceivedInitialLoginStatus && !loggedIn) {
         return <Redirect to="/login" />;
@@ -42,14 +38,3 @@ function Unauthorized(props) {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    const { haveReceivedInitialLoginStatus, username, loggedIn } = state;
-    return {
-        haveReceivedInitialLoginStatus,
-        username,
-        loggedIn,
-    };
-};
-
-export default connect(mapStateToProps)(Unauthorized);

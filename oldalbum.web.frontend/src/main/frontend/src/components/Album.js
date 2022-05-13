@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import { Helmet } from "react-helmet";
@@ -16,8 +16,12 @@ import Next from './Next';
 import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
 import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
-function Album(props) {
-    const { item, parent, children, previous, next } = props;
+export default function Album(props) {
+    const { item } = props;
+    const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
+    const children = useSelector(state => state.childentries[item.id] || []);
+    const previous = useSelector(state => state.previousentry[item.id]);
+    const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
     const title = pictureTitle(item);
     const swipeHandlers = useSwipeable({
@@ -78,20 +82,3 @@ function renderChild(child, index) {
 
     return <AlbumEntryOfTypePicture className="col-2-sm mx-1 my-1" key={index} entry={child} />;
 }
-
-function mapStateToProps(state, ownProps) {
-    const { item } = ownProps;
-    const parentEntry = state.albumentries[item.parent] || {};
-    const parent = parentEntry.path;
-    const children = state.childentries[item.id] || [];
-    const previous = state.previousentry[item.id];
-    const next = state.nextentry[item.id];
-    return {
-        parent,
-        children,
-        previous,
-        next,
-    };
-}
-
-export default connect(mapStateToProps)(Album);

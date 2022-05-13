@@ -1,12 +1,10 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import LinkIntact from './bootstrap/LinkIntact';
-import {
-    SET_ALERT,
-} from '../reduxactions';
+import { SET_ALERT } from '../reduxactions';
 
-function CopyLinkButton(props) {
-    const { alert } = props;
+export default function CopyLinkButton(props) {
+    const alert = useSelector(state => state.alert);
     const dispatch = useDispatch();
     const onCopyUrl = () => {
             copyCurrentUrlToClipboard();
@@ -18,15 +16,6 @@ function CopyLinkButton(props) {
         <span onClick={onCopyUrl} className={(props.className || '') + ' alert alert-primary'} role="alert"><LinkIntact/> Copy link {displayedAlert}</span>
     );
 }
-
-function mapStateToProps(state) {
-    const alert = state.alert;
-    return {
-        alert,
-    };
-}
-
-export default connect(mapStateToProps)(CopyLinkButton);
 
 function copyCurrentUrlToClipboard() {
     const currentLocation = document.createElement('textarea');

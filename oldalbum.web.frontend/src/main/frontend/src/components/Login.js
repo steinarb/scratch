@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import { LOGIN_REQUEST } from '../reduxactions';
 
-function Login(props) {
-    const {
-        loggedIn,
-        errormessage,
-        location,
-    } = props;
+export default function Login(props) {
+    const { location } = props;
+    const loggedIn = useSelector(state => state.loggedIn);
+    const errormessage = useSelector(state => state.errormessage);
     const dispatch = useDispatch();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
@@ -56,12 +54,3 @@ function Login(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        loggedIn: state.loggedIn,
-        errormessage: state.errormessage,
-    };
-}
-
-export default connect(mapStateToProps)(Login);

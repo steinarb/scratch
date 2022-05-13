@@ -1,14 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
 
-function ModifyButton(props) {
+export default function ModifyButton(props) {
     const { item } = props;
-    const {
-        webcontext,
-        canModifyAlbum,
-    } = props;
+    const webcontext = useSelector(state => state.webcontext) || '';
+    const canModifyAlbum = useSelector(state => state.canModifyAlbum);
 
     if (!canModifyAlbum) {
         return null;
@@ -20,14 +18,3 @@ function ModifyButton(props) {
 
     return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={modifyitem} >Modify</NavLink>);
 }
-
-function mapStateToProps(state) {
-    const webcontext = state.webcontext || '';
-    const canModifyAlbum = state.canModifyAlbum;
-    return {
-        webcontext,
-        canModifyAlbum,
-    };
-}
-
-export default connect(mapStateToProps)(ModifyButton);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { pictureTitle, viewSize } from './commonComponentCode';
 import UpButton from './UpButton';
@@ -8,8 +8,10 @@ import DownButton from './DownButton';
 import RightButton from './RightButton';
 import Thumbnail from './Thumbnail';
 
-function AlbumEntryOfTypeAlbum(props) {
-    const { key, entry, className='', children, childentries } = props;
+export default function AlbumEntryOfTypeAlbum(props) {
+    const { key, entry, className='' } = props;
+    const childentries = useSelector(state => state.childentries || {});
+    const children = childentries[entry.id] || [];
     const title = pictureTitle(entry);
     const viewportSize = viewSize();
     const setWidth = (viewportSize === 'sm' || viewportSize === 'xs') ? ' w-100' : '';
@@ -46,19 +48,6 @@ function AlbumEntryOfTypeAlbum(props) {
         </div>
     );
 }
-
-
-function mapStateToProps(state, ownProps) {
-    const { entry } = ownProps;
-    const childentries = state.childentries || {};
-    const children = childentries[entry.id] || [];
-    return {
-        childentries,
-        children,
-    };
-}
-
-export default connect(mapStateToProps)(AlbumEntryOfTypeAlbum);
 
 function findChildrenThumbnails(entry, children, childitems) {
     // First try to find thumbnails of direct children of the album

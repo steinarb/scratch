@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
@@ -10,14 +10,12 @@ import {
     ADD_ALBUM_CANCEL_BUTTON_CLICKED,
 } from '../reduxactions';
 
-function AddAlbum(props) {
-    const {
-        path,
-        basename,
-        title,
-        description,
-        albums,
-    } = props;
+export default function AddAlbum(props) {
+    const path = useSelector(state => state.albumentryPath);
+    const basename = useSelector(state => state.albumentryBasename);
+    const title = useSelector(state => state.albumentryTitle);
+    const description = useSelector(state => state.albumentryDescription);
+    const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
     const dispatch = useDispatch();
     const queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parent } = queryParams;
@@ -96,20 +94,3 @@ function AddAlbum(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const path = state.albumentryPath;
-    const basename = state.albumentryBasename;
-    const title = state.albumentryTitle;
-    const description = state.albumentryDescription;
-    const albums = state.allroutes.filter(r => r.album) || [];
-    return {
-        path,
-        basename,
-        title,
-        description,
-        albums,
-    };
-}
-
-export default connect(mapStateToProps)(AddAlbum);

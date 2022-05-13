@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { parse } from 'qs';
 import {
@@ -13,19 +13,17 @@ import {
     IMAGE_METADATA_REQUEST,
 } from '../reduxactions';
 
-function AddPicture(props) {
-    const {
-        path,
-        basename,
-        title,
-        description,
-        imageUrl,
-        thumbnailUrl,
-        lastModified,
-        contentLength,
-        contentType,
-        albums,
-    } = props;
+export default function AddPicture(props) {
+    const path = useSelector(state => state.albumentryPath);
+    const basename = useSelector(state => state.albumentryBasename);
+    const title = useSelector(state => state.albumentryTitle);
+    const description = useSelector(state => state.albumentryDescription);
+    const imageUrl = useSelector(state => state.albumentryImageUrl);
+    const thumbnailUrl = useSelector(state => state.albumentryThumbnailUrl);
+    const lastModified = useSelector(state => state.albumentryLastModified);
+    const contentLength = useSelector(state => state.albumentryContentLength);
+    const contentType = useSelector(state => state.albumentryContentType);
+    const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
     const dispatch = useDispatch();
     const queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
     const { parent } = queryParams;
@@ -151,32 +149,3 @@ function AddPicture(props) {
         </div>
     );
 }
-
-function mapStateToProps(state) {
-    const parent = state.albumentryParent;
-    const path = state.albumentryPath;
-    const basename = state.albumentryBasename;
-    const title = state.albumentryTitle;
-    const description = state.albumentryDescription;
-    const imageUrl = state.albumentryImageUrl;
-    const thumbnailUrl = state.albumentryThumbnailUrl;
-    const lastModified = state.albumentryLastModified;
-    const contentLength = state.albumentryContentLength;
-    const contentType = state.albumentryContentType;
-    const albums = state.allroutes.filter(r => r.album) || [];
-    return {
-        parent,
-        path,
-        basename,
-        title,
-        description,
-        imageUrl,
-        thumbnailUrl,
-        lastModified,
-        contentLength,
-        contentType,
-        albums,
-    };
-}
-
-export default connect(mapStateToProps)(AddPicture);
