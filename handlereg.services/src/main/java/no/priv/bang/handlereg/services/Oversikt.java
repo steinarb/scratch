@@ -25,6 +25,7 @@ public class Oversikt {
     private double sumPreviousMonth;
     private double sumThisMonth;
     private double lastTransactionAmount;
+    public int lastTransactionStore;
 
     private Oversikt() {}
 
@@ -64,9 +65,13 @@ public class Oversikt {
         return lastTransactionAmount;
     }
 
+    public int getLastTransactionStore() {
+        return lastTransactionStore;
+    }
+
     @Override
     public String toString() {
-        return "Oversikt [user_id=" + accountid + ", brukernavn=" + brukernavn + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + ", sumPreviousMonth=" + sumPreviousMonth + ", sumThisMonth=" + sumThisMonth + ", lastTransactionAmount=" + lastTransactionAmount + "]";
+        return "Oversikt [accountid=" + accountid + ", brukernavn=" + brukernavn + ", email=" + email + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + ", sumPreviousMonth=" + sumPreviousMonth + ", sumThisMonth=" + sumThisMonth + ", lastTransactionAmount=" + lastTransactionAmount + ", lastTransactionStore=" + lastTransactionStore + "]";
     }
 
     public static OversiktBuilder with() {
@@ -83,6 +88,7 @@ public class Oversikt {
         private double sumPreviousMonth;
         private double sumThisMonth;
         private double lastTransactionAmount;
+        private int lastTransactionStore;
 
         private OversiktBuilder() {}
 
@@ -97,6 +103,7 @@ public class Oversikt {
             oversikt.sumPreviousMonth = this.sumPreviousMonth;
             oversikt.sumThisMonth = this.sumThisMonth;
             oversikt.lastTransactionAmount = this.lastTransactionAmount;
+            oversikt.lastTransactionStore = this.lastTransactionStore;
             return oversikt;
         }
 
@@ -142,6 +149,11 @@ public class Oversikt {
 
         public OversiktBuilder lastTransactionAmount(double lastTransactionAmount) {
             this.lastTransactionAmount = lastTransactionAmount;
+            return this;
+        }
+
+        public OversiktBuilder lastTransactionStore(int lastTransactionStore) {
+            this.lastTransactionStore = lastTransactionStore;
             return this;
         }
     }

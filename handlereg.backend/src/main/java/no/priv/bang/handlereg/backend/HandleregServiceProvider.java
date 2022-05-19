@@ -107,12 +107,14 @@ public class HandleregServiceProvider implements HandleregService {
             }
 
             double lastTransactionAmount = 0;
-            String lastTransactionAmountQuery = "select transaction_amount from transactions t join accounts a on t.account_id=a.account_id where a.username=? order by transaction_time desc fetch first 1 rows only";
+            int lastTransactionStore = -1;
+            String lastTransactionAmountQuery = "select transaction_amount, store_id from transactions t join accounts a on t.account_id=a.account_id where a.username=? order by transaction_time desc fetch first 1 rows only";
             try (PreparedStatement statement = connection.prepareStatement(lastTransactionAmountQuery)) {
                 statement.setString(1, brukernavn);
                 try(ResultSet results = statement.executeQuery()) {
                     if (results.next()) {
                         lastTransactionAmount = results.getDouble(1);
+                        lastTransactionStore = results.getInt(2);
                     }
                 }
             }
@@ -135,6 +137,7 @@ public class HandleregServiceProvider implements HandleregService {
                             .sumPreviousMonth(sumPreviousMonth)
                             .sumThisMonth(sumThisMonth)
                             .lastTransactionAmount(lastTransactionAmount)
+                            .lastTransactionStore(lastTransactionStore)
                             .build();
                     }
 

@@ -190,6 +190,7 @@ class HandleregServiceProviderTest {
             .build();
         Oversikt nyOversikt = handlereg.registrerHandling(nyHandling);
         assertThat(nyOversikt.getBalanse()).isEqualTo(originalBalanse + nyttBelop);
+        assertThat(nyOversikt.getLastTransactionStore()).isEqualTo(1);
     }
 
     @Test
