@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import Kvittering from './Kvittering';
+import CloseWindow from './CloseWindow';
 import {
     BELOP_ENDRE,
     NYHANDLING_REGISTRER,
@@ -21,6 +22,7 @@ export default function Hurtigregistrering() {
                 <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
                 <h1>Hurtigregistrering</h1>
                 <div className="col-sm-2"></div>
+                <CloseWindow/>
             </nav>
             <Container>
                 <form onSubmit={ e => { e.preventDefault(); }}>
