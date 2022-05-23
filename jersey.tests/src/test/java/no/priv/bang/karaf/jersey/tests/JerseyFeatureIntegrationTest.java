@@ -34,7 +34,7 @@ public class JerseyFeatureIntegrationTest extends KarafTestSupport {
             .type("xml")
             .classifier("features");
         Option[] options = new Option[] {
-            features(jerseyFeatureRepo, "pax-http-whiteboard"),
+            features(jerseyFeatureRepo),
             features(javaTimeJacksonModuleRepo)
         };
         return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
