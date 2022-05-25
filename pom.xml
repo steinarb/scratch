@@ -31,7 +31,7 @@
     <properties>
         <bang-bom.version>1.1.0-SNAPSHOT</bang-bom.version>
         <maven.bundle.plugin.version>5.1.4</maven.bundle.plugin.version>
-        <karaf.version>4.3.6</karaf.version>
+        <karaf.version>4.4.0</karaf.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockrunner.version>2.0.6</mockrunner.version>
         <mockito.version>4.3.1</mockito.version>
@@ -41,7 +41,7 @@
         <jsoup.version>1.14.3</jsoup.version>
         <derby.version>10.14.2.0</derby.version>
         <postgresql.version>42.3.3</postgresql.version>
-        <jersey-feature.version>1.8.5</jersey-feature.version>
+        <jersey-feature.version>1.9.0</jersey-feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
