@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class HandleregIntegrationTest extends KarafTestSupport {
 
     @Test
     public void testLoadFeature() throws Exception { // NOSONAR this test has an assert, just not an assert sonar recognizes
-        installAndAssertFeature("user-admin-with-testdb");
+        installAndAssertFeature("handlereg-with-derby");
     }
 
 }
