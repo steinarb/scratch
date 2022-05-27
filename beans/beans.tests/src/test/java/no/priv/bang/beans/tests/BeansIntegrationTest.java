@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,14 +36,14 @@ public class BeansIntegrationTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
-        final MavenArtifactUrlReference beansFeatureRepo = maven()
+        final MavenArtifactUrlReference immutableBeansFeatureRepo = maven()
             .groupId("no.priv.bang.beans")
-            .artifactId("karaf")
+            .artifactId("beans.immutable")
             .version("LATEST")
             .type("xml")
             .classifier("features");
         Option[] options = new Option[] {
-            features(beansFeatureRepo)
+            features(immutableBeansFeatureRepo)
         };
         return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
     }
