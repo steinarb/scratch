@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                                 |
 |------------------------+---------+--------------------------------------------------------------------------------------------|
+| <2022-05-28 Sat 23:55> |   1.1.0 | karaf 4.4.0 and OSGi 8                                                                     |
 | <2022-02-19 Sat 22:58> |  1.0.21 | java 11, karaf 4.3.6, postgresql JDBC 42.3.3, jersey 2.35, jackson 2.13.1, node.js 16.14.0 |
 | <2021-10-28 Thu 18:34> |  1.0.20 | Set version of karaf-services-maven-plugin in pluginManagement                             |
 | <2021-10-13 Wed 22:23> |  1.0.19 | karaf 4.3.3, postgresql JDBC 42.2.24, junit 5.8.1, mockito 4.0.0, assertj 3.21.0           |
@@ -38,7 +39,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
       <parent>
           <groupId>no.priv.bang.pom</groupId>
           <artifactId>bang-pom</artifactId>
-          <version>1.0.21</version>
+          <version>1.1.0</version>
       </parent>
     #+end_src
  2. Import the BoM into your project's dependencyManagement (the bang-bom.version maven property is set by the parent):
