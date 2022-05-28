@@ -108,9 +108,6 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Export-Package>
-                            no.priv.bang.servlet.frontend;uses:="javax.servlet,org.glassfish.jersey.servlet,org.osgi.service.log";version="1.4.0"
-                        </Export-Package>
                         <Import-Package>
                             org.osgi.service.log;version="[1.4,2)",
                             *
