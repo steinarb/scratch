@@ -27,11 +27,11 @@
     <description>Common maven plugin properties, configurations and dependency management, for applications</description>
 
     <properties>
-        <osgi-service-adapters.version>1.1.4</osgi-service-adapters.version>
+        <osgi-service-adapters.version>1.2.0-SNAPSHOT</osgi-service-adapters.version>
         <bang-osgi-service.version>1.7.3</bang-osgi-service.version>
-        <bang-servlet.version>1.5.8</bang-servlet.version>
+        <bang-servlet.version>1.6.0-SNAPSHOT</bang-servlet.version>
         <datasourceproxy.version>1.1.1</datasourceproxy.version>
-        <beans.version>1.1.4</beans.version>
+        <beans.version>1.2.0-SNAPSHOT</beans.version>
     </properties>
 
     <build>
