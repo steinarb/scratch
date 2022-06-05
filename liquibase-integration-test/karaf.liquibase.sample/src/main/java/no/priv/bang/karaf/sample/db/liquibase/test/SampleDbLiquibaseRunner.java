@@ -31,7 +31,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
-@Component(immediate=true, property = "name=sampleappdb")
+@Component(immediate=true, property = "name=sampledb")
 public class SampleDbLiquibaseRunner implements PreHook {
 
     private Logger logger;
