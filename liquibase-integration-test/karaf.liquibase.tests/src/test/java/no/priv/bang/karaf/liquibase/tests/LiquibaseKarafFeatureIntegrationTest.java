@@ -37,7 +37,7 @@ public class LiquibaseKarafFeatureIntegrationTest extends KarafTestSupport {
     public Option[] config() {
         final MavenArtifactUrlReference sampleappFeatureRepo = maven()
             .groupId("no.priv.bang.karaf")
-            .artifactId("karaf.liquibase.sample.datasource.receiver")
+            .artifactId("karaf.liquibase.sample")
             .version("LATEST")
             .type("xml")
             .classifier("features");
@@ -49,7 +49,7 @@ public class LiquibaseKarafFeatureIntegrationTest extends KarafTestSupport {
 
     @Test
     public void testLoadFeature() throws Exception { // NOSONAR this test has an assert, just not an assert sonar recognizes
-        installAndAssertFeature("karaf-liquibase-sample-datasource-receiver");
+        installAndAssertFeature("sample-db");
     }
 
 }
