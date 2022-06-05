@@ -27,6 +27,7 @@
 
     <modules>
         <module>karaf.liquibase.sample</module>
+        <module>karaf.liquibase.sample.datasource.receiver</module>
         <module>karaf.liquibase.tests</module>
     </modules>
 

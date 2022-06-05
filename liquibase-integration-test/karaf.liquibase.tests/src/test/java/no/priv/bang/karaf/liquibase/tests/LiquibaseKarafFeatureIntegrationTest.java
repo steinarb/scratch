@@ -31,13 +31,13 @@ import java.util.stream.Stream;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class SampleappIntegrationTest extends KarafTestSupport {
+public class LiquibaseKarafFeatureIntegrationTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
         final MavenArtifactUrlReference sampleappFeatureRepo = maven()
             .groupId("no.priv.bang.karaf")
-            .artifactId("karaf.liquibase.sample")
+            .artifactId("karaf.liquibase.sample.datasource.receiver")
             .version("LATEST")
             .type("xml")
             .classifier("features");
@@ -49,7 +49,7 @@ public class SampleappIntegrationTest extends KarafTestSupport {
 
     @Test
     public void testLoadFeature() throws Exception { // NOSONAR this test has an assert, just not an assert sonar recognizes
-        installAndAssertFeature("sample-db");
+        installAndAssertFeature("karaf-liquibase-sample-datasource-receiver");
     }
 
 }
