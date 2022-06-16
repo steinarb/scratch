@@ -7,7 +7,7 @@ import {
 const defaultVerdi = new Date().toISOString();
 
 const handletidspunktReducer = createReducer(defaultVerdi, {
-    [DATO_ENDRE]: (state, action) =>  new Date(action.payload).toISOString(),
+    [DATO_ENDRE]: (state, action) =>  action.payload + 'T' + state.split('T')[1],
     [NYHANDLING_LAGRET]: () => new Date().toISOString(),
 });
 

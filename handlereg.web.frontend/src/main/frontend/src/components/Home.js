@@ -1,8 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
     BELOP_ENDRE,
     BUTIKK_ENDRE,
@@ -26,6 +24,7 @@ export default function Home() {
     const butikker = useSelector(state => state.butikker);
     const storeId = useSelector(state => state.storeId);
     const handletidspunkt = useSelector(state => state.handletidspunkt);
+    const handledato = handletidspunkt.split('T')[0];
     const belop = useSelector(state => state.belop).toString();
     const dispatch = useDispatch();
 
@@ -78,11 +77,12 @@ export default function Home() {
                     <div className="form-group row">
                         <label htmlFor="date" className="col-form-label col-5">Dato</label>
                         <div className="col-7">
-                            <DatePicker
-                                selected={new Date(handletidspunkt)}
-                                dateFormat="yyyy-MM-dd"
-                                onChange={selectedValue => dispatch(DATO_ENDRE(selectedValue))}
-                                onFocus={e => e.target.blur()}
+                            <input
+                                id="date"
+                                className="form-control"
+                                type="date"
+                                value={handledato}
+                                onChange={e => dispatch(DATO_ENDRE(e.target.value))}
                             />
                         </div>
                     </div>
