@@ -85,6 +85,10 @@
                             <_dsannotations-options>inherit</_dsannotations-options>
                             <!-- Enable processing of OSGI metatype annotations -->
                             <_metatypeannotations>*</_metatypeannotations>
+                            <Import-Package>
+                                org.osgi.service.log;version="[1.4,2)",
+                                *
+                            </Import-Package>
                         </instructions>
                     </configuration>
                     <executions>
