@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                        |
 |------------------------+---------+----------------------------------------------------------------------------------------------------|
+| <2022-07-25 Mon 19:11> |   1.8.2 | Use karaf 4.4.1                                                                                    |
 | <2022-06-01 Wed 19:21> |   1.8.1 | Use jackson 2.13.3                                                                                 |
 | <2022-05-29 Sun 14:43> |   1.8.0 | Use karaf 4.4.0 and OSGi 8, use redux hooks in the frontend                                        |
 | <2022-02-21 Mon 18:56> |  1.7.12 | Use java 11, karaf 4.3.6, postgresql JDBC 42.3.3, jersey 2.35, jackson 2.13.1, and node.js 16.14.0 |
