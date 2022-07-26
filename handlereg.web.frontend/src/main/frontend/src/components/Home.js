@@ -68,10 +68,11 @@ export default function Home() {
                     <div className="form-group row">
                         <label htmlFor="jobtype" className="col-form-label col-5">Velg butikk</label>
                         <div className="col-7">
-                            <select value={storeId} onChange={e => dispatch(BUTIKK_ENDRE(e.target.value))}>
+                            <input list="butikker" id="valgt-butikk" name="valgt-butikk" value={storeId} onClick={e => dispatch(BUTIKK_ENDRE(e.target.value))}/>
+                            <datalist id="butikker">
                                 <option key="-1" value="-1" />
                                 {butikker.map(butikk => <option key={butikk.storeId} value={butikk.storeId}>{butikk.butikknavn}</option>)}
-                            </select>
+                            </datalist>
                         </div>
                     </div>
                     <div className="form-group row">
