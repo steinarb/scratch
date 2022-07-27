@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     BELOP_ENDRE,
     HOME_BUTIKKNAVN_ENDRE,
-    HOME_VELG_BUTIKK,
     DATO_ENDRE,
     NYHANDLING_REGISTRER,
 } from '../actiontypes';
@@ -29,7 +28,6 @@ export default function Home() {
     const handledato = handletidspunkt.split('T')[0];
     const belop = useSelector(state => state.belop).toString();
     const dispatch = useDispatch();
-    const findStoreId = e => (butikker.find(b => b.butikknavn === e.target.value) || {}).storeId;
 
     return (
         <div>
@@ -76,8 +74,7 @@ export default function Home() {
                                 id="valgt-butikk"
                                 name="valgt-butikk"
                                 value={butikknavn}
-                                onChange={e => dispatch(HOME_BUTIKKNAVN_ENDRE(e.target.value))}
-                                onClick={e => dispatch(HOME_VELG_BUTIKK(findStoreId(e)))}/>
+                                onChange={e => dispatch(HOME_BUTIKKNAVN_ENDRE(e.target.value))}/>
                             <datalist id="butikker">
                                 <option key="-1" value="" />
                                 {butikker.map(butikk => <option key={butikk.storeId} value={butikk.butikknavn}/>)}
