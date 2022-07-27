@@ -15,7 +15,7 @@ function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const { pathname = '' } = location;
 
-    if (pathname === '/handlereg/') {
+    if (pathname === '/handlereg') {
         yield put(OVERSIKT_HENT());
         yield put(BUTIKKER_HENT());
     }
