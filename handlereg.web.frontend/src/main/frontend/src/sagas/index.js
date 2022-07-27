@@ -8,6 +8,7 @@ import oversiktSaga from './oversiktSaga';
 import handlingerSaga from './handlingerSaga';
 import nyhandlingSaga from './nyhandlingSaga';
 import butikkerSaga from './butikkerSaga';
+import butikknavnSaga from './butikknavnSaga';
 import nybutikkSaga from './nybutikkSaga';
 import lagrebutikkSaga from './lagrebutikkSaga';
 import sumbutikkSaga from './sumbutikkSaga';
@@ -30,6 +31,7 @@ export default function* rootSaga() {
         fork(handlingerSaga),
         fork(nyhandlingSaga),
         fork(butikkerSaga),
+        fork(butikknavnSaga),
         fork(nybutikkSaga),
         fork(lagrebutikkSaga),
         fork(sumbutikkSaga),

@@ -3,7 +3,7 @@ import { Redirect } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     BELOP_ENDRE,
-    BUTIKK_ENDRE,
+    HOME_BUTIKKNAVN_ENDRE,
     DATO_ENDRE,
     NYHANDLING_REGISTRER,
 } from '../actiontypes';
@@ -23,6 +23,7 @@ export default function Home() {
     const handlinger = useSelector(state => state.handlinger);
     const butikker = useSelector(state => state.butikker);
     const storeId = useSelector(state => state.storeId);
+    const butikknavn = useSelector(state => state.butikknavn);
     const handletidspunkt = useSelector(state => state.handletidspunkt);
     const handledato = handletidspunkt.split('T')[0];
     const belop = useSelector(state => state.belop).toString();
@@ -68,10 +69,16 @@ export default function Home() {
                     <div className="form-group row">
                         <label htmlFor="jobtype" className="col-form-label col-5">Velg butikk</label>
                         <div className="col-7">
-                            <select value={storeId} onChange={e => dispatch(BUTIKK_ENDRE(e.target.value))}>
-                                <option key="-1" value="-1" />
-                                {butikker.map(butikk => <option key={butikk.storeId} value={butikk.storeId}>{butikk.butikknavn}</option>)}
-                            </select>
+                            <input
+                                list="butikker"
+                                id="valgt-butikk"
+                                name="valgt-butikk"
+                                value={butikknavn}
+                                onChange={e => dispatch(HOME_BUTIKKNAVN_ENDRE(e.target.value))}/>
+                            <datalist id="butikker">
+                                <option key="-1" value="" />
+                                {butikker.map(butikk => <option key={butikk.storeId} value={butikk.butikknavn}/>)}
+                            </datalist>
                         </div>
                     </div>
                     <div className="form-group row">
