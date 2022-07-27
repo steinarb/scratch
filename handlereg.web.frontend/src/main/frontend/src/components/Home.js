@@ -28,6 +28,7 @@ export default function Home() {
     const belop = useSelector(state => state.belop).toString();
     const dispatch = useDispatch();
     const storeName = (butikker.find(b => b.storeId === storeId) || {}).butikknavn;
+    const findStoreId = e => (butikker.find(b => b.butikknavn === e.target.value) || {}).storeId;
 
     return (
         <div>
@@ -69,10 +70,10 @@ export default function Home() {
                     <div className="form-group row">
                         <label htmlFor="jobtype" className="col-form-label col-5">Velg butikk</label>
                         <div className="col-7">
-                            <input list="butikker" id="valgt-butikk" name="valgt-butikk" value={storeName} onClick={e => dispatch(BUTIKK_ENDRE(e.target.value))}/>
+                            <input list="butikker" id="valgt-butikk" name="valgt-butikk" value={storeName} onClick={e => dispatch(BUTIKK_ENDRE(findStoreId(e)))}/>
                             <datalist id="butikker">
-                                <option key="-1" value="-1" />
-                                {butikker.map(butikk => <option key={butikk.storeId} value={butikk.storeId}>{butikk.butikknavn}</option>)}
+                                <option key="-1" value="" />
+                                {butikker.map(butikk => <option key={butikk.storeId} value={butikk.butikknavn}/>)}
                             </datalist>
                         </div>
                     </div>
