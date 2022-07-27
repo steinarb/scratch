@@ -1,11 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    BUTIKK_ENDRE,
+    HOME_VELG_BUTIKK,
     HANDLINGER_MOTTA,
 } from '../actiontypes';
 
 const storeIdReducer = createReducer(-1, {
-    [BUTIKK_ENDRE]: (state, action) => action.payload,
+    [HOME_VELG_BUTIKK]: (state, action) => action.payload,
     [HANDLINGER_MOTTA]: (state, action) => finnSisteButikk(action.payload),
 });
 
