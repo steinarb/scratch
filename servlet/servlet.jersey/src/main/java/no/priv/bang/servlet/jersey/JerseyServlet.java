@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -30,6 +29,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.glassfish.jersey.servlet.WebConfig;
 import org.osgi.service.log.LogService;
 
+import jakarta.servlet.ServletException;
 import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 
 /**
