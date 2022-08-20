@@ -26,7 +26,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
-import liquibase.exception.LiquibaseException;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 
@@ -53,7 +52,7 @@ public class OldAlbumScheme implements PreHook {
         try (Connection connect = datasource.getConnection()) {
             OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
-        } catch (LiquibaseException e) {
+        } catch (Exception e) {
             logger.error("Error creating handlreg test database", e);
         }
     }

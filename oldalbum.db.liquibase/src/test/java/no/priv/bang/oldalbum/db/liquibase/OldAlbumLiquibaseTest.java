@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,11 +36,17 @@ class OldAlbumLiquibaseTest {
 
     @Test
     void testCreateSchema() throws Exception {
-        Connection connection = createConnection();
+        var datasource = createDatasource();
         OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
-        oldAlbumLiquibase.createInitialSchema(connection);
-        addAlbumEntries(connection);
-        assertAlbumEntries(connection);
+        try(var connection = datasource.getConnection()) {
+            oldAlbumLiquibase.createInitialSchema(connection);
+        }
+        try(var connection = datasource.getConnection()) {
+            addAlbumEntries(connection);
+        }
+        try(var connection = datasource.getConnection()) {
+            assertAlbumEntries(connection);
+        }
     }
 
     private void assertAlbumEntries(Connection connection) throws Exception {
@@ -95,11 +101,10 @@ class OldAlbumLiquibaseTest {
         }
     }
 
-    private Connection createConnection() throws Exception {
+    private DataSource createDatasource() throws Exception {
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:oldalbum;create=true");
-        DataSource dataSource = derbyDataSourceFactory.createDataSource(properties);
-        return dataSource.getConnection();
+        return derbyDataSourceFactory.createDataSource(properties);
     }
 
 }
