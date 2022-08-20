@@ -58,7 +58,7 @@ public class OldAlbumProductionDatabase implements PreHook {
         try (Connection connect = datasource.getConnection()) {
             OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
-        } catch (LiquibaseException e) {
+        } catch (Exception e) {
             logger.error("Error creating oldalbum production database", e);
         }
     }

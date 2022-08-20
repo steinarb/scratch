@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
         try (Connection connect = datasource.getConnection()) {
             OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
-        } catch (LiquibaseException e) {
+        } catch (Exception e) {
             logger.error("Error creating handlreg test database", e);
         }
     }
@@ -67,7 +67,7 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
         try (Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
             ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
+            var liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
             liquibase.update("");
         } catch (LiquibaseException e) {
             logger.error("Error populating dummy data database", e);
