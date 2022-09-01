@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { NavLink } from 'react-router-dom';
-import { parse } from 'qs';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import {
     MODIFY_ALBUM_BASENAME_FIELD_CHANGED,
     MODIFY_ALBUM_TITLE_FIELD_CHANGED,
@@ -10,15 +9,15 @@ import {
     ADD_ALBUM_CANCEL_BUTTON_CLICKED,
 } from '../reduxactions';
 
-export default function AddAlbum(props) {
+export default function AddAlbum() {
     const path = useSelector(state => state.albumentryPath);
     const basename = useSelector(state => state.albumentryBasename);
     const title = useSelector(state => state.albumentryTitle);
     const description = useSelector(state => state.albumentryDescription);
     const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
     const dispatch = useDispatch();
-    const queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
-    const { parent } = queryParams;
+    const [ queryParams ] = useSearchParams();
+    const parent = queryParams.get('parent');
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';

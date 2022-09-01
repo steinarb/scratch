@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOGOUT_REQUEST } from '../reduxactions';
 
@@ -10,7 +10,7 @@ export default function Unauthorized() {
     const loggedIn = useSelector(state => state.loggedIn);
     const dispatch = useDispatch();
     if (haveReceivedInitialLoginStatus && !loggedIn) {
-        return <Redirect to="/login" />;
+        return <Navigate to="/login" />;
     }
 
     return (

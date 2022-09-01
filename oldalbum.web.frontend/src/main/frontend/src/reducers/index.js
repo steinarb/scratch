@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
 import alert from './alertReducer';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
@@ -26,8 +25,8 @@ import logstatusMessage from './logstatusMessageReducer';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
 
-export default (history) => combineReducers({
-    router: connectRouter(history),
+export default (routerReducer) => combineReducers({
+    router: routerReducer,
     alert,
     allroutes,
     albumentries,

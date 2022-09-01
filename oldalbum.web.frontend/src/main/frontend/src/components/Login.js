@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Redirect, NavLink } from 'react-router-dom';
-import { parse } from 'qs';
+import { Navigate, NavLink, useSearchParams } from 'react-router-dom';
 import { LOGIN_REQUEST } from '../reduxactions';
 
-export default function Login(props) {
-    const { location } = props;
+export default function Login() {
     const loggedIn = useSelector(state => state.loggedIn);
     const errormessage = useSelector(state => state.errormessage);
     const dispatch = useDispatch();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
-    const queryParams = (location.search && parse(location.search, { ignoreQueryPrefix: true })) || {};
-    const { returnpath = '/' } = queryParams;
+    const [searchParams] = useSearchParams();
+    const returnpath = searchParams.get('returnpath') || '/';
 
     if (loggedIn) {
-        return (<Redirect to={returnpath} />);
+        return (<Navigate to={returnpath} />);
     }
 
     return (

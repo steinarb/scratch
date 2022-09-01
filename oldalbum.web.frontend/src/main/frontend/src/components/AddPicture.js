@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { NavLink } from 'react-router-dom';
-import { parse } from 'qs';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import {
     ADD_PICTURE_BASENAME_FIELD_CHANGED,
     ADD_PICTURE_TITLE_FIELD_CHANGED,
@@ -13,7 +12,7 @@ import {
     IMAGE_METADATA_REQUEST,
 } from '../reduxactions';
 
-export default function AddPicture(props) {
+export default function AddPicture() {
     const path = useSelector(state => state.albumentryPath);
     const basename = useSelector(state => state.albumentryBasename);
     const title = useSelector(state => state.albumentryTitle);
@@ -25,8 +24,8 @@ export default function AddPicture(props) {
     const contentType = useSelector(state => state.albumentryContentType);
     const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
     const dispatch = useDispatch();
-    const queryParams = parse(props.location.search, { ignoreQueryPrefix: true });
-    const { parent } = queryParams;
+    const [ queryParams ] = useSearchParams();
+    const parent = queryParams.get('parent');
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';

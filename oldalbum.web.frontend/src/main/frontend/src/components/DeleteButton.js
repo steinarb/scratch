@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
+import { push } from 'redux-first-history';
 import { DELETE_ITEM_REQUEST } from '../reduxactions';
 
 export default function DeleteButton(props) {

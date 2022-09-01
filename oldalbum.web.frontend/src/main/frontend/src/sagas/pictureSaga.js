@@ -1,5 +1,5 @@
 import { takeLatest, put, select } from 'redux-saga/effects';
-import { push, goBack } from 'connected-react-router';
+import { push, goBack } from 'redux-first-history';
 import {
     MODIFY_PICTURE_UPDATE_BUTTON_CLICKED,
     MODIFY_PICTURE_CANCEL_BUTTON_CLICKED,

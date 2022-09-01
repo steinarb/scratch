@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
+import { push } from 'redux-first-history';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle, formatMetadata } from './commonComponentCode';

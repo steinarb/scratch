@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Route } from 'react-router-dom';
-import { ConnectedRouter as Router } from 'connected-react-router';
+import { Routes, Route } from 'react-router-dom';
+import { HistoryRouter as Router } from "redux-first-history/rr6";
 import './App.css';
 import Album from './components/Album';
 import Picture from './components/Picture';
@@ -13,22 +13,20 @@ import ModifyPicture from './components/ModifyPicture';
 import AddPicture from './components/AddPicture';
 
 export default function App(props) {
-    const { history } = props;
+    const { history, basename } = props;
     const allroutes = useSelector(state => state.allroutes);
 
     return (
-        <Router history={history}>
-            <div>
-                <div>
-                    { allroutes.map((item, index) => <Route exact key={index} path={item.path} component={() => albumOrPicture(item)} />) }
-                    <Route exact key="login" path="/login" component={Login} />
-                    <Route exact key="unauthorized" path="/unauthorized" component={Unauthorized} />
-                    <Route key="modifyalbum" path='/modifyalbum' component={ModifyAlbum} />
-                    <Route key="addalbum" path='/addalbum' component={AddAlbum} />
-                    <Route key="modifypicture" path='/modifypicture' component={ModifyPicture} />
-                    <Route key="addpicture" path='/addpicture' component={AddPicture} />
-                </div>
-            </div>
+        <Router history={history} basename={basename}>
+            <Routes >
+                { allroutes.map((item, index) => <Route exact key={index} path={item.path} element={albumOrPicture(item)} />) }
+                <Route exact key="login" path="/login" element={<Login/>} />
+                <Route exact key="unauthorized" path="/unauthorized" element={<Unauthorized/>} />
+                <Route key="modifyalbum" path='/modifyalbum' element={<ModifyAlbum/>} />
+                <Route key="addalbum" path='/addalbum' element={<AddAlbum/>} />
+                <Route key="modifypicture" path='/modifypicture' element={<ModifyPicture/>} />
+                <Route key="addpicture" path='/addpicture' element={<AddPicture/>} />
+            </Routes>
         </Router>
     );
 }
