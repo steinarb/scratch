@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import {
     LOGIN_HENT,
 } from '../actiontypes';
@@ -14,7 +14,7 @@ export default function Login() {
 
     if (loginresultat.suksess) {
         const originalRequestUrl = loginresultat.originalRequestUrl || '/handlereg/';
-        return (<Redirect to={originalRequestUrl} />);
+        return (<Navigate to={originalRequestUrl} />);
     }
 
     return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     LOGOUT_HENT,
@@ -11,7 +11,7 @@ export default function Unauthorized() {
     const loginresultat = useSelector(state => state.loginresultat);
     const dispatch = useDispatch();
     if (!loginresultat.suksess) {
-        return <Redirect to="/handlereg/login" />;
+        return <Navigate to="/handlereg/login" />;
     }
 
     return (

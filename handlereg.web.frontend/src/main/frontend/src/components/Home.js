@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     BELOP_ENDRE,
@@ -15,7 +15,7 @@ import Kvittering from './Kvittering';
 export default function Home() {
     const loginresultat = useSelector(state => state.loginresultat);
     if (!loginresultat.authorized) {
-        return <Redirect to="/handlereg/unauthorized" />;
+        return <Navigate to="/handlereg/unauthorized" />;
     }
 
     const oversikt = useSelector(state => state.oversikt);

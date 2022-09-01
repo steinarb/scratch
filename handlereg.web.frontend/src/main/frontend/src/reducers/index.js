@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
 import loginresultat from './loginresultatReducer';
 import oversikt from './oversiktReducer';
 import butikker from './butikkerReducer';
@@ -19,8 +18,8 @@ import favoritter from './favoritterReducer';
 import favorittbutikk from './favorittbutikkReducer';
 import errors from './errorsReducer';
 
-export default (history) => combineReducers({
-    router: connectRouter(history),
+export default (routerReducer) => combineReducers({
+    router: routerReducer,
     loginresultat,
     oversikt,
     butikker,

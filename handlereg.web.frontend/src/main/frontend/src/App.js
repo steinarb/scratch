@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import { ConnectedRouter as Router } from 'connected-react-router';
+import { Routes, Route } from 'react-router-dom';
+import { HistoryRouter as Router } from "redux-first-history/rr6";
 import './App.css';
 import Home from './components/Home';
 import Hurtigregistrering from './components/Hurtigregistrering';
@@ -25,24 +25,24 @@ class App extends Component {
 
         return (
             <Router history={history}>
-                <Switch>
-                    <Route exact path="/handlereg/" component={Home} />
-                    <Route exact path="/handlereg/hurtigregistrering" component={Hurtigregistrering} />
-                    <Route exact path="/handlereg/statistikk/sumbutikk" component={StatistikkSumbutikk} />
-                    <Route exact path="/handlereg/statistikk/handlingerbutikk" component={StatistikkHandlingerbutikk} />
-                    <Route exact path="/handlereg/statistikk/sistehandel" component={StatistikkSistehandel} />
-                    <Route exact path="/handlereg/statistikk/sumyearmonth" component={StatistikkSumyearmonth} />
-                    <Route exact path="/handlereg/statistikk/sumyear" component={StatistikkSumyear} />
-                    <Route exact path="/handlereg/statistikk" component={Statistikk} />
-                    <Route exact path="/handlereg/favoritter/leggtil" component={FavoritterLeggTil} />
-                    <Route exact path="/handlereg/favoritter/slett" component={FavoritterSlett} />
-                    <Route exact path="/handlereg/favoritter/sorter" component={FavoritterSorter} />
-                    <Route exact path="/handlereg/favoritter" component={Favoritter} />
-                    <Route exact path="/handlereg/nybutikk" component={NyButikk} />
-                    <Route exact path="/handlereg/endrebutikk" component={EndreButikk} />
-                    <Route exact path="/handlereg/login" component={Login} />
-                    <Route exact path="/handlereg/unauthorized" component={Unauthorized} />
-                </Switch>
+                <Routes>
+                    <Route exact path="/handlereg/" element={<Home/>} />
+                    <Route exact path="/handlereg/hurtigregistrering" element={<Hurtigregistrering/>} />
+                    <Route exact path="/handlereg/statistikk/sumbutikk" element={<StatistikkSumbutikk/>} />
+                    <Route exact path="/handlereg/statistikk/handlingerbutikk" element={<StatistikkHandlingerbutikk/>} />
+                    <Route exact path="/handlereg/statistikk/sistehandel" element={<StatistikkSistehandel/>} />
+                    <Route exact path="/handlereg/statistikk/sumyearmonth" element={<StatistikkSumyearmonth/>} />
+                    <Route exact path="/handlereg/statistikk/sumyear" element={<StatistikkSumyear/>} />
+                    <Route exact path="/handlereg/statistikk" element={<Statistikk/>} />
+                    <Route exact path="/handlereg/favoritter/leggtil" element={<FavoritterLeggTil/>} />
+                    <Route exact path="/handlereg/favoritter/slett" element={<FavoritterSlett/>} />
+                    <Route exact path="/handlereg/favoritter/sorter" element={<FavoritterSorter/>} />
+                    <Route exact path="/handlereg/favoritter" element={<Favoritter/>} />
+                    <Route exact path="/handlereg/nybutikk" element={<NyButikk/>} />
+                    <Route exact path="/handlereg/endrebutikk" element={<EndreButikk/>} />
+                    <Route exact path="/handlereg/login" element={<Login/>} />
+                    <Route exact path="/handlereg/unauthorized" element={<Unauthorized/>} />
+                </Routes>
             </Router>
         );
     }
