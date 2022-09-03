@@ -9,7 +9,7 @@ import RightButton from './RightButton';
 import Thumbnail from './Thumbnail';
 
 export default function AlbumEntryOfTypeAlbum(props) {
-    const { key, entry, className='' } = props;
+    const { entry, className='' } = props;
     const childentries = useSelector(state => state.childentries || {});
     const children = childentries[entry.id] || [];
     const title = pictureTitle(entry);
@@ -19,7 +19,7 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const childrenWithThumbnails = findChildrenThumbnails(entry, children, childentries).slice(0, noOfThumbnails);
 
     return (
-        <div key={key} className={className + setWidth}>
+        <div className={className + setWidth}>
             <div className="d-sm-none">
                 <div className="btn btn-primary d-flex">
                     <NavLink className="btn-primary mr-auto text-left" to={entry.path}>Album: {title}</NavLink>

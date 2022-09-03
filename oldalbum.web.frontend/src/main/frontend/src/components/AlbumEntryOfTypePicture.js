@@ -9,13 +9,13 @@ import ThumbnailImg from './ThumbnailImg';
 
 
 function AlbumEntryOfTypePicture(props) {
-    const { key, entry, className='' } = props;
+    const { entry, className='' } = props;
     const title = pictureTitle(entry);
     const viewportSize = viewSize();
     const setWidth = (viewportSize === 'sm' || viewportSize === 'xs') ? ' w-100' : '';
     const metadata = formatMetadata(entry);
     return (
-        <div key={key} className={className + setWidth}>
+        <div className={className + setWidth}>
             <div className="d-sm-none">
                 <div className="btn btn-primary left-align-cell">
                     <NavLink className="btn btn-block btn-primary left-align-cell" to={entry.path}>
