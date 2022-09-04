@@ -43,9 +43,10 @@ function* saveAddedPicture() {
 }
 
 function* clearFormAndNavigateToPicture() {
+    const basename = yield select(state => state.basename);
     const path = yield select(state => state.albumentryPath);
     yield put(CLEAR_PICTURE_FORM());
-    yield put(push(path));
+    yield put(push(basename + path));
 }
 
 function* clearFormAndNavigateBack() {
