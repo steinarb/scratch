@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="oldalbum">
 
-    <!-- Copyright 2020-2021 Steinar Bang                                                -->
+    <!-- Copyright 2020-2022 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -29,6 +29,14 @@
         <feature>oldalbum-backend</feature>
         <feature>oldalbum-web-security</feature>
         <feature>user-admin-with-testdb</feature>
+        <feature>oldalbum-roleadder-test</feature>
+        <feature>oldalbum-web-api</feature>
+        <feature>oldalbum-web-frontend</feature>
+    </feature>
+    <feature name="oldalbum-with-derby-and-provided-authservice" description="oldalbum webapp with derby database" version="${project.version}">
+        <feature>oldalbum-db-test</feature>
+        <feature>oldalbum-backend</feature>
+        <feature>oldalbum-web-security</feature>
         <feature>oldalbum-roleadder-test</feature>
         <feature>oldalbum-web-api</feature>
         <feature>oldalbum-web-frontend</feature>
