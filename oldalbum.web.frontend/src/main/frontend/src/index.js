@@ -12,6 +12,7 @@ import { createBrowserHistory } from 'history';
 import createRootReducer from './reducers';
 import rootSaga from './sagas';
 import {
+    SET_BASENAME,
     LOGIN_CHECK_REQUEST,
     ALLROUTES_REQUEST,
 } from './reduxactions';
@@ -36,6 +37,7 @@ sagaMiddleware.run(rootSaga);
 const history = createReduxHistory(store);
 
 // Initial actions to fetch data
+store.dispatch(SET_BASENAME(basename));
 store.dispatch(LOGIN_CHECK_REQUEST());
 store.dispatch(ALLROUTES_REQUEST());
 
