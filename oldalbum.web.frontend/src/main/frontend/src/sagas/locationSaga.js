@@ -12,7 +12,7 @@ import {
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const { pathname = '' } = location;
-    const basename = yield select(state => state.basename);
+    const basename = yield select(state => state.router.basename);
 
     yield put(CLEAR_ALERT());
 
