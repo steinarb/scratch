@@ -31,6 +31,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2022-08-21 Sun 11:24> |   1.8.5 | Use liquibase 4.15.0                                                                                           |
 | <2022-08-10 Wed 22:38> |   1.8.4 | Use servlet 1.6.2, maven-bundle-plugin 5.1.8, jsoup 1.15.2, junit jupiter 5.9.0, mockito 4.6.1, assertj 2.23.1 |
 | <2022-08-10 Wed 08:33> |   1.8.3 | Use jersey 2.36 and postgresql jdbc driver 42.4.1                                                              |
 | <2022-07-25 Mon 19:11> |   1.8.2 | Use karaf 4.4.1                                                                                                |
