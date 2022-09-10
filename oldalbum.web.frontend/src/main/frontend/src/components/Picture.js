@@ -14,7 +14,6 @@ import PictureDescription from './PictureDescription';
 export default function Picture(props) {
     const { item } = props;
     const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
-    const basename = useSelector(state => state.basename);
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
@@ -22,8 +21,8 @@ export default function Picture(props) {
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
     const swipeHandlers = useSwipeable({
-        onSwipedLeft: () => next && dispatch(push(basename + next.path)),
-        onSwipedRight: () => previous && dispatch(basename + push(previous.path)),
+        onSwipedLeft: () => next && dispatch(push(next.path)),
+        onSwipedRight: () => previous && dispatch(push(previous.path)),
     });
 
     return (
