@@ -12,7 +12,6 @@ import { createBrowserHistory } from 'history';
 import createRootReducer from './reducers';
 import rootSaga from './sagas';
 import {
-    SET_BASENAME,
     LOGIN_CHECK_REQUEST,
     ALLROUTES_REQUEST,
 } from './reduxactions';
@@ -25,7 +24,7 @@ const {
   createReduxHistory,
   routerMiddleware,
   routerReducer
-} = createReduxHistoryContext({ history: createBrowserHistory() });
+} = createReduxHistoryContext({ history: createBrowserHistory(), basename });
 const store = configureStore({
     reducer: createRootReducer(routerReducer),
     middleware: [
@@ -37,7 +36,7 @@ sagaMiddleware.run(rootSaga);
 const history = createReduxHistory(store);
 
 // Initial actions to fetch data
-store.dispatch(SET_BASENAME(basename));
+//store.dispatch(SET_BASENAME(basename));
 store.dispatch(LOGIN_CHECK_REQUEST());
 store.dispatch(ALLROUTES_REQUEST());
 
