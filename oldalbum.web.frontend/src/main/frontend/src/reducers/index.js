@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import basename from './basenameReducer';
 import alert from './alertReducer';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
@@ -28,7 +27,6 @@ import canLogin from './canLoginReducer';
 
 export default (routerReducer) => combineReducers({
     router: routerReducer,
-    basename,
     alert,
     allroutes,
     albumentries,

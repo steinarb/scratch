@@ -36,7 +36,6 @@ sagaMiddleware.run(rootSaga);
 const history = createReduxHistory(store);
 
 // Initial actions to fetch data
-//store.dispatch(SET_BASENAME(basename));
 store.dispatch(LOGIN_CHECK_REQUEST());
 store.dispatch(ALLROUTES_REQUEST());
 
