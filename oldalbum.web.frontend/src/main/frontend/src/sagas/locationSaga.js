@@ -12,7 +12,7 @@ import {
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const basename = yield select(state => state.router.basename);
-    const pathname = location.pathname.replace(/^${basename}(.*)/, '$1');
+    const pathname = location.pathname.replace(new RegExp('^' + basename + '(.*)'), '$1');
     console.log('locationChange(1)');
     console.log(basename);
     console.log(pathname);
