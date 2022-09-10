@@ -12,7 +12,7 @@ import {
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const basename = yield select(state => state.router.basename);
-    const pathname = location.pathname.replace(new RegExp('^' + basename + '(.*)'), '$1');
+    const pathname = findPathname(location, basename);
     console.log('locationChange(1)');
     console.log(basename);
     console.log(pathname);
@@ -71,6 +71,14 @@ function* locationChange(action) {
 
 export default function* locationSaga() {
     yield takeLatest(LOCATION_CHANGE, locationChange);
+}
+
+function findPathname(location, basename) {
+    if (basename === '/') {
+        return location.pathname;
+    }
+
+    return location.pathname.replace(new RegExp('^' + basename + '(.*)'), '$1');
 }
 
 function findAlbumentries(state) {
