@@ -56,7 +56,7 @@ public class HandleregProductionDbLiquibaseRunner implements PreHook {
             insertMockData(connect);
             handleregLiquibase.updateSchema(connect);
         } catch (Exception e) {
-            logError("Failed to create handlereg derby test database", e);
+            logError("Failed to create handlereg PostgreSQL database", e);
         }
     }
 
