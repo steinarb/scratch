@@ -13,9 +13,6 @@ function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const basename = yield select(state => state.router.basename);
     const pathname = findPathname(location, basename);
-    console.log('locationChange(1)');
-    console.log(basename);
-    console.log(pathname);
 
     yield put(CLEAR_ALERT());
 
