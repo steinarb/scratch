@@ -38,10 +38,9 @@ function* saveAddedAlbum() {
 }
 
 function* clearFormAndNavigateToAlbum() {
-    const basename = yield select(state => state.basename);
     const path = yield select(state => state.albumentryPath);
     yield put(CLEAR_ALBUM_FORM());
-    yield put(push(basename + path));
+    yield put(push(path));
 }
 
 function* clearFormAndNavigateBack() {

@@ -20,14 +20,13 @@ export default function Album(props) {
     const { item } = props;
     const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
     const children = useSelector(state => state.childentries[item.id] || []);
-    const basename = useSelector(state => state.basename);
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
     const title = pictureTitle(item);
     const swipeHandlers = useSwipeable({
-        onSwipedLeft: () => next && dispatch(push(basename + next.path)),
-        onSwipedRight: () => previous && dispatch(push(basename + previous.path)),
+        onSwipedLeft: () => next && dispatch(push(next.path)),
+        onSwipedRight: () => previous && dispatch(push(previous.path)),
     });
 
     return (
