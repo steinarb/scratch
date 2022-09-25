@@ -21,11 +21,24 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 ** Status
 
-[[https://travis-ci.org/steinarb/oldalbum][file:https://travis-ci.org/steinarb/oldalbum.svg?branch=master]] [[https://sonarcloud.io/dashboard?id=no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=alert_status#.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.oldalbum/oldalbum][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.oldalbum/oldalbum/badge.svg]] [[https://www.javadoc.io/doc/no.priv.bang.oldalbum/oldalbum][file:https://www.javadoc.io/badge/no.priv.bang.oldalbum/oldalbum.svg]]
+[[https://github.com/steinarb/oldalbum/actions/workflows/oldalbum-maven-ci-build.yml][file:https://github.com/steinarb/oldalbum/actions/workflows/oldalbum-maven-ci-build.yml/badge.svg]]
+[[https://coveralls.io/github/steinarb/oldalbum][file:https://coveralls.io/repos/github/steinarb/oldalbum/badge.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=alert_status#.svg]]
+[[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.oldalbum/oldalbum][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.oldalbum/oldalbum/badge.svg]]
+[[https://www.javadoc.io/doc/no.priv.bang.oldalbum/oldalbum][file:https://www.javadoc.io/badge/no.priv.bang.oldalbum/oldalbum.svg]]
 
-*** SonarCloud
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/images/project_badges/sonarcloud-white.svg]]
 
-[[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=ncloc#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=bugs#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=vulnerabilities#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=code_smells#.svg]] [[https://sonarcloud.io/dashboard/index/no.priv.bang.oldalbum%3Aoldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=no.priv.bang.oldalbum%3Aoldalbum&metric=coverage#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=sqale_index#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=coverage#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=ncloc#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=code_smells#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=sqale_rating#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=security_rating#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=bugs#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=vulnerabilities#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=duplicated_lines_density#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=reliability_rating#.svg]]
 
 *** Release history
 
