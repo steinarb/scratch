@@ -46,6 +46,9 @@ class UkelonnLiquibaseTest {
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
+        String configFilePath = ClassLoader.getSystemResource("logging.properties").getPath();
+        System.out.println("Setting java.util.logging.config.file to " + configFilePath);
+        System.setProperty("java.util.logging.config.file", configFilePath);
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
