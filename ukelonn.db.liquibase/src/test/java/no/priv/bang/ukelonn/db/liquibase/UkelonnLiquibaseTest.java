@@ -210,6 +210,17 @@ class UkelonnLiquibaseTest {
         assertThat(e.getMessage()).startsWith("Error closing resource when forcibly releasing liquibase lock");
     }
 
+    @Test
+    void testForceReleaseLocksFailOnLiquibaseException() throws Exception {
+        Connection connection = createMockConnection();
+        UkelonnLiquibase handleregLiquibase = new UkelonnLiquibase();
+
+        var e = assertThrows(
+            LiquibaseException.class,
+            () -> handleregLiquibase.forceReleaseLocks(connection));
+        assertThat(e.getMessage()).startsWith("Error closing resource when forcibly releasing liquibase lock");
+    }
+
     private void createBonuses(Connection connection, Date startDate, Date endDate) throws Exception {
         createBonus(connection, true, "Christmas bonus", "To finance presents", 2.0, startDate, endDate);
     }
