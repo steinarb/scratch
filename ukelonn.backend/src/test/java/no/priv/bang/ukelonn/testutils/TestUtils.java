@@ -114,7 +114,7 @@ public class TestUtils {
 
     static DataSource createUkelonnDatasource(LogService logservice) throws SQLException {
         DerbyDataSourceFactory datasourceFactory = new DerbyDataSourceFactory();
-        Properties derbyDbCredentials = createDerbyMemoryDbCredentials();
+        Properties derbyDbCredentials = createDerbyMemoryDbCredentials("ukelonn");
         DataSource ukelonnDatasource = datasourceFactory.createDataSource(derbyDbCredentials);
         TestLiquibaseRunner runner = createLiquibaseRunner(logservice);
         runner.prepare(ukelonnDatasource);
@@ -128,9 +128,9 @@ public class TestUtils {
         return runner;
     }
 
-    private static Properties createDerbyMemoryDbCredentials() {
+    private static Properties createDerbyMemoryDbCredentials(String dbname) {
         Properties properties = new Properties();
-        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
+        properties.put(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return properties;
     }
 
