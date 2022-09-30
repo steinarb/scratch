@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.handlereg.services.HandleregException;
 
 public class HandleregLiquibase {
 
@@ -33,19 +34,29 @@ public class HandleregLiquibase {
     }
 
     public void forceReleaseLocks(Connection connection) throws LiquibaseException {
-        Liquibase liquibase = createLiquibaseInstance(connection, "handlereg-db-changelog/db-changelog-1.0.0.xml");
-        liquibase.forceReleaseLocks();
+        DatabaseConnection databaseConnection = new JdbcConnection(connection);
+        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+            try(var liquibase = new Liquibase("handlereg-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
+                liquibase.forceReleaseLocks();
+            }
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new HandleregException("Error closing resource when forcing Liquibase changelist lock for handlereg database", e);
+        }
     }
 
     private void applyLiquibaseChangelist(Connection connection, String changelistClasspathResource) throws LiquibaseException {
-        Liquibase liquibase = createLiquibaseInstance(connection, changelistClasspathResource);
-        liquibase.update("");
-    }
-
-    private Liquibase createLiquibaseInstance(Connection connection, String changelistClasspathResource) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connection);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        return new Liquibase(changelistClasspathResource, classLoaderResourceAccessor, databaseConnection);
+        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+            try(var liquibase = new Liquibase(changelistClasspathResource, classLoaderResourceAccessor, databaseConnection)) {
+                liquibase.update("");
+            }
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new HandleregException("Error closing resource when applying Liquibase changelist for handlereg database", e);
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.handlereg.db.liquibase.HandleregLiquibase;
+import no.priv.bang.handlereg.services.HandleregException;
 
 @Component(immediate=true, property = "name=handleregdb")
 public class HandleregTestDbLiquibaseRunner implements PreHook {
@@ -49,21 +50,33 @@ public class HandleregTestDbLiquibaseRunner implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
+        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
         try (Connection connect = datasource.getConnection()) {
-            HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
             handleregLiquibase.createInitialSchema(connect);
+        } catch (LiquibaseException e) {
+            logger.error("Error creating initial schema in handlereg test database", e);
+        }
+
+        try (Connection connect = datasource.getConnection()) {
             insertMockData(connect);
+        }
+
+        try (Connection connect = datasource.getConnection()) {
             handleregLiquibase.updateSchema(connect);
         } catch (LiquibaseException e) {
-            logger.error("Error creating handlereg test database schema", e);
+            logger.error("Error updating schema in handlereg test database", e);
         }
     }
 
-    public void insertMockData(Connection connect) throws LiquibaseException {
+    public void insertMockData(Connection connect) {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-        liquibase.update("");
+        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+            try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                liquibase.update("");
+            }
+        } catch (Exception e) {
+            throw new HandleregException("Error inserting mock data in handlereg derby test database", e);
+        }
     }
 
 }

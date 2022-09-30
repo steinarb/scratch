@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ import org.osgi.service.log.Logger;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.handlereg.db.liquibase.HandleregLiquibase;
+import no.priv.bang.handlereg.services.HandleregException;
 
 @Component(immediate=true, property = "name=handleregdb")
 public class HandleregProductionDbLiquibaseRunner implements PreHook {
@@ -50,21 +50,33 @@ public class HandleregProductionDbLiquibaseRunner implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
+        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
         try (Connection connect = datasource.getConnection()) {
-            HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
             handleregLiquibase.createInitialSchema(connect);
+        } catch (Exception e) {
+            logError("Failed to create initial schema of handlereg PostgreSQL database", e);
+        }
+
+        try (Connection connect = datasource.getConnection()) {
             insertMockData(connect);
+        }
+
+        try (Connection connect = datasource.getConnection()) {
             handleregLiquibase.updateSchema(connect);
         } catch (Exception e) {
-            logError("Failed to create handlereg PostgreSQL database", e);
+            logError("Failed to update schema of handlereg PostgreSQL database", e);
         }
     }
 
-    public void insertMockData(Connection connect) throws LiquibaseException {
+    public void insertMockData(Connection connect) {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        Liquibase liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-        liquibase.update("");
+        try (var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+            try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                liquibase.update("");
+            }
+        } catch (Exception e) {
+            throw new HandleregException("Error inserting initial data in handlereg postgresql database", e);
+        }
     }
 
     private void logError(String message, Exception exception) {

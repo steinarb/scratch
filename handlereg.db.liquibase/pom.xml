@@ -29,6 +29,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>no.priv.bang.handlereg</groupId>
+            <artifactId>handlereg.services</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>

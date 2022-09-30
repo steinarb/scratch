@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,11 @@
  */
 package no.priv.bang.handlereg.db.liquibase.production;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.handlereg.services.HandleregException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class HandleregProductionDbLiquibaseRunnerTest {
@@ -52,6 +57,60 @@ class HandleregProductionDbLiquibaseRunnerTest {
         assertEquals(originalNumberOfTransactions + 1, updatedNumberOfTransactions);
     }
 
+    @Test
+    void testFailWhenCreatingInitialSchema() throws Exception {
+        var realdb = createDataSource("handlereg1");
+        Connection connection = spy(realdb.getConnection());
+        // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
+        DataSource datasource = spy(realdb);
+        when(datasource.getConnection())
+            .thenReturn(connection)
+            .thenCallRealMethod()
+            .thenCallRealMethod();
+
+        MockLogService logservice = new MockLogService();
+        var runner = new HandleregProductionDbLiquibaseRunner();
+        runner.setLogService(logservice);
+        runner.activate();
+        assertThat(logservice.getLogmessages()).isEmpty();
+        runner.prepare(datasource);
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[ERROR] Failed to create initial schema of handlereg PostgreSQL database");
+    }
+
+    @Test
+    void testFailWhenInsertingMockDataBecauseNoSchema() throws Exception {
+        Connection connection = spy(createDataSource("handlereg2").getConnection());
+
+        MockLogService logservice = new MockLogService();
+        var runner = new HandleregProductionDbLiquibaseRunner();
+        runner.setLogService(logservice);
+        runner.activate();
+        var e = assertThrows(
+            HandleregException.class,
+            () -> runner.insertMockData(connection));
+        assertThat(e.getMessage()).startsWith("Error inserting initial data in handlereg postgresql database");
+    }
+
+    @Test
+    void testFailWhenUpdatingsSchema() throws Exception {
+        Connection connection = spy(createDataSource("handlereg3").getConnection());
+        // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
+        DataSource datasource = spy(createDataSource("handlereg4"));
+        when(datasource.getConnection())
+            .thenCallRealMethod()
+            .thenCallRealMethod()
+            .thenReturn(connection);
+
+        MockLogService logservice = new MockLogService();
+        var runner = new HandleregProductionDbLiquibaseRunner();
+        runner.setLogService(logservice);
+        runner.activate();
+        assertThat(logservice.getLogmessages()).isEmpty();
+        runner.prepare(datasource);
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[ERROR] Failed to update schema of handlereg PostgreSQL database");
+    }
 
     private void assertAccounts(DataSource datasource) throws Exception {
         try (Connection connection = datasource.getConnection()) {
@@ -132,6 +191,14 @@ class HandleregProductionDbLiquibaseRunnerTest {
                 }
             }
         }
+    }
+
+    private DataSource createDataSource(String dbname) throws SQLException {
+        DataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        Properties properties = new Properties();
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
+        DataSource datasource = dataSourceFactory.createDataSource(properties);
+        return datasource;
     }
 
 }

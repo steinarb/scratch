@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package no.priv.bang.handlereg.db.liquibase;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
 import java.io.PrintWriter;
@@ -34,36 +36,102 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import liquibase.exception.LiquibaseException;
+import no.priv.bang.handlereg.services.HandleregException;
+
 class HandleregLiquibaseTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
 
     @Test
     void testCreateSchema() throws Exception {
-        Connection connection = createConnection();
         HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
-        handleregLiquibase.createInitialSchema(connection);
-        addAccounts(connection);
-        assertAccounts(connection);
-        addStores(connection);
-        assertStores(connection);
-        addTransactions(connection);
-        assertTransactions(connection);
-        addFavourites(connection);
-        assertFavourites(connection);
-        handleregLiquibase.updateSchema(connection);
+        try(var connection = createConnection("handlereg")) {
+            handleregLiquibase.createInitialSchema(connection);
+        }
+
+        try(var connection = createConnection("handlereg")) {
+            addAccounts(connection);
+            assertAccounts(connection);
+            addStores(connection);
+            assertStores(connection);
+            addTransactions(connection);
+            assertTransactions(connection);
+            addFavourites(connection);
+            assertFavourites(connection);
+        }
+
+        try(var connection = createConnection("handlereg")) {
+            handleregLiquibase.updateSchema(connection);
+        }
+    }
+
+    @Test
+    void testCreateSchemaWithDatabaseError() throws Exception {
+        Connection connection = spy(createConnection("handlereg2"));
+        // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
+
+        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+
+        var e = assertThrows(
+            LiquibaseException.class,
+            () -> handleregLiquibase.createInitialSchema(connection));
+        assertThat(e.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
+    }
+
+    @Test
+    void testCreateSchemaWithErrorOnClose() throws Exception {
+        Connection connection = spy(createConnection("handlereg3"));
+        doNothing().when(connection).setAutoCommit(anyBoolean());
+        doThrow(Exception.class).when(connection).close();
+
+        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+
+
+        var e = assertThrows(
+            HandleregException.class,
+            () -> handleregLiquibase.createInitialSchema(connection));
+        assertThat(e.getMessage()).startsWith("Error closing resource when applying Liquibase changelist for handlereg database");
     }
 
     @Test
     void testForceReleaseLocks() throws Exception {
-        Connection connection = createConnection();
+        Connection connection = createConnection("handlereg4");
         HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
         assertDoesNotThrow(() -> handleregLiquibase.forceReleaseLocks(connection));
+    }
+
+    @Test
+    void testForceReleaseLocksWithDatabaseError() throws Exception {
+        Connection connection = spy(createConnection("handlereg5"));
+        // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
+
+        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+
+        var e = assertThrows(
+            LiquibaseException.class,
+            () -> handleregLiquibase.forceReleaseLocks(connection));
+        assertThat(e.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
+    }
+
+    @Test
+    void testForceReleaseLocksWithErrorOnClose() throws Exception {
+        Connection connection = spy(createConnection("handlereg6"));
+        doNothing().when(connection).setAutoCommit(anyBoolean());
+        doThrow(Exception.class).when(connection).close();
+
+        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+
+
+        var e = assertThrows(
+            HandleregException.class,
+            () -> handleregLiquibase.forceReleaseLocks(connection));
+        assertThat(e.getMessage()).startsWith("Error closing resource when forcing Liquibase changelist lock for handlereg database");
     }
 
     @Disabled("Pseudo-test that imports legacy data and turns them into SQL files that can be imported into an SQL database")
     @Test
     void createSqlFromOriginalData() throws Exception {
-        Connection connection = createConnection();
+        Connection connection = createConnection("handlereg");
         HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
         handleregLiquibase.createInitialSchema(connection);
         OldData oldData = new OldData();
@@ -270,9 +338,9 @@ class HandleregLiquibaseTest {
         assertEquals(rekkefolge, results.getInt(4));
     }
 
-    private Connection createConnection() throws Exception {
+    private Connection createConnection(String dbname) throws Exception {
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:handlereg;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         DataSource dataSource = derbyDataSourceFactory.createDataSource(properties);
         return dataSource.getConnection();
     }
