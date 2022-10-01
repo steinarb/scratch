@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ class FavorittResourceTest {
 
         String username = "jod";
         List<Favoritt> favoritter = resource.getFavoritter(username);
-        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).isNotEmpty();
     }
 
     @Test
@@ -58,7 +58,7 @@ class FavorittResourceTest {
         String username = "jod";
         NyFavoritt nyFavoritt = NyFavoritt.with().brukernavn(username).butikk(butikk ).build();
         List<Favoritt> favoritter = resource.leggTilFavoritt(nyFavoritt);
-        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).isNotEmpty();
     }
 
     @Test
@@ -72,8 +72,8 @@ class FavorittResourceTest {
         resource.handlereg = handlereg;
 
         List<Favoritt> favoritter = resource.slettFavoritt(favoritt1);
-        assertThat(favoritter.size()).isPositive();
         assertThat(favoritter)
+            .isNotEmpty()
             .contains(favoritt2)
             .doesNotContain(favoritt1);
         assertEquals(butikk, favoritter.get(0).getStore());
@@ -94,8 +94,9 @@ class FavorittResourceTest {
             .andre(favoritt2)
             .build();
         List<Favoritt> favoritter = resource.byttRekkefolge(favoritterSomSkalBytteRekkefolge);
-        assertThat(favoritter.size()).isPositive();
-        assertThat(favoritter).containsSequence(favoritt2, favoritt1);
+        assertThat(favoritter)
+            .isNotEmpty()
+            .containsSequence(favoritt2, favoritt1);
     }
 
 }

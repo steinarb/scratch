@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,6 @@ import no.priv.bang.handlereg.services.Oversikt;
 import no.priv.bang.handlereg.services.SumYear;
 import no.priv.bang.handlereg.services.SumYearMonth;
 import no.priv.bang.handlereg.services.Transaction;
-import no.priv.bang.handlereg.web.api.HandleregWebApi;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class HandleregWebApiTest extends ShiroTestBase {
@@ -352,7 +351,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
-        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).isNotEmpty();
     }
 
     @Test
@@ -376,7 +375,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
-        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).isNotEmpty();
     }
 
     @Test
@@ -399,7 +398,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
-        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).isNotEmpty();
         assertThat(favoritter)
             .contains(favoritt2)
             .doesNotContain(favoritt1);
@@ -430,7 +429,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
-        assertThat(favoritter.size()).isPositive();
+        assertThat(favoritter).isNotEmpty();
         assertThat(favoritter).containsSequence(favoritt2, favoritt1);
     }
 

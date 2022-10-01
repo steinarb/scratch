@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.NyHandling;
 import no.priv.bang.handlereg.services.Oversikt;
 import no.priv.bang.handlereg.services.Transaction;
-import no.priv.bang.handlereg.web.api.resources.HandlingResource;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class HandlingResourceTest {
@@ -46,7 +45,7 @@ class HandlingResourceTest {
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         List<Transaction> handlinger = resource.getHandlinger(1);
-        assertThat(handlinger.size()).isPositive();
+        assertThat(handlinger).isNotEmpty();
     }
 
     @Test
@@ -57,7 +56,7 @@ class HandlingResourceTest {
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         List<Transaction> handlinger = resource.getHandlinger(1);
-        assertEquals(0, handlinger.size());
+        assertThat(handlinger).isEmpty();
     }
 
     @Test

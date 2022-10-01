@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -407,7 +407,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<ButikkSum> sumOverButikk = handlereg.sumOverButikk();
-        assertThat(sumOverButikk.size()).isPositive();
+        assertThat(sumOverButikk).isNotEmpty();
     }
 
     @Test
@@ -421,7 +421,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<ButikkCount> antallHandlerIButikk = handlereg.antallHandlingerIButikk();
-        assertThat(antallHandlerIButikk.size()).isPositive();
+        assertThat(antallHandlerIButikk).isNotEmpty();
     }
 
     @Test
@@ -435,7 +435,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<ButikkDate> sisteHandelIButikk = handlereg.sisteHandelIButikk();
-        assertThat(sisteHandelIButikk.size()).isPositive();
+        assertThat(sisteHandelIButikk).isNotEmpty();
     }
 
     @Test
@@ -449,7 +449,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<SumYear> totaltHandlebelopPrAar = handlereg.totaltHandlebelopPrAar();
-        assertThat(totaltHandlebelopPrAar.size()).isPositive();
+        assertThat(totaltHandlebelopPrAar).isNotEmpty();
     }
 
     @Test
@@ -463,7 +463,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         List<SumYearMonth> totaltHandlebelopPrAarOgMaaned = handlereg.totaltHandlebelopPrAarOgMaaned();
-        assertThat(totaltHandlebelopPrAarOgMaaned.size()).isPositive();
+        assertThat(totaltHandlebelopPrAarOgMaaned).isNotEmpty();
     }
 
     @Test
@@ -484,10 +484,10 @@ class HandleregServiceProviderTest {
         List<Butikk> butikker = handlereg.finnButikker();
         Butikk butikk1 = butikker.get(1);
         List<Favoritt> favoritter1 = handlereg.leggTilFavoritt(NyFavoritt.with().brukernavn(username).butikk(butikk1).build());
-        assertThat(favoritter1.size()).isGreaterThan(favoritterOpprinnelig.size());
+        assertThat(favoritter1).hasSizeGreaterThan(favoritterOpprinnelig.size());
         Butikk butikk2 = butikker.get(2);
         List<Favoritt> favoritter2 = handlereg.leggTilFavoritt(NyFavoritt.with().brukernavn(username).butikk(butikk2).build());
-        assertThat(favoritter2.size()).isGreaterThan(favoritter1.size());
+        assertThat(favoritter2).hasSizeGreaterThan(favoritter1.size());
         int forsteFavorittIndeks = favoritter1.size() -1;
         int andreFavorittIndeks = favoritter1.size();
         Favoritt favoritt1 = favoritter2.get(forsteFavorittIndeks);
@@ -512,7 +512,7 @@ class HandleregServiceProviderTest {
             .contains(flippetFavoritt1)
             .contains(flippetFavoritt2);
         List<Favoritt> favoritter4 = handlereg.slettFavoritt(flippetFavoritt1);
-        assertThat(favoritter4.size()).isLessThan(favoritter3.size());
+        assertThat(favoritter4).hasSizeLessThan(favoritter3.size());
         assertThat(favoritter4)
             .doesNotContain(flippetFavoritt1)
             .contains(flippetFavoritt2);

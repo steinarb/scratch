@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import no.priv.bang.handlereg.services.Butikk;
 import no.priv.bang.handlereg.services.HandleregException;
 import no.priv.bang.handlereg.services.HandleregService;
-import no.priv.bang.handlereg.web.api.resources.ButikkResource;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class ButikkResourceTest {
@@ -44,7 +43,7 @@ class ButikkResourceTest {
         resource.handlereg = handlereg;
 
         List<Butikk> butikker = resource.getButikker();
-        assertThat(butikker.size()).isPositive();
+        assertThat(butikker).isNotEmpty();
     }
 
     @Test
