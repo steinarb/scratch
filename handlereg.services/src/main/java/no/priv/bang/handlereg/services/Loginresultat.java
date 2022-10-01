@@ -21,7 +21,7 @@ public class Loginresultat {
     private String feilmelding;
     private boolean authorized;
     private String originalRequestUrl;
-    public String brukernavn;
+    private String brukernavn;
 
     private Loginresultat() {}
 
