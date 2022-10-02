@@ -132,8 +132,8 @@ class HandleregServiceProviderTest {
         MockLogService logservice = new MockLogService();
         HandleregServiceProvider handlereg = new HandleregServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
-        when(useradmin.getUser(eq("jod"))).thenReturn(User.with().userid(1).username("jod").email("jod@gmail.com").firstname("John").lastname("Doe").build());
-        when(useradmin.getUser(eq("jad"))).thenReturn(User.with().userid(2).username("jad").email("jad@gmail.com").firstname("Jane").lastname("Doe").build());
+        when(useradmin.getUser("jod")).thenReturn(User.with().userid(1).username("jod").email("jod@gmail.com").firstname("John").lastname("Doe").build());
+        when(useradmin.getUser("jad")).thenReturn(User.with().userid(2).username("jad").email("jad@gmail.com").firstname("Jane").lastname("Doe").build());
         handlereg.setLogservice(logservice);
         handlereg.setDatasource(datasource);
         handlereg.setUseradmin(useradmin);
