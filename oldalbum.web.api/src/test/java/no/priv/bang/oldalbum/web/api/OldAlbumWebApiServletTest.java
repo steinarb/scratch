@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
-        assertThat(routes.size()).isPositive();
+        assertThat(routes).isNotEmpty();
     }
 
     @Test
@@ -135,7 +135,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
-        assertThat(routes.size()).isPositive();
+        assertThat(routes).isNotEmpty();
     }
 
     @Test
@@ -153,7 +153,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
-        assertThat(routes.size()).isPositive();
+        assertThat(routes).isNotEmpty();
     }
 
     @Test
@@ -171,7 +171,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
-        assertThat(routes.size()).isPositive();
+        assertThat(routes).isNotEmpty();
     }
 
     @Test

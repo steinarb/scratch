@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         List<AlbumEntry> allroutes = provider.fetchAllRoutes();
-        assertThat(allroutes.size()).isGreaterThan(20);
+        assertThat(allroutes).hasSizeGreaterThan(20);
     }
 
     @Test
@@ -100,7 +100,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         List<String> paths = provider.getPaths();
-        assertThat(paths.size()).isGreaterThanOrEqualTo(20);
+        assertThat(paths).hasSizeGreaterThanOrEqualTo(20);
     }
 
     @Test
@@ -164,7 +164,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
         List<AlbumEntry> children = provider.getChildren(3);
-        assertThat(children.size()).isGreaterThanOrEqualTo(3);
+        assertThat(children).hasSizeGreaterThanOrEqualTo(3);
     }
 
     @Test
@@ -280,7 +280,7 @@ class OldAlbumServiceProviderTest {
             .sort(2)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
-        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
         assertNotEquals(albumToAdd.getId(), addedAlbum.getId()); // Placeholder ID is replaced with an actual database id
         assertThat(addedAlbum.getId()).isPositive();
@@ -313,7 +313,7 @@ class OldAlbumServiceProviderTest {
             .contentLength(metadata.getContentLength())
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
-        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
@@ -343,7 +343,7 @@ class OldAlbumServiceProviderTest {
             .sort(4)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
-        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
@@ -379,7 +379,7 @@ class OldAlbumServiceProviderTest {
             .sort(4)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
-        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
@@ -407,7 +407,7 @@ class OldAlbumServiceProviderTest {
             .sort(4)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
-        assertThat(allroutes.size()).isGreaterThan(numberOfEntriesBeforeAdd);
+        assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
@@ -463,7 +463,7 @@ class OldAlbumServiceProviderTest {
             .childcount(0)
             .build();
         List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
-        assertThat(allroutes.size()).isLessThan(numberOfEntriesBeforeDelete);
+        assertThat(allroutes).hasSizeLessThan(numberOfEntriesBeforeDelete);
         Optional<AlbumEntry> deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
         assertFalse(deletedPicture.isPresent());
     }
@@ -543,7 +543,7 @@ class OldAlbumServiceProviderTest {
         // Try moving an album and failing
         List<AlbumEntry> allroutes = provider.moveEntryUp(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
         assertEquals(0, allroutes.size());
-        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
     }
 
@@ -591,7 +591,7 @@ class OldAlbumServiceProviderTest {
 
         List<AlbumEntry> allroutes = provider.moveEntryDown(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
         assertEquals(0, allroutes.size());
-        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
     }
 
@@ -722,7 +722,7 @@ class OldAlbumServiceProviderTest {
         String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         assertNull(metadata);
-        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Error when reading metadata");
     }
 

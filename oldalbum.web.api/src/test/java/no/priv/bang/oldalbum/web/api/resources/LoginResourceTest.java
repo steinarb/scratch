@@ -209,7 +209,7 @@ class LoginResourceTest extends ShiroTestBase {
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.login(credentials);
             });
-        assertThat(logservice.getLogmessages().size()).isPositive();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Login error: internal server error");
     }
 
