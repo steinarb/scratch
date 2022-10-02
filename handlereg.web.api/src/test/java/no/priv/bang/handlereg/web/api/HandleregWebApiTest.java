@@ -398,8 +398,8 @@ class HandleregWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
-        assertThat(favoritter).isNotEmpty();
         assertThat(favoritter)
+            .isNotEmpty()
             .contains(favoritt2)
             .doesNotContain(favoritt1);
         assertEquals(butikk, favoritter.get(0).getStore());
@@ -429,8 +429,9 @@ class HandleregWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
-        assertThat(favoritter).isNotEmpty();
-        assertThat(favoritter).containsSequence(favoritt2, favoritt1);
+        assertThat(favoritter)
+            .isNotEmpty()
+            .containsSequence(favoritt2, favoritt1);
     }
 
     private byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {

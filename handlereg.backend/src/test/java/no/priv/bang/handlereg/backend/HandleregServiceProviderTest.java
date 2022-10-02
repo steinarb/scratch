@@ -512,8 +512,8 @@ class HandleregServiceProviderTest {
             .contains(flippetFavoritt1)
             .contains(flippetFavoritt2);
         List<Favoritt> favoritter4 = handlereg.slettFavoritt(flippetFavoritt1);
-        assertThat(favoritter4).hasSizeLessThan(favoritter3.size());
         assertThat(favoritter4)
+            .hasSizeLessThan(favoritter3.size())
             .doesNotContain(flippetFavoritt1)
             .contains(flippetFavoritt2);
     }
