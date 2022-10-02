@@ -58,19 +58,21 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
         try (Connection connect = datasource.getConnection()) {
             OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
-        } catch (Exception e) {
-            logger.error("Error creating handlreg test database", e);
+        } catch (LiquibaseException e) {
+            logger.error("Error creating schema in oldalbum derby test database", e);
         }
     }
 
     void insertMockData(DataSource datasource) throws SQLException {
         try (Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            var liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-            liquibase.update("");
-        } catch (LiquibaseException e) {
-            logger.error("Error populating dummy data database", e);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            } catch (Exception e) {
+                logger.error("Error populating oldalbum derby test database with dummy data", e);
+            }
         }
     }
 

@@ -16,6 +16,8 @@
 package no.priv.bang.oldalbum.db.liquibase;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,12 +33,14 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import liquibase.exception.LiquibaseException;
+
 class OldAlbumLiquibaseTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
 
     @Test
     void testCreateSchema() throws Exception {
-        var datasource = createDatasource();
+        var datasource = createDatasource("oldalbum");
         OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
         try(var connection = datasource.getConnection()) {
             oldAlbumLiquibase.createInitialSchema(connection);
@@ -47,6 +51,33 @@ class OldAlbumLiquibaseTest {
         try(var connection = datasource.getConnection()) {
             assertAlbumEntries(connection);
         }
+    }
+
+    @Test
+    void testCreateSchemaWithDatabaseFailure() throws Exception {
+        var realdb = createDatasource("oldalbum1");
+        var connection = spy(realdb.getConnection());
+        // Wrapping Connection in a spy() makes it throw SQLException on setAutoCommit()
+
+        OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+        var e = assertThrows(
+            LiquibaseException.class,
+            () -> oldAlbumLiquibase.createInitialSchema(connection));
+        assertThat(e.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
+    }
+
+    @Test
+    void testCreateSchemaWithAuthoClosableCloseFailure() throws Exception {
+        var realdb = createDatasource("oldalbum2");
+        var connection = spy(realdb.getConnection());
+        doNothing().when(connection).setAutoCommit(anyBoolean());
+        doThrow(Exception.class).when(connection).close();
+
+        OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+        var e = assertThrows(
+            LiquibaseException.class,
+            () -> oldAlbumLiquibase.createInitialSchema(connection));
+        assertThat(e.getMessage()).startsWith("Error closing resource");
     }
 
     private void assertAlbumEntries(Connection connection) throws Exception {
@@ -101,10 +132,9 @@ class OldAlbumLiquibaseTest {
         }
     }
 
-    private DataSource createDatasource() throws Exception {
+    private DataSource createDatasource(String dbname) throws Exception {
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:oldalbum;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return derbyDataSourceFactory.createDataSource(properties);
     }
-
 }

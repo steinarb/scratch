@@ -770,8 +770,9 @@ class OldAlbumServiceProviderTest {
         MockResourceAccessor accessor = new MockResourceAccessor(contentByFileName);
         try(Connection connection = emptybase.getConnection()) {
             DatabaseConnection database = new JdbcConnection(connection);
-            Liquibase liquibase = new Liquibase("dumproutes.sql", accessor, database);
-            liquibase.update("");
+            try(var liquibase = new Liquibase("dumproutes.sql", accessor, database)) {
+                liquibase.update("");
+            }
         }
 
         // Check that the empty database now has the same number of rows as the original

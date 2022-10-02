@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.osgi.service.log.LogService;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
@@ -66,11 +65,13 @@ public class OldAlbumProductionDatabase implements PreHook {
     void insertInitialData(DataSource datasource) throws SQLException {
         try (Connection connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-            Liquibase liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection);
-            liquibase.update("");
-        } catch (LiquibaseException e) {
-            logger.error("Error populating database with initial data", e);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = new Liquibase("oldalbum/sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            } catch (Exception e) {
+                logger.error("Error populating database with initial data", e);
+            }
         }
     }
 

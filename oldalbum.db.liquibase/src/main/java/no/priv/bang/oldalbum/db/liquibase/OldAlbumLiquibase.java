@@ -30,14 +30,16 @@ public class OldAlbumLiquibase {
     }
 
     private void applyLiquibaseChangeLog(Connection connection, String changelogClasspathResource) throws LiquibaseException {
-        Liquibase liquibase = createLiquibaseInstance(connection, changelogClasspathResource);
-        liquibase.update("");
-    }
-
-    private Liquibase createLiquibaseInstance(Connection connection, String changelogClasspathResource) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connection);
-        ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
-        return new Liquibase(changelogClasspathResource, classLoaderResourceAccessor, databaseConnection);
+        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+            try(var liquibase = new Liquibase(changelogClasspathResource, classLoaderResourceAccessor, databaseConnection)) {
+                liquibase.update("");
+            }
+        } catch (LiquibaseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new LiquibaseException("Error closing resource", e);
+        }
     }
 
 }
