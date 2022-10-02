@@ -29,7 +29,7 @@ import no.priv.bang.authservice.definitions.AuthserviceException;
 
 public class AuthserviceLiquibase {
 
-    public void createInitialSchema(Connection connection) throws LiquibaseException {
+    public void createInitialSchema(Connection connection) {
         applyLiquibaseChangelist(connection, "authservice-db-changelog/db-changelog-1.0.0.xml");
     }
 
@@ -44,7 +44,7 @@ public class AuthserviceLiquibase {
         }
     }
 
-    public void updateSchema(Connection connection) throws LiquibaseException {
+    public void updateSchema(Connection connection) {
         applyLiquibaseChangelist(connection, "authservice-db-changelog/db-changelog-1.1.0.xml");
     }
 
