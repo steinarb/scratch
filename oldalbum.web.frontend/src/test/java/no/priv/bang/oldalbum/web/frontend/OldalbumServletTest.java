@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ import org.junit.jupiter.api.Test;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
-public class OldalbumServletTest {
+class OldalbumServletTest {
 
     @Test
-    public void testGetAlbum() throws Exception {
+    void testGetAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("Motorcyle meeting places").description("Places motorcylists meet").sort(1).childcount(4).build();
@@ -85,7 +85,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testGetPicture() throws Exception {
+    void testGetPicture() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with()
@@ -134,7 +134,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testGetEmptyAlbum() throws Exception {
+    void testGetEmptyAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).sort(1).childcount(4).build();
@@ -170,7 +170,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testGetAlbumWithEmptyValues() throws Exception {
+    void testGetAlbumWithEmptyValues() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("").description("").imageUrl("").thumbnailUrl("").sort(1).childcount(4).build();
@@ -205,7 +205,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testGetNullAlbumEntry() throws Exception {
+    void testGetNullAlbumEntry() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
         MockLogService logservice = new MockLogService();
@@ -238,7 +238,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testDoGetAddTrailingSlash() throws Exception {
+    void testDoGetAddTrailingSlash() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -258,7 +258,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testDoGetResponseThrowsIOException() throws Exception {
+    void testDoGetResponseThrowsIOException() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -282,7 +282,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
+    void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -305,7 +305,7 @@ public class OldalbumServletTest {
     }
 
     @Test
-    public void testDoGetResourceNotFound() throws Exception {
+    void testDoGetResourceNotFound() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
         HttpServletRequest request = mock(HttpServletRequest.class);
