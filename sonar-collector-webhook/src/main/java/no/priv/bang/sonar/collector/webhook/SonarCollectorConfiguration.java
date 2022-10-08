@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
-
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
@@ -33,6 +32,8 @@ import org.osgi.service.log.Logger;
  */
 public class SonarCollectorConfiguration {
     static final String SONAR_MEASURES_COMPONENTS_METRIC_KEYS = "sonar.measures.components.metricKeys";
+    public static final String SONAR_API_USER = "sonar.measures.api.username";
+    public static final String SONAR_API_PASSWORD = "sonar.measures.api.password";
     private final Properties applicationProperties = new Properties();
     private Map<String, Object> injectedconfig = Collections.emptyMap();
 
@@ -78,5 +79,17 @@ public class SonarCollectorConfiguration {
         }
 
         return new String[0];
+    }
+
+    public boolean hasSonarApiUser() {
+        return injectedconfig.containsKey(SONAR_API_USER);
+    }
+
+    public String getSonarApiUser() {
+        return (String) injectedconfig.get(SONAR_API_USER);
+    }
+
+    public String getSonarApiPassword() {
+        return (String) injectedconfig.get(SONAR_API_PASSWORD);
     }
 }

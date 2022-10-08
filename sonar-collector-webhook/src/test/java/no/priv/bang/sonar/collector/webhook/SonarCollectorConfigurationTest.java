@@ -114,6 +114,38 @@ class SonarCollectorConfigurationTest {
         }
     }
 
+    @Test
+    void testHasSonarApiUserConfigNotSet() {
+        SonarCollectorConfiguration configuration = new SonarCollectorConfiguration();
+        assertFalse(configuration.hasSonarApiUser());
+    }
+
+    @Test
+    void testHasSonarApiUser() {
+        SonarCollectorConfiguration configuration = new SonarCollectorConfiguration();
+        String username = "admin";
+        String password = "secret";
+        var config = new HashMap<String, Object>();
+        config.put(SonarCollectorConfiguration.SONAR_API_USER, username);
+        config.put(SonarCollectorConfiguration.SONAR_API_PASSWORD, password);
+        configuration.setConfig(config);
+        assertTrue(configuration.hasSonarApiUser());
+        assertEquals(username, configuration.getSonarApiUser());
+        assertEquals(password, configuration.getSonarApiPassword());
+    }
+
+    @Test
+    void testHasSonarApiUserButNoPassword() {
+        SonarCollectorConfiguration configuration = new SonarCollectorConfiguration();
+        String username = "admin";
+        var config = new HashMap<String, Object>();
+        config.put(SonarCollectorConfiguration.SONAR_API_USER, username);
+        configuration.setConfig(config);
+        assertTrue(configuration.hasSonarApiUser());
+        assertEquals(username, configuration.getSonarApiUser());
+        assertEquals("", configuration.getSonarApiPassword());
+    }
+
     static class SonarCollectorConfigurationWithApplicationPropertiesThrowingIOException extends SonarCollectorConfiguration {
 
         SonarCollectorConfigurationWithApplicationPropertiesThrowingIOException(LogService logservice) {
