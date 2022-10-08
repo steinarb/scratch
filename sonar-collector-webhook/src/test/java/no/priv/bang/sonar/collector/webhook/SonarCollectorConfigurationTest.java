@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Steinar Bang
+ * Copyright 2017-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,35 +115,20 @@ class SonarCollectorConfigurationTest {
     }
 
     @Test
-    void testHasSonarApiUserConfigNotSet() {
+    void testSonarApiUserTokenConfigNotSet() {
         SonarCollectorConfiguration configuration = new SonarCollectorConfiguration();
-        assertFalse(configuration.hasSonarApiUser());
+        assertFalse(configuration.hasSonarApiUserToken());
     }
 
     @Test
-    void testHasSonarApiUser() {
+    void testHasSonarApiUserToken() {
         SonarCollectorConfiguration configuration = new SonarCollectorConfiguration();
-        String username = "admin";
-        String password = "secret";
+        String usertoken = "squ_3869fbac07cc388306804e35fb72ca7c4baff275";
         var config = new HashMap<String, Object>();
-        config.put(SonarCollectorConfiguration.SONAR_API_USER, username);
-        config.put(SonarCollectorConfiguration.SONAR_API_PASSWORD, password);
+        config.put(SonarCollectorConfiguration.SONAR_USER_TOKEN, usertoken);
         configuration.setConfig(config);
-        assertTrue(configuration.hasSonarApiUser());
-        assertEquals(username, configuration.getSonarApiUser());
-        assertEquals(password, configuration.getSonarApiPassword());
-    }
-
-    @Test
-    void testHasSonarApiUserButNoPassword() {
-        SonarCollectorConfiguration configuration = new SonarCollectorConfiguration();
-        String username = "admin";
-        var config = new HashMap<String, Object>();
-        config.put(SonarCollectorConfiguration.SONAR_API_USER, username);
-        configuration.setConfig(config);
-        assertTrue(configuration.hasSonarApiUser());
-        assertEquals(username, configuration.getSonarApiUser());
-        assertEquals("", configuration.getSonarApiPassword());
+        assertTrue(configuration.hasSonarApiUserToken());
+        assertEquals(usertoken, configuration.getSonarApiUserToken());
     }
 
     static class SonarCollectorConfigurationWithApplicationPropertiesThrowingIOException extends SonarCollectorConfiguration {
