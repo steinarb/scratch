@@ -28,6 +28,7 @@ import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Properties;
 
@@ -235,7 +236,9 @@ public class SonarCollectorServlet extends HttpServlet {
     HttpURLConnection openConnection(URL url) throws IOException {
         if (configuration.hasSonarApiUserToken()) {
             var connection = factory.openConnection(url);
-            var authorization = "Basic " + configuration.getSonarApiUserToken() + ":";
+            var authorization =
+                "Basic " +
+                Base64.getEncoder().encodeToString((configuration.getSonarApiUserToken() + ":").getBytes());
             connection.setRequestProperty("Authorization", authorization);
             return connection;
         } else {

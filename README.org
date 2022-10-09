@@ -309,7 +309,7 @@ Procedure:
 *** Set a user token
 
 Procedure:
- 1. Create and retrieve a user token from sonar (/Note/: you only get one chance to copy the token after creating it)
+ 1. In Sonar, go to My Account->Security, and create and retrieve a user token (/Note/: you only get one chance to copy the token after creating it)
  2. Add the user token to the sonar-collector config. replace "squ_3869fbac07cc388306804e35fb72ca7c4baff275" with the token retrieved from sonar:
     #+begin_example
       config:edit no.priv.bang.sonar.collector.webhook.SonarCollectorServlet
