@@ -32,7 +32,7 @@ import org.osgi.service.log.Logger;
  */
 public class SonarCollectorConfiguration {
     static final String SONAR_MEASURES_COMPONENTS_METRIC_KEYS = "sonar.measures.components.metricKeys";
-    public static final String SONAR_USER_TOKEN = "sonar.measures.user.token";
+    public static final String SONAR_USER_TOKEN = "sonar_user_token";
     private final Properties applicationProperties = new Properties();
     private Map<String, Object> injectedconfig = Collections.emptyMap();
 
