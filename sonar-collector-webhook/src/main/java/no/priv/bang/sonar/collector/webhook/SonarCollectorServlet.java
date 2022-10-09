@@ -233,7 +233,14 @@ public class SonarCollectorServlet extends HttpServlet {
     }
 
     HttpURLConnection openConnection(URL url) throws IOException {
-        return factory.openConnection(url);
+        if (configuration.hasSonarApiUserToken()) {
+            var connection = factory.openConnection(url);
+            var authorization = "Basic " + configuration.getSonarApiUserToken() + ":";
+            connection.setRequestProperty("Authorization", authorization);
+            return connection;
+        } else {
+            return factory.openConnection(url);
+        }
     }
 
     public SonarCollectorConfiguration getConfiguration() {
