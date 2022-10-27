@@ -36,7 +36,7 @@ public class KarafReleaseLiquibaseLockCommand implements Action {
     @Override
     public Object execute() throws Exception {
         DataSource datasource = ukelonn.getDataSource();
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase(bundle);
         try (Connection connection = datasource.getConnection()) {
             liquibase.forceReleaseLocks(connection);
         }

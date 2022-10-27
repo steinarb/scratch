@@ -29,8 +29,11 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import liquibase.exception.LiquibaseException;
@@ -41,15 +44,24 @@ import no.priv.bang.ukelonn.UkelonnException;
 class UkelonnLiquibaseTest {
 
     private static DataSource dataSource;
+    private Bundle bundle;
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
         dataSource = createDataSource("ukelonn");
     }
 
+    @BeforeEach
+    void setup() {
+        var bundleWiring = mock(BundleWiring.class);
+        when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
+        bundle = mock(Bundle.class);
+        when(bundle.adapt(BundleWiring.class)).thenReturn(bundleWiring);
+    }
+
     @Test
     void testCreateSchema() throws Exception {
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
         ukelonnLiquibase.createInitialSchema(dataSource);
         ukelonnLiquibase.updateSchema(dataSource);
 
@@ -75,7 +87,7 @@ class UkelonnLiquibaseTest {
     void testCreateInitialAndUpdateSchemaFailOnConnectionClose() throws Exception {
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
 
         var e1 = assertThrows(
             UkelonnException.class,
@@ -94,7 +106,7 @@ class UkelonnLiquibaseTest {
         Connection connection2 = spy(createConnection("ukelonn2"));
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenReturn(connection1).thenReturn(connection2);
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
 
         var e1 = assertThrows(
             LiquibaseException.class,
@@ -113,7 +125,7 @@ class UkelonnLiquibaseTest {
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenThrow(SQLException.class);
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
 
         var e = assertThrows(
             UkelonnException.class,
@@ -128,7 +140,7 @@ class UkelonnLiquibaseTest {
             .thenCallRealMethod()
             .thenCallRealMethod()
             .thenThrow(SQLException.class);
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
 
         var e = assertThrows(
             UkelonnException.class,
@@ -144,7 +156,7 @@ class UkelonnLiquibaseTest {
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenReturn(connection);
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
 
         ukelonnLiquibase.createInitialSchema(dataSource);
         var e = assertThrows(
@@ -161,7 +173,7 @@ class UkelonnLiquibaseTest {
             .thenCallRealMethod()
             .thenCallRealMethod()
             .thenReturn(connection);
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
 
         ukelonnLiquibase.createInitialSchema(dataSource);
         var e = assertThrows(
@@ -173,7 +185,7 @@ class UkelonnLiquibaseTest {
     @Test
     void testForceReleaseLocks() throws Exception {
         try(Connection connection = createConnection()) {
-            var ukelonnLiquibase = new UkelonnLiquibase();
+            var ukelonnLiquibase = new UkelonnLiquibase(bundle);
             ukelonnLiquibase.forceReleaseLocks(connection);
         }
 
@@ -195,7 +207,7 @@ class UkelonnLiquibaseTest {
     void testForceReleaseLocksFailOnConnectionClose() throws Exception {
         Connection connection = mock(Connection.class);
         doThrow(Exception.class).when(connection).close();
-        var ukelonnLiquibase = new UkelonnLiquibase();
+        var ukelonnLiquibase = new UkelonnLiquibase(bundle);
 
         var e = assertThrows(
             UkelonnException.class,

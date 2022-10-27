@@ -26,6 +26,9 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
@@ -124,7 +127,13 @@ public class TestUtils {
     static TestLiquibaseRunner createLiquibaseRunner(LogService logservice) {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        var bundleWiring = mock(BundleWiring.class);
+        when(bundleWiring.getClassLoader()).thenReturn(TestUtils.class.getClassLoader());
+        var bundle = mock(Bundle.class);
+        when(bundle.adapt(BundleWiring.class)).thenReturn(bundleWiring);
+        var bundleContext = mock(BundleContext.class);
+        when(bundleContext.getBundle()).thenReturn(bundle);
+        runner.activate(bundleContext, Collections.emptyMap());
         return runner;
     }
 
