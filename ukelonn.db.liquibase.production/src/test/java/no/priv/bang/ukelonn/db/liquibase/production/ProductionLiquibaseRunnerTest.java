@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Steinar Bang
+ * Copyright 2016-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,11 @@ import java.sql.SQLException;
 import java.util.Collections;
 
 import javax.sql.DataSource;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.osgi.framework.BundleContext;
+
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -32,6 +36,13 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 import static no.priv.bang.ukelonn.db.liquibase.production.ProductionLiquibaseRunner.*;
 
 class ProductionLiquibaseRunnerTest {
+
+    private BundleContext bundleContext;
+
+    @BeforeEach
+    void setup() {
+        bundleContext = mock(BundleContext.class);
+    }
 
     @Test
     void testPrepare() throws Exception {
@@ -54,7 +65,7 @@ class ProductionLiquibaseRunnerTest {
         Connection connection = mock(Connection.class);
         when(datasource.getConnection()).thenReturn(connection);
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        runner.activate(Collections.emptyMap(), bundleContext);
 
         // Execute the method under test
         runner.prepare(datasource);
@@ -69,7 +80,7 @@ class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        runner.activate(Collections.emptyMap(), bundleContext);
 
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
@@ -86,7 +97,7 @@ class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        runner.activate(Collections.emptyMap(), bundleContext);
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
         boolean successfullyinserteddata = runner.insertInitialDataInDatabase(datasource );
@@ -98,7 +109,7 @@ class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        runner.activate(Collections.emptyMap(), bundleContext);
         DatabaseConnection connection = mock(DatabaseConnection.class);
         when(connection.getDatabaseProductName()).thenReturn("mockdb");
         when(connection.getURL()).thenReturn("jdbc:mock:///ukelonn");
@@ -111,7 +122,7 @@ class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        runner.activate(Collections.emptyMap(), bundleContext);
         UkelonnLiquibase liquibase = runner.createUkelonnLiquibase();
         assertNotNull(liquibase);
     }
@@ -121,7 +132,7 @@ class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        runner.activate(Collections.emptyMap(), bundleContext);
 
         assertEquals(INITIAL_DATA_DEFAULT_RESOURCE_NAME, runner.initialDataResourceName());
         assertThat(logservice.getLogmessages()).isEmpty();
@@ -132,7 +143,7 @@ class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.singletonMap("databaselanguage", "en_GB"));
+        runner.activate(Collections.singletonMap("databaselanguage", "en_GB"), bundleContext);
 
         assertEquals(INITIAL_DATA_DEFAULT_RESOURCE_NAME.replace(".xml", "_en_GB.xml"), runner.initialDataResourceName());
         assertThat(logservice.getLogmessages()).isEmpty();
@@ -143,7 +154,7 @@ class ProductionLiquibaseRunnerTest {
         ProductionLiquibaseRunner runner = new ProductionLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.singletonMap("databaselanguage", "en_UK"));
+        runner.activate(Collections.singletonMap("databaselanguage", "en_UK"), bundleContext);
 
         assertEquals(INITIAL_DATA_DEFAULT_RESOURCE_NAME, runner.initialDataResourceName());
         assertThat(logservice.getLogmessages()).isNotEmpty();

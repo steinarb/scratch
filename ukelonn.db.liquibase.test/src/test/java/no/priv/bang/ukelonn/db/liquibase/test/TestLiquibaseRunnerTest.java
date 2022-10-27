@@ -40,9 +40,13 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.ByteSource.Util;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.jdbc.DataSourceFactory;
 import liquibase.Liquibase;
 import liquibase.changelog.RanChangeSet;
@@ -58,6 +62,18 @@ import static no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner.*;
 
 class TestLiquibaseRunnerTest {
 
+    private BundleContext bundleContext;
+
+    @BeforeEach
+    void setup() {
+        var bundleWiring = mock(BundleWiring.class);
+        when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
+        var bundle = mock(Bundle.class);
+        when(bundle.adapt(BundleWiring.class)).thenReturn(bundleWiring);
+        bundleContext = mock(BundleContext.class);
+        when(bundleContext.getBundle()).thenReturn(bundle);
+    }
+
     @Test
     void testPrepareDatabase() throws SQLException, DatabaseException {
         DerbyDataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
@@ -66,7 +82,7 @@ class TestLiquibaseRunnerTest {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         assertThat(runner.getChangeLogHistory(datasource)).isEmpty();
         runner.setLogService(new MockLogService());
-        runner.activate(Collections.emptyMap());
+        runner.activate(bundleContext, Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Test the database by making a query using a view
@@ -106,7 +122,7 @@ class TestLiquibaseRunnerTest {
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate(Collections.singletonMap("databaselanguage", "en_GB")); // Create the database
+        runner.activate(bundleContext, Collections.singletonMap("databaselanguage", "en_GB")); // Create the database
         runner.prepare(datasource); // Create the database
 
         // Test the database by making a query using a view
@@ -147,7 +163,7 @@ class TestLiquibaseRunnerTest {
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate(Collections.singletonMap("databaselanguage", "en_UK")); // Create the database
+        runner.activate(bundleContext, Collections.singletonMap("databaselanguage", "en_UK")); // Create the database
         runner.prepare(datasource); // Create the database
 
         // Test the database by making a query using a view
@@ -199,7 +215,7 @@ class TestLiquibaseRunnerTest {
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate(Collections.emptyMap());
+        runner.activate(bundleContext, Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Verify that the user isn't present
@@ -249,7 +265,7 @@ class TestLiquibaseRunnerTest {
         DataSource datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate(Collections.emptyMap());
+        runner.activate(bundleContext, Collections.emptyMap());
         runner.prepare(datasource); // Create the database
 
         // Check that database has the mock data in place
@@ -290,7 +306,7 @@ class TestLiquibaseRunnerTest {
     void testFailToRollbackMockData() throws Exception {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         runner.setLogService(new MockLogService());
-        runner.activate(Collections.emptyMap());
+        runner.activate(bundleContext, Collections.emptyMap());
         DataSource datasource = mock(DataSource.class);
         when(datasource.getConnection()).thenThrow(SQLException.class);
 
@@ -317,7 +333,7 @@ class TestLiquibaseRunnerTest {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.emptyMap());
+        runner.activate(bundleContext, Collections.emptyMap());
 
         assertEquals(DEFAULT_DUMMY_DATA_CHANGELOG, runner.dummyDataResourceName());
         assertThat(logservice.getLogmessages()).isEmpty();
@@ -328,7 +344,7 @@ class TestLiquibaseRunnerTest {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.singletonMap("databaselanguage", "en_GB"));
+        runner.activate(bundleContext, Collections.singletonMap("databaselanguage", "en_GB"));
 
         assertEquals(DEFAULT_DUMMY_DATA_CHANGELOG.replace(".xml", "_en_GB.xml"), runner.dummyDataResourceName());
         assertThat(logservice.getLogmessages()).isEmpty();
@@ -339,7 +355,7 @@ class TestLiquibaseRunnerTest {
         TestLiquibaseRunner runner = new TestLiquibaseRunner();
         MockLogService logservice = new MockLogService();
         runner.setLogService(logservice);
-        runner.activate(Collections.singletonMap("databaselanguage", "en_UK"));
+        runner.activate(bundleContext, Collections.singletonMap("databaselanguage", "en_UK"));
 
         assertEquals(DEFAULT_DUMMY_DATA_CHANGELOG, runner.dummyDataResourceName());
         assertThat(logservice.getLogmessages()).isNotEmpty();
@@ -405,7 +421,7 @@ class TestLiquibaseRunnerTest {
             dataSource.setCreateDatabase("create");
         }
 
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase(bundleContext.getBundle());
         liquibase.createInitialSchema(dataSource);
 
         try(var connect = dataSource.getConnection()) {

@@ -25,6 +25,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.hook.PreHook;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,6 +49,7 @@ import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
 public class TestLiquibaseRunner implements PreHook {
     static final String DEFAULT_DUMMY_DATA_CHANGELOG = "sql/data/db-initial-changelog.xml";
     private Logger logger;
+    private Bundle bundle;
     private String databaselanguage;
 
     @Reference
@@ -55,13 +58,14 @@ public class TestLiquibaseRunner implements PreHook {
     }
 
     @Activate
-    public void activate(Map<String, Object> config) {
+    public void activate(BundleContext context, Map<String, Object> config) {
+        bundle = context.getBundle();
         databaselanguage = (String) config.get("databaselanguage");
     }
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase(bundle);
         try {
             liquibase.createInitialSchema(datasource);
             insertMockData(datasource);

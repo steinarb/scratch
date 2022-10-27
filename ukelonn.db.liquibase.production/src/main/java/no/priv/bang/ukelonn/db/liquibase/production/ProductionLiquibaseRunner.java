@@ -22,6 +22,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.hook.PreHook;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,6 +44,7 @@ public class ProductionLiquibaseRunner implements PreHook {
     private Logger logger;
     private UkelonnLiquibaseFactory ukelonnLiquibaseFactory;
     private LiquibaseFactory liquibaseFactory;
+    private Bundle bundle;
     private String databaselanguage;
 
     @Reference
@@ -50,7 +53,7 @@ public class ProductionLiquibaseRunner implements PreHook {
     }
 
     @Activate
-    public void activate(Map<String, Object> config) {
+    public void activate(Map<String, Object> config, BundleContext context) {
         databaselanguage = (String) config.get("databaselanguage");
     }
 
@@ -84,9 +87,10 @@ public class ProductionLiquibaseRunner implements PreHook {
     UkelonnLiquibase createUkelonnLiquibase() {
         if (ukelonnLiquibaseFactory == null) {
             ukelonnLiquibaseFactory = new UkelonnLiquibaseFactory() { // NOSONAR
+
                     @Override
                     public UkelonnLiquibase create() {
-                        return new UkelonnLiquibase();
+                        return new UkelonnLiquibase(bundle);
                     }
                 };
         }

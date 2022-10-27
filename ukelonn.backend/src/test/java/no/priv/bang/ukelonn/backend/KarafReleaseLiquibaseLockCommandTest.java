@@ -16,6 +16,8 @@
 package no.priv.bang.ukelonn.backend;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 
@@ -23,14 +25,21 @@ import static no.priv.bang.ukelonn.testutils.TestUtils.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWiring;
 
 import no.priv.bang.ukelonn.UkelonnService;
+import no.priv.bang.ukelonn.testutils.TestUtils;
 
 /*
  * Unit tests for {@link KarafReleaseLiquibaseLockCommand}.
  */
 class KarafReleaseLiquibaseLockCommandTest {
+
+    private BundleContext bundleContext;
 
     @BeforeAll
     static void setupForAllTests() throws Exception {
@@ -40,6 +49,16 @@ class KarafReleaseLiquibaseLockCommandTest {
     @AfterAll
     static void teardownForAllTests() throws Exception {
         releaseFakeOsgiServices();
+    }
+
+    @BeforeEach
+    void setup() {
+        var bundleWiring = mock(BundleWiring.class);
+        when(bundleWiring.getClassLoader()).thenReturn(TestUtils.class.getClassLoader());
+        var bundle = mock(Bundle.class);
+        when(bundle.adapt(BundleWiring.class)).thenReturn(bundleWiring);
+        bundleContext = mock(BundleContext.class);
+        when(bundleContext.getBundle()).thenReturn(bundle);
     }
 
     /*
@@ -63,6 +82,9 @@ class KarafReleaseLiquibaseLockCommandTest {
 
         // Fake OSGi service injection
         setInternalState(action, "ukelonn", ukelonn);
+
+        // Fake BundleContext injection
+        setInternalState(action, "bundleContext", bundleContext);
 
         // Run the code under test
         Object result = action.execute();

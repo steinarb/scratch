@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Steinar Bang
+ * Copyright 2016-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.osgi.framework.BundleContext;
 
 import no.priv.bang.ukelonn.UkelonnService;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
@@ -33,10 +34,14 @@ public class KarafReleaseLiquibaseLockCommand implements Action {
     @Reference
     UkelonnService ukelonn;
 
+    @Reference
+    BundleContext bundleContext;
+
     @Override
     public Object execute() throws Exception {
+        var bundle = bundleContext.getBundle();
         DataSource datasource = ukelonn.getDataSource();
-        UkelonnLiquibase liquibase = new UkelonnLiquibase();
+        UkelonnLiquibase liquibase = new UkelonnLiquibase(bundle);
         try (Connection connection = datasource.getConnection()) {
             liquibase.forceReleaseLocks(connection);
         }

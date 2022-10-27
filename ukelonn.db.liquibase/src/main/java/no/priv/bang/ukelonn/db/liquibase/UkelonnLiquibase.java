@@ -19,24 +19,32 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
+import org.osgi.framework.Bundle;
+
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.OSGiResourceAccessor;
 import no.priv.bang.authservice.db.liquibase.AuthserviceLiquibase;
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.ukelonn.UkelonnException;
 
 public class UkelonnLiquibase {
+    Bundle bundle;
 
     static final String ERROR_CLOSING_RESOURCE_WHEN_UPDATING_UKELONN_SCHEMA = "Error closing resource when updating ukelonn schema";
+
+    public UkelonnLiquibase(Bundle bundle) {
+        super();
+        this.bundle = bundle;
+    }
 
     public void createInitialSchema(DataSource datasource) throws LiquibaseException {
         try (var connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
+            try(var resourceAccessor = new OSGiResourceAccessor(bundle)) {
+                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", resourceAccessor, databaseConnection)) {
                     liquibase.update("");
                 }
             }
@@ -50,8 +58,8 @@ public class UkelonnLiquibase {
     public void updateSchema(DataSource datasource) throws LiquibaseException {
         try (var connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", classLoaderResourceAccessor, databaseConnection)) {
+            try(var resourceAccessor = new OSGiResourceAccessor(bundle)) {
+                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.1.xml", resourceAccessor, databaseConnection)) {
                     liquibase.update("");
                 }
             }
@@ -74,8 +82,8 @@ public class UkelonnLiquibase {
 
         try (var connect = datasource.getConnection()) {
             DatabaseConnection databaseConnection = new JdbcConnection(connect);
-            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
+            try(var resourceAccessor = new OSGiResourceAccessor(bundle)) {
+                try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog.xml", resourceAccessor, databaseConnection)) {
                     liquibase.update("");
                 }
             }
@@ -88,8 +96,8 @@ public class UkelonnLiquibase {
 
     public void forceReleaseLocks(Connection connect) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connect);
-        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-            try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
+        try(var resourceAccessor = new OSGiResourceAccessor(bundle)) {
+            try(var liquibase = new Liquibase("ukelonn-db-changelog/db-changelog-1.0.0.xml", resourceAccessor, databaseConnection)) {
                 liquibase.forceReleaseLocks();
             }
         } catch (LiquibaseException e) {
