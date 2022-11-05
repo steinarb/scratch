@@ -2,6 +2,7 @@
 .classpath
 .project
 .settings/
+/.metadata/
 /README.md
 /TAGS
 /oldalbum.db.liquibase/src/test/resources/olddata
