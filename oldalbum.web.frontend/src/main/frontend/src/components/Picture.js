@@ -37,7 +37,7 @@ export default function Picture(props) {
                 <Previous previous={previous} />
                 <Next className="ml-auto" next={next} />
             </div>
-            <div className="btn-group hide-on-landscape" role="group" aria-label="Modify album">
+            <div className="btn-group" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
             </div>
