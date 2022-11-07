@@ -61,8 +61,11 @@ function* locationChange(action) {
         const description = '';
         const imageUrl = '';
         const thumbnailUrl = '';
+        const contentLength = '';
+        const contentType = '';
+        const lastModified = '';
 
-        yield put(FILL_ADD_PICTURE_FORM({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort }));
+        yield put(FILL_ADD_PICTURE_FORM({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort, contentLength, contentType, lastModified }));
     }
 }
 
