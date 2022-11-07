@@ -124,21 +124,21 @@ export default function ModifyPicture() {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content length (bytes)</label>
+                        <label htmlFor="contentLength" className="col-form-label col-5">Content length (bytes)</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={contentLength}/>
+                            <input id="contentLength" readOnly className="form-control" type="text" value={contentLength}/>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">Content type</label>
+                        <label htmlFor="contentType" className="col-form-label col-5">Content type</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={contentType}/>
+                            <input id="contentType" readOnly className="form-control" type="text" value={contentType}/>
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">Last modified</label>
+                        <label htmlFor="lastmodified" className="col-form-label col-5">Last modified</label>
                         <div className="col-7">
-                            <input id="thumbnailUrl" readOnly className="form-control" type="text" value={lastmodified}/>
+                            <input id="lastmodified" readOnly className="form-control" type="text" value={lastmodified}/>
                         </div>
                     </div>
                     <div>
