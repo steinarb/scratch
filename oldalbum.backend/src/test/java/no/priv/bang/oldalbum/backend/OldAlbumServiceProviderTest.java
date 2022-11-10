@@ -205,6 +205,27 @@ class OldAlbumServiceProviderTest {
         assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
     }
 
+    @Test
+    void testUpdatePicture() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        var originalPicture = provider.fetchAllRoutes().stream().filter(r -> r.getId() == 5).findFirst().get();
+        String modifiedTitle = "New picture title";
+        String modifiedDescription = "This is an updated description";
+        AlbumEntry modifiedPicture = AlbumEntry.with(originalPicture)
+            .title(modifiedTitle)
+            .description(modifiedDescription)
+            .build();
+        List<AlbumEntry> allroutes = provider.updateEntry(modifiedPicture);
+        AlbumEntry updatedPicture = allroutes.stream().filter(r -> r.getId() == 5).findFirst().get();
+        assertEquals(modifiedTitle, updatedPicture.getTitle());
+        assertEquals(modifiedDescription, updatedPicture.getDescription());
+    }
+
     @Test()
     void testSwitchEntryParent() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
