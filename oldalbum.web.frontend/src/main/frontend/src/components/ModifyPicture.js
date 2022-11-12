@@ -8,9 +8,9 @@ import {
     MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED,
     MODIFY_PICTURE_IMAGEURL_FIELD_CHANGED,
     MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED,
+    MODIFY_PICTURE_LASTMODIFIED_FIELD_CHANGED,
     MODIFY_PICTURE_UPDATE_BUTTON_CLICKED,
     MODIFY_PICTURE_CANCEL_BUTTON_CLICKED,
-    IMAGE_METADATA_REQUEST,
 } from '../reduxactions';
 
 export default function ModifyPicture() {
@@ -27,7 +27,7 @@ export default function ModifyPicture() {
     const albums = useSelector(state => state.allroutes.filter(r => r.album).filter(r => r.id !== state.albumentryid) || []);
     const uplocation = useSelector(state => (state.albumentries[state.albumentryid] || {}).path || '/');
     const dispatch = useDispatch();
-    const lastmodified = lastModified ? new Date(lastModified).toISOString() : '';
+    const lastmodified = lastModified ? lastModified.split('T')[0] : '';
 
     return(
         <div>
@@ -45,10 +45,7 @@ export default function ModifyPicture() {
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <img
-                            className="img-thumbnail fullsize-img-thumbnail"
-                            src={imageUrl}
-                            onLoad={() => dispatch(IMAGE_METADATA_REQUEST(imageUrl))} />
+                        <img className="img-thumbnail fullsize-img-thumbnail" src={imageUrl} />
                     </div>
                     <div className="form-group row">
                         <label htmlFor="parent" className="col-form-label col-5">Parent</label>
@@ -138,7 +135,12 @@ export default function ModifyPicture() {
                     <div className="form-group row">
                         <label htmlFor="lastmodified" className="col-form-label col-5">Last modified</label>
                         <div className="col-7">
-                            <input id="lastmodified" readOnly className="form-control" type="text" value={lastmodified}/>
+                            <input
+                                id="lastmodified"
+                                className="form-control"
+                                type="date"
+                                value={lastmodified}
+                                onChange={e => dispatch(MODIFY_PICTURE_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div>

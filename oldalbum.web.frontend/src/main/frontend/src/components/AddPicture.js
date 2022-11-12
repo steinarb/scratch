@@ -7,6 +7,7 @@ import {
     ADD_PICTURE_DESCRIPTION_FIELD_CHANGED,
     ADD_PICTURE_IMAGEURL_FIELD_CHANGED,
     ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED,
+    ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED,
     ADD_PICTURE_UPDATE_BUTTON_CLICKED,
     ADD_PICTURE_CANCEL_BUTTON_CLICKED,
     IMAGE_METADATA_REQUEST,
@@ -29,7 +30,7 @@ export default function AddPicture() {
     const parentId = parseInt(parent, 10);
     const parentalbum = albums.find(a => a.id === parentId);
     const uplocation = parentalbum.path || '/';
-    const lastmodified = lastModified ? new Date(lastModified).toISOString() : '';
+    const lastmodified = lastModified ? lastModified.split('T')[0] : '';
 
     return(
         <div>
@@ -128,7 +129,12 @@ export default function AddPicture() {
                     <div className="form-group row">
                         <label htmlFor="lastmodified" className="col-form-label col-5">Last modified</label>
                         <div className="col-7">
-                            <input id="lastmodified" readOnly className="form-control" type="text" value={lastmodified}/>
+                            <input
+                                id="lastmodified"
+                                className="form-control"
+                                type="date"
+                                value={lastmodified}
+                                onChange={e => dispatch(ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div>
