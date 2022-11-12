@@ -160,7 +160,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
         int id = modifiedEntry.getId();
-        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, sort=? where albumentry_id=?";
+        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=? where albumentry_id=?";
         try(Connection connection = datasource.getConnection()) {
             int sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -170,8 +170,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(4, modifiedEntry.getDescription());
                 statement.setString(5, modifiedEntry.getImageUrl());
                 statement.setString(6, modifiedEntry.getThumbnailUrl());
-                statement.setInt(7, sort);
-                statement.setInt(8, id);
+                statement.setTimestamp(7, getLastModifiedTimestamp(modifiedEntry));
+                statement.setInt(8, sort);
+                statement.setInt(9, id);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -182,10 +183,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
-        Timestamp lastmodified = null;
-        if (!addedEntry.isAlbum() && addedEntry.getLastModified() != null) {
-            lastmodified = Timestamp.from(Instant.ofEpochMilli(addedEntry.getLastModified().getTime()));
-        }
         String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String path = addedEntry.getPath();
         try(Connection connection = datasource.getConnection()) {
@@ -198,7 +195,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(6, addedEntry.getImageUrl());
                 statement.setString(7, addedEntry.getThumbnailUrl());
                 statement.setInt(8, addedEntry.getSort());
-                statement.setTimestamp(9, lastmodified);
+                statement.setTimestamp(9, getLastModifiedTimestamp(addedEntry));
                 statement.setString(10, addedEntry.getContentType());
                 statement.setInt(11, addedEntry.getContentLength());
                 statement.executeUpdate();
@@ -384,6 +381,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
         }
         return null;
+    }
+
+    private Timestamp getLastModifiedTimestamp(AlbumEntry albumentry) {
+        Timestamp lastmodified = null;
+        if (!albumentry.isAlbum() && albumentry.getLastModified() != null) {
+            lastmodified = Timestamp.from(Instant.ofEpochMilli(albumentry.getLastModified().getTime()));
+        }
+        return lastmodified;
     }
 
     private String quoteStringButNotNull(String string) {

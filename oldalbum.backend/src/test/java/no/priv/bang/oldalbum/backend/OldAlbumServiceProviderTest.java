@@ -26,6 +26,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -216,14 +218,17 @@ class OldAlbumServiceProviderTest {
         var originalPicture = provider.fetchAllRoutes().stream().filter(r -> r.getId() == 5).findFirst().get();
         String modifiedTitle = "New picture title";
         String modifiedDescription = "This is an updated description";
+        var modifiedDate = Date.from(LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC));
         AlbumEntry modifiedPicture = AlbumEntry.with(originalPicture)
             .title(modifiedTitle)
             .description(modifiedDescription)
+            .lastModified(modifiedDate)
             .build();
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedPicture);
         AlbumEntry updatedPicture = allroutes.stream().filter(r -> r.getId() == 5).findFirst().get();
         assertEquals(modifiedTitle, updatedPicture.getTitle());
         assertEquals(modifiedDescription, updatedPicture.getDescription());
+        assertEquals(modifiedDate, updatedPicture.getLastModified());
     }
 
     @Test()
