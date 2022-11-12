@@ -345,9 +345,9 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedPicture.getParent());
         assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
         assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
-        assertNotNull(addedPicture.getLastModified());
-        assertNotNull(addedPicture.getContentType());
-        assertThat(addedPicture.getContentLength()).isPositive();
+        assertEquals(pictureToAdd.getLastModified(), addedPicture.getLastModified());
+        assertEquals(pictureToAdd.getContentType(), addedPicture.getContentType());
+        assertEquals(pictureToAdd.getContentLength(), addedPicture.getContentLength());
     }
 
     @Test
