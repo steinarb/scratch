@@ -76,7 +76,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         assertThat(allroutes).hasSizeGreaterThan(20);
     }
 
@@ -89,7 +89,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, allroutes.size());
     }
@@ -215,7 +215,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        var originalPicture = provider.fetchAllRoutes().stream().filter(r -> r.getId() == 5).findFirst().get();
+        var originalPicture = provider.fetchAllRoutes(null, false).stream().filter(r -> r.getId() == 5).findFirst().get();
         String modifiedTitle = "New picture title";
         String modifiedDescription = "This is an updated description";
         var modifiedDate = Date.from(LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC));
@@ -241,7 +241,7 @@ class OldAlbumServiceProviderTest {
 
         // Verify that sort values are updated correctly when an album
         // entry is moved to a different album
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         AlbumEntry destinationAlbum = allroutes.stream().filter(r -> "/moto/places/".equals(r.getPath())).findFirst().get();
         AlbumEntry imageToMove = allroutes.stream().filter(r -> "/moto/vfr96/acirc3".equals(r.getPath())).findFirst().get();
         int sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
@@ -296,7 +296,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry albumToAdd = AlbumEntry.with()
             .parent(1)
             .path("/newalbum/")
@@ -322,7 +322,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         String imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         AlbumEntry pictureToAdd = AlbumEntry.with()
@@ -357,7 +357,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
@@ -393,7 +393,7 @@ class OldAlbumServiceProviderTest {
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
@@ -421,7 +421,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
@@ -472,7 +472,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToDelete = AlbumEntry.with()
             .id(7)
             .parent(3)
@@ -503,7 +503,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToDelete = AlbumEntry.with()
             .id(7)
             .parent(3)
@@ -533,7 +533,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         // Find the first and second entries of the "vfr" album
         AlbumEntry originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(1, originalFirstEntry.getSort());
@@ -581,7 +581,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         // Find the last and second to last entries of the "vfr" album
         int numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
         AlbumEntry originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
@@ -780,7 +780,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        int allroutesCount = provider.fetchAllRoutes().size();
+        int allroutesCount = provider.fetchAllRoutes(null, false).size();
         String sql = provider.dumpDatabaseSql();
         assertThat(sql)
             .contains("insert into")

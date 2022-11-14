@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import org.apache.shiro.SecurityUtils;
 import static javax.ws.rs.core.MediaType.*;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
@@ -36,7 +38,10 @@ public class RoutesResource {
     @Path("allroutes")
     @GET
     public List<AlbumEntry> allroutes() {
-        return oldAlbumService.fetchAllRoutes();
+        var subject = SecurityUtils.getSubject();
+        String username = (String) subject.getPrincipal();
+        boolean isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
+        return oldAlbumService.fetchAllRoutes(username, isLoggedIn);
     }
 
     @Path("dumproutessql")

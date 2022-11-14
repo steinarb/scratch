@@ -72,7 +72,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         createSubjectAndBindItToThread();
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
-        when(backendService.fetchAllRoutes()).thenReturn(allroutes);
+        when(backendService.fetchAllRoutes(any(), anyBoolean())).thenReturn(allroutes);
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
@@ -89,7 +89,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     void testFetchRoutes() throws Exception {
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
-        when(backendService.fetchAllRoutes()).thenReturn(allroutes);
+        when(backendService.fetchAllRoutes(any(), anyBoolean())).thenReturn(allroutes);
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));

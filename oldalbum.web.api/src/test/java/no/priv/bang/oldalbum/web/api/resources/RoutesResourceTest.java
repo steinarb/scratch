@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package no.priv.bang.oldalbum.web.api.resources;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,9 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,25 +36,46 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.web.api.ShiroTestBase;
 
-class RoutesResourceTest {
+class RoutesResourceTest extends ShiroTestBase {
     final static ObjectMapper mapper = new ObjectMapper();
-    private static List<AlbumEntry> allroutes;
+    private OldAlbumService backendService;
+	private static List<AlbumEntry> allroutes;
+	private static List<AlbumEntry> allPublicRoutes;
     static String dumpedroutes = loadClasspathResourceIntoString("dumproutes.sql");
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
         allroutes = mapper.readValue(RoutesResourceTest.class.getClassLoader().getResourceAsStream("allroutes.json"), new TypeReference<List<AlbumEntry>>() {});
+        allPublicRoutes = new ArrayList<>(allroutes);
+        allPublicRoutes.remove(allPublicRoutes.size() - 1);
+    }
+
+	@BeforeEach
+    void setup() {
+        backendService = mock(OldAlbumService.class);
+        when(backendService.fetchAllRoutes(eq(null), eq(false))).thenReturn(allPublicRoutes);
+        when(backendService.fetchAllRoutes(anyString(), eq(true))).thenReturn(allroutes);
     }
 
     @Test
-    void testAllroutes() {
-        OldAlbumService backendService = mock(OldAlbumService.class);
-        when(backendService.fetchAllRoutes()).thenReturn(allroutes);
+    void testAllroutesWhenNotLoggedIn() {
         RoutesResource resource = new RoutesResource();
         resource.oldAlbumService = backendService;
+        createSubjectAndBindItToThread();
         List<AlbumEntry> routes = resource.allroutes();
-        assertEquals(21, routes.size());
+        assertThat(routes).hasSameSizeAs(allPublicRoutes);
+    }
+
+    @Test
+    void testAllroutesWhenLoggedIn() {
+        RoutesResource resource = new RoutesResource();
+        resource.oldAlbumService = backendService;
+        createSubjectAndBindItToThread();
+        loginUser("jad", "1ad");
+        List<AlbumEntry> routes = resource.allroutes();
+        assertThat(routes).hasSameSizeAs(allroutes);
     }
 
     @Test

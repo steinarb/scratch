@@ -52,6 +52,8 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
     public void prepare(DataSource datasource) throws SQLException {
         createInitialSchema(datasource);
         insertMockData(datasource);
+        updateSchema(datasource);
+        insertAdditionalMockDataAfterSchemaChange(datasource);
     }
 
     void createInitialSchema(DataSource datasource) throws SQLException {
@@ -72,6 +74,28 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
                 }
             } catch (Exception e) {
                 logger.error("Error populating oldalbum derby test database with dummy data", e);
+            }
+        }
+    }
+
+    private void updateSchema(DataSource datasource) throws SQLException {
+        try (Connection connect = datasource.getConnection()) {
+            OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
+            oldalbumLiquibase.updateSchema(connect);
+        } catch (LiquibaseException e) {
+            logger.error("Error updating schema of oldalbum derby test database", e);
+        }
+    }
+
+    private void insertAdditionalMockDataAfterSchemaChange(DataSource datasource) throws SQLException {
+        try (Connection connect = datasource.getConnection()) {
+            DatabaseConnection databaseConnection = new JdbcConnection(connect);
+            try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
+                try(var liquibase = new Liquibase("oldalbum/sql/data/db-changelog-02.xml", classLoaderResourceAccessor, databaseConnection)) {
+                    liquibase.update("");
+                }
+            } catch (Exception e) {
+                logger.error("Error populating oldalbum derby test database with additional dummy data after schema update", e);
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ class OldAlbumServiceTest {
     @Test
     void testOldAlbumService() {
         OldAlbumService service = mock(OldAlbumService.class);
-        List<AlbumEntry> routes = service.fetchAllRoutes();
+        List<AlbumEntry> routes = service.fetchAllRoutes(null, false);
         assertEquals(0, routes.size());
         List<String> paths = service.getPaths();
         assertEquals(0, paths.size());
