@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,14 @@ public class AlbumEntry {
 
     public int getChildcount() {
         return childcount;
+    }
+
+    @Override
+    public String toString() {
+        return "AlbumEntry [id=" + id + ", parent=" + parent + ", path=" + path + ", album=" + album + ", title="
+            + title + ", description=" + description + ", imageUrl=" + imageUrl + ", thumbnailUrl=" + thumbnailUrl
+            + ", sort=" + sort + ", lastModified=" + lastModified + ", contentType=" + contentType
+            + ", contentLength=" + contentLength + ", childcount=" + childcount + "]";
     }
 
     public static AlbumEntryBuilder with() {

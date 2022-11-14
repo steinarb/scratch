@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
@@ -66,6 +67,7 @@ class AlbumEntryTest {
         assertEquals(lastmodified, bean.getLastModified());
         assertEquals(contenttype, bean.getContentType());
         assertEquals(contentlength, bean.getContentLength());
+        assertThat(bean.toString()).startsWith("AlbumEntry [id=");
     }
 
     @Test
