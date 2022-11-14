@@ -33,7 +33,7 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumDerbyTestDatabaseTest {
-    private static final int EXPECTED_NUMBER_OF_ALBUMENTRIES = 21;
+    private static final int EXPECTED_NUMBER_OF_ALBUMENTRIES = 24;
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
 
     @Test
@@ -72,15 +72,26 @@ class OldAlbumDerbyTestDatabaseTest {
     }
 
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
-        Connection connection = datasource.getConnection();
-        String countSql = "select count(*) from albumentries";
-        try(Statement countStatement = connection.createStatement()) {
-            try(ResultSet results = countStatement.executeQuery(countSql)) {
-                if (results.next()) {
-                    int numberOfRows = results.getInt(1);
-                    assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
-                } else {
-                    fail("Unable to count the rows in albumentries");
+        try(var connection = datasource.getConnection()) {
+            String sql = "select * from albumentries";
+            try(Statement statement = connection.createStatement()) {
+                try(ResultSet results = statement.executeQuery(sql)) {
+                    while (results.next()) {
+                    	var id = results.getInt("albumentry_id");
+                    	var localpath = results.getString("localpath");
+                    	System.out.println("id: " + id + "  path:" + localpath);
+                    }
+                }
+            }
+            String countSql = "select count(*) from albumentries";
+            try(Statement countStatement = connection.createStatement()) {
+                try(ResultSet results = countStatement.executeQuery(countSql)) {
+                    if (results.next()) {
+                        int numberOfRows = results.getInt(1);
+                        assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
+                    } else {
+                        fail("Unable to count the rows in albumentries");
+                    }
                 }
             }
         }

@@ -76,8 +76,15 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
-        assertThat(allroutes).hasSizeGreaterThan(20);
+
+        // First check all routes not requiring login
+        List<AlbumEntry> allroutesNotRequiringLogin = provider.fetchAllRoutes(null, false);
+        assertThat(allroutesNotRequiringLogin).hasSizeGreaterThan(20);
+
+        // Then check that all routes including those that require login has at least 3 more entries
+        List<AlbumEntry> allroutesIncludingThoseRequiringLogin = provider.fetchAllRoutes(null, true);
+        assertThat(allroutesIncludingThoseRequiringLogin)
+            .hasSizeGreaterThanOrEqualTo(allroutesNotRequiringLogin.size() + 3);
     }
 
     @Test
@@ -89,7 +96,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, allroutes.size());
     }
@@ -200,11 +207,13 @@ class OldAlbumServiceProviderTest {
             .sort(1)
             .contentLength(0)
             .childcount(2)
+            .requireLogin(true)
             .build();
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
         assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
+        assertEquals(modifiedAlbum.isRequireLogin(), updatedAlbum.isRequireLogin());
     }
 
     @Test
@@ -215,20 +224,23 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        var originalPicture = provider.fetchAllRoutes().stream().filter(r -> r.getId() == 5).findFirst().get();
+        var originalPicture = provider.fetchAllRoutes(null, false).stream().filter(r -> r.getId() == 5).findFirst().get();
         String modifiedTitle = "New picture title";
         String modifiedDescription = "This is an updated description";
         var modifiedDate = Date.from(LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC));
+        boolean requireLogin = true;
         AlbumEntry modifiedPicture = AlbumEntry.with(originalPicture)
             .title(modifiedTitle)
             .description(modifiedDescription)
             .lastModified(modifiedDate)
+            .requireLogin(requireLogin)
             .build();
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedPicture);
         AlbumEntry updatedPicture = allroutes.stream().filter(r -> r.getId() == 5).findFirst().get();
         assertEquals(modifiedTitle, updatedPicture.getTitle());
         assertEquals(modifiedDescription, updatedPicture.getDescription());
         assertEquals(modifiedDate, updatedPicture.getLastModified());
+        assertEquals(requireLogin, updatedPicture.isRequireLogin());
     }
 
     @Test()
@@ -241,7 +253,7 @@ class OldAlbumServiceProviderTest {
 
         // Verify that sort values are updated correctly when an album
         // entry is moved to a different album
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         AlbumEntry destinationAlbum = allroutes.stream().filter(r -> "/moto/places/".equals(r.getPath())).findFirst().get();
         AlbumEntry imageToMove = allroutes.stream().filter(r -> "/moto/vfr96/acirc3".equals(r.getPath())).findFirst().get();
         int sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
@@ -296,7 +308,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry albumToAdd = AlbumEntry.with()
             .parent(1)
             .path("/newalbum/")
@@ -304,6 +316,7 @@ class OldAlbumServiceProviderTest {
             .title("A new album")
             .description("A new album for new pictures")
             .sort(2)
+            .requireLogin(true)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
@@ -313,6 +326,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+        assertEquals(albumToAdd.isRequireLogin(), addedAlbum.isRequireLogin());
     }
 
     @Test
@@ -322,7 +336,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         String imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         AlbumEntry pictureToAdd = AlbumEntry.with()
@@ -337,6 +351,7 @@ class OldAlbumServiceProviderTest {
             .lastModified(metadata.getLastModified())
             .contentType(metadata.getContentType())
             .contentLength(metadata.getContentLength())
+            .requireLogin(true)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
@@ -348,6 +363,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(pictureToAdd.getLastModified(), addedPicture.getLastModified());
         assertEquals(pictureToAdd.getContentType(), addedPicture.getContentType());
         assertEquals(pictureToAdd.getContentLength(), addedPicture.getContentLength());
+        assertEquals(pictureToAdd.isRequireLogin(), pictureToAdd.isRequireLogin());
     }
 
     @Test
@@ -357,7 +373,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
@@ -393,7 +409,7 @@ class OldAlbumServiceProviderTest {
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
@@ -421,7 +437,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
@@ -472,7 +488,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
         AlbumEntry pictureToDelete = AlbumEntry.with()
             .id(7)
             .parent(3)
@@ -503,7 +519,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes().size();
+        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToDelete = AlbumEntry.with()
             .id(7)
             .parent(3)
@@ -533,7 +549,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         // Find the first and second entries of the "vfr" album
         AlbumEntry originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(1, originalFirstEntry.getSort());
@@ -581,7 +597,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes();
+        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         // Find the last and second to last entries of the "vfr" album
         int numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
         AlbumEntry originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
@@ -773,23 +789,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testDumpDatabaseSql() throws Exception {
+    void testDumpDatabaseSqlNotLoggedIn() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
 
-        int allroutesCount = provider.fetchAllRoutes().size();
-        String sql = provider.dumpDatabaseSql();
+        int allroutesCount = findAlbumentriesRows(datasource, false);
+        String sql = provider.dumpDatabaseSql(null, false);
         assertThat(sql)
             .contains("insert into")
             .hasLineCount(allroutesCount + 3);
 
         // Create an empty database initialized with the oldalbum schema
         // Then use liquibase to fill the database with the dumped content
-        DataSource emptybase = createEmptyBase();
-        int rowsBeforeInsert = findAlbumentriesRows(emptybase);
+        DataSource emptybase = createEmptyBase("emptyoldalbum1");
+        int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(0, rowsBeforeInsert);
         Map<String, String> contentByFileName = new HashMap<>();
         contentByFileName.put("dumproutes.sql", sql);
@@ -802,8 +818,8 @@ class OldAlbumServiceProviderTest {
         }
 
         // Check that the empty database now has the same number of rows as the original
-        int rowsInOriginal = findAlbumentriesRows(datasource);
-        int rowsAfterInsert = findAlbumentriesRows(emptybase);
+        int rowsInOriginal = findAlbumentriesRows(datasource, false);
+        int rowsAfterInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(rowsInOriginal, rowsAfterInsert);
 
         // Try inserting a row to verify that the id autoincrement doesn't
@@ -811,14 +827,58 @@ class OldAlbumServiceProviderTest {
         try(Connection connection = emptybase.getConnection()) {
             addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
         }
-        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase);
+        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, false);
         assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
     }
 
-    private int findAlbumentriesRows(DataSource ds) throws SQLException {
-        String sql = "select count(albumentry_id) from albumentries";
+    @Test
+    void testDumpDatabaseSqlLoggedIn() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        int allroutesCount = findAlbumentriesRows(datasource, true);
+        String sql = provider.dumpDatabaseSql(null, true);
+        assertThat(sql)
+            .contains("insert into")
+            .hasLineCount(allroutesCount + 3);
+
+        // Create an empty database initialized with the oldalbum schema
+        // Then use liquibase to fill the database with the dumped content
+        DataSource emptybase = createEmptyBase("emptyoldalbum2");
+        int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
+        assertEquals(0, rowsBeforeInsert);
+        Map<String, String> contentByFileName = new HashMap<>();
+        contentByFileName.put("dumproutes.sql", sql);
+        MockResourceAccessor accessor = new MockResourceAccessor(contentByFileName);
+        try(Connection connection = emptybase.getConnection()) {
+            DatabaseConnection database = new JdbcConnection(connection);
+            try(var liquibase = new Liquibase("dumproutes.sql", accessor, database)) {
+                liquibase.update("");
+            }
+        }
+
+        // Check that the empty database now has the same number of rows as the original
+        int rowsInOriginal = findAlbumentriesRows(datasource, true);
+        int rowsAfterInsert = findAlbumentriesRows(emptybase, true);
+        assertEquals(rowsInOriginal, rowsAfterInsert);
+
+        // Try inserting a row to verify that the id autoincrement doesn't
+        // create duplicated
+        try(Connection connection = emptybase.getConnection()) {
+            addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
+        }
+        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, true);
+        assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
+    }
+
+    private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
+        String sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
         try (Connection connection = ds.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setBoolean(1, isLoggedIn);
                 try (ResultSet results = statement.executeQuery()) {
                     if (results.next()) {
                         return results.getInt(1);
@@ -829,14 +889,18 @@ class OldAlbumServiceProviderTest {
         return -1;
     }
 
-    private DataSource createEmptyBase() throws Exception {
+    private DataSource createEmptyBase(String dbname) throws Exception {
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:emptyoldalbum;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         DataSource emptyDatasource = derbyDataSourceFactory.createDataSource(properties);
         try (Connection connection = emptyDatasource.getConnection()) {
             OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
             oldAlbumLiquibase.createInitialSchema(connection);
+        }
+        try (Connection connection = emptyDatasource.getConnection()) {
+            OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+            oldAlbumLiquibase.updateSchema(connection);
         }
         return emptyDatasource;
     }

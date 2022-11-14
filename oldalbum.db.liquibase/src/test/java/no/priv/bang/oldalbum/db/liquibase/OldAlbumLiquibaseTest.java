@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
@@ -39,7 +40,7 @@ class OldAlbumLiquibaseTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
 
     @Test
-    void testCreateSchema() throws Exception {
+    void testCreateAndUpdateSchema() throws Exception {
         var datasource = createDatasource("oldalbum");
         OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
         try(var connection = datasource.getConnection()) {
@@ -50,6 +51,14 @@ class OldAlbumLiquibaseTest {
         }
         try(var connection = datasource.getConnection()) {
             assertAlbumEntries(connection);
+            assertAlbumEntriesDontHaveRequireLoginFlag(connection);
+        }
+        try(var connection = datasource.getConnection()) {
+            oldAlbumLiquibase.updateSchema(connection);
+        }
+        try(var connection = datasource.getConnection()) {
+            assertAlbumEntries(connection);
+            assertAlbumEntriesHasRequireLoginFlag(connection);
         }
     }
 
@@ -102,6 +111,44 @@ class OldAlbumLiquibaseTest {
                     assertEquals(lastmodified, result.getTimestamp(10) != null ? Date.from(result.getTimestamp(10).toInstant()) : null);
                     assertEquals(contenttype, result.getString(11));
                     assertEquals(size, result.getInt(12));
+                } else {
+                    fail(String.format("Didn't find albumentry with id=d", id));
+                }
+            }
+        }
+    }
+
+    private void assertAlbumEntriesDontHaveRequireLoginFlag(Connection connection) throws Exception {
+        assertAlbumEntryDoesntHaveRequireLoginFlag(connection, 1);
+        assertAlbumEntryDoesntHaveRequireLoginFlag(connection, 2);
+    }
+
+    private void assertAlbumEntryDoesntHaveRequireLoginFlag(Connection connection, int id) throws Exception {
+        String sql = "select * from albumentries where albumentry_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    assertThrows(SQLException.class, () -> result.getBoolean("require_login"));
+                } else {
+                    fail(String.format("Didn't find albumentry with id=d", id));
+                }
+            }
+        }
+    }
+
+    private void assertAlbumEntriesHasRequireLoginFlag(Connection connection) throws Exception {
+        assertAlbumEntryHasRequireLoginFlag(connection, 1, false);
+        assertAlbumEntryHasRequireLoginFlag(connection, 2, false);
+    }
+
+    private void assertAlbumEntryHasRequireLoginFlag(Connection connection, int id, boolean requireLogin) throws Exception {
+        String sql = "select * from albumentries where albumentry_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    assertEquals(requireLogin, result.getBoolean("require_login"));
                 } else {
                     fail(String.format("Didn't find albumentry with id=d", id));
                 }

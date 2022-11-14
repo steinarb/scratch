@@ -29,6 +29,10 @@ public class OldAlbumLiquibase {
         applyLiquibaseChangeLog(connection, "oldalbum/changelog01.xml");
     }
 
+    public void updateSchema(Connection connection) throws LiquibaseException {
+        applyLiquibaseChangeLog(connection, "oldalbum/changelog02.xml");
+    }
+
     private void applyLiquibaseChangeLog(Connection connection, String changelogClasspathResource) throws LiquibaseException {
         DatabaseConnection databaseConnection = new JdbcConnection(connection);
         try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {

@@ -7,6 +7,7 @@ import {
     LOGIN_REQUEST,
     LOGIN_RECEIVE,
     LOGIN_FAILURE,
+    ALLROUTES_REQUEST,
 } from '../reduxactions';
 
 function checkLogin() {
@@ -34,6 +35,9 @@ function* receiveLoginResult(action) {
         const response = yield call(sendLogin, action.payload);
         const loginresult = (response.headers['content-type'] === 'application/json') ? response.data : {};
         yield put(LOGIN_RECEIVE(loginresult));
+        if (loginresult.success) {
+            yield put(ALLROUTES_REQUEST());
+        }
     } catch (error) {
         yield put(LOGIN_FAILURE(error));
     }
