@@ -87,4 +87,37 @@ class AlbumEntryTest {
         assertEquals(0, bean.getContentLength());
     }
 
+    @Test
+    void testAlbumEntryCopyBuilder() {
+        var originalBean = AlbumEntry.with()
+            .id(1)
+            .parent(2)
+            .path("/album/bilde01")
+            .album(true)
+            .title("Album")
+            .description("This is an album")
+            .imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif")
+            .sort(1)
+            .lastModified(new Date(800275785000L))
+            .contentType("image/jpeg")
+            .contentLength(128186)
+            .childcount(4)
+            .build();
+        var bean = AlbumEntry.with(originalBean).build();
+        assertEquals(originalBean.getId(), bean.getId());
+        assertEquals(originalBean.getParent(), bean.getParent());
+        assertEquals(originalBean.getPath(), bean.getPath());
+        assertEquals(originalBean.isAlbum(), bean.isAlbum());
+        assertEquals(originalBean.getTitle(), bean.getTitle());
+        assertEquals(originalBean.getDescription(), bean.getDescription());
+        assertEquals(originalBean.getImageUrl(), bean.getImageUrl());
+        assertEquals(originalBean.getThumbnailUrl(), bean.getThumbnailUrl());
+        assertEquals(originalBean.getSort(), bean.getSort());
+        assertEquals(originalBean.getChildcount(), bean.getChildcount());
+        assertEquals(originalBean.getLastModified(), bean.getLastModified());
+        assertEquals(originalBean.getContentType(), bean.getContentType());
+        assertEquals(originalBean.getContentLength(), bean.getContentLength());
+    }
+
 }
