@@ -70,9 +70,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         List<AlbumEntry> allroutes = new ArrayList<>();
 
         List<AlbumEntry> albums = new ArrayList<>();
-        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort, a.lastmodified, a.contenttype, a.contentlength, a.require_login  order by a.localpath";
+        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true and (not a.require_login or (a.require_login and a.require_login=?)) group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort, a.lastmodified, a.contenttype, a.contentlength, a.require_login order by a.localpath";
         try (Connection connection = datasource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setBoolean(1, isLoggedIn);
                 try (ResultSet results = statement.executeQuery()) {
                     while (results.next()) {
                         AlbumEntry route = unpackAlbumEntry(results);

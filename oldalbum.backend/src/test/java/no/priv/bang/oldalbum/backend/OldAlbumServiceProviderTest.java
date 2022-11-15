@@ -76,8 +76,15 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
-        assertThat(allroutes).hasSizeGreaterThan(20);
+
+        // First check all routes not requiring login
+        List<AlbumEntry> allroutesNotRequiringLogin = provider.fetchAllRoutes(null, false);
+        assertThat(allroutesNotRequiringLogin).hasSizeGreaterThan(20);
+
+        // Then check that all routes including those that require login has at least 3 more entries
+        List<AlbumEntry> allroutesIncludingThoseRequiringLogin = provider.fetchAllRoutes(null, true);
+        assertThat(allroutesIncludingThoseRequiringLogin)
+            .hasSizeGreaterThanOrEqualTo(allroutesNotRequiringLogin.size() + 3);
     }
 
     @Test
