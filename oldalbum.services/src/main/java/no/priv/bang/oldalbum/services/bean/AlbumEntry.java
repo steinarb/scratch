@@ -32,6 +32,7 @@ public class AlbumEntry {
     private String contentType;
     private int contentLength;
     private int childcount;
+    private boolean requireLogin;
 
     private AlbumEntry() {}
 
@@ -87,12 +88,17 @@ public class AlbumEntry {
         return childcount;
     }
 
+    public boolean isRequirelogin() {
+        return requireLogin;
+    }
+
     @Override
     public String toString() {
         return "AlbumEntry [id=" + id + ", parent=" + parent + ", path=" + path + ", album=" + album + ", title="
             + title + ", description=" + description + ", imageUrl=" + imageUrl + ", thumbnailUrl=" + thumbnailUrl
             + ", sort=" + sort + ", lastModified=" + lastModified + ", contentType=" + contentType
-            + ", contentLength=" + contentLength + ", childcount=" + childcount + "]";
+            + ", contentLength=" + contentLength + ", childcount=" + childcount + ", requireLogin=" + requireLogin
+            + "]";
     }
 
     public static AlbumEntryBuilder with() {
@@ -113,6 +119,7 @@ public class AlbumEntry {
         builder.lastModified = albumEntry.lastModified;
         builder.contentType = albumEntry.contentType;
         builder.contentLength = albumEntry.contentLength;
+        builder.requireLogin = albumEntry.requireLogin;
         builder.childcount = albumEntry.childcount;
         return builder;
     }
@@ -131,6 +138,7 @@ public class AlbumEntry {
         private String contentType;
         private int contentLength;
         private int childcount;
+        private boolean requireLogin;
 
         private AlbumEntryBuilder() {}
 
@@ -148,6 +156,7 @@ public class AlbumEntry {
             albumEntry.lastModified = this.lastModified;
             albumEntry.contentType = this.contentType;
             albumEntry.contentLength = this.contentLength;
+            albumEntry.requireLogin = this.requireLogin;
             albumEntry.childcount = this.childcount;
             return albumEntry;
         }
@@ -214,6 +223,11 @@ public class AlbumEntry {
 
         public AlbumEntryBuilder childcount(int childcount) {
             this.childcount = childcount;
+            return this;
+        }
+
+        public AlbumEntryBuilder requireLogin(boolean requirelogin) {
+            this.requireLogin = requirelogin;
             return this;
         }
     }
