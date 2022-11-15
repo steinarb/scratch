@@ -488,7 +488,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, false).size();
+        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
         AlbumEntry pictureToDelete = AlbumEntry.with()
             .id(7)
             .parent(3)
@@ -796,7 +796,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate();
 
-        int allroutesCount = provider.fetchAllRoutes(null, false).size();
+        int allroutesCount = provider.fetchAllRoutes(null, true).size();
         String sql = provider.dumpDatabaseSql();
         assertThat(sql)
             .contains("insert into")

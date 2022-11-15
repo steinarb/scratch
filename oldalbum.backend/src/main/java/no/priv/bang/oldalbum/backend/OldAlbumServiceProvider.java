@@ -180,7 +180,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (SQLException e) {
             logger.error(String.format("Failed to update album entry for id \"%d\"", id), e);
         }
-        return fetchAllRoutes(null, false);
+        return fetchAllRoutes(null, true); // All edits are logged in
     }
 
     @Override
