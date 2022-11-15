@@ -200,11 +200,13 @@ class OldAlbumServiceProviderTest {
             .sort(1)
             .contentLength(0)
             .childcount(2)
+            .requireLogin(true)
             .build();
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
         AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
         assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
+        assertEquals(modifiedAlbum.isRequirelogin(), updatedAlbum.isRequirelogin());
     }
 
     @Test
@@ -219,16 +221,19 @@ class OldAlbumServiceProviderTest {
         String modifiedTitle = "New picture title";
         String modifiedDescription = "This is an updated description";
         var modifiedDate = Date.from(LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC));
+        boolean requireLogin = true;
         AlbumEntry modifiedPicture = AlbumEntry.with(originalPicture)
             .title(modifiedTitle)
             .description(modifiedDescription)
             .lastModified(modifiedDate)
+            .requireLogin(requireLogin)
             .build();
         List<AlbumEntry> allroutes = provider.updateEntry(modifiedPicture);
         AlbumEntry updatedPicture = allroutes.stream().filter(r -> r.getId() == 5).findFirst().get();
         assertEquals(modifiedTitle, updatedPicture.getTitle());
         assertEquals(modifiedDescription, updatedPicture.getDescription());
         assertEquals(modifiedDate, updatedPicture.getLastModified());
+        assertEquals(requireLogin, updatedPicture.isRequirelogin());
     }
 
     @Test()
@@ -304,6 +309,7 @@ class OldAlbumServiceProviderTest {
             .title("A new album")
             .description("A new album for new pictures")
             .sort(2)
+            .requireLogin(true)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
@@ -313,6 +319,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+        assertEquals(albumToAdd.isRequirelogin(), addedAlbum.isRequirelogin());
     }
 
     @Test
@@ -337,6 +344,7 @@ class OldAlbumServiceProviderTest {
             .lastModified(metadata.getLastModified())
             .contentType(metadata.getContentType())
             .contentLength(metadata.getContentLength())
+            .requireLogin(true)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
@@ -348,6 +356,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(pictureToAdd.getLastModified(), addedPicture.getLastModified());
         assertEquals(pictureToAdd.getContentType(), addedPicture.getContentType());
         assertEquals(pictureToAdd.getContentLength(), addedPicture.getContentLength());
+        assertEquals(pictureToAdd.isRequirelogin(), pictureToAdd.isRequirelogin());
     }
 
     @Test

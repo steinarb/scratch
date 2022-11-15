@@ -160,7 +160,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
         int id = modifiedEntry.getId();
-        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=? where albumentry_id=?";
+        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=? where albumentry_id=?";
         try(Connection connection = datasource.getConnection()) {
             int sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -172,7 +172,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(6, modifiedEntry.getThumbnailUrl());
                 statement.setTimestamp(7, getLastModifiedTimestamp(modifiedEntry));
                 statement.setInt(8, sort);
-                statement.setInt(9, id);
+                statement.setBoolean(9, modifiedEntry.isRequirelogin());
+                statement.setInt(10, id);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -183,7 +184,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, require_login) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String path = addedEntry.getPath();
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -198,6 +199,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setTimestamp(9, getLastModifiedTimestamp(addedEntry));
                 statement.setString(10, addedEntry.getContentType());
                 statement.setInt(11, addedEntry.getContentLength());
+                statement.setBoolean(12, addedEntry.isRequirelogin());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -439,6 +441,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .lastModified(timestampToDate(results.getTimestamp("lastmodified")))
             .contentType(results.getString("contenttype"))
             .contentLength(results.getInt("contentlength"))
+            .requireLogin(results.getBoolean("require_login"))
             .childcount(findChildCount(results))
             .build();
     }
