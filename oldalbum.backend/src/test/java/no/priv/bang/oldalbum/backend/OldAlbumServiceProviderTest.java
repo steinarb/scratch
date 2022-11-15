@@ -213,7 +213,7 @@ class OldAlbumServiceProviderTest {
         AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
         assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
-        assertEquals(modifiedAlbum.isRequirelogin(), updatedAlbum.isRequirelogin());
+        assertEquals(modifiedAlbum.isRequireLogin(), updatedAlbum.isRequireLogin());
     }
 
     @Test
@@ -240,7 +240,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(modifiedTitle, updatedPicture.getTitle());
         assertEquals(modifiedDescription, updatedPicture.getDescription());
         assertEquals(modifiedDate, updatedPicture.getLastModified());
-        assertEquals(requireLogin, updatedPicture.isRequirelogin());
+        assertEquals(requireLogin, updatedPicture.isRequireLogin());
     }
 
     @Test()
@@ -326,7 +326,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, addedAlbum.getParent());
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertEquals(albumToAdd.isRequirelogin(), addedAlbum.isRequirelogin());
+        assertEquals(albumToAdd.isRequireLogin(), addedAlbum.isRequireLogin());
     }
 
     @Test
@@ -363,7 +363,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(pictureToAdd.getLastModified(), addedPicture.getLastModified());
         assertEquals(pictureToAdd.getContentType(), addedPicture.getContentType());
         assertEquals(pictureToAdd.getContentLength(), addedPicture.getContentLength());
-        assertEquals(pictureToAdd.isRequirelogin(), pictureToAdd.isRequirelogin());
+        assertEquals(pictureToAdd.isRequireLogin(), pictureToAdd.isRequireLogin());
     }
 
     @Test

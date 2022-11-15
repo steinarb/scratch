@@ -173,7 +173,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(6, modifiedEntry.getThumbnailUrl());
                 statement.setTimestamp(7, getLastModifiedTimestamp(modifiedEntry));
                 statement.setInt(8, sort);
-                statement.setBoolean(9, modifiedEntry.isRequirelogin());
+                statement.setBoolean(9, modifiedEntry.isRequireLogin());
                 statement.setInt(10, id);
                 statement.executeUpdate();
             }
@@ -200,7 +200,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setTimestamp(9, getLastModifiedTimestamp(addedEntry));
                 statement.setString(10, addedEntry.getContentType());
                 statement.setInt(11, addedEntry.getContentLength());
-                statement.setBoolean(12, addedEntry.isRequirelogin());
+                statement.setBoolean(12, addedEntry.isRequireLogin());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {

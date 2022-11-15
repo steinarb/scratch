@@ -88,7 +88,7 @@ public class AlbumEntry {
         return childcount;
     }
 
-    public boolean isRequirelogin() {
+    public boolean isRequireLogin() {
         return requireLogin;
     }
 

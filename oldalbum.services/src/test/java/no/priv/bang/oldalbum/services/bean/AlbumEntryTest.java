@@ -69,7 +69,7 @@ class AlbumEntryTest {
         assertEquals(lastmodified, bean.getLastModified());
         assertEquals(contenttype, bean.getContentType());
         assertEquals(contentlength, bean.getContentLength());
-        assertEquals(requirelogin, bean.isRequirelogin());
+        assertEquals(requirelogin, bean.isRequireLogin());
         assertThat(bean.toString()).startsWith("AlbumEntry [id=");
     }
 
@@ -88,7 +88,7 @@ class AlbumEntryTest {
         assertNull(bean.getLastModified());
         assertNull(bean.getContentType());
         assertEquals(0, bean.getContentLength());
-        assertFalse(bean.isRequirelogin());
+        assertFalse(bean.isRequireLogin());
     }
 
     @Test
@@ -123,7 +123,7 @@ class AlbumEntryTest {
         assertEquals(originalBean.getLastModified(), bean.getLastModified());
         assertEquals(originalBean.getContentType(), bean.getContentType());
         assertEquals(originalBean.getContentLength(), bean.getContentLength());
-        assertEquals(originalBean.isRequirelogin(), bean.isRequirelogin());
+        assertEquals(originalBean.isRequireLogin(), bean.isRequireLogin());
     }
 
 }
