@@ -55,7 +55,7 @@ class RoutesResourceTest extends ShiroTestBase {
     @BeforeEach
     void setup() {
         backendService = mock(OldAlbumService.class);
-        when(backendService.fetchAllRoutes(eq(null), eq(false))).thenReturn(allPublicRoutes);
+        when(backendService.fetchAllRoutes(null, false)).thenReturn(allPublicRoutes);
         when(backendService.fetchAllRoutes(anyString(), eq(true))).thenReturn(allroutes);
     }
 
