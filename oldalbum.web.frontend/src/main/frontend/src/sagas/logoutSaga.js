@@ -4,6 +4,7 @@ import {
     LOGOUT_REQUEST,
     LOGOUT_RECEIVE,
     LOGOUT_FAILURE,
+    ALLROUTES_REQUEST,
 } from '../reduxactions';
 
 function sendLogout() {
@@ -15,6 +16,9 @@ function* receiveLogoutResult(action) {
         const response = yield call(sendLogout, action.payload);
         const logoutresult = (response.headers['content-type'] === 'application/json') ? response.data : {};
         yield put(LOGOUT_RECEIVE(logoutresult));
+        if (!logoutresult.success) {
+            yield put(ALLROUTES_REQUEST());
+        }
     } catch (error) {
         yield put(LOGOUT_FAILURE(error));
     }
