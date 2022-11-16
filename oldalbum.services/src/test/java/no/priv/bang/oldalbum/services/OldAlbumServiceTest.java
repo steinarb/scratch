@@ -54,7 +54,7 @@ class OldAlbumServiceTest {
         assertEquals(0, updatedRoutesOnEntryMovedUp.size());
         List<AlbumEntry> updatedRoutesOnEntryMovedDown = service.moveEntryDown(movedEntry);
         assertEquals(0, updatedRoutesOnEntryMovedDown.size());
-        String dumpedSql = service.dumpDatabaseSql();
+        String dumpedSql = service.dumpDatabaseSql(null, false);
         assertNull(dumpedSql);
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         ImageMetadata metadata = service.readMetadata(imageUrl);

@@ -48,7 +48,10 @@ public class RoutesResource {
     @GET
     @Produces("application/sql")
     public String dumpSql() {
-        return oldAlbumService.dumpDatabaseSql();
+        var subject = SecurityUtils.getSubject();
+        String username = (String) subject.getPrincipal();
+        boolean isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
+        return oldAlbumService.dumpDatabaseSql(username, isLoggedIn);
     }
 
 }

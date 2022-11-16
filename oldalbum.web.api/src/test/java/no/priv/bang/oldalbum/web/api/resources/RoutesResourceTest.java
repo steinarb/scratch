@@ -41,8 +41,8 @@ import no.priv.bang.oldalbum.web.api.ShiroTestBase;
 class RoutesResourceTest extends ShiroTestBase {
     final static ObjectMapper mapper = new ObjectMapper();
     private OldAlbumService backendService;
-	private static List<AlbumEntry> allroutes;
-	private static List<AlbumEntry> allPublicRoutes;
+    private static List<AlbumEntry> allroutes;
+    private static List<AlbumEntry> allPublicRoutes;
     static String dumpedroutes = loadClasspathResourceIntoString("dumproutes.sql");
 
     @BeforeAll
@@ -52,7 +52,7 @@ class RoutesResourceTest extends ShiroTestBase {
         allPublicRoutes.remove(allPublicRoutes.size() - 1);
     }
 
-	@BeforeEach
+    @BeforeEach
     void setup() {
         backendService = mock(OldAlbumService.class);
         when(backendService.fetchAllRoutes(eq(null), eq(false))).thenReturn(allPublicRoutes);
@@ -79,11 +79,24 @@ class RoutesResourceTest extends ShiroTestBase {
     }
 
     @Test
-    void testDumpSql() {
+    void testDumpSqlWhenNotLoggedIn() {
         OldAlbumService backendService = mock(OldAlbumService.class);
-        when(backendService.dumpDatabaseSql()).thenReturn(dumpedroutes);
+        when(backendService.dumpDatabaseSql(null, false)).thenReturn(dumpedroutes);
         RoutesResource resource = new RoutesResource();
         resource.oldAlbumService = backendService;
+        createSubjectAndBindItToThread();
+        String sql = resource.dumpSql();
+        assertThat(sql).contains("--liquibase formatted sql");
+    }
+
+    @Test
+    void testDumpSqlWhenLoggedIn() {
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.dumpDatabaseSql("jad", true)).thenReturn(dumpedroutes);
+        RoutesResource resource = new RoutesResource();
+        resource.oldAlbumService = backendService;
+        createSubjectAndBindItToThread();
+        loginUser("jad", "1ad");
         String sql = resource.dumpSql();
         assertThat(sql).contains("--liquibase formatted sql");
     }

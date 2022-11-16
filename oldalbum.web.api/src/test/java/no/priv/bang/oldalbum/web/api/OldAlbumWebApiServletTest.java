@@ -106,7 +106,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     void testDumpRoutesSql() throws Exception {
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
-        when(backendService.dumpDatabaseSql()).thenReturn(dumpedroutes);
+        when(backendService.dumpDatabaseSql(null, false)).thenReturn(dumpedroutes);
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));

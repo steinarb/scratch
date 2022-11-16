@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -259,15 +259,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
-    public String dumpDatabaseSql() {
+    public String dumpDatabaseSql(String username, boolean isLoggedn) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
         StringBuilder builder = new StringBuilder();
         builder.append("--liquibase formatted sql\n");
         builder.append("--changeset sb:saved_albumentries\n");
-        String sql = "select * from albumentries order by albumentry_id";
+        String sql = "select * from albumentries where (not require_login or (require_login and require_login=?)) order by albumentry_id";
         try (Connection connection = datasource.getConnection()) {
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet results = statement.executeQuery(sql)) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setBoolean(1, isLoggedn);
+                try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
                         int id = results.getInt(1);
                         int parent = results.getInt(2);
@@ -282,9 +283,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                         String lastModified = lastModifiedTimestamp != null ? quoteStringButNotNull(formatter.format(lastModifiedTimestamp.toInstant())) : "null";
                         String contentType = quoteStringButNotNull(results.getString(11));
                         int contentLength = results.getInt(12);
-                        builder.append(String.format("insert into albumentries (albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (%d, %d, %s, %b, %s, %s, %s, %s, %d, %s, %s, %d);", id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastModified, contentType, contentLength)).append("\n");
+                        boolean requireLogin = results.getBoolean(13);
+                        builder.append(String.format("insert into albumentries (albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login) values (%d, %d, %s, %b, %s, %s, %s, %s, %d, %s, %s, %d, %b);", id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastModified, contentType, contentLength, requireLogin)).append("\n");
                     }
                 }
+            }
+            try (Statement statement = connection.createStatement()) {
                 try (ResultSet results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
                     while(results.next()) {
                         int lastIdInDump = results.getInt(1);

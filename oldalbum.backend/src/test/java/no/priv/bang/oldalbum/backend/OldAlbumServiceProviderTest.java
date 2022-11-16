@@ -789,23 +789,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testDumpDatabaseSql() throws Exception {
+    void testDumpDatabaseSqlNotLoggedIn() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
 
-        int allroutesCount = provider.fetchAllRoutes(null, true).size();
-        String sql = provider.dumpDatabaseSql();
+        int allroutesCount = findAlbumentriesRows(datasource, false);
+        String sql = provider.dumpDatabaseSql(null, false);
         assertThat(sql)
             .contains("insert into")
             .hasLineCount(allroutesCount + 3);
 
         // Create an empty database initialized with the oldalbum schema
         // Then use liquibase to fill the database with the dumped content
-        DataSource emptybase = createEmptyBase();
-        int rowsBeforeInsert = findAlbumentriesRows(emptybase);
+        DataSource emptybase = createEmptyBase("emptyoldalbum1");
+        int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(0, rowsBeforeInsert);
         Map<String, String> contentByFileName = new HashMap<>();
         contentByFileName.put("dumproutes.sql", sql);
@@ -818,8 +818,8 @@ class OldAlbumServiceProviderTest {
         }
 
         // Check that the empty database now has the same number of rows as the original
-        int rowsInOriginal = findAlbumentriesRows(datasource);
-        int rowsAfterInsert = findAlbumentriesRows(emptybase);
+        int rowsInOriginal = findAlbumentriesRows(datasource, false);
+        int rowsAfterInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(rowsInOriginal, rowsAfterInsert);
 
         // Try inserting a row to verify that the id autoincrement doesn't
@@ -827,14 +827,58 @@ class OldAlbumServiceProviderTest {
         try(Connection connection = emptybase.getConnection()) {
             addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
         }
-        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase);
+        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, false);
         assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
     }
 
-    private int findAlbumentriesRows(DataSource ds) throws SQLException {
-        String sql = "select count(albumentry_id) from albumentries";
+    @Test
+    void testDumpDatabaseSqlLoggedIn() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        int allroutesCount = findAlbumentriesRows(datasource, true);
+        String sql = provider.dumpDatabaseSql(null, true);
+        assertThat(sql)
+            .contains("insert into")
+            .hasLineCount(allroutesCount + 3);
+
+        // Create an empty database initialized with the oldalbum schema
+        // Then use liquibase to fill the database with the dumped content
+        DataSource emptybase = createEmptyBase("emptyoldalbum2");
+        int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
+        assertEquals(0, rowsBeforeInsert);
+        Map<String, String> contentByFileName = new HashMap<>();
+        contentByFileName.put("dumproutes.sql", sql);
+        MockResourceAccessor accessor = new MockResourceAccessor(contentByFileName);
+        try(Connection connection = emptybase.getConnection()) {
+            DatabaseConnection database = new JdbcConnection(connection);
+            try(var liquibase = new Liquibase("dumproutes.sql", accessor, database)) {
+                liquibase.update("");
+            }
+        }
+
+        // Check that the empty database now has the same number of rows as the original
+        int rowsInOriginal = findAlbumentriesRows(datasource, true);
+        int rowsAfterInsert = findAlbumentriesRows(emptybase, true);
+        assertEquals(rowsInOriginal, rowsAfterInsert);
+
+        // Try inserting a row to verify that the id autoincrement doesn't
+        // create duplicated
+        try(Connection connection = emptybase.getConnection()) {
+            addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
+        }
+        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, true);
+        assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
+    }
+
+    private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
+        String sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
         try (Connection connection = ds.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setBoolean(1, isLoggedIn);
                 try (ResultSet results = statement.executeQuery()) {
                     if (results.next()) {
                         return results.getInt(1);
@@ -845,14 +889,18 @@ class OldAlbumServiceProviderTest {
         return -1;
     }
 
-    private DataSource createEmptyBase() throws Exception {
+    private DataSource createEmptyBase(String dbname) throws Exception {
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:emptyoldalbum;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         DataSource emptyDatasource = derbyDataSourceFactory.createDataSource(properties);
         try (Connection connection = emptyDatasource.getConnection()) {
             OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
             oldAlbumLiquibase.createInitialSchema(connection);
+        }
+        try (Connection connection = emptyDatasource.getConnection()) {
+            OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+            oldAlbumLiquibase.updateSchema(connection);
         }
         return emptyDatasource;
     }

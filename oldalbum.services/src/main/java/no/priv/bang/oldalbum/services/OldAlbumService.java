@@ -40,7 +40,7 @@ public interface OldAlbumService {
 
     List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry);
 
-    String dumpDatabaseSql();
+    String dumpDatabaseSql(String username, boolean requireLogin);
 
     ImageMetadata readMetadata(String imageUrl);
 
