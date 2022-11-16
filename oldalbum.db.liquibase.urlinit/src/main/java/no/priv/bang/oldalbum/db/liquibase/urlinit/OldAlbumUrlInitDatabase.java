@@ -98,11 +98,13 @@ public class OldAlbumUrlInitDatabase {
     private void setDatabaseContent(String contentLiquibaseChangelog) {
         Map<String, String> contentByFileName = new HashMap<>();
         contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
-        MockResourceAccessor accessor = new MockResourceAccessor(contentByFileName);
-        try(Connection connection = datasource.getConnection()) {
-            DatabaseConnection database = new JdbcConnection(connection);
-            Liquibase liquibase = new Liquibase("dumproutes.sql", accessor, database);
-            liquibase.update("");
+        try(var accessor = new MockResourceAccessor(contentByFileName)) {
+            try(Connection connection = datasource.getConnection()) {
+                DatabaseConnection database = new JdbcConnection(connection);
+                try(var liquibase = new Liquibase("dumproutes.sql", accessor, database)) {
+                    liquibase.update("");
+                }
+            }
         } catch (Exception e) {
             logger.error("Failed to insert oldalbum database content into the database");
         }
