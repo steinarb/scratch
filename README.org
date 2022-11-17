@@ -126,7 +126,7 @@ Procedure:
  4. Visit http://localhost:8181/oldalbum in a web browser:
     1. Log in with username "admin" (without the quotes) and password "admin" (also without the quotes)
     2. Add the albums and images you want to display
- 5. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumpsql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
+ 5. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumproutessql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
  6. Set the environment variable DATABASE_CONTENT_URL to the raw content of your github gist in the shell where you'll start the karaf hosting your production oldalbum instance
 
 *** Installation using docker image
@@ -158,7 +158,7 @@ Procedure:
           6. Click on the button "Add" to add the image to the album
        3. Pictures and albums will be displayed in the order they are added
        4. Click on the arrows to move a picture or album up or down
- 4. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumpsql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
+ 4. When you're happy with the album contents, download http://localhost:8181/oldalbum/api/dumproutessql and put the results in a place that can be reached with a HTTP URL from where you start your production karaf instance, e.g. as a github gist
  5. Stop the image and restart it, this time with a DATABASE_CONTENT_URL pointing to a web server serving up the dumped file (as e.g. with this github gist):
     #+begin_example
       docker run -p 8101:8101 -p 8181:8181  -e "DATABASE_CONTENT_URL=https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql" -d steinarb/oldalbum:latest
