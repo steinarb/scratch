@@ -5,7 +5,7 @@ import { DELETE_ITEM_REQUEST } from '../reduxactions';
 
 export default function DeleteButton(props) {
     const { item } = props;
-    const canModifyAlbum = useSelector(state => state.canModifyAlbum);
+    const showEditControls = useSelector(state => state.showEditControls);
     const parentpath = useSelector(state => (state.albumentries[item.parent] || {}).path || '');
     const children = useSelector(state => state.childentries[item.id] || []);
     const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export default function DeleteButton(props) {
     };
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the root album, 3: this is an album with content
-    if (!canModifyAlbum || !item.parent || children.length) {
+    if (!showEditControls || !item.parent || children.length) {
         return null;
     }
 

@@ -6,9 +6,9 @@ import { stringify } from 'qs';
 export default function ModifyButton(props) {
     const { item } = props;
     const webcontext = useSelector(state => state.webcontext) || '';
-    const canModifyAlbum = useSelector(state => state.canModifyAlbum);
+    const showEditControls = useSelector(state => state.showEditControls);
 
-    if (!canModifyAlbum) {
+    if (!showEditControls) {
         return null;
     }
 

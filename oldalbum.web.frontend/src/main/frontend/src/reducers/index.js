@@ -22,6 +22,8 @@ import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusRedu
 import loggedIn from './loggedInReducer';
 import username from './usernameReducer';
 import logstatusMessage from './logstatusMessageReducer';
+import showEditControls from './showEditControlsReducer';
+import editMode from './editModeReducer';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
 
@@ -50,6 +52,8 @@ export default (routerReducer) => combineReducers({
     loggedIn,
     username,
     logstatusMessage,
+    showEditControls,
+    editMode,
     canModifyAlbum,
     canLogin,
 });
