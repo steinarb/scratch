@@ -5,6 +5,7 @@ import { push } from 'redux-first-history';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
+import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
 import ModifyButton from './ModifyButton';
@@ -53,6 +54,7 @@ export default function Album(props) {
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
                         <CopyLinkButton className="nav-item" />
+                        <EditModeButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>
                     </div>
                 </div>

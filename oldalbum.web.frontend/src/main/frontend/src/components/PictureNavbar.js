@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import EditModeButton from './EditModeButton';
 import CopyLinkButton from './CopyLinkButton';
 import LoginLogoutButton from './LoginLogoutButton';
 
@@ -24,6 +25,7 @@ export default function PictureNavbar(props) {
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
                         <CopyLinkButton className="nav-item" />
+                        <EditModeButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>
                     </div>
                 </div>
