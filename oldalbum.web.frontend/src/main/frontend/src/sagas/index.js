@@ -13,6 +13,7 @@ import movealbumentry from './movealbumentrySaga';
 import login from './loginSaga';
 import logout from './logoutSaga';
 import location from './locationSaga';
+import editModeSaga from './editModeSaga';
 
 export default function* rootSaga() {
     yield all([
@@ -29,5 +30,6 @@ export default function* rootSaga() {
         fork(login),
         fork(logout),
         fork(location),
+        fork(editModeSaga),
     ]);
 }
