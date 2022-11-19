@@ -18,6 +18,7 @@ package no.priv.bang.oldalbum.web.frontend;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
@@ -34,17 +35,34 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.config.Ini;
+import org.apache.shiro.util.ThreadContext;
+import org.apache.shiro.web.env.IniWebEnvironment;
+import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.apache.shiro.web.subject.WebSubject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
 class OldalbumServletTest {
 
+    private static WebSecurityManager securitymanager;
+    private WebSubject subject;
+
+    @BeforeEach
+    void setup() {
+        subject = createSubjectAndBindItToThread();
+    }
+
     @Test
     void testGetAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("Motorcyle meeting places").description("Places motorcylists meet").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         AlbumEntry grava1 = AlbumEntry.with().id(3).parent(2).path("/moto/places/grava1").album(false).title("Tyrigrava").description("On gamle Mossevei").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
@@ -87,7 +105,7 @@ class OldalbumServletTest {
     @Test
     void testGetPicture() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with()
             .id(3)
             .parent(2)
@@ -136,7 +154,7 @@ class OldalbumServletTest {
     @Test
     void testGetEmptyAlbum() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
@@ -172,7 +190,7 @@ class OldalbumServletTest {
     @Test
     void testGetAlbumWithEmptyValues() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
         AlbumEntry entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("").description("").imageUrl("").thumbnailUrl("").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         MockLogService logservice = new MockLogService();
@@ -207,7 +225,7 @@ class OldalbumServletTest {
     @Test
     void testGetNullAlbumEntry() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getPaths()).thenReturn(Arrays.asList("/moto/"));
+        when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
         MockLogService logservice = new MockLogService();
         OldalbumServlet servlet = new OldalbumServlet();
         ServletConfig servletConfig = mock(ServletConfig.class);
@@ -322,6 +340,76 @@ class OldalbumServletTest {
         servlet.service(request, response);
 
         assertEquals(SC_NOT_FOUND, response.getErrorCode());
+    }
+
+    @Test
+    void testDoGetRoutesWhenNotLoggedIn() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/path1", "/path2"));
+        when(oldalbum.getPaths(true)).thenReturn(Arrays.asList("/path1", "/path2", "/path3"));
+        MockLogService logservice = new MockLogService();
+
+        var servlet = new OldalbumServlet();
+        servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
+        servlet.activate();
+
+        var routes = servlet.getRoutes();
+
+        assertThat(routes).hasSize(6 + 2);
+    }
+
+    @Test
+    void testDoGetRoutesWhenLoggedIn() throws Exception {
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/path1", "/path2"));
+        when(oldalbum.getPaths(true)).thenReturn(Arrays.asList("/path1", "/path2", "/path3"));
+        MockLogService logservice = new MockLogService();
+
+        var servlet = new OldalbumServlet();
+        servlet.setLogService(logservice);
+        servlet.setOldalbumService(oldalbum);
+        servlet.activate();
+
+        loginUser("jad", "1ad");
+
+        var routes = servlet.getRoutes();
+
+        assertThat(routes).hasSize(6 + 3);
+    }
+
+    protected void loginUser(String username, String password) {
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
+    }
+
+    protected WebSubject createSubjectAndBindItToThread() {
+        return createSubjectAndBindItToThread(getSecurityManager());
+    }
+
+    protected WebSubject createSubjectAndBindItToThread(WebSecurityManager webSecurityManager) {
+        HttpSession session = mock(HttpSession.class);
+        MockHttpServletRequest dummyrequest = new MockHttpServletRequest();
+        dummyrequest.setSession(session);
+        MockHttpServletResponse dummyresponse = new MockHttpServletResponse();
+        return createSubjectAndBindItToThread(webSecurityManager, dummyrequest, dummyresponse);
+    }
+
+    protected WebSubject createSubjectAndBindItToThread(WebSecurityManager webSecurityManager, HttpServletRequest request, HttpServletResponse response) {
+        WebSubject subject = new WebSubject.Builder(webSecurityManager, request, response).buildWebSubject();
+        ThreadContext.bind(subject);
+        return subject;
+    }
+
+    public static WebSecurityManager getSecurityManager() {
+        if (securitymanager == null) {
+            IniWebEnvironment environment = new IniWebEnvironment();
+            environment.setIni(Ini.fromResourcePath("classpath:test.shiro.ini"));
+            environment.init();
+            securitymanager = environment.getWebSecurityManager();
+        }
+
+        return securitymanager;
     }
 
 }

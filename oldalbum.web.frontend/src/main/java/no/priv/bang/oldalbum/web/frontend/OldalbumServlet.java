@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.*;
 
+import org.apache.shiro.SecurityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -83,7 +84,9 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     private List<String> combineDynamicAndStaticRoutes() {
-        List<String> dynamicroutes = oldalbum.getPaths();
+        var subject = SecurityUtils.getSubject();
+        boolean isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
+        List<String> dynamicroutes = oldalbum.getPaths(isLoggedIn);
         List<String> staticroutes = super.getRoutes();
         int numberOfRoutes = dynamicroutes.size() + staticroutes.size();
         List<String> allroutes = new ArrayList<>(numberOfRoutes);

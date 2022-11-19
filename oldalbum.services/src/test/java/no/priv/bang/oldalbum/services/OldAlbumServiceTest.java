@@ -32,7 +32,7 @@ class OldAlbumServiceTest {
         OldAlbumService service = mock(OldAlbumService.class);
         List<AlbumEntry> routes = service.fetchAllRoutes(null, false);
         assertEquals(0, routes.size());
-        List<String> paths = service.getPaths();
+        List<String> paths = service.getPaths(false);
         assertEquals(0, paths.size());
         String path = "/moto/grava";
         AlbumEntry entry = service.getAlbumEntryFromPath(path);

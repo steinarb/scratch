@@ -24,7 +24,7 @@ public interface OldAlbumService {
 
     List<AlbumEntry> fetchAllRoutes(String username, boolean isLoggedIn);
 
-    List<String> getPaths();
+    List<String> getPaths(boolean isLoggedIn);
 
     AlbumEntry getAlbumEntryFromPath(String path);
 

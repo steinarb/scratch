@@ -108,8 +108,14 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate();
-        List<String> paths = provider.getPaths();
-        assertThat(paths).hasSizeGreaterThanOrEqualTo(20);
+
+        // Test paths when logged in
+        List<String> pathsWhenNotLoggedIn = provider.getPaths(false);
+        assertThat(pathsWhenNotLoggedIn).hasSizeGreaterThanOrEqualTo(19);
+
+        // Test paths when not logged in
+        List<String> pathsWhenLoggedIn = provider.getPaths(true);
+        assertThat(pathsWhenLoggedIn).hasSize(pathsWhenNotLoggedIn.size() + 4);
     }
 
     @Test
@@ -121,7 +127,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate();
-        List<String> paths = provider.getPaths();
+        List<String> paths = provider.getPaths(false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, paths.size());
     }

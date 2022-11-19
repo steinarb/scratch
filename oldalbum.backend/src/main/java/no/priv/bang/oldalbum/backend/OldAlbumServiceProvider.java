@@ -101,12 +101,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
-    public List<String> getPaths() {
+    public List<String> getPaths(boolean isLoggedIn) {
         List<String> paths = new ArrayList<>();
-        String sql = "select localpath from albumentries order by localpath";
+        String sql = "select localpath from albumentries where (not require_login or (require_login and require_login=?)) order by localpath";
         try (Connection connection = datasource.getConnection()) {
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet results = statement.executeQuery(sql)) {
+            try (var statement = connection.prepareStatement(sql)) {
+                statement.setBoolean(1, isLoggedIn);
+                try (ResultSet results = statement.executeQuery()) {
                     while(results.next()) {
                         paths.add(results.getString(1));
                     }
