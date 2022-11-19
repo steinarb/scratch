@@ -5,12 +5,12 @@ import { stringify } from 'qs';
 
 export default function AddAlbumButton(props) {
     const { item } = props;
-    const canModifyAlbum = useSelector(state => state.canModifyAlbum);
+    const showEditControls = useSelector(state => state.showEditControls);
     const { id } = item;
     const parent = id; // The new album will have this as a parent
     const addalbum = '/addalbum?' + stringify({ parent });
 
-    if (!canModifyAlbum) {
+    if (!showEditControls) {
         return null;
     }
 

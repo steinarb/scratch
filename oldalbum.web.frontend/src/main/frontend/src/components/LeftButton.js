@@ -5,11 +5,11 @@ import ChevronLeft from './bootstrap/ChevronLeft';
 
 export default function LeftButton(props) {
     const { item } = props;
-    const canModifyAlbum = useSelector(state => state.canModifyAlbum);
+    const showEditControls = useSelector(state => state.showEditControls);
     const dispatch = useDispatch();
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the first entry in the album
-    if (!canModifyAlbum || item.sort < 2) {
+    if (!showEditControls || item.sort < 2) {
         return null;
     }
 

@@ -5,12 +5,12 @@ import ChevronRight from './bootstrap/ChevronRight';
 
 export default function RightButton(props) {
     const { item } = props;
-    const canModifyAlbum = useSelector(state => state.canModifyAlbum);
+    const showEditControls = useSelector(state => state.showEditControls);
     const albumchildcount = useSelector(state => (state.albumentries[item.parent] || {}).childcount || 0);
     const dispatch = useDispatch();
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the last entry in the album
-    if (!canModifyAlbum || item.sort >= albumchildcount) {
+    if (!showEditControls || item.sort >= albumchildcount) {
         return null;
     }
 
