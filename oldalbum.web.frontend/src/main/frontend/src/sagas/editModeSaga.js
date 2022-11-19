@@ -5,12 +5,12 @@ import {
     TOGGLE_EDIT_MODE_OFF,
 } from '../reduxactions';
 
-export default function* localeSaga() {
-    yield takeLatest(TOGGLE_EDIT_MODE_ON, updateLocaleCookie);
-    yield takeLatest(TOGGLE_EDIT_MODE_OFF, updateLocaleCookie);
+export default function* editModeSaga() {
+    yield takeLatest(TOGGLE_EDIT_MODE_ON, updateEditModeCookie);
+    yield takeLatest(TOGGLE_EDIT_MODE_OFF, updateEditModeCookie);
 }
 
-function* updateLocaleCookie() {
+function* updateEditModeCookie() {
     const editMode = yield select(state => state.editMode);
     yield Cookies.set('editMode', editMode);
 }

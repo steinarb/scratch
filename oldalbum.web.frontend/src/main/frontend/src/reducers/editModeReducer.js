@@ -5,11 +5,11 @@ import {
     TOGGLE_EDIT_MODE_OFF,
 } from '../reduxactions';
 
-const currentEditMode = Cookies.get('editMode') || false;
+const currentEditMode = (Cookies.get('editMode') || '').toLowerCase() === 'true';
 
-const localeReducer = createReducer(currentEditMode, {
+const editModeReducer = createReducer(currentEditMode, {
     [TOGGLE_EDIT_MODE_ON]: () => true,
     [TOGGLE_EDIT_MODE_OFF]: () => false,
 });
 
-export default localeReducer;
+export default editModeReducer;
