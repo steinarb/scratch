@@ -12,6 +12,7 @@ import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
 import AddPictureButton from './AddPictureButton';
 import DeleteButton from './DeleteButton';
+import BatchAddPictures from './BatchAddPictures';
 import Previous from './Previous';
 import Next from './Next';
 import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
@@ -68,6 +69,7 @@ export default function Album(props) {
                 <AddAlbumButton className="mx-1 my-1" item={item} />
                 <AddPictureButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
+                <BatchAddPictures className="" item={item} />
             </div>
             {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             <div className="row" {...swipeHandlers}>
