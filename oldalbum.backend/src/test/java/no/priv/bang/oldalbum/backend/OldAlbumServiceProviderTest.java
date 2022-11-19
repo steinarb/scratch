@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,7 +49,9 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
@@ -878,6 +881,152 @@ class OldAlbumServiceProviderTest {
         }
         int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, true);
         assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
+    }
+
+    @Test
+    void testBatchAddPictures() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum3");
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate();
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream())
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Prepare empty database with an album to put pictures in
+        AlbumEntry parentForBatchAddedPictures = AlbumEntry.with()
+            .parent(1)
+            .path("/pictures/")
+            .album(true)
+            .title("A lot of pictures")
+            .description("Pictures added using the batch functionality")
+            .sort(2)
+            .requireLogin(true)
+            .build();
+        var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
+        var parentId = entriesBeforeBatchAdd.get(0).getId();
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(parentId)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var entriesAfterBatchAdd = provider.batchAddPictures(request);
+
+        // Check that pictures have been added
+        assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that sort is incremented during batch import
+        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        assertThat(lastSortValue).isGreaterThan(firstSortValue);
+
+        // Check that a second import will continue to increase the sort value
+        var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
+        int lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
+    }
+
+    @Test
+    void testBatchAddPicturesWith404OnTheBatchUrl() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(404);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(1)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.batchAddPictures(request));
+        assertThat(e.getMessage()).startsWith("Got HTTP error when requesting the batch add pictures URL, statuscode: 404");
+    }
+
+    @Test
+    void testBatchAddPicturesWithIOExceptionOnReceivedFileParse() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream()).thenThrow(IOException.class);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(1)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.batchAddPictures(request));
+        assertThat(e.getMessage()).startsWith("Got error parsing the content of URL:");
+    }
+
+    @Test
+    void testGetEntryWithSQLException() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(database);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertThat(provider.getEntry(1)).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testFindHighestSortValueInParentAlbumWithSqlException( ) throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(database);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertEquals(0, provider.findHighestSortValueInParentAlbum(1));
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testFindHighestSortValueInParentAlbumWithEmptyQueryResult( ) throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var results = mock(ResultSet.class);
+        var statement = mock(PreparedStatement.class);
+        when(statement.executeQuery()).thenReturn(results);
+        var connection = mock(Connection.class);
+        when (connection.prepareStatement(anyString())).thenReturn(statement);
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenReturn(connection);
+        provider.setDataSource(database);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertEquals(0, provider.findHighestSortValueInParentAlbum(1));
+        assertThat(logservice.getLogmessages()).isEmpty();
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {

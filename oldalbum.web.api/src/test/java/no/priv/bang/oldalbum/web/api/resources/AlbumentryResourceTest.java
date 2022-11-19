@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 
 class AlbumentryResourceTest {
 
@@ -80,6 +81,20 @@ class AlbumentryResourceTest {
         AlbumEntry updatedPicture = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(pictureToAdd.getTitle(), updatedPicture.getTitle());
         assertEquals(pictureToAdd.getDescription(), updatedPicture.getDescription());
+    }
+
+    @Test
+    void testBatchAddpictures() {
+        var request = BatchAddPicturesRequest.with()
+            .parent(1)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        AlbumentryResource resource = new AlbumentryResource();
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.batchAddPictures(any())).thenReturn(Arrays.asList(AlbumEntry.with().build(), AlbumEntry.with().build()));
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.batchAddPictures(request);
+        assertThat(allroutes).hasSize(2);
     }
 
     @Test

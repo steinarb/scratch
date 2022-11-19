@@ -18,6 +18,7 @@ package no.priv.bang.oldalbum.services;
 import java.util.List;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 
 public interface OldAlbumService {
@@ -43,5 +44,7 @@ public interface OldAlbumService {
     String dumpDatabaseSql(String username, boolean requireLogin);
 
     ImageMetadata readMetadata(String imageUrl);
+
+    List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest batchAddPicturesRequest);
 
 }

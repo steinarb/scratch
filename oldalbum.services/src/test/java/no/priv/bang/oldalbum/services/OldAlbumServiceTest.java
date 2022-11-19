@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 
 class OldAlbumServiceTest {
@@ -59,6 +61,10 @@ class OldAlbumServiceTest {
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         ImageMetadata metadata = service.readMetadata(imageUrl);
         assertNull(metadata);
+
+        var batchAddPicturesRequest = BatchAddPicturesRequest.with().build();
+        List<AlbumEntry> updatedRoutesAfterBatchAdd = service.batchAddPictures(batchAddPicturesRequest);
+        assertThat(updatedRoutesAfterBatchAdd).isEmpty();
     }
 
 }
