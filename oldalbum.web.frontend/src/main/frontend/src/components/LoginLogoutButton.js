@@ -17,7 +17,7 @@ export default function LoginLogoutButton(props) {
 
     if (loggedIn) {
         return (<span className="{props.styleName} alert alert-primary" role="alert">
-                    Logged in as {username} <span className="alert-link" onClick={() => dispatch(LOGOUT_REQUEST())()}>Logout</span>
+                    Logged in as {username} <span className="alert-link" onClick={() => dispatch(LOGOUT_REQUEST())}>Logout</span>
                 </span>);
     }
 
