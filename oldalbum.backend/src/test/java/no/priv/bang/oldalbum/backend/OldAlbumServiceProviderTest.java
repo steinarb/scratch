@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -946,6 +947,32 @@ class OldAlbumServiceProviderTest {
             .build();
         var e = assertThrows(OldAlbumException.class, () -> provider.batchAddPictures(request));
         assertThat(e.getMessage()).startsWith("Got HTTP error when requesting the batch add pictures URL, statuscode: 404");
+    }
+
+    @Test
+    void testBatchAddPicturesWithIOExceptionOnReceivedFileParse() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum3");
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate();
+
+        // Mocked HTTP request
+        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        HttpURLConnection connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream()).thenThrow(IOException.class);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(1)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.batchAddPictures(request));
+        assertThat(e.getMessage()).startsWith("Got error parsing the content of URL:");
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
