@@ -421,6 +421,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                                 .lastModified(lastModified)
                                 .contentType(contenttype)
                                 .contentLength(contentlength)
+                                .requireLogin(parent.isRequireLogin())
                                 .build();
                             addEntry(picture);
                         }
