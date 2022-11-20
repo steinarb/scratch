@@ -49,6 +49,7 @@ import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
@@ -878,6 +879,47 @@ class OldAlbumServiceProviderTest {
         }
         int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, true);
         assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
+    }
+
+    @Test
+    void testBatchAddPictures() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum3");
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate();
+
+        // Mocked HTTP request
+        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        HttpURLConnection connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Prepare empty database with an album to put pictures in
+        AlbumEntry parentForBatchAddedPictures = AlbumEntry.with()
+            .parent(1)
+            .path("/pictures/")
+            .album(true)
+            .title("A lot of pictures")
+            .description("Pictures added using the batch functionality")
+            .sort(2)
+            .requireLogin(true)
+            .build();
+        var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
+        var parentId = entriesBeforeBatchAdd.get(0).getId();
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(parentId)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var entriesAfterBatchAdd = provider.batchAddPictures(request);
+
+        // Check that pictures have been added
+        assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {

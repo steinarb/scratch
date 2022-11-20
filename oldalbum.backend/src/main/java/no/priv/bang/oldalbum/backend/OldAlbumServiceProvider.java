@@ -18,6 +18,7 @@ package no.priv.bang.oldalbum.backend;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,17 +31,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 
 @Component(immediate = true)
@@ -389,6 +395,59 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
+        Document document = loadAndParseIndexHtml(request);
+        getEntry(request.getParent()).ifPresent(parent -> {
+                var parentpath = parent.getPath();
+                var links = document.select("a");
+                links.forEach(link -> {
+                        if (!"../".equals(link.attr("href"))) {
+                            String basename = link.text().split("\\.")[0];
+                            String path = Paths.get(parentpath, basename).toString();
+                            String imageUrl = link.absUrl("href");
+                            var picture = AlbumEntry.with()
+                                .album(false)
+                                .parent(request.getParent())
+                                .path(path)
+                                .imageUrl(imageUrl)
+                                .title(basename)
+                                .build();
+                            addEntry(picture);
+                        }
+                    });
+            });
+
+        return fetchAllRoutes(null, true); // All edits are logged in
+    }
+
+    private Document loadAndParseIndexHtml(BatchAddPicturesRequest request) {
+        Document document = null;
+        try {
+            HttpURLConnection connection = getConnectionFactory().connect(request.getBatchAddUrl());
+            connection.setRequestMethod("GET");
+            int statuscode = connection.getResponseCode();
+            if (statuscode != 200) {
+                throw new OldAlbumException(String.format("Got HTTP error when requesting the batch add pictures URL, statuscode: %d", statuscode));
+            }
+
+            document = Jsoup.parse(connection.getInputStream(), "UTF-8", "");
+            document.setBaseUri(request.batchAddUrl);
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.batchAddUrl), e);
+        }
+        return document;
+    }
+
+    private Optional<AlbumEntry> getEntry(int id)  {
+        try (var connection = datasource.getConnection()) {
+            return Optional.of(getEntry(connection, id));
+        } catch (SQLException e) {
+            logger.warn("Failed to find parent album for batch add of pictures", e);
+            return Optional.empty();
+        }
     }
 
     private Timestamp getLastModifiedTimestamp(AlbumEntry albumentry) {
