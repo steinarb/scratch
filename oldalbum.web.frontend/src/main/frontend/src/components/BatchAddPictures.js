@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     BATCH_ADD_URL_FIELD_CHANGED,
-    BATCH_ADD_PICTURES_FROM_URL,
+    BATCH_ADD_PICTURES_FROM_URL_REQUEST,
 } from '../reduxactions';
 
 export default function BatchAddPictures(props) {
@@ -33,7 +33,7 @@ export default function BatchAddPictures(props) {
                     <button
                         className="btn btn-primary col-4"
                         type="button"
-                        onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL({parent}))}>
+                        onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl }))}>
                         Batch add pictures
                     </button>
                 </div>
