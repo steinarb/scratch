@@ -441,7 +441,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return document;
     }
 
-    private Optional<AlbumEntry> getEntry(int id)  {
+    Optional<AlbumEntry> getEntry(int id)  {
         try (var connection = datasource.getConnection()) {
             return Optional.of(getEntry(connection, id));
         } catch (SQLException e) {

@@ -48,6 +48,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
@@ -920,6 +921,31 @@ class OldAlbumServiceProviderTest {
 
         // Check that pictures have been added
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+    }
+
+    @Test
+    void testBatchAddPicturesWith404OnTheBatchUrl() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum3");
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate();
+
+        // Mocked HTTP request
+        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        HttpURLConnection connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(404);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(1)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.batchAddPictures(request));
+        assertThat(e.getMessage()).startsWith("Got HTTP error when requesting the batch add pictures URL, statuscode: 404");
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
