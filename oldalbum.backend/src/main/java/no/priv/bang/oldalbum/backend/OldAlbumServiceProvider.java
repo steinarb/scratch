@@ -408,12 +408,19 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                             String basename = link.text().split("\\.")[0];
                             String path = Paths.get(parentpath, basename).toString();
                             String imageUrl = link.absUrl("href");
+                            var metadata = readMetadata(imageUrl);
+                            var lastModified = metadata != null ? metadata.getLastModified() : null;
+                            var contenttype = metadata != null ? metadata.getContentType() : null;
+                            var contentlength = metadata != null ? metadata.getContentLength() : 0;
                             var picture = AlbumEntry.with()
                                 .album(false)
                                 .parent(request.getParent())
                                 .path(path)
                                 .imageUrl(imageUrl)
                                 .title(basename)
+                                .lastModified(lastModified)
+                                .contentType(contenttype)
+                                .contentLength(contentlength)
                                 .build();
                             addEntry(picture);
                         }
