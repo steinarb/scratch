@@ -885,16 +885,16 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testBatchAddPictures() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        var provider = new OldAlbumServiceProvider();
         var database = createEmptyBase("emptyoldalbum3");
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(database);
         provider.activate();
 
         // Mocked HTTP request
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
         when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
@@ -926,16 +926,15 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testBatchAddPicturesWith404OnTheBatchUrl() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        var database = createEmptyBase("emptyoldalbum3");
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        provider.setDataSource(database);
+        provider.setDataSource(datasource);
         provider.activate();
 
         // Mocked HTTP request
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(404);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
@@ -951,16 +950,15 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testBatchAddPicturesWithIOExceptionOnReceivedFileParse() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        var database = createEmptyBase("emptyoldalbum3");
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        provider.setDataSource(database);
+        provider.setDataSource(datasource);
         provider.activate();
 
         // Mocked HTTP request
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
         when(connection.getInputStream()).thenThrow(IOException.class);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
@@ -973,6 +971,19 @@ class OldAlbumServiceProviderTest {
             .build();
         var e = assertThrows(OldAlbumException.class, () -> provider.batchAddPictures(request));
         assertThat(e.getMessage()).startsWith("Got error parsing the content of URL:");
+    }
+
+    @Test
+    void testGetEntryWithSQLException() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(database);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertThat(provider.getEntry(1)).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
