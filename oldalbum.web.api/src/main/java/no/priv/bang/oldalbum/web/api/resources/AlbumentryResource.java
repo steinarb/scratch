@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
+import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 
 @Path("")
 @Produces(APPLICATION_JSON)
@@ -61,6 +62,13 @@ public class AlbumentryResource {
     @Consumes(APPLICATION_JSON)
     public List<AlbumEntry> addpicture(AlbumEntry pictureToAdd) {
         return oldalbum.addEntry(pictureToAdd);
+    }
+
+    @Path("batchaddpictures")
+    @POST
+    @Consumes(APPLICATION_JSON)
+    public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
+        return oldalbum.batchAddPictures(request);
     }
 
     @Path("deleteentry")
