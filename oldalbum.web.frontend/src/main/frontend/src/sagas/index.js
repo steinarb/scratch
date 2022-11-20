@@ -5,6 +5,7 @@ import albumSaga from './albumSaga';
 import modifyAlbumSaga from './modifyAlbumSaga';
 import addAlbumSaga from './addAlbumSaga';
 import pictureSaga from './pictureSaga';
+import batchAddPicturesSaga from './batchAddPicturesSaga';
 import modifyPicture from './modifyPictureSaga';
 import addPicture from './addPictureSaga';
 import imageMetadata from './imageMetadataSaga';
@@ -22,6 +23,7 @@ export default function* rootSaga() {
         fork(albumSaga),
         fork(modifyAlbumSaga),
         fork(addAlbumSaga),
+        fork(batchAddPicturesSaga),
         fork(pictureSaga),
         fork(modifyPicture),
         fork(addPicture),
