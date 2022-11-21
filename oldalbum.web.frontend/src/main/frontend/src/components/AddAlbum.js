@@ -5,6 +5,7 @@ import {
     MODIFY_ALBUM_BASENAME_FIELD_CHANGED,
     MODIFY_ALBUM_TITLE_FIELD_CHANGED,
     MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED,
+    ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
     ADD_ALBUM_UPDATE_BUTTON_CLICKED,
     ADD_ALBUM_CANCEL_BUTTON_CLICKED,
 } from '../reduxactions';
@@ -14,6 +15,7 @@ export default function AddAlbum() {
     const basename = useSelector(state => state.albumentryBasename);
     const title = useSelector(state => state.albumentryTitle);
     const description = useSelector(state => state.albumentryDescription);
+    const requireLogin = useSelector(state => state.albumentryRequireLogin);
     const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
     const dispatch = useDispatch();
     const [ queryParams ] = useSearchParams();
@@ -75,6 +77,15 @@ export default function AddAlbum() {
                                 value={description}
                                 onChange={e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))}/>
                         </div>
+                    </div>
+                    <div className="form-group row">
+                        <input
+                            id="require-login"
+                            className="form-check col-1"
+                            type="checkbox"
+                            checked={requireLogin}
+                            onChange={e => dispatch(ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
+                        <label htmlFor="require-login" className="form-check-label col-11">Require logged in user</label>
                     </div>
                     <div>
                         <button

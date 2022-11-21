@@ -35,8 +35,9 @@ function* locationChange(action) {
         const sort = (parentalbum.childcount || 0) + 1;
         const title = '';
         const description = '';
+        const requireLogin = false;
 
-        yield put(FILL_ADD_ALBUM_FORM({ parent: parentId, path, album: true, title, description, sort }));
+        yield put(FILL_ADD_ALBUM_FORM({ parent: parentId, path, album: true, title, description, requireLogin, sort }));
     }
 
     if (pathname === '/modifypicture') {
@@ -64,8 +65,9 @@ function* locationChange(action) {
         const contentLength = '';
         const contentType = '';
         const lastModified = '';
+        const requireLogin = false;
 
-        yield put(FILL_ADD_PICTURE_FORM({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort, contentLength, contentType, lastModified }));
+        yield put(FILL_ADD_PICTURE_FORM({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort, contentLength, contentType, lastModified, requireLogin }));
     }
 }
 

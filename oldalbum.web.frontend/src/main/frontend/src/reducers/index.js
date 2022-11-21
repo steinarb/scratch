@@ -16,6 +16,7 @@ import albumentryThumbnailUrl from './albumentryThumbnailUrlReducer';
 import albumentryLastModified from './albumentryLastModifiedReducer';
 import albumentryContentLength from './albumentryContentLengthReducer';
 import albumentryContentType from './albumentryContentTypeReducer';
+import albumentryRequireLogin from './albumentryRequireLoginReducer';
 import albumentrySort from './albumentrySortReducer';
 import batchAddUrl from './batchAddUrlReducer';
 import errors from './errorsReducer';
@@ -47,6 +48,7 @@ export default (routerReducer) => combineReducers({
     albumentryLastModified,
     albumentryContentLength,
     albumentryContentType,
+    albumentryRequireLogin,
     albumentrySort,
     batchAddUrl,
     errors,

@@ -8,6 +8,7 @@ import {
     ADD_PICTURE_IMAGEURL_FIELD_CHANGED,
     ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED,
     ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED,
+    ADD_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED,
     ADD_PICTURE_UPDATE_BUTTON_CLICKED,
     ADD_PICTURE_CANCEL_BUTTON_CLICKED,
     IMAGE_METADATA_REQUEST,
@@ -23,6 +24,7 @@ export default function AddPicture() {
     const lastModified = useSelector(state => state.albumentryLastModified);
     const contentLength = useSelector(state => state.albumentryContentLength);
     const contentType = useSelector(state => state.albumentryContentType);
+    const requireLogin = useSelector(state => state.albumentryRequireLogin);
     const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
     const dispatch = useDispatch();
     const [ queryParams ] = useSearchParams();
@@ -136,6 +138,15 @@ export default function AddPicture() {
                                 value={lastmodified}
                                 onChange={e => dispatch(ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
                         </div>
+                    </div>
+                    <div className="form-group row">
+                        <input
+                            id="require-login"
+                            className="form-check col-1"
+                            type="checkbox"
+                            checked={requireLogin}
+                            onChange={e => dispatch(ADD_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
+                        <label htmlFor="require-login" className="form-check-label col-11">Require logged in user</label>
                     </div>
                     <div>
                         <button

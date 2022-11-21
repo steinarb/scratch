@@ -23,7 +23,8 @@ function* saveModifiedPicture() {
         imageUrl: state.albumentryImageUrl,
         thumbnailUrl: state.albumentryThumbnailUrl,
         lastModified: state.albumentryLastModified,
-        sort: state.albumentrySort,
+        requireLogin: state.albumentryRequireLogin,
+    sort: state.albumentrySort,
     }));
     yield put(SAVE_MODIFIED_PICTURE_REQUEST(picture));
 }
@@ -41,6 +42,7 @@ function* saveAddedPicture() {
         lastModified: state.albumentryLastModified,
         contentType: state.albumentryContentType,
         contentLength: state.albumentryContentLength,
+        requireLogin: state.albumentryRequireLogin,
         sort: state.albumentrySort,
     }));
     yield put(SAVE_ADDED_PICTURE_REQUEST(picture));
