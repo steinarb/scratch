@@ -20,6 +20,7 @@ function* saveModifiedAlbum() {
         album: true,
         title: state.albumentryTitle,
         description: state.albumentryDescription,
+        requireLogin: state.albumentryRequireLogin,
         sort: state.albumentrySort,
     }));
     yield put(SAVE_MODIFIED_ALBUM_REQUEST(album));
@@ -32,6 +33,7 @@ function* saveAddedAlbum() {
         album: true,
         title: state.albumentryTitle,
         description: state.albumentryDescription,
+        requireLogin: state.albumentryRequireLogin,
         sort: state.albumentrySort,
     }));
     yield put(SAVE_ADDED_ALBUM_REQUEST(album));
