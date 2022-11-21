@@ -2,9 +2,9 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import {
-    MODIFY_ALBUM_BASENAME_FIELD_CHANGED,
-    MODIFY_ALBUM_TITLE_FIELD_CHANGED,
-    MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED,
+    ADD_ALBUM_BASENAME_FIELD_CHANGED,
+    ADD_ALBUM_TITLE_FIELD_CHANGED,
+    ADD_ALBUM_DESCRIPTION_FIELD_CHANGED,
     ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
     ADD_ALBUM_UPDATE_BUTTON_CLICKED,
     ADD_ALBUM_CANCEL_BUTTON_CLICKED,
@@ -53,7 +53,7 @@ export default function AddAlbum() {
                                 className="form-control"
                                 type="text"
                                 value={basename}
-                                onChange={e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value))} />
+                                onChange={e => dispatch(ADD_ALBUM_BASENAME_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -64,7 +64,7 @@ export default function AddAlbum() {
                                 className="form-control"
                                 type="text"
                                 value={title}
-                                onChange={e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value))} />
+                                onChange={e => dispatch(ADD_ALBUM_TITLE_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row">
@@ -75,7 +75,7 @@ export default function AddAlbum() {
                                 className="form-control"
                                 type="text"
                                 value={description}
-                                onChange={e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))}/>
+                                onChange={e => dispatch(ADD_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))}/>
                         </div>
                     </div>
                     <div className="form-group row">
