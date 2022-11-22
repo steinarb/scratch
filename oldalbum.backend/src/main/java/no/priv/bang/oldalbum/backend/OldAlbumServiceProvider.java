@@ -442,9 +442,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
 
             document = Jsoup.parse(connection.getInputStream(), "UTF-8", "");
-            document.setBaseUri(request.batchAddUrl);
+            document.setBaseUri(request.getBatchAddUrl());
         } catch (IOException e) {
-            throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.batchAddUrl), e);
+            throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.getBatchAddUrl()), e);
         }
         return document;
     }
