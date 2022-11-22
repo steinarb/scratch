@@ -17,8 +17,8 @@ package no.priv.bang.oldalbum.services.bean;
 
 public class BatchAddPicturesRequest {
 
-    public int parent;
-    public String batchAddUrl;
+    private int parent;
+    private String batchAddUrl;
 
     public int getParent() {
         return parent;
@@ -31,8 +31,7 @@ public class BatchAddPicturesRequest {
     private BatchAddPicturesRequest() { }
 
     public static Builder with() {
-        Builder builder = new Builder();
-        return builder;
+        return new Builder();
     }
 
     public static class Builder {
