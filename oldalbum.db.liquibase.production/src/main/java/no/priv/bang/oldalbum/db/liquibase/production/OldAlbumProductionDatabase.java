@@ -29,6 +29,7 @@ import org.osgi.service.log.LogService;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
@@ -51,6 +52,7 @@ public class OldAlbumProductionDatabase implements PreHook {
     public void prepare(DataSource datasource) throws SQLException {
         createInitialSchema(datasource);
         insertInitialData(datasource);
+        updateSchema(datasource);
     }
 
     void createInitialSchema(DataSource datasource) throws SQLException {
@@ -72,6 +74,15 @@ public class OldAlbumProductionDatabase implements PreHook {
             } catch (Exception e) {
                 logger.error("Error populating database with initial data", e);
             }
+        }
+    }
+
+    private void updateSchema(DataSource datasource) throws SQLException {
+        try (Connection connect = datasource.getConnection()) {
+            OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
+            oldalbumLiquibase.updateSchema(connect);
+        } catch (LiquibaseException e) {
+            logger.error("Error updating schema of oldalbum production test database", e);
         }
     }
 

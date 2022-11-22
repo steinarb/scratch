@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import static org.mockito.Mockito.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -72,15 +71,29 @@ class OldAlbumProductionDatabaseTest {
     }
 
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
-        Connection connection = datasource.getConnection();
-        String countSql = "select count(*) from albumentries";
-        try(Statement countStatement = connection.createStatement()) {
-            try(ResultSet results = countStatement.executeQuery(countSql)) {
-                if (results.next()) {
-                    int numberOfRows = results.getInt(1);
-                    assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
-                } else {
-                    fail("Unable to count the rows in albumentries");
+        try(var connection = datasource.getConnection()) {
+            String countSql = "select count(*) from albumentries";
+            try(var countStatement = connection.createStatement()) {
+                try(ResultSet results = countStatement.executeQuery(countSql)) {
+                    if (results.next()) {
+                        int numberOfRows = results.getInt(1);
+                        assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
+                    } else {
+                        fail("Unable to count the rows in albumentries");
+                    }
+                }
+            }
+
+            // The single existing entry will have require_login=false and count will be 0
+            String countWithRequireLoginSql = "select count(*) from albumentries where require_login=true";
+            try(var countStatement = connection.createStatement()) {
+                try(ResultSet results = countStatement.executeQuery(countWithRequireLoginSql)) {
+                    if (results.next()) {
+                        int numberOfRows = results.getInt(1);
+                        assertEquals(0, numberOfRows);
+                    } else {
+                        fail("Unable to count the rows with require_login in albumentries");
+                    }
                 }
             }
         }
