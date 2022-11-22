@@ -896,7 +896,9 @@ class OldAlbumServiceProviderTest {
         var connectionFactory = mock(HttpConnectionFactory.class);
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
-        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"));
+        when(connection.getInputStream())
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
@@ -923,10 +925,15 @@ class OldAlbumServiceProviderTest {
         // Check that pictures have been added
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
-        // Check that sort is incremented for each batch import
-        int firstSortValue = entriesAfterBatchAdd.get(2).getSort();
-        int lastSortValue = entriesAfterBatchAdd.get(entriesAfterBatchAdd.size()-1).getSort();
+        // Check that sort is incremented during batch import
+        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
+
+        // Check that a second import will continue to increase the sort value
+        var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
+        int lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
     }
 
     @Test
@@ -989,6 +996,37 @@ class OldAlbumServiceProviderTest {
         assertThat(logservice.getLogmessages()).isEmpty();
         assertThat(provider.getEntry(1)).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testFindHighestSortValueInParentAlbumWithSqlException( ) throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(database);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertEquals(0, provider.findHighestSortValueInParentAlbum(1));
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testFindHighestSortValueInParentAlbumWithEmptyQueryResult( ) throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var results = mock(ResultSet.class);
+        var statement = mock(PreparedStatement.class);
+        when(statement.executeQuery()).thenReturn(results);
+        var connection = mock(Connection.class);
+        when (connection.prepareStatement(anyString())).thenReturn(statement);
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenReturn(connection);
+        provider.setDataSource(database);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        assertEquals(0, provider.findHighestSortValueInParentAlbum(1));
+        assertThat(logservice.getLogmessages()).isEmpty();
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {

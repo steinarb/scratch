@@ -401,11 +401,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         Document document = loadAndParseIndexHtml(request);
         getEntry(request.getParent()).ifPresent(parent -> {
+                int sort = findHighestSortValueInParentAlbum(request.getParent());
                 var parentpath = parent.getPath();
                 var links = document.select("a");
-                int sort = 1;
                 for (var link: links) {
                     if (!"../".equals(link.attr("href"))) {
+                        ++sort;
                         String basename = link.text().split("\\.")[0];
                         String path = Paths.get(parentpath, basename).toString();
                         String imageUrl = link.absUrl("href");
@@ -423,7 +424,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                             .contentType(contenttype)
                             .contentLength(contentlength)
                             .requireLogin(parent.isRequireLogin())
-                            .sort(sort++)
+                            .sort(sort)
                             .build();
                         addEntry(picture);
                     }
@@ -431,6 +432,25 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             });
 
         return fetchAllRoutes(null, true); // All edits are logged in
+    }
+
+    int findHighestSortValueInParentAlbum(int parent) {
+        try (var connection = datasource.getConnection()) {
+            String sql = "select max(sort) from albumentries where parent=?";
+            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, parent);
+                try(ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        return result.getInt(1);
+                    }
+                }
+            }
+
+            return 0;
+        } catch (SQLException e) {
+            logger.warn("Failed to find max existing sort value in parent album for batch add of pictures", e);
+            return 0;
+        }
     }
 
     private Document loadAndParseIndexHtml(BatchAddPicturesRequest request) {
