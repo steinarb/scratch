@@ -403,29 +403,31 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         getEntry(request.getParent()).ifPresent(parent -> {
                 var parentpath = parent.getPath();
                 var links = document.select("a");
-                links.forEach(link -> {
-                        if (!"../".equals(link.attr("href"))) {
-                            String basename = link.text().split("\\.")[0];
-                            String path = Paths.get(parentpath, basename).toString();
-                            String imageUrl = link.absUrl("href");
-                            var metadata = readMetadata(imageUrl);
-                            var lastModified = metadata != null ? metadata.getLastModified() : null;
-                            var contenttype = metadata != null ? metadata.getContentType() : null;
-                            var contentlength = metadata != null ? metadata.getContentLength() : 0;
-                            var picture = AlbumEntry.with()
-                                .album(false)
-                                .parent(request.getParent())
-                                .path(path)
-                                .imageUrl(imageUrl)
-                                .title(basename)
-                                .lastModified(lastModified)
-                                .contentType(contenttype)
-                                .contentLength(contentlength)
-                                .requireLogin(parent.isRequireLogin())
-                                .build();
-                            addEntry(picture);
-                        }
-                    });
+                int sort = 1;
+                for (var link: links) {
+                    if (!"../".equals(link.attr("href"))) {
+                        String basename = link.text().split("\\.")[0];
+                        String path = Paths.get(parentpath, basename).toString();
+                        String imageUrl = link.absUrl("href");
+                        var metadata = readMetadata(imageUrl);
+                        var lastModified = metadata != null ? metadata.getLastModified() : null;
+                        var contenttype = metadata != null ? metadata.getContentType() : null;
+                        var contentlength = metadata != null ? metadata.getContentLength() : 0;
+                        var picture = AlbumEntry.with()
+                            .album(false)
+                            .parent(request.getParent())
+                            .path(path)
+                            .imageUrl(imageUrl)
+                            .title(basename)
+                            .lastModified(lastModified)
+                            .contentType(contenttype)
+                            .contentLength(contentlength)
+                            .requireLogin(parent.isRequireLogin())
+                            .sort(sort++)
+                            .build();
+                        addEntry(picture);
+                    }
+                }
             });
 
         return fetchAllRoutes(null, true); // All edits are logged in

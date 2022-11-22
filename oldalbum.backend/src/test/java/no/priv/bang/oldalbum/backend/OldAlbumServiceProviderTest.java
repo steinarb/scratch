@@ -922,6 +922,11 @@ class OldAlbumServiceProviderTest {
 
         // Check that pictures have been added
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that sort is incremented for each batch import
+        int firstSortValue = entriesAfterBatchAdd.get(2).getSort();
+        int lastSortValue = entriesAfterBatchAdd.get(entriesAfterBatchAdd.size()-1).getSort();
+        assertThat(lastSortValue).isGreaterThan(firstSortValue);
     }
 
     @Test
