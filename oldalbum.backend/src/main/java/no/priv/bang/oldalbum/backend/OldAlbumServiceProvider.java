@@ -420,6 +420,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         String basename = link.text().split("\\.")[0];
         String path = Paths.get(parent.getPath(), basename).toString();
         String imageUrl = link.absUrl("href");
+        String thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
         var lastModified = metadata != null ? metadata.getLastModified() : null;
         var contenttype = metadata != null ? metadata.getContentType() : null;
@@ -429,6 +430,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .parent(parent.getId())
             .path(path)
             .imageUrl(imageUrl)
+            .thumbnailUrl(thumbnailUrl)
             .title(basename)
             .lastModified(lastModified)
             .contentType(contenttype)
@@ -436,6 +438,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .requireLogin(parent.isRequireLogin())
             .sort(sort)
             .build();
+    }
+
+    private String findThumbnailUrl(Element link) {
+        var imgs = link.select("img");
+        if (imgs.isEmpty()) {
+            return null;
+        }
+        return imgs.get(0).absUrl("src");
     }
 
     int findHighestSortValueInParentAlbum(int parent) {
