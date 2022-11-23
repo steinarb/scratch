@@ -417,9 +417,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort) {
-        String basename = link.text().split("\\.")[0];
+        String basename = findBasename(link);
         String path = Paths.get(parent.getPath(), basename).toString();
         String imageUrl = link.absUrl("href");
+        String thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
         var lastModified = metadata != null ? metadata.getLastModified() : null;
         var contenttype = metadata != null ? metadata.getContentType() : null;
@@ -429,6 +430,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .parent(parent.getId())
             .path(path)
             .imageUrl(imageUrl)
+            .thumbnailUrl(thumbnailUrl)
             .title(basename)
             .lastModified(lastModified)
             .contentType(contenttype)
@@ -436,6 +438,27 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .requireLogin(parent.isRequireLogin())
             .sort(sort)
             .build();
+    }
+
+    private String findBasename(Element link) {
+        var linktext = link.text();
+        if (!linktext.isEmpty()) {
+            return linktext.split("\\.")[0];
+        }
+
+        var paths = link.attr("href").split("/");
+        var filename = paths[paths.length -1];
+        return filename.split("\\.")[0];
+    }
+
+    String findThumbnailUrl(Element link) {
+        var imgs = link.select("img");
+        if (imgs.isEmpty()) {
+            return null;
+        }
+
+        var thumbnailUrl = imgs.get(0).absUrl("src");
+        return thumbnailUrl.isEmpty() ? null : thumbnailUrl;
     }
 
     int findHighestSortValueInParentAlbum(int parent) {

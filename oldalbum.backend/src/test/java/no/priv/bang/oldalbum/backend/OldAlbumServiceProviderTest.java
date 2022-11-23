@@ -38,6 +38,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
@@ -937,6 +939,59 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testBatchAddPicturesWithThumbnails() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum3");
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate();
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream())
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Prepare empty database with an album to put pictures in
+        AlbumEntry parentForBatchAddedPictures = AlbumEntry.with()
+            .parent(1)
+            .path("/pictures/")
+            .album(true)
+            .title("A lot of pictures")
+            .description("Pictures added using the batch functionality")
+            .sort(2)
+            .requireLogin(true)
+            .build();
+        var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
+        var parentId = entriesBeforeBatchAdd.get(0).getId();
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(parentId)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var entriesAfterBatchAdd = provider.batchAddPictures(request);
+
+        // Check that pictures have been added
+        assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that sort is incremented during batch import
+        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        assertThat(lastSortValue).isGreaterThan(firstSortValue);
+
+        // Check that a second import will continue to increase the sort value
+        var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
+        int lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
+    }
+
+    @Test
     void testBatchAddPicturesWith404OnTheBatchUrl() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
@@ -1027,6 +1082,20 @@ class OldAlbumServiceProviderTest {
         assertThat(logservice.getLogmessages()).isEmpty();
         assertEquals(0, provider.findHighestSortValueInParentAlbum(1));
         assertThat(logservice.getLogmessages()).isEmpty();
+    }
+
+    @Test
+    void testFindThumbnailUrlWhenNothingCanBeFound() {
+        var provider = new OldAlbumServiceProvider();
+        var img = mock(Element.class);
+        when(img.absUrl("src")).thenReturn("");
+        var imgs = mock(Elements.class);
+        when(imgs.get(0)).thenReturn(img);
+        var link = mock(Element.class);
+        when(link.select("img")).thenReturn(imgs);
+
+        var thumbnailUrl = provider.findThumbnailUrl(link);
+        assertNull(thumbnailUrl);
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
