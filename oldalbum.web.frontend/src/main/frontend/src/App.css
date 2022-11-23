@@ -37,6 +37,16 @@
     width: auto;
 }
 
+.img-fluid-portrait {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1100px;
+    /* the largest image width */
+    text-align: center;
+    /* to center images of lesser width */
+}
+
 .img-center {
     display: block;
     margin-left: auto;

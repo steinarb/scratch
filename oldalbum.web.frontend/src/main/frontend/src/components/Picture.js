@@ -48,7 +48,7 @@ export default function Picture(props) {
                     <div className="row align-items-center d-flex justify-content-center">
                         <div className="col-auto"><Previous previous={previous} /></div>
                         <div className="col-auto">
-                            <img className="img-fluid" src={item.imageUrl} />
+                            <img className="img-fluid-portrait" src={item.imageUrl} />
                         </div>
                         <div className="col-auto"><Next className="ml-auto" next={next} /></div>
                     </div>
