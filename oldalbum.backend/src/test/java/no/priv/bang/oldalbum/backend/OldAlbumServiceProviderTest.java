@@ -1098,6 +1098,27 @@ class OldAlbumServiceProviderTest {
         assertNull(thumbnailUrl);
     }
 
+    @Test
+    void testFindLastModifiedDate() {
+        var provider = new OldAlbumServiceProvider();
+        var now = new Date();
+        var metadata = ImageMetadata.with().lastModified(now).build();
+
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, null);
+
+        assertEquals(now, lastModifiedDate);
+    }
+
+    @Test
+    void testFindLastModifiedDateWhenMetadataDateIsNull() {
+        var provider = new OldAlbumServiceProvider();
+        var metadata = ImageMetadata.with().build();
+
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, null);
+
+        assertNull(lastModifiedDate);
+    }
+
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
         String sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
         try (Connection connection = ds.getConnection()) {
