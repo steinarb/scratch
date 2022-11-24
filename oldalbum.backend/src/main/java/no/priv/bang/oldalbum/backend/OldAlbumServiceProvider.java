@@ -423,7 +423,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         String imageUrl = link.absUrl("href");
         String thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
-        var lastModified = findLastModifiedDate(metadata, null);
+        var lastModified = findLastModifiedDate(metadata, importYear);
         var contenttype = metadata != null ? metadata.getContentType() : null;
         var contentlength = metadata != null ? metadata.getContentLength() : 0;
         return AlbumEntry.with()
