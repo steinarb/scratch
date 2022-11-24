@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     BATCH_ADD_URL_FIELD_CHANGED,
+    IMPORT_YEAR_FIELD_CHANGED,
     BATCH_ADD_PICTURES_FROM_URL_REQUEST,
 } from '../reduxactions';
 
@@ -11,6 +12,7 @@ export default function BatchAddPictures(props) {
     const parent = id; // The new pictures will have this as a parent
     const showEditControls = useSelector(state => state.showEditControls);
     const batchAddUrl = useSelector(state => state.batchAddUrl);
+    const importYear = useSelector(state => state.batchAddImportYear);
     const dispatch = useDispatch();
 
     if (!showEditControls) {
@@ -19,10 +21,10 @@ export default function BatchAddPictures(props) {
 
     return(
         <div className={props.className}>
-            <div className="container">
+            <div className="container rounded border border-primary pt-2">
                 <div className="form-group row">
                     <label htmlFor="batchAddUrl" className="col-form-label col-1">URL</label>
-                    <div className="col-7">
+                    <div className="col-4">
                         <input
                             id="batchAddUrl"
                             className="form-control"
@@ -30,10 +32,19 @@ export default function BatchAddPictures(props) {
                             value={batchAddUrl}
                             onChange={e => dispatch(BATCH_ADD_URL_FIELD_CHANGED(e.target.value))}/>
                     </div>
+                    <label htmlFor="importYear" className="col-form-label col-1">Year</label>
+                    <div className="col-2">
+                        <input
+                            id="importYear"
+                            className="form-control"
+                            type="text"
+                            value={importYear}
+                            onChange={e => dispatch(IMPORT_YEAR_FIELD_CHANGED(e.target.value))}/>
+                    </div>
                     <button
                         className="btn btn-primary col-4"
                         type="button"
-                        onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl }))}>
+                        onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl, importYear }))}>
                         Batch add pictures
                     </button>
                 </div>

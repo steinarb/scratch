@@ -19,6 +19,7 @@ public class BatchAddPicturesRequest {
 
     private int parent;
     private String batchAddUrl;
+    private Integer importYear;
 
     public int getParent() {
         return parent;
@@ -26,6 +27,10 @@ public class BatchAddPicturesRequest {
 
     public String getBatchAddUrl() {
         return batchAddUrl;
+    }
+
+    public Integer getImportYear() {
+        return this.importYear;
     }
 
     private BatchAddPicturesRequest() { }
@@ -40,11 +45,13 @@ public class BatchAddPicturesRequest {
 
         private int parent;
         private String batchAddUrl;
+        private Integer importYear;
 
         public BatchAddPicturesRequest build() {
             BatchAddPicturesRequest bean = new BatchAddPicturesRequest();
             bean.parent = this.parent;
             bean.batchAddUrl = this.batchAddUrl;
+            bean.importYear = this.importYear;
             return bean;
         }
 
@@ -55,6 +62,11 @@ public class BatchAddPicturesRequest {
 
         public Builder batchAddUrl(String batchAddUrl) {
             this.batchAddUrl = batchAddUrl;
+            return this;
+        }
+
+        public Builder importYear(int importYear) {
+            this.importYear = importYear;
             return this;
         }
 

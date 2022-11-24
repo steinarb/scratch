@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -407,7 +408,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 for (var link: links) {
                     if (!"../".equals(link.attr("href"))) {
                         ++sort;
-                        var picture = createPictureFromUrl(link, parent, sort);
+                        var picture = createPictureFromUrl(link, parent, sort, request.getImportYear());
                         addEntry(picture);
                     }
                 }
@@ -416,13 +417,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return fetchAllRoutes(null, true); // All edits are logged in
     }
 
-    private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort) {
+    private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear) {
         String basename = findBasename(link);
         String path = Paths.get(parent.getPath(), basename).toString();
         String imageUrl = link.absUrl("href");
         String thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
-        var lastModified = metadata != null ? metadata.getLastModified() : null;
+        var lastModified = findLastModifiedDate(metadata, importYear);
         var contenttype = metadata != null ? metadata.getContentType() : null;
         var contentlength = metadata != null ? metadata.getContentLength() : 0;
         return AlbumEntry.with()
@@ -438,6 +439,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .requireLogin(parent.isRequireLogin())
             .sort(sort)
             .build();
+    }
+
+    Date findLastModifiedDate(ImageMetadata metadata, Integer importYear) {
+        if (importYear == null) {
+            return metadata != null ? metadata.getLastModified() : null;
+        }
+
+        var rawDate = metadata != null && metadata.getLastModified() != null ? LocalDateTime.ofInstant(metadata.getLastModified().toInstant(), ZoneId.systemDefault()) : LocalDateTime.now();
+        var adjustedDate = rawDate.withYear(importYear);
+        return Date.from(adjustedDate.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private String findBasename(Element link) {

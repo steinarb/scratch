@@ -25,12 +25,15 @@ class BatchAddPicturesRequestTest {
     void testBuildBean() {
         int parent = 4;
         String batchAddUrl = "http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/";
+        int importYear = 1967;
         var bean = BatchAddPicturesRequest.with()
             .parent(parent)
             .batchAddUrl(batchAddUrl)
+            .importYear(importYear)
             .build();
         assertEquals(parent, bean.getParent());
         assertEquals(batchAddUrl, bean.getBatchAddUrl());
+        assertEquals(importYear, bean.getImportYear());
     }
 
     @Test
@@ -38,6 +41,7 @@ class BatchAddPicturesRequestTest {
         var bean = BatchAddPicturesRequest.with().build();
         assertEquals(0, bean.getParent());
         assertNull(bean.getBatchAddUrl());
+        assertNull(bean.getImportYear());
     }
 
 }
