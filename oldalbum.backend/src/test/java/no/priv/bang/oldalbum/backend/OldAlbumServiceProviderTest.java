@@ -38,6 +38,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
@@ -1080,6 +1082,20 @@ class OldAlbumServiceProviderTest {
         assertThat(logservice.getLogmessages()).isEmpty();
         assertEquals(0, provider.findHighestSortValueInParentAlbum(1));
         assertThat(logservice.getLogmessages()).isEmpty();
+    }
+
+    @Test
+    void testFindThumbnailUrlWhenNothingCanBeFound() {
+        var provider = new OldAlbumServiceProvider();
+        var img = mock(Element.class);
+        when(img.absUrl("src")).thenReturn("");
+        var imgs = mock(Elements.class);
+        when(imgs.get(0)).thenReturn(img);
+        var link = mock(Element.class);
+        when(link.select("img")).thenReturn(imgs);
+
+        var thumbnailUrl = provider.findThumbnailUrl(link);
+        assertNull(thumbnailUrl);
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {

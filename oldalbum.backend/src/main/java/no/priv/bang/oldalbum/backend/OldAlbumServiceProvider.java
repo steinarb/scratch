@@ -451,7 +451,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return filename.split("\\.")[0];
     }
 
-    private String findThumbnailUrl(Element link) {
+    String findThumbnailUrl(Element link) {
         var imgs = link.select("img");
         if (imgs.isEmpty()) {
             return null;
