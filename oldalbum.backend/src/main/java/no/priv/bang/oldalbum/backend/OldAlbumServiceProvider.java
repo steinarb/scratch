@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -441,7 +442,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     Date findLastModifiedDate(ImageMetadata metadata, Integer importYear) {
-        return metadata != null ? metadata.getLastModified() : null;
+        if (importYear == null) {
+            return metadata != null ? metadata.getLastModified() : null;
+        }
+
+        var rawDate = metadata != null && metadata.getLastModified() != null ? LocalDateTime.ofInstant(metadata.getLastModified().toInstant(), ZoneId.systemDefault()) : LocalDateTime.now();
+        var adjustedDate = rawDate.withYear(importYear);
+        return Date.from(adjustedDate.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private String findBasename(Element link) {
