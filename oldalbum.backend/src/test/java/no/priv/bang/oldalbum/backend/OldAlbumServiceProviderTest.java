@@ -1110,6 +1110,15 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testFindLastModifiedDateWhenMetadataIsNull() {
+        var provider = new OldAlbumServiceProvider();
+
+        var lastModifiedDate = provider.findLastModifiedDate(null, null);
+
+        assertNull(lastModifiedDate);
+    }
+
+    @Test
     void testFindLastModifiedDateWhenMetadataDateIsNull() {
         var provider = new OldAlbumServiceProvider();
         var metadata = ImageMetadata.with().build();
@@ -1127,6 +1136,16 @@ class OldAlbumServiceProviderTest {
         var metadata = ImageMetadata.with().lastModified(now).build();
 
         var lastModifiedDate = provider.findLastModifiedDate(metadata, importYear);
+
+        assertThat(lastModifiedDate).hasYear(importYear);
+    }
+
+    @Test
+    void testFindLastModifiedDateWithImportYearSetAndNullMetadata() {
+        var provider = new OldAlbumServiceProvider();
+        var importYear = 1967;
+
+        var lastModifiedDate = provider.findLastModifiedDate(null, importYear);
 
         assertThat(lastModifiedDate).hasYear(importYear);
     }
