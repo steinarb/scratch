@@ -19,6 +19,7 @@ import albumentryContentType from './albumentryContentTypeReducer';
 import albumentryRequireLogin from './albumentryRequireLoginReducer';
 import albumentrySort from './albumentrySortReducer';
 import batchAddUrl from './batchAddUrlReducer';
+import batchAddImportYear from './batchAddImportYearReducer';
 import errors from './errorsReducer';
 import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusReducer';
 import loggedIn from './loggedInReducer';
@@ -51,6 +52,7 @@ export default (routerReducer) => combineReducers({
     albumentryRequireLogin,
     albumentrySort,
     batchAddUrl,
+    batchAddImportYear,
     errors,
     haveReceivedInitialLoginStatus,
     loggedIn,

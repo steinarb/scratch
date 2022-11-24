@@ -41,6 +41,7 @@ class BatchAddPicturesRequestTest {
         var bean = BatchAddPicturesRequest.with().build();
         assertEquals(0, bean.getParent());
         assertNull(bean.getBatchAddUrl());
+        assertNull(bean.getImportYear());
     }
 
 }

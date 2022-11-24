@@ -19,7 +19,7 @@ public class BatchAddPicturesRequest {
 
     private int parent;
     private String batchAddUrl;
-    private int importYear;
+    private Integer importYear;
 
     public int getParent() {
         return parent;
@@ -29,7 +29,7 @@ public class BatchAddPicturesRequest {
         return batchAddUrl;
     }
 
-    public int getImportYear() {
+    public Integer getImportYear() {
         return this.importYear;
     }
 
@@ -45,7 +45,7 @@ public class BatchAddPicturesRequest {
 
         private int parent;
         private String batchAddUrl;
-        private int importYear;
+        private Integer importYear;
 
         public BatchAddPicturesRequest build() {
             BatchAddPicturesRequest bean = new BatchAddPicturesRequest();
