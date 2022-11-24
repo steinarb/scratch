@@ -44,6 +44,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2022-11-24 Thu 22:58> |   1.9.0 | Password protected access to albums and pictures, batch import of albums/pictures                              |
 | <2022-11-01 Tue 21:46> |   1.8.6 | Use liquibase 4.17.1, postgresql jdbc driver 42.4.1 and upgrade of all upgradable frontend packages            |
 | <2022-08-21 Sun 11:24> |   1.8.5 | Use liquibase 4.15.0                                                                                           |
 | <2022-08-10 Wed 22:38> |   1.8.4 | Use servlet 1.6.2, maven-bundle-plugin 5.1.8, jsoup 1.15.2, junit jupiter 5.9.0, mockito 4.6.1, assertj 2.23.1 |
