@@ -41,7 +41,7 @@
     display: block;
     margin: 0 auto;
     width: 100%;
-    max-width: calc(100vw - 800px);
+    max-height: calc(100vh - 140px);
     /* the largest image width */
     text-align: center;
     /* to center images of lesser width */
