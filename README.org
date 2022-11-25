@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                                   |
 |------------------------+---------+----------------------------------------------------------------------------------------------|
+| <2022-11-25 Fri 22:50> |  1.1.14 | Use jsoup 1.15.3                                                                             |
 | <2022-11-05 Sat 09:21> |  1.1.13 | Use junit 5.9.1 and mockito 4.8.1                                                            |
 | <2022-11-03 Thu 18:57> |  1.1.12 | Use karaf 4.4.2                                                                              |
 | <2022-10-30 Sun 16:15> |  1.1.11 | Use liquibase 4.17.1                                                                         |
@@ -52,7 +53,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
       <parent>
           <groupId>no.priv.bang.pom</groupId>
           <artifactId>bang-pom</artifactId>
-          <version>1.1.13</version>
+          <version>1.1.14</version>
       </parent>
     #+end_src
  2. Import the BoM into your project's dependencyManagement (the bang-bom.version maven property is set by the parent):
