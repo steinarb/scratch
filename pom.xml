@@ -39,7 +39,7 @@
         <assertj.version>3.23.1</assertj.version>
         <pax.jdbc.version>1.5.3</pax.jdbc.version>
         <liquibase-feature.version>4.17.1</liquibase-feature.version>
-        <jsoup.version>1.15.2</jsoup.version>
+        <jsoup.version>1.15.3</jsoup.version>
         <derby.version>10.14.2.0</derby.version>
         <postgresql.version>42.5.0</postgresql.version>
         <jersey-feature.version>1.9.2</jersey-feature.version>
