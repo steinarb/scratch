@@ -81,8 +81,8 @@ export default function Album(props) {
 
 function renderChild(child, index) {
     if (child.album) {
-        return <AlbumEntryOfTypeAlbum className="col-2-sm mx-1 my-1" key={index} entry={child} />;
+        return <AlbumEntryOfTypeAlbum key={index} entry={child} />;
     }
 
-    return <AlbumEntryOfTypePicture className="col-2-sm mx-1 my-1" key={index} entry={child} />;
+    return <AlbumEntryOfTypePicture key={index} entry={child} />;
 }

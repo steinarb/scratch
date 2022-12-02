@@ -4,7 +4,7 @@ import { MOVE_ALBUMENTRY_RIGHT_REQUEST } from '../reduxactions';
 import ChevronRight from './bootstrap/ChevronRight';
 
 export default function RightButton(props) {
-    const { item } = props;
+    const { item, className='' } = props;
     const showEditControls = useSelector(state => state.showEditControls);
     const albumchildcount = useSelector(state => (state.albumentries[item.parent] || {}).childcount || 0);
     const dispatch = useDispatch();
@@ -14,9 +14,11 @@ export default function RightButton(props) {
         return null;
     }
 
-    return(<button
-               className={props.className}
-               type="button"
-               onClick={() => dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item))}>
-               <ChevronRight/></button>);
+    return(
+        <div className={className + ' d-none d-lg-flex btn-group-vertical'}>
+            <button type="button" onClick={() => dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item))}>
+                <ChevronRight/>
+            </button>
+        </div>
+    );
 }
