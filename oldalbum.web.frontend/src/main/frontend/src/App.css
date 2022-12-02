@@ -28,6 +28,10 @@
     height: 75px;
 }
 
+.album-entry {
+    display: flex;
+}
+
 .table-condensed {
     font-size: 11px;
 }

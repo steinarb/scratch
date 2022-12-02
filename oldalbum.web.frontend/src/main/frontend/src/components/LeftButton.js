@@ -4,7 +4,7 @@ import { MOVE_ALBUMENTRY_LEFT_REQUEST } from '../reduxactions';
 import ChevronLeft from './bootstrap/ChevronLeft';
 
 export default function LeftButton(props) {
-    const { item } = props;
+    const { item, className='' } = props;
     const showEditControls = useSelector(state => state.showEditControls);
     const dispatch = useDispatch();
 
@@ -13,10 +13,11 @@ export default function LeftButton(props) {
         return null;
     }
 
-    return(<button
-               className={props.className}
-               type="button"
-               onClick={() => dispatch(MOVE_ALBUMENTRY_LEFT_REQUEST(item))}>
-               <ChevronLeft/>
-           </button>);
+    return(
+        <div className={className + ' d-none d-lg-flex btn-group-vertical'}>
+            <button type="button" onClick={() => dispatch(MOVE_ALBUMENTRY_LEFT_REQUEST(item))}>
+                <ChevronLeft/>
+            </button>
+        </div>
+    );
 }

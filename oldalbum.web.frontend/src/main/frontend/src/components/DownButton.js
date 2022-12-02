@@ -13,10 +13,12 @@ export default function DownButton(props) {
         return null;
     }
 
-    return(<button
-               className={props.className}
-               type="button"
-               onClick={() => dispatch(MOVE_ALBUMENTRY_DOWN_REQUEST(item))}>
-               <span className="oi oi-chevron-bottom" title="chevron top" aria-hidden="true"></span>
-           </button>);
+    return(
+        <button
+            className={props.className}
+            type="button"
+            onClick={() => dispatch(MOVE_ALBUMENTRY_DOWN_REQUEST(item))}>
+            <span className="oi oi-chevron-bottom" title="chevron top" aria-hidden="true"></span>
+        </button>
+    );
 }
