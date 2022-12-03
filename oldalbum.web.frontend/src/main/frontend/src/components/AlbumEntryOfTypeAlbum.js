@@ -14,9 +14,10 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const title = pictureTitle(entry);
     const noOfThumbnails = title.length > 29 ? 3 : 2;
     const childrenWithThumbnails = findChildrenThumbnails(entry, children, childentries).slice(0, noOfThumbnails);
+    const widthInCols =  noOfThumbnails===2 ? ' col-sm-12 col-md-6 col-lg-2' : ' col-sm-12 col-md-6 col-lg-3';
 
     return (
-        <div className={className + ' col-sm-12 col-md-6 col-lg-2 album-entry btn btn-primary mx-1 my-1'}>
+        <div className={className + widthInCols + ' album-entry btn btn-primary mx-1 my-1'}>
             <LeftButton item={entry} />
             <div className="col-auto">
                 <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
