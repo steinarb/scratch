@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, NavLink, useSearchParams } from 'react-router-dom';
 import { LOGIN_REQUEST } from '../reduxactions';
+import { findPathname } from '../commonCode';
 
 export default function Login() {
     const loggedIn = useSelector(state => state.loggedIn);
     const errormessage = useSelector(state => state.errormessage);
     const originalRequestUri = useSelector(state => state.originalRequestUri);
+    const basename = useSelector(state => state.router.basename);
     const dispatch = useDispatch();
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
@@ -15,7 +17,7 @@ export default function Login() {
 
     if (loggedIn) {
         if (originalRequestUri) {
-            return (<Navigate to={originalRequestUri} />);
+            return (<Navigate to={findPathname(originalRequestUri, basename)} />);
         }
 
         return (<Navigate to={returnpath} />);
