@@ -73,6 +73,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
                     <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
                     <releaseProfiles>release-sign-artifact</releaseProfiles>
                     <preparationGoals>clean versions:set-property verify</preparationGoals>
                     <completionGoals>versions:set-property</completionGoals>
