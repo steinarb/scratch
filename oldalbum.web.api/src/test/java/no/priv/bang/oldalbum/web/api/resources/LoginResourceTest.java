@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -29,6 +30,10 @@ import org.apache.shiro.web.subject.WebSubject;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+
 import no.priv.bang.oldalbum.services.bean.Credentials;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
 import no.priv.bang.oldalbum.web.api.ShiroTestBase;
@@ -98,6 +103,33 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResult result = resource.login(credentials);
         assertTrue(result.getSuccess());
         assertTrue(result.isCanModifyAlbum());
+        assertNull(result.getOriginalRequestUri());
+    }
+
+    @Test
+    void testLoginWithOriginalRequestUri() {
+        var originalRequestUri = "/oldalbum/slides/";
+        var useradmin = mock(UserManagementService.class);
+        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
+        var session = mock(HttpSession.class);
+        var request = new MockHttpServletRequest();
+        request.setSession(session);
+        request.setRequestURL("http://localhost:8181" + originalRequestUri);
+        request.setRequestURI(originalRequestUri);
+        var response = new MockHttpServletResponse();
+
+        var resource = new LoginResource();
+        resource.useradmin = useradmin;
+        var username = "admin";
+        var password = "admin";
+        createSubjectAndBindItToThread(request, response);
+        var credentials = Credentials.with().username(username).password(password).build();
+
+        var result = resource.login(credentials);
+        assertTrue(result.getSuccess());
+        assertTrue(result.isCanModifyAlbum());
+        assertEquals(originalRequestUri, result.getOriginalRequestUri());
     }
 
     @Test

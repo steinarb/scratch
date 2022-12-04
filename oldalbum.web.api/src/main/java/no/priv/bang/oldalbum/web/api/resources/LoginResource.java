@@ -32,6 +32,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.util.WebUtils;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
@@ -76,6 +77,7 @@ public class LoginResource {
     @Path("/login")
     public LoginResult login(Credentials credentials) {
         Subject subject = SecurityUtils.getSubject();
+        var savedRequest = WebUtils.getSavedRequest(null);
 
         UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
         boolean canLogin = shiroRoleOldalbumadminExists();
