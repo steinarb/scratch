@@ -12,7 +12,7 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const childentries = useSelector(state => state.childentries || {});
     const children = childentries[entry.id] || [];
     const title = pictureTitle(entry);
-    const noOfThumbnails = title.length > 29 ? 3 : 2;
+    const noOfThumbnails = title.length > 23 ? 3 : 2;
     const childrenWithThumbnails = findChildrenThumbnails(entry, children, childentries).slice(0, noOfThumbnails);
     const widthInCols =  noOfThumbnails===2 ? ' col-sm-12 col-md-6 col-lg-2' : ' col-sm-12 col-md-6 col-lg-3';
 
