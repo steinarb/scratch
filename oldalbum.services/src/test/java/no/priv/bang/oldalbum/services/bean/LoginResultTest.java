@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,18 +28,21 @@ class LoginResultTest {
         String errormessage = "Wrong password";
         boolean canModifyAlbum = true;
         boolean canLogin = true;
+        String originalRequestUri = "/oldalbum/slides/";
         LoginResult bean = LoginResult.with()
             .success(success)
             .username(username)
             .errormessage(errormessage)
             .canModifyAlbum(canModifyAlbum)
             .canLogin(canLogin)
+            .originalRequestUri(originalRequestUri)
             .build();
         assertTrue(bean.getSuccess());
         assertEquals(username, bean.getUsername());
         assertEquals(errormessage, bean.getErrormessage());
         assertTrue(bean.isCanModifyAlbum());
         assertTrue(bean.isCanLogin());
+        assertEquals(originalRequestUri, bean.getOriginalRequestUri());
     }
 
     @Test
@@ -50,6 +53,7 @@ class LoginResultTest {
         assertNull(bean.getErrormessage());
         assertFalse(bean.isCanModifyAlbum());
         assertFalse(bean.isCanLogin());
+        assertNull(bean.getOriginalRequestUri());
     }
 
 }

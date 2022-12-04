@@ -29,6 +29,7 @@ import showEditControls from './showEditControlsReducer';
 import editMode from './editModeReducer';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
+import originalRequestUri from './originalRequestUriReducer';
 
 export default (routerReducer) => combineReducers({
     router: routerReducer,
@@ -62,4 +63,5 @@ export default (routerReducer) => combineReducers({
     editMode,
     canModifyAlbum,
     canLogin,
+    originalRequestUri,
 });

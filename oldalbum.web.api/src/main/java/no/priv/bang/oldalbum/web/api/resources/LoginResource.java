@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * under the License.
  */
 package no.priv.bang.oldalbum.web.api.resources;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -32,6 +34,8 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.util.SavedRequest;
+import org.apache.shiro.web.util.WebUtils;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
@@ -76,6 +80,7 @@ public class LoginResource {
     @Path("/login")
     public LoginResult login(Credentials credentials) {
         Subject subject = SecurityUtils.getSubject();
+        var originalRequestUri = findOriginalRequestUri().orElse(null);
 
         UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
         boolean canLogin = shiroRoleOldalbumadminExists();
@@ -88,6 +93,7 @@ public class LoginResource {
                 .errormessage("")
                 .canModifyAlbum(canModifyAlbum)
                 .canLogin(canLogin)
+                .originalRequestUri(originalRequestUri)
                 .build();
         } catch(UnknownAccountException e) {
             logger.warn("Login error: unknown account", e);
@@ -131,6 +137,10 @@ public class LoginResource {
 
     private boolean shiroRoleOldalbumadminExists() {
         return useradmin.getRoles().stream().anyMatch(r -> "oldalbumadmin".equals(r.getRolename()));
+    }
+
+    private Optional<String> findOriginalRequestUri() {
+        return Optional.ofNullable(WebUtils.getSavedRequest(null)).map(SavedRequest::getRequestURI);
     }
 
 }

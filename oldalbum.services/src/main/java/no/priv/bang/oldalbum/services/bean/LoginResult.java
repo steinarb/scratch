@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ public class LoginResult {
     private String errormessage;
     private boolean canModifyAlbum;
     private boolean canLogin;
+    private String originalRequestUri;
 
     private LoginResult() {}
 
@@ -45,6 +46,10 @@ public class LoginResult {
         return canLogin;
     }
 
+    public String getOriginalRequestUri() {
+        return this.originalRequestUri;
+    }
+
     public static LoginResultBuilder with() {
         return new LoginResultBuilder();
     }
@@ -55,6 +60,7 @@ public class LoginResult {
         private String errormessage;
         private boolean canModifyAlbum;
         private boolean canLogin;
+        private String originalRequestUri;
 
         private LoginResultBuilder() {}
 
@@ -65,6 +71,7 @@ public class LoginResult {
             loginResult.errormessage = this.errormessage;
             loginResult.canModifyAlbum = this.canModifyAlbum;
             loginResult.canLogin = this.canLogin;
+            loginResult.originalRequestUri = this.originalRequestUri;
             return loginResult;
         }
 
@@ -90,6 +97,11 @@ public class LoginResult {
 
         public LoginResultBuilder canLogin(boolean canLogin) {
             this.canLogin = canLogin;
+            return this;
+        }
+
+        public LoginResultBuilder originalRequestUri(String originalRequestUri) {
+            this.originalRequestUri = originalRequestUri;
             return this;
         }
     }
