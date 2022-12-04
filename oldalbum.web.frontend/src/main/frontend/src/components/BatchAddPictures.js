@@ -7,7 +7,7 @@ import {
 } from '../reduxactions';
 
 export default function BatchAddPictures(props) {
-    const { item } = props;
+    const { item, className='' } = props;
     const { id } = item;
     const parent = id; // The new pictures will have this as a parent
     const showEditControls = useSelector(state => state.showEditControls);
@@ -20,7 +20,7 @@ export default function BatchAddPictures(props) {
     }
 
     return(
-        <div className={props.className}>
+        <div className={className + ' d-none d-lg-block'}>
             <div className="container rounded border border-primary pt-2">
                 <div className="form-group row">
                     <label htmlFor="batchAddUrl" className="col-form-label col-1">URL</label>
