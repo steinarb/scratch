@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import javax.ws.rs.InternalServerErrorException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.subject.WebSubject;
+import org.apache.shiro.web.util.SavedRequest;
+import static org.apache.shiro.web.util.WebUtils.SAVED_REQUEST_KEY;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -115,6 +117,7 @@ class LoginResourceTest extends ShiroTestBase {
         var session = mock(HttpSession.class);
         var request = new MockHttpServletRequest();
         request.setSession(session);
+        request.setMethod("GET");
         request.setRequestURL("http://localhost:8181" + originalRequestUri);
         request.setRequestURI(originalRequestUri);
         var response = new MockHttpServletResponse();
@@ -123,7 +126,7 @@ class LoginResourceTest extends ShiroTestBase {
         resource.useradmin = useradmin;
         var username = "admin";
         var password = "admin";
-        createSubjectAndBindItToThread(request, response);
+        var subject = createSubjectAndBindItToThread(request, response);
         var credentials = Credentials.with().username(username).password(password).build();
 
         var result = resource.login(credentials);

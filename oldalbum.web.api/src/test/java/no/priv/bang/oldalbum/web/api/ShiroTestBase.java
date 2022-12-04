@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2022 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package no.priv.bang.oldalbum.web.api;
 
+import static org.apache.shiro.web.util.WebUtils.SAVED_REQUEST_KEY;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -30,10 +32,12 @@ import org.apache.shiro.config.Ini;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.env.IniWebEnvironment;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.subject.WebSubject;
+import org.apache.shiro.web.util.SavedRequest;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -88,7 +92,10 @@ public class ShiroTestBase {
     }
 
     protected WebSubject createSubjectAndBindItToThread(WebSecurityManager webSecurityManager, HttpServletRequest request, HttpServletResponse response) {
-        WebSubject subject = new WebSubject.Builder(webSecurityManager, request, response).buildWebSubject();
+        Session session = mock(Session.class);
+        var savedRequest = new SavedRequest(request);
+        when(session.getAttribute(SAVED_REQUEST_KEY)).thenReturn(savedRequest);
+        WebSubject subject = (WebSubject) new WebSubject.Builder(webSecurityManager, request, response).session(session).buildSubject();
         ThreadContext.bind(subject);
         return subject;
     }
