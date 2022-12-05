@@ -26,9 +26,6 @@ import javax.ws.rs.InternalServerErrorException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.subject.WebSubject;
-import org.apache.shiro.web.util.SavedRequest;
-import static org.apache.shiro.web.util.WebUtils.SAVED_REQUEST_KEY;
-
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -126,13 +123,13 @@ class LoginResourceTest extends ShiroTestBase {
         resource.useradmin = useradmin;
         var username = "admin";
         var password = "admin";
-        var subject = createSubjectAndBindItToThread(request, response);
+        createSubjectAndBindItToThread(request, response);
         var credentials = Credentials.with().username(username).password(password).build();
 
         var result = resource.login(credentials);
         assertTrue(result.getSuccess());
         assertTrue(result.isCanModifyAlbum());
-        assertEquals(originalRequestUri, result.getOriginalRequestUri());
+        assertEquals("/slides/", result.getOriginalRequestUri());
     }
 
     @Test

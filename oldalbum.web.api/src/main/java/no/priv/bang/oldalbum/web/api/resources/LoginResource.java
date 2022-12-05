@@ -140,7 +140,9 @@ public class LoginResource {
     }
 
     private Optional<String> findOriginalRequestUri() {
-        return Optional.ofNullable(WebUtils.getSavedRequest(null)).map(SavedRequest::getRequestURI);
+        return Optional.ofNullable(WebUtils.getSavedRequest(null))
+                .map(SavedRequest::getRequestURI)
+                .map(u -> u.replace("/oldalbum", ""));
     }
 
 }
