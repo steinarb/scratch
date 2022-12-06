@@ -32,12 +32,6 @@
     display: flex;
 }
 
-.album-entry-album {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .table-condensed {
     font-size: 11px;
 }
