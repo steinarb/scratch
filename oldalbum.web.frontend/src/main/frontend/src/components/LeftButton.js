@@ -14,7 +14,7 @@ export default function LeftButton(props) {
     }
 
     return(
-        <div className={className + ' d-none d-lg-flex btn-group-vertical'}>
+        <div className={className + ' d-none d-md-flex btn-group-vertical'}>
             <button type="button" onClick={() => dispatch(MOVE_ALBUMENTRY_LEFT_REQUEST(item))}>
                 <ChevronLeft/>
             </button>

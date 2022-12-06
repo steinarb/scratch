@@ -12,7 +12,7 @@ export default function UpDownButton(props) {
     }
 
     return(
-        <div className="d-block d-lg-none btn-group-vertical">
+        <div className="d-block d-md-none btn-group-vertical">
             <UpButton item={item} />
             <DownButton item={item} />
         </div>
