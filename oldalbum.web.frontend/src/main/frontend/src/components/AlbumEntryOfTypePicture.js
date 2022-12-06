@@ -12,7 +12,7 @@ function AlbumEntryOfTypePicture(props) {
     const title = pictureTitle(entry);
     const metadata = formatMetadata(entry);
     return (
-        <div className={className + ' col-sm-12 col-md-6x col-lg-2 album-entry btn btn-primary mx-1 my-1'}>
+        <div className={className + ' col-sm-12 col-md-6x col-lg-3 col-XL-2 album-entry btn btn-primary mx-1 my-1'}>
             <LeftButton item={entry} />
             <NavLink className=' btn btn-primary btn-block left-align-cell' to={entry.path}>
                 <ThumbnailImg entry={entry} />
