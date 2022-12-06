@@ -21,7 +21,7 @@ export default function AlbumEntryOfTypeAlbum(props) {
             <LeftButton item={entry} />
             <div className="col-auto">
                 <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
-                <div className="d-none d-lg-flex">
+                <div className="d-none d-md-flex">
                     { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
                 </div>
             </div>
