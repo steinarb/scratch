@@ -12,9 +12,11 @@ export default function UpDownButton(props) {
     }
 
     return(
-        <div className="d-block d-md-none btn-group-vertical justify-content-end">
-            <UpButton item={item} />
-            <DownButton item={item} />
+        <div className="align-self-sm-end">
+            <div className="d-block d-md-none btn-group-vertical">
+                <UpButton item={item} />
+                <DownButton item={item} />
+            </div>
         </div>
     );
 }

@@ -20,7 +20,7 @@ export default function AlbumEntryOfTypeAlbum(props) {
         <div className={className + widthInCols + ' d-flex justify-content-md-center btn btn-primary mx-1 my-1'}>
             <LeftButton item={entry} />
             <div className="col-auto">
-                <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
+                <NavLink className="btn-primary p-2 text-left align-content-sm-start" to={entry.path}>Album: {title}</NavLink>
                 <div className="d-none d-md-flex">
                     { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
                 </div>
