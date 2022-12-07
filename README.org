@@ -44,6 +44,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2022-12-07 Wed 22:42> |   1.9.4 | Revert the reduction of col width for album entries on large displays                                          |
 | <2022-12-06 Tue 18:50> |   1.9.3 | Fix wrong redirect after login, reduce col width for album entries on large displays                           |
 | <2022-12-05 Mon 17:50> |   1.9.2 | Remove unneeded scrollbars, redirect to protected url after login, use jersey 2.37 and jackson 2.14.1          |
 | <2022-11-26 Sat 12:36> |   1.9.1 | Better picture scaling on large displays, use postgresql jdbc 42.5.1, use jsoup 1.15.3                         |
