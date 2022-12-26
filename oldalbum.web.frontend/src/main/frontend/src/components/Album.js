@@ -26,6 +26,7 @@ export default function Album(props) {
     const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
     const title = pictureTitle(item);
+    const anchor = 'entry' + item.id.toString();
     const swipeHandlers = useSwipeable({
         onSwipedLeft: () => next && dispatch(push(next.path)),
         onSwipedRight: () => previous && dispatch(push(previous.path)),
@@ -39,7 +40,7 @@ export default function Album(props) {
             </Helmet>
             <nav className="navbar navbar-light bg-light">
                 { parent && (
-                    <NavLink to={parent}>
+                    <NavLink to={parent + '#' + anchor}>
                         <div className="container">
                             <div className="column">
                                 <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
