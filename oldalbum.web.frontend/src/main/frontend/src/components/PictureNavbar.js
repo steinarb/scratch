@@ -6,11 +6,12 @@ import LoginLogoutButton from './LoginLogoutButton';
 
 export default function PictureNavbar(props) {
     const { className, item, parent, title } = props;
+    const anchor = 'entry' + item.id.toString();
 
     return (
         <div className={className}>
             <nav className="navbar navbar-light bg-light">
-                <NavLink to={parent}>
+                <NavLink to={parent + '#' + anchor}>
                     <div className="container">
                         <div className="column">
                             <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
