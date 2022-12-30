@@ -18,10 +18,10 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const anchor = 'entry' + entry.id.toString();
 
     return (
-        <div className={className + widthInCols + ' album-entry-album btn btn-primary mx-1 my-1'}>
+        <div id={anchor} className={className + widthInCols + ' album-entry-album btn btn-primary mx-1 my-1'}>
             <LeftButton item={entry} />
             <div className="col-auto">
-                <NavLink name={anchor} className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
+                <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
                 <div className="d-none d-md-flex">
                     { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
                 </div>

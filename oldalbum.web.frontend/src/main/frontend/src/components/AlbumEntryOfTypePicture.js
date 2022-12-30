@@ -14,9 +14,9 @@ function AlbumEntryOfTypePicture(props) {
     const anchor = 'entry' + entry.id.toString();
 
     return (
-        <div className={className + ' col-sm-12 col-md-4 col-lg-3 col-XL-2 album-entry btn btn-primary mx-1 my-1'}>
+        <div id={anchor} className={className + ' col-sm-12 col-md-4 col-lg-3 col-XL-2 album-entry btn btn-primary mx-1 my-1'}>
             <LeftButton item={entry} />
-            <NavLink name={anchor} className=' btn btn-primary btn-block left-align-cell' to={entry.path}>
+            <NavLink className=' btn btn-primary btn-block left-align-cell' to={entry.path}>
                 <ThumbnailImg entry={entry} />
                 <div className="mx-1 container">
                     <div className="row">{title}</div>
