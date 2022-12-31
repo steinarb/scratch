@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { ElementScroller } from 'react-scroll-manager';
 import { pictureTitle } from './commonComponentCode';
 import LeftButton from './LeftButton';
 import RightButton from './RightButton';
@@ -18,17 +19,19 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const anchor = 'entry' + entry.id.toString();
 
     return (
-        <div id={anchor} className={className + widthInCols + ' album-entry-album btn btn-primary mx-1 my-1'}>
-            <LeftButton item={entry} />
-            <div className="col-auto">
-                <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
-                <div className="d-none d-md-flex">
-                    { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
+        <ElementScroller scrollKey={anchor}>
+            <div id={anchor} className={className + widthInCols + ' album-entry-album btn btn-primary mx-1 my-1'}>
+                <LeftButton item={entry} />
+                <div className="col-auto">
+                    <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
+                    <div className="d-none d-md-flex">
+                        { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
+                    </div>
                 </div>
+                <RightButton item={entry} />
+                <UpDownButton item={entry} />
             </div>
-            <RightButton item={entry} />
-            <UpDownButton item={entry} />
-        </div>
+        </ElementScroller>
     );
 }
 
