@@ -20,16 +20,18 @@ export default function AlbumEntryOfTypeAlbum(props) {
 
     return (
         <ElementScroller scrollKey={anchor}>
-            <div id={anchor} className={className + widthInCols + ' album-entry-album btn btn-primary mx-1 my-1'}>
-                <LeftButton item={entry} />
-                <div className="col-auto">
-                    <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
-                    <div className="d-none d-md-flex">
-                        { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
+            <div className={anchor}>
+                <div className={className + widthInCols + ' album-entry-album btn btn-primary mx-1 my-1'}>
+                    <LeftButton item={entry} />
+                    <div className="col-auto">
+                        <NavLink className="btn-primary p-2 text-left" to={entry.path}>Album: {title}</NavLink>
+                        <div className="d-none d-md-flex">
+                            { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
+                        </div>
                     </div>
+                    <RightButton item={entry} />
+                    <UpDownButton item={entry} />
                 </div>
-                <RightButton item={entry} />
-                <UpDownButton item={entry} />
             </div>
         </ElementScroller>
     );
