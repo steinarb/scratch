@@ -12,23 +12,21 @@ function AlbumEntryOfTypePicture(props) {
     const { entry, className='' } = props;
     const title = pictureTitle(entry);
     const metadata = formatMetadata(entry);
-    const anchor = 'entry' + entry.id.toString();
+    const anchor = ' entry' + entry.id.toString();
 
     return (
         <ElementScroller scrollKey={anchor}>
-            <div className={anchor}>
-                <div className={className + ' col-sm-12 col-md-4 col-lg-3 col-XL-2 album-entry btn btn-primary mx-1 my-1'}>
-                    <LeftButton item={entry} />
-                    <NavLink className=' btn btn-primary btn-block left-align-cell' to={entry.path}>
-                        <ThumbnailImg entry={entry} />
-                        <div className="mx-1 container">
-                            <div className="row">{title}</div>
-                            <div className="row text-nowrap">{metadata}</div>
-                        </div>
-                    </NavLink>
-                    <RightButton item={entry} />
-                    <UpDownButton item={entry} />
-                </div>
+            <div className={className + anchor + ' col-sm-12 col-md-4 col-lg-3 col-XL-2 album-entry btn btn-primary mx-1 my-1'}>
+                <LeftButton item={entry} />
+                <NavLink className=' btn btn-primary btn-block left-align-cell' to={entry.path}>
+                    <ThumbnailImg entry={entry} />
+                    <div className="mx-1 container">
+                        <div className="row">{title}</div>
+                        <div className="row text-nowrap">{metadata}</div>
+                    </div>
+                </NavLink>
+                <RightButton item={entry} />
+                <UpDownButton item={entry} />
             </div>
         </ElementScroller>
     );
