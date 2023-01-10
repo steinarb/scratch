@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { push } from 'redux-first-history';
@@ -24,6 +24,8 @@ export default function Album(props) {
     const children = useSelector(state => state.childentries[item.id] || []);
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
+    const hash = useSelector(state => state.router.location.hash);
+    const targetId = hash.substr(1);
     const dispatch = useDispatch();
     const title = pictureTitle(item);
     const anchor = 'entry' + item.id.toString();
@@ -31,6 +33,12 @@ export default function Album(props) {
         onSwipedLeft: () => next && dispatch(push(next.path)),
         onSwipedRight: () => previous && dispatch(push(previous.path)),
     });
+    useEffect(() => {
+        const elem = document.getElementById(targetId);
+        if (elem) {
+            elem.scrollIntoView();
+        }
+    }, [targetId]);
 
     return (
         <div>
