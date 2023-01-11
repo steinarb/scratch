@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,14 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -1161,6 +1163,26 @@ class OldAlbumServiceProviderTest {
         assertThat(lastModifiedDate).hasYear(importYear);
     }
 
+    @Test
+    void testSortAlbumEntriesByDate() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate();
+        List<AlbumEntry> allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtosort/").album(true).build());
+        var albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtosort/")).findFirst().get();
+        var albumid = albumToSort.getId();
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/a").album(false).sort(2).lastModified(parseDate("1967-04-10T11:27:31Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/d").album(false).sort(3).lastModified(parseDate("2022-12-24T17:10:11Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/c").album(false).sort(4).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
+        allroutes = provider.sortByDate(albumid);
+        var albumentries = allroutes.stream().filter(r -> r.getParent() == albumid).sorted(Comparator.comparingInt(AlbumEntry::getSort)).collect(Collectors.toList());
+        var albumentrypaths = albumentries.stream().map(e -> e.getPath()).collect(Collectors.toList());
+        assertThat(albumentrypaths).containsExactly("/a", "/b", "/c", "/d");
+    }
+
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
         String sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
         try (Connection connection = ds.getConnection()) {
@@ -1208,6 +1230,10 @@ class OldAlbumServiceProviderTest {
             statement.setInt(11, size);
             statement.executeUpdate();
         }
+    }
+
+    private Date parseDate(String iso8601date) {
+        return Date.from(Instant.parse(iso8601date));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -413,6 +413,43 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     }
                 }
             });
+
+        return fetchAllRoutes(null, true); // All edits are logged in
+    }
+
+    @Override
+    public List<AlbumEntry> sortByDate(int albumid) {
+        try {
+            List<AlbumEntry> entriesToSort = new ArrayList<>();
+            try (Connection connection = datasource.getConnection()) {
+                String sql = "select * from albumentries where album=? order by lastmodified";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, albumid);
+                    try (ResultSet results = statement.executeQuery()) {
+                        while (results.next()) {
+                            AlbumEntry route = unpackAlbumEntry(results);
+                            entriesToSort.add(route);
+                        }
+                    }
+                }
+            }
+
+            int sort = 0;
+            try (Connection connection = datasource.getConnection()) {
+                String sql = "update albumentries set sort=? where albumentry_id=?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    for (var albumEntry : entriesToSort) {
+                        ++sort;
+                        statement.setInt(1, sort);
+                        statement.setInt(2, albumEntry.getId());
+                        statement.addBatch();
+                    }
+                    statement.executeBatch();
+                }
+            }
+        } catch (SQLException e) {
+            throw new OldAlbumException("Failed to fetch album entries to sort", e);
+        }
 
         return fetchAllRoutes(null, true); // All edits are logged in
     }
