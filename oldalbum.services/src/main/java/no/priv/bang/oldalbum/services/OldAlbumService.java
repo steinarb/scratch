@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,5 +46,7 @@ public interface OldAlbumService {
     ImageMetadata readMetadata(String imageUrl);
 
     List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest batchAddPicturesRequest);
+
+    List<AlbumEntry> sortByDate(int albumid);
 
 }
