@@ -422,7 +422,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         try {
             List<AlbumEntry> entriesToSort = new ArrayList<>();
             try (Connection connection = datasource.getConnection()) {
-                String sql = "select * from albumentries where album=? order by lastmodified";
+                String sql = "select * from albumentries where parent=? order by lastmodified";
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setInt(1, albumid);
                     try (ResultSet results = statement.executeQuery()) {
