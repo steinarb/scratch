@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,13 @@ public class AlbumentryResource {
     @Consumes(APPLICATION_JSON)
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         return oldalbum.batchAddPictures(request);
+    }
+
+    @Path("sortalbumbydate")
+    @POST
+    @Consumes(APPLICATION_JSON)
+    public List<AlbumEntry> sortAlbumByDate(AlbumEntry request) {
+        return oldalbum.sortByDate(request.getId());
     }
 
     @Path("deleteentry")
