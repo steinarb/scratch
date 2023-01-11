@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,19 @@ class AlbumentryResourceTest {
         when(oldalbum.batchAddPictures(any())).thenReturn(Arrays.asList(AlbumEntry.with().build(), AlbumEntry.with().build()));
         resource.oldalbum = oldalbum;
         List<AlbumEntry> allroutes = resource.batchAddPictures(request);
+        assertThat(allroutes).hasSize(2);
+    }
+
+    @Test
+    void testSortAlbumEntriesByDate() {
+        var request = AlbumEntry.with()
+            .id(1)
+            .build();
+        AlbumentryResource resource = new AlbumentryResource();
+        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.sortByDate(anyInt())).thenReturn(Arrays.asList(AlbumEntry.with().build(), AlbumEntry.with().build()));
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.sortAlbumByDate(request);
         assertThat(allroutes).hasSize(2);
     }
 
