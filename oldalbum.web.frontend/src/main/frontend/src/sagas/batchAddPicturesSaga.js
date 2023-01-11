@@ -10,7 +10,7 @@ function batchAddPictures(batchaddpicturesrequest) {
     return axios.post('/api/batchaddpictures', batchaddpicturesrequest);
 }
 
-function* updatePictureAndReceiveRoutes(action) {
+function* batchAddPicturesAndReceiveRoutes(action) {
     try {
         const response = yield call(batchAddPictures, action.payload);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
@@ -21,5 +21,5 @@ function* updatePictureAndReceiveRoutes(action) {
 }
 
 export default function* addPictureSaga() {
-    yield takeLatest(BATCH_ADD_PICTURES_FROM_URL_REQUEST, updatePictureAndReceiveRoutes);
+    yield takeLatest(BATCH_ADD_PICTURES_FROM_URL_REQUEST, batchAddPicturesAndReceiveRoutes);
 }
