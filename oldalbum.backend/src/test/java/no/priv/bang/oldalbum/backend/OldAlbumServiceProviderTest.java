@@ -1183,6 +1183,20 @@ class OldAlbumServiceProviderTest {
         assertThat(albumentrypaths).containsExactly("/a", "/b", "/c", "/d");
     }
 
+    @Test
+    void testSortAlbumEntriesByDateWhenSqlFails() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(database);
+        provider.activate();
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.sortByDate(1));
+        assertThat(e.getMessage()).contains("Failed to fetch album entries to sort");
+    }
+
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
         String sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
         try (Connection connection = ds.getConnection()) {
