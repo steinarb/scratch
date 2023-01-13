@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,6 +112,17 @@ public class OldalbumServlet extends FrontendServlet {
         html.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         try(ServletOutputStream body = response.getOutputStream()) {
             body.print(html.outerHtml());
+        }
+    }
+
+    @Override
+    protected void handleResourceNotFound(HttpServletResponse response, String resource) throws IOException {
+        response.setStatus(SC_NOT_FOUND);
+        response.setContentType("text/html");
+        try(ServletOutputStream responseBody = response.getOutputStream()) {
+            try(InputStream resourceFromClasspath = getClass().getClassLoader().getResourceAsStream("index.html")) {
+                copyStream(resourceFromClasspath, responseBody);
+            }
         }
     }
 
