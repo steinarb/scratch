@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -256,6 +256,24 @@ class OldalbumServletTest {
     }
 
     @Test
+    void testGetNotFound() throws Exception {
+        var oldalbum = mock(OldAlbumService.class);
+        var request = new MockHttpServletRequest();
+        request.setRequestURL("http://localhost:8181/someapp");
+        request.setPathInfo("/notfound.html");
+        var response = new MockHttpServletResponse();
+        var logservice = new MockLogService();
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+        servlet.setLogService(logservice);
+        servlet.activate();
+        servlet.setLogService(logservice);
+
+        servlet.service(request, response);
+        assertEquals(SC_NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
     void testDoGetAddTrailingSlash() throws Exception {
         OldAlbumService oldalbum = mock(OldAlbumService.class);
         MockLogService logservice = new MockLogService();
@@ -339,7 +357,9 @@ class OldalbumServletTest {
 
         servlet.service(request, response);
 
-        assertEquals(SC_NOT_FOUND, response.getErrorCode());
+        assertEquals(SC_NOT_FOUND, response.getStatusCode());
+        assertEquals("text/html", response.getContentType());
+        assertThat(response.getOutputStreamContent()).contains("bundle.js");
     }
 
     @Test
