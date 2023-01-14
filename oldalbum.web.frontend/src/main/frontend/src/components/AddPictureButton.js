@@ -5,6 +5,7 @@ import { stringify } from 'qs';
 
 export default function AddPictureButton(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const showEditControls = useSelector(state => state.showEditControls);
     const { id } = item;
     const parent = id; // The new picture will have this as a parent
@@ -14,5 +15,5 @@ export default function AddPictureButton(props) {
         return null;
     }
 
-    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={addpicture} >Add picture</NavLink>);
+    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={addpicture} >{text.addpicture}</NavLink>);
 }

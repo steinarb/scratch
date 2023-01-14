@@ -20,12 +20,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
+import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 class OldAlbumServiceTest {
 
@@ -68,6 +71,17 @@ class OldAlbumServiceTest {
 
         List<AlbumEntry> updatedRoutesAfterSort = service.sortByDate(1);
         assertThat(updatedRoutesAfterSort).isEmpty();
+
+        Locale defaultLocale = service.defaultLocale();
+        assertNull(defaultLocale);
+        List<LocaleBean> availableLocales = service.availableLocales();
+        assertThat(availableLocales).isEmpty();
+        Locale locale = Locale.UK;
+        Map<String, String> texts = service.displayTexts(locale);
+        assertThat(texts).isEmpty();
+        String key = "loggedout";
+        String text = service.displayText(key, locale.toString());
+        assertNull(text);
     }
 
 }

@@ -14,6 +14,8 @@ import rootSaga from './sagas';
 import {
     LOGIN_CHECK_REQUEST,
     ALLROUTES_REQUEST,
+    DEFAULT_LOCALE_REQUEST,
+    AVAILABLE_LOCALES_REQUEST,
 } from './reduxactions';
 
 const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('bundle.js'))[0].replace('/bundle.js', '');
@@ -21,9 +23,9 @@ const basename = new URL(baseUrl).pathname;
 axios.defaults.baseURL = baseUrl;
 const sagaMiddleware = createSagaMiddleware();
 const {
-  createReduxHistory,
-  routerMiddleware,
-  routerReducer
+    createReduxHistory,
+    routerMiddleware,
+    routerReducer
 } = createReduxHistoryContext({ history: createBrowserHistory(), basename });
 const store = configureStore({
     reducer: createRootReducer(routerReducer),
@@ -38,6 +40,8 @@ const history = createReduxHistory(store);
 // Initial actions to fetch data
 store.dispatch(LOGIN_CHECK_REQUEST());
 store.dispatch(ALLROUTES_REQUEST());
+store.dispatch(DEFAULT_LOCALE_REQUEST());
+store.dispatch(AVAILABLE_LOCALES_REQUEST());
 
 const container = document.getElementById('root');
 const root = createRoot(container);

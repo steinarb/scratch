@@ -9,6 +9,7 @@ import CopyLinkButton from './CopyLinkButton';
 
 
 export default function Unauthorized() {
+    const text = useSelector(state => state.displayTexts);
     const haveReceivedInitialLoginStatus = useSelector(state => state.haveReceivedInitialLoginStatus);
     const username = useSelector(state => state.username);
     const loggedIn = useSelector(state => state.loggedIn);
@@ -21,7 +22,7 @@ export default function Unauthorized() {
         <div>
             <nav className="navbar navbar-light bg-light">
                 <NavLink className="btn btn-primary left-align-cell" to="/"><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Go home!</NavLink>
-                <h1>Unauthorized</h1>
+                <h1>{text.unauthorized}</h1>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
@@ -34,8 +35,8 @@ export default function Unauthorized() {
                 </div>
             </nav>
             <div className="container">
-                <p>Hi {username}! You do not have access to modify the album</p>
-                <p>Click &quot;Go home&quot; to navigate to the top of the application, or log out to log back in with a user that is allowed to modify the album</p>
+                <p>{text.hi} {username}! {text.unauthorizedtomodifyalbum}</p>
+                <p>{text.navigatetotoporlogout}</p>
                 <form onSubmit={ e => e.preventDefault() }>
                     <div className="form-group row">
                         <div className="col-5"/>
@@ -43,7 +44,7 @@ export default function Unauthorized() {
                             <button
                                 className="btn btn-primary"
                                 onClick={() => dispatch(LOGOUT_REQUEST())}>
-                                Log out</button>
+                                {text.logout}</button>
                         </div>
                     </div>
                 </form>

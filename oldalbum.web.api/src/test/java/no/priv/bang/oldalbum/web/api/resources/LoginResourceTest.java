@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
+import no.priv.bang.oldalbum.backend.OldAlbumServiceProvider;
 import no.priv.bang.oldalbum.services.bean.Credentials;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
 import no.priv.bang.oldalbum.web.api.ShiroTestBase;
@@ -44,16 +45,19 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginCheck() {
+        var oldalbum = new OldAlbumServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "admin";
         String password = "admin";
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        resource.login(credentials); // Ensure user is logged in
+        String locale = "";
+        resource.login(locale, credentials); // Ensure user is logged in
 
         LoginResult result = resource.loginCheck();
         assertTrue(result.getSuccess());
@@ -63,11 +67,13 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginCheckWhenNotLoggedIn() {
+        var oldalbum = new OldAlbumServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         createSubjectAndBindItToThread();
 
         LoginResult result = resource.loginCheck();
@@ -77,9 +83,11 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginCheckWhenNotLoggedInAndOldalbumadminRoleNotPresent() {
+        var oldalbum = new OldAlbumServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         createSubjectAndBindItToThread();
 
         LoginResult result = resource.loginCheck();
@@ -90,16 +98,19 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLogin() {
+        var oldalbum = new OldAlbumServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "admin";
         String password = "admin";
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        LoginResult result = resource.login(credentials);
+        String locale = "";
+        LoginResult result = resource.login(locale, credentials);
         assertTrue(result.getSuccess());
         assertTrue(result.isCanModifyAlbum());
         assertNull(result.getOriginalRequestUri());
@@ -107,6 +118,7 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginWithOriginalRequestUri() {
+        var oldalbum = new OldAlbumServiceProvider();
         var originalRequestUri = "/oldalbum/slides/";
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
@@ -121,12 +133,14 @@ class LoginResourceTest extends ShiroTestBase {
 
         var resource = new LoginResource();
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         var username = "admin";
         var password = "admin";
         createSubjectAndBindItToThread(request, response);
         var credentials = Credentials.with().username(username).password(password).build();
 
-        var result = resource.login(credentials);
+        String locale = "";
+        var result = resource.login(locale, credentials);
         assertTrue(result.getSuccess());
         assertTrue(result.isCanModifyAlbum());
         assertEquals("/slides/", result.getOriginalRequestUri());
@@ -134,22 +148,26 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginModifyNotAllowed() {
+        var oldalbum = new OldAlbumServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "jd";
         String password = "johnnyBoi";
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        LoginResult result = resource.login(credentials);
+        String locale = "";
+        LoginResult result = resource.login(locale, credentials);
         assertTrue(result.getSuccess());
         assertFalse(result.isCanModifyAlbum());
     }
 
     @Test
     void testLoginWrongPassword() {
+        var oldalbum = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
@@ -157,17 +175,20 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResource resource = new LoginResource();
         resource.setLogservice(logservice);
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "jd";
         String password = "feil";
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        LoginResult result = resource.login(credentials);
+        String locale = "en_GB";
+        LoginResult result = resource.login(locale, credentials);
         assertFalse(result.getSuccess());
         assertThat(result.getErrormessage()).startsWith("Wrong password");
     }
 
     @Test
     void testLoginUknownUser() {
+        var oldalbum = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
@@ -175,16 +196,19 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResource resource = new LoginResource();
         resource.setLogservice(logservice);
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "jdd";
         String password = "feil";
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        LoginResult result = resource.login(credentials);
+        String locale = "en_GB";
+        LoginResult result = resource.login(locale, credentials);
         assertThat(result.getErrormessage()).startsWith("Unknown account");
     }
 
     @Test
     void testLoginLockedUser() {
+        var oldalbum = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
@@ -192,16 +216,19 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResource resource = new LoginResource();
         resource.setLogservice(logservice);
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "lockeduser";
         String password = "lockpw";
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        LoginResult result = resource.login(credentials);
+        String locale = "en_GB";
+        LoginResult result = resource.login(locale, credentials);
         assertThat(result.getErrormessage()).startsWith("Locked account");
     }
 
     @Test
     void testLoginGenericAuthenticationException() {
+        var oldalbum = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
@@ -209,6 +236,7 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResource resource = new LoginResource();
         resource.setLogservice(logservice);
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "lockeduser";
         String password = "lockpw";
         WebSecurityManager securityManager = mock(WebSecurityManager.class);
@@ -217,12 +245,14 @@ class LoginResourceTest extends ShiroTestBase {
         when(securityManager.createSubject(any())).thenReturn(subject);
         createSubjectAndBindItToThread(securityManager);
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        LoginResult result = resource.login(credentials);
+        String locale = "en_GB";
+        LoginResult result = resource.login(locale, credentials);
         assertThat(result.getErrormessage()).startsWith("Unknown login error");
     }
 
     @Test
     void testLoginInternalServerError() {
+        var oldalbum = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
@@ -230,6 +260,7 @@ class LoginResourceTest extends ShiroTestBase {
         LoginResource resource = new LoginResource();
         resource.setLogservice(logservice);
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "lockeduser";
         String password = "lockpw";
         WebSecurityManager securityManager = mock(WebSecurityManager.class);
@@ -238,8 +269,9 @@ class LoginResourceTest extends ShiroTestBase {
         when(securityManager.createSubject(any())).thenReturn(subject);
         createSubjectAndBindItToThread(securityManager);
         Credentials credentials = Credentials.with().username(username).password(password).build();
+        String locale = "";
         assertThrows(InternalServerErrorException.class, () -> {
-                resource.login(credentials);
+                resource.login(locale, credentials);
             });
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Login error: internal server error");
@@ -247,16 +279,19 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLogout() {
+        var oldalbum = new OldAlbumServiceProvider();
         UserManagementService useradmin = mock(UserManagementService.class);
         Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         LoginResource resource = new LoginResource();
         resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
         String username = "jd";
         String password = "johnnyBoi";
         createSubjectAndBindItToThread();
         Credentials credentials = Credentials.with().username(username).password(password).build();
-        LoginResult resultLogin = resource.login(credentials);
+        String locale = "";
+        LoginResult resultLogin = resource.login(locale, credentials);
         assertTrue(resultLogin.getSuccess());
         LoginResult resultLogout = resource.logout(credentials);
         assertFalse(resultLogout.getSuccess());

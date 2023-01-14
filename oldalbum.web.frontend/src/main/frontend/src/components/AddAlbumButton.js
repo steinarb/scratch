@@ -5,6 +5,7 @@ import { stringify } from 'qs';
 
 export default function AddAlbumButton(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const showEditControls = useSelector(state => state.showEditControls);
     const { id } = item;
     const parent = id; // The new album will have this as a parent
@@ -14,5 +15,5 @@ export default function AddAlbumButton(props) {
         return null;
     }
 
-    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={addalbum} >Add album</NavLink>);
+    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={addalbum} >{text.addalbum}</NavLink>);
 }

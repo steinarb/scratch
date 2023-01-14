@@ -29,10 +29,12 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -57,9 +59,11 @@ import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
+import no.priv.bang.oldalbum.services.bean.LocaleBean;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumServiceProviderTest {
+    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     private static DataSource datasource;
 
@@ -82,7 +86,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // First check all routes not requiring login
         List<AlbumEntry> allroutesNotRequiringLogin = provider.fetchAllRoutes(null, false);
@@ -102,7 +106,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, allroutes.size());
@@ -114,7 +118,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Test paths when logged in
         List<String> pathsWhenNotLoggedIn = provider.getPaths(false);
@@ -133,7 +137,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         List<String> paths = provider.getPaths(false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, paths.size());
@@ -145,7 +149,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         AlbumEntry entry = provider.getAlbumEntryFromPath("/moto/places/");
         assertEquals(3, entry.getId());
     }
@@ -156,7 +160,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         AlbumEntry entry = provider.getAlbumEntryFromPath("/path/not/matching/");
         assertNull(entry);
         assertEquals(1, logservice.getLogmessages().size());
@@ -171,7 +175,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         AlbumEntry entry = provider.getAlbumEntryFromPath("/moto/places/");
         assertNull(entry);
         assertEquals(1, logservice.getLogmessages().size());
@@ -184,7 +188,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         List<AlbumEntry> children = provider.getChildren(3);
         assertThat(children).hasSizeGreaterThanOrEqualTo(3);
     }
@@ -197,7 +201,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         List<AlbumEntry> children = provider.getChildren(3);
         assertEquals(0, children.size());
         assertEquals(1, logservice.getLogmessages().size());
@@ -209,7 +213,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         AlbumEntry modifiedAlbum = AlbumEntry.with()
             .id(2)
             .parent(1)
@@ -235,7 +239,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         var originalPicture = provider.fetchAllRoutes(null, false).stream().filter(r -> r.getId() == 5).findFirst().get();
         String modifiedTitle = "New picture title";
@@ -262,7 +266,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Verify that sort values are updated correctly when an album
         // entry is moved to a different album
@@ -294,7 +298,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         AlbumEntry modifiedAlbum = AlbumEntry.with()
             .id(357)
             .parent(1)
@@ -320,7 +324,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry albumToAdd = AlbumEntry.with()
             .parent(1)
@@ -348,7 +352,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         String imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
@@ -385,7 +389,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
@@ -413,7 +417,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Mocked HTTP request
         HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
@@ -449,7 +453,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToAdd = AlbumEntry.with()
             .parent(1)
@@ -479,7 +483,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         AlbumEntry albumToAdd = AlbumEntry.with()
             .parent(1)
             .path("/newalbum/")
@@ -500,7 +504,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
         AlbumEntry pictureToDelete = AlbumEntry.with()
             .id(7)
@@ -531,7 +535,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, false).size();
         AlbumEntry pictureToDelete = AlbumEntry.with()
             .id(7)
@@ -560,7 +564,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         // Find the first and second entries of the "vfr" album
@@ -593,7 +597,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Try moving an album and failing
         List<AlbumEntry> allroutes = provider.moveEntryUp(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
@@ -608,7 +612,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
         // Find the last and second to last entries of the "vfr" album
@@ -642,7 +646,7 @@ class OldAlbumServiceProviderTest {
         DataSource datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsException);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         List<AlbumEntry> allroutes = provider.moveEntryDown(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
         assertEquals(0, allroutes.size());
@@ -807,7 +811,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         int allroutesCount = findAlbumentriesRows(datasource, false);
         String sql = provider.dumpDatabaseSql(null, false);
@@ -850,7 +854,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         int allroutesCount = findAlbumentriesRows(datasource, true);
         String sql = provider.dumpDatabaseSql(null, true);
@@ -894,7 +898,7 @@ class OldAlbumServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(database);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Mocked HTTP request
         var connectionFactory = mock(HttpConnectionFactory.class);
@@ -947,7 +951,7 @@ class OldAlbumServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(database);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Mocked HTTP request
         var connectionFactory = mock(HttpConnectionFactory.class);
@@ -999,7 +1003,7 @@ class OldAlbumServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Mocked HTTP request
         var connectionFactory = mock(HttpConnectionFactory.class);
@@ -1023,7 +1027,7 @@ class OldAlbumServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         // Mocked HTTP request
         var connectionFactory = mock(HttpConnectionFactory.class);
@@ -1169,7 +1173,7 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
         List<AlbumEntry> allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtosort/").album(true).build());
         var albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtosort/")).findFirst().get();
         var albumid = albumToSort.getId();
@@ -1191,10 +1195,74 @@ class OldAlbumServiceProviderTest {
         var database = mock(DataSource.class);
         when(database.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(database);
-        provider.activate();
+        provider.activate(Collections.emptyMap());
 
         var e = assertThrows(OldAlbumException.class, () -> provider.sortByDate(1));
         assertThat(e.getMessage()).contains("Failed to fetch album entries to sort");
+    }
+
+    @Test
+    void testDefaultLocale() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        provider.setDataSource(database);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        assertEquals(NB_NO, provider.defaultLocale());
+    }
+
+    @Test
+    void testDefaultLocaleWhenLocaleNotInConfig() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        provider.setDataSource(database);
+        provider.activate(Collections.singletonMap("DataSource.target", "value \"(osgi.jndi.service.name=jdbc/oldalbum)\""));
+        assertNull(provider.defaultLocale());
+    }
+
+    @Test
+    void testAvailableLocales() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        provider.setDataSource(database);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        List<LocaleBean> locales = provider.availableLocales();
+        assertThat(locales).isNotEmpty().contains(LocaleBean.with().locale(provider.defaultLocale()).build());
+    }
+
+    @Test
+    void testDisplayTextsForDefaultLocale() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        provider.setDataSource(database);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        Map<String, String> displayTexts = provider.displayTexts(provider.defaultLocale());
+        assertThat(displayTexts).isNotEmpty();
+    }
+
+    @Test
+    void testDisplayText() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        provider.setDataSource(database);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        String text1 = provider.displayText("hi", "nb_NO");
+        assertEquals("Hei", text1);
+        String text2 = provider.displayText("hi", "en_GB");
+        assertEquals("Hi", text2);
+        String text3 = provider.displayText("hi", "");
+        assertEquals("Hei", text3);
+        String text4 = provider.displayText("hi", null);
+        assertEquals("Hei", text4);
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {

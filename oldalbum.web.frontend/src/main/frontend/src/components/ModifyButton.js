@@ -5,6 +5,7 @@ import { stringify } from 'qs';
 
 export default function ModifyButton(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const webcontext = useSelector(state => state.webcontext) || '';
     const showEditControls = useSelector(state => state.showEditControls);
 
@@ -16,5 +17,5 @@ export default function ModifyButton(props) {
     const { id } = item;
     const modifyitem = webcontext + (item.album ? '/modifyalbum' : '/modifypicture') + '?' + stringify({ id });
 
-    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={modifyitem} >Modify</NavLink>);
+    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={modifyitem} >{text.modify}</NavLink>);
 }

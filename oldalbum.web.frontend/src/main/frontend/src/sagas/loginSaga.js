@@ -1,4 +1,4 @@
-import { takeLatest, call, put } from 'redux-saga/effects';
+import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
     LOGIN_CHECK_REQUEST,
@@ -14,8 +14,8 @@ function checkLogin() {
     return axios.get('/api/login');
 }
 
-function sendLogin(credentials) {
-    return axios.post('/api/login', credentials);
+function sendLogin(credentials, locale) {
+    return axios.post('/api/login', credentials, { params: { locale } });
 }
 
 function* receiveCheckLoginResult() {
@@ -32,7 +32,8 @@ function* receiveCheckLoginResult() {
 
 function* receiveLoginResult(action) {
     try {
-        const response = yield call(sendLogin, action.payload);
+        const locale = yield select(state => state.locale);
+        const response = yield call(sendLogin, action.payload, locale);
         const loginresult = (response.headers['content-type'] === 'application/json') ? response.data : {};
         yield put(LOGIN_RECEIVE(loginresult));
         if (loginresult.success) {

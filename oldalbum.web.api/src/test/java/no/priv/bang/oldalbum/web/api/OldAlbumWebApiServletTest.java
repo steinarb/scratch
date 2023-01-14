@@ -30,7 +30,12 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -52,12 +57,17 @@ import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.ImageRequest;
+import no.priv.bang.oldalbum.services.bean.LocaleBean;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
+import no.priv.bang.oldalbum.web.api.resources.ErrorMessage;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 class OldAlbumWebApiServletTest extends ShiroTestBase {
+    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private final static Locale EN_UK = Locale.forLanguageTag("en-uk");
+
     final static ObjectMapper mapper = new ObjectMapper();
     private static List<AlbumEntry> allroutes;
     static String dumpedroutes = loadClasspathResourceIntoString("dumproutes.sql");
@@ -258,6 +268,108 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         assertThat(metadata.getContentLength()).isPositive();
     }
 
+    @Test
+    void testDefaultLocale() throws Exception {
+        // Set up REST API servlet with mocked services
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.defaultLocale()).thenReturn(NB_NO);
+        var logservice = new MockLogService();
+
+        var useradmin = mock(UserManagementService.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+
+        // Create the request and response
+        var request = buildGetUrl("/defaultlocale");
+        var response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        var defaultLocale = mapper.readValue(response.getOutputStreamBinaryContent(), Locale.class);
+        assertEquals(NB_NO, defaultLocale);
+    }
+    @Test
+    void testAvailableLocales() throws Exception {
+        // Set up REST API servlet with mocked services
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList()));
+        var logservice = new MockLogService();
+
+        var useradmin = mock(UserManagementService.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+
+        // Create the request and response
+        var request = buildGetUrl("/availablelocales");
+        var response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        List<LocaleBean> availableLocales = mapper.readValue(response.getOutputStreamBinaryContent(), new TypeReference<List<LocaleBean>>() {});
+        assertThat(availableLocales).isNotEmpty().contains(LocaleBean.with().locale(Locale.forLanguageTag("nb-NO")).build());
+    }
+
+    @Test
+    void testDisplayTexts() throws Exception {
+        // Set up REST API servlet with mocked services
+        var oldalbum = mock(OldAlbumService.class);
+        var texts = new HashMap<String, String>();
+        texts.put("date", "Dato");
+        when(oldalbum.displayTexts(NB_NO)).thenReturn(texts);
+        var logservice = new MockLogService();
+
+        var useradmin = mock(UserManagementService.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+
+        // Create the request and response
+        var request = buildGetUrl("/displaytexts");
+        request.setQueryString("locale=nb_NO");
+        var response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(200, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        Map<String, String> displayTexts = mapper.readValue(response.getOutputStreamBinaryContent(), new TypeReference<Map<String, String>>() {});
+        assertThat(displayTexts).isNotEmpty();
+    }
+
+    @Test
+    void testDisplayTextsWithUnknownLocale() throws Exception {
+        // Set up REST API servlet with mocked services
+        var oldalbum = mock(OldAlbumService.class);
+        var texts = new HashMap<String, String>();
+        texts.put("date", "Dato");
+        when(oldalbum.displayTexts(EN_UK)).thenThrow(MissingResourceException.class);
+        var logservice = new MockLogService();
+
+        var useradmin = mock(UserManagementService.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+
+        // Create the request and response
+        var request = buildGetUrl("/displaytexts");
+        request.setQueryString("locale=en_UK");
+        var response = new MockHttpServletResponse();
+
+        // Run the method under test
+        servlet.service(request, response);
+
+        // Check the response
+        assertEquals(500, response.getStatus());
+        assertEquals("application/json", response.getContentType());
+        var errorMessage = mapper.readValue(response.getOutputStreamBinaryContent(), ErrorMessage.class);
+        assertEquals(500, errorMessage.getStatus());
+        assertThat(errorMessage.getMessage()).startsWith("Unknown locale");
+    }
+
     private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {
         MockHttpServletRequest request = buildRequest(resource);
         request.setMethod("POST");
@@ -267,7 +379,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         return request;
     }
 
-    private HttpServletRequest buildGetUrl(String resource) {
+    private MockHttpServletRequest buildGetUrl(String resource) {
         MockHttpServletRequest request = buildRequest(resource);
         request.setMethod("GET");
         return request;

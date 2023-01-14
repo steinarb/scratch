@@ -6,6 +6,7 @@ import {
 } from '../reduxactions';
 
 export default function EditModeButton() {
+    const text = useSelector(state => state.displayTexts);
     const canModifyAlbum = useSelector(state => state.canModifyAlbum);
     const loggedIn = useSelector(state => state.loggedIn);
     const editMode = useSelector(state => state.editMode);
@@ -18,14 +19,14 @@ export default function EditModeButton() {
     if (editMode) {
         return (
             <span className="{props.styleName} alert alert-primary" role="alert">
-                <span className="alert-link" onClick={() => dispatch(TOGGLE_EDIT_MODE_OFF())}>Switch edit mode off</span>
+                <span className="alert-link" onClick={() => dispatch(TOGGLE_EDIT_MODE_OFF())}>{text.switcheditmodeoff}</span>
             </span>
         );
     }
 
     return(
         <span className="alert alert-primary" role="alert">
-            <span className="alert-link" onClick={() => dispatch(TOGGLE_EDIT_MODE_ON())}>Switch edit mode on</span>
+            <span className="alert-link" onClick={() => dispatch(TOGGLE_EDIT_MODE_ON())}>{text.switcheditmodeon}</span>
         </span>
     );
 }

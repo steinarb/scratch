@@ -5,6 +5,7 @@ import { push } from 'redux-first-history';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
+import Locale from './Locale';
 import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
@@ -21,6 +22,7 @@ import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
 export default function Album(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
     const children = useSelector(state => state.childentries[item.id] || []);
     const previous = useSelector(state => state.previousentry[item.id]);
@@ -53,7 +55,7 @@ export default function Album(props) {
                         <div className="container">
                             <div className="column">
                                 <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-                                <div className="row">Up</div>
+                                <div className="row">{text.up}</div>
                             </div>
                         </div>
                     </NavLink>
@@ -64,6 +66,7 @@ export default function Album(props) {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
+                        <Locale className="nav-item" />
                         <CopyLinkButton className="nav-item" />
                         <EditModeButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>

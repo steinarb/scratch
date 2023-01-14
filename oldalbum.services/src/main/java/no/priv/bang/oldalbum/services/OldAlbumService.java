@@ -16,10 +16,13 @@
 package no.priv.bang.oldalbum.services;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
+import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 public interface OldAlbumService {
 
@@ -48,5 +51,13 @@ public interface OldAlbumService {
     List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest batchAddPicturesRequest);
 
     List<AlbumEntry> sortByDate(int albumid);
+
+    Locale defaultLocale();
+
+    List<LocaleBean> availableLocales();
+
+    public Map<String, String> displayTexts(Locale locale);
+
+    public String displayText(String key, String locale);
 
 }
