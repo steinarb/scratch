@@ -30,9 +30,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -50,13 +57,16 @@ import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
+import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 @Component(immediate = true)
 public class OldAlbumServiceProvider implements OldAlbumService {
 
+    private static final String DISPLAY_TEXT_RESOURCES = "i18n.Texts";
     private Logger logger;
     private DataSource datasource;
     private HttpConnectionFactory connectionFactory;
+    private Locale defaultLocale;
 
     @Reference
     public void setLogService(LogService logservice) {
@@ -454,6 +464,28 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return fetchAllRoutes(null, true); // All edits are logged in
     }
 
+    @Override
+    public Locale defaultLocale() {
+        return defaultLocale;
+    }
+
+    @Override
+    public List<LocaleBean> availableLocales() {
+        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, String> displayTexts(Locale locale) {
+        return transformResourceBundleToMap(locale);
+    }
+
+    @Override
+    public String displayText(String key, String locale) {
+        Locale active = locale == null || locale.isEmpty() ? defaultLocale : Locale.forLanguageTag(locale.replace('_', '-'));
+        ResourceBundle bundle = ResourceBundle.getBundle(DISPLAY_TEXT_RESOURCES, active);
+        return bundle.getString(key);
+    }
+
     private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear) {
         String basename = findBasename(link);
         String path = Paths.get(parent.getPath(), basename).toString();
@@ -645,6 +677,18 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void setConnectionFactory(HttpConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+    }
+
+    Map<String, String> transformResourceBundleToMap(Locale locale) {
+        Map<String, String> map = new HashMap<>();
+        ResourceBundle bundle = ResourceBundle.getBundle(DISPLAY_TEXT_RESOURCES, locale);
+        Enumeration<String> keys = bundle.getKeys();
+        while(keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, bundle.getString(key));
+        }
+
+        return map;
     }
 
 }
