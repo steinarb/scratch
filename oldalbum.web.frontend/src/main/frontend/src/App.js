@@ -23,10 +23,10 @@ export default function App(props) {
                 { allroutes.map((item, index) => <Route exact key={index} path={item.path} element={albumOrPicture(item)} />) }
                 <Route exact key="login" path="/login" element={<Login/>} />
                 <Route exact key="unauthorized" path="/unauthorized" element={<Unauthorized/>} />
-                <Route key="modifyalbum" path='/modifyalbum' element={<ModifyAlbum/>} />
-                <Route key="addalbum" path='/addalbum' element={<AddAlbum/>} />
-                <Route key="modifypicture" path='/modifypicture' element={<ModifyPicture/>} />
-                <Route key="addpicture" path='/addpicture' element={<AddPicture/>} />
+                <Route key="modifyalbum" path="/modifyalbum" element={<ModifyAlbum/>} />
+                <Route key="addalbum" path="/addalbum" element={<AddAlbum/>} />
+                <Route key="modifypicture" path="/modifypicture" element={<ModifyPicture/>} />
+                <Route key="addpicture" path="/addpicture" element={<AddPicture/>} />
                 <Route key="notfound" path="*" element={<NotFound/>} />
             </Routes>
         </Router>
