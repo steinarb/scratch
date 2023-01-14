@@ -1,7 +1,11 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Navigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { LOGOUT_REQUEST } from '../reduxactions';
+import EditModeButton from './EditModeButton';
+import LoginLogoutButton from './LoginLogoutButton';
+import CopyLinkButton from './CopyLinkButton';
 
 
 export default function Unauthorized() {
@@ -16,9 +20,18 @@ export default function Unauthorized() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <a className="btn btn-primary left-align-cell" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Go home!</a>
+                <NavLink className="btn btn-primary left-align-cell" to="/"><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Go home!</NavLink>
                 <h1>Unauthorized</h1>
-                <div className="col-sm-2"></div>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNavDropdown">
+                    <div className="navbar-nav">
+                        <CopyLinkButton className="nav-item" />
+                        <EditModeButton className="nav-item" />
+                        <LoginLogoutButton className="nav-item" item={{}}/>
+                    </div>
+                </div>
             </nav>
             <div className="container">
                 <p>Hi {username}! You do not have access to modify the album</p>
