@@ -79,7 +79,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Activate
-    public void activate() {
+    public void activate(Map<String, Object> config) {
         // Called when component is activated
     }
 
