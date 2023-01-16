@@ -24,6 +24,7 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.SecurityUtils;
@@ -39,6 +40,7 @@ import org.apache.shiro.web.util.WebUtils;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
+import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.Credentials;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
 import no.priv.bang.osgiservice.users.UserManagementService;
@@ -54,6 +56,9 @@ public class LoginResource {
 
     @Inject
     public UserManagementService useradmin;
+
+    @Inject
+    public OldAlbumService oldalbum;
 
     @Inject
     void setLogservice(LogService logservice) {
@@ -78,7 +83,7 @@ public class LoginResource {
 
     @POST
     @Path("/login")
-    public LoginResult login(Credentials credentials) {
+    public LoginResult login(@QueryParam("locale")String locale, Credentials credentials) {
         Subject subject = SecurityUtils.getSubject();
         var originalRequestUri = findOriginalRequestUri().orElse(null);
 
@@ -97,16 +102,16 @@ public class LoginResource {
                 .build();
         } catch(UnknownAccountException e) {
             logger.warn("Login error: unknown account", e);
-            return LoginResult.with().success(false).errormessage("Unknown account").canModifyAlbum(false).canLogin(canLogin).build();
+            return LoginResult.with().success(false).errormessage(oldalbum.displayText("unknownaccount", locale)).canModifyAlbum(false).canLogin(canLogin).build();
         } catch (IncorrectCredentialsException  e) {
             logger.warn("Login error: wrong password", e);
-            return LoginResult.with().success(false).errormessage("Wrong password").canModifyAlbum(false).canLogin(canLogin).build();
+            return LoginResult.with().success(false).errormessage(oldalbum.displayText("wrongpassword", locale)).canModifyAlbum(false).canLogin(canLogin).build();
         } catch (LockedAccountException  e) {
             logger.warn("Login error: locked account", e);
-            return LoginResult.with().success(false).errormessage("Locked account").canModifyAlbum(false).canLogin(canLogin).build();
+            return LoginResult.with().success(false).errormessage(oldalbum.displayText("lockedaccount", locale)).canModifyAlbum(false).canLogin(canLogin).build();
         } catch (AuthenticationException e) {
             logger.warn("Login error: general authentication error", e);
-            return LoginResult.with().success(false).errormessage("Unknown login error").canModifyAlbum(false).canLogin(canLogin).build();
+            return LoginResult.with().success(false).errormessage(oldalbum.displayText("unknownloginerror", locale)).canModifyAlbum(false).canLogin(canLogin).build();
         } catch (Exception e) {
             logger.error("Login error: internal server error", e);
             throw new InternalServerErrorException();
@@ -141,8 +146,8 @@ public class LoginResource {
 
     private Optional<String> findOriginalRequestUri() {
         return Optional.ofNullable(WebUtils.getSavedRequest(null))
-                .map(SavedRequest::getRequestURI)
-                .map(u -> u.replace("/oldalbum", ""));
+            .map(SavedRequest::getRequestURI)
+            .map(u -> u.replace("/oldalbum", ""));
     }
 
 }
