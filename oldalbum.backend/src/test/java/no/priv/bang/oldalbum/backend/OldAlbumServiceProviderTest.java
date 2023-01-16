@@ -1213,6 +1213,17 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDefaultLocaleWhenLocaleNotInConfig() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var database = mock(DataSource.class);
+        provider.setDataSource(database);
+        provider.activate(Collections.singletonMap("DataSource.target", "value \"(osgi.jndi.service.name=jdbc/oldalbum)\""));
+        assertNull(provider.defaultLocale());
+    }
+
+    @Test
     void testAvailableLocales() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();

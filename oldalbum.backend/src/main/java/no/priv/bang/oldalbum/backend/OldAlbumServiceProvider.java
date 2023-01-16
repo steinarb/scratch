@@ -80,7 +80,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Activate
     public void activate(Map<String, Object> config) {
-        defaultLocale = !config.isEmpty() ? Locale.forLanguageTag(((String) config.get("defaultlocale")).replace('_', '-')) : null;
+        defaultLocale = config.entrySet().stream()
+            .filter(e -> "defaultlocale".equals(e.getKey()))
+            .map(e -> Locale.forLanguageTag(((String)e.getValue()).replace('_', '-')))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
