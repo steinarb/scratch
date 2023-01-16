@@ -59,7 +59,7 @@ import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
-@Component(immediate = true)
+@Component(immediate = true, property= { "defaultlocale=nb_NO" })
 public class OldAlbumServiceProvider implements OldAlbumService {
 
     private static final String DISPLAY_TEXT_RESOURCES = "i18n.Texts";
