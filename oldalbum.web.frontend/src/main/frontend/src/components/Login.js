@@ -4,6 +4,7 @@ import { Navigate, NavLink, useSearchParams } from 'react-router-dom';
 import { LOGIN_REQUEST } from '../reduxactions';
 
 export default function Login() {
+    const text = useSelector(state => state.displayTexts);
     const loggedIn = useSelector(state => state.loggedIn);
     const errormessage = useSelector(state => state.errormessage);
     const originalRequestUri = useSelector(state => state.originalRequestUri);
@@ -25,20 +26,20 @@ export default function Login() {
         <div className="Login">
             <header>
                 <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
-                    <h1>Album login</h1>
+                    <h1>{text.albumlogin}</h1>
                     <p id="messagebanner"></p>
                 </div>
             </header>
             <div className="container">
                 <form onSubmit={e => { e.preventDefault(); }}>
                     <div className="form-group row">
-                        <label htmlFor="username" className="col-form-label col-3 mr-2">Username:</label>
+                        <label htmlFor="username" className="col-form-label col-3 mr-2">{text.username}:</label>
                         <div className="col-8">
                             <input id="username" className="form-control" type="text" name="username" value={username} onChange={e => setUsername(e.target.value)} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="password" className="col-form-label col-3 mr-2">Password:</label>
+                        <label htmlFor="password" className="col-form-label col-3 mr-2">{text.password}:</label>
                         <div className="col-8">
                             <input id="password" className="form-control" type="password" name="password" value={password} onChange={e => setPassword(e.target.value)}/>
                         </div>
@@ -47,9 +48,9 @@ export default function Login() {
                         <input
                             className="btn btn-primary mx-2"
                             type="submit"
-                            value="Login"
+                            value={text.login}
                             onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
-                        <NavLink className="btn btn-primary mx-2" to={returnpath}>Cancel</NavLink>
+                        <NavLink className="btn btn-primary mx-2" to={returnpath}>{text.cancel}</NavLink>
                     </div>
                 </form>
                 { errormessage && <div className="alert alert-warning">{errormessage}</div> }

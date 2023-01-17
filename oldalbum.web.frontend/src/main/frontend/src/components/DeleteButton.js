@@ -5,6 +5,7 @@ import { DELETE_ITEM_REQUEST } from '../reduxactions';
 
 export default function DeleteButton(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const showEditControls = useSelector(state => state.showEditControls);
     const parentpath = useSelector(state => (state.albumentries[item.parent] || {}).path || '');
     const children = useSelector(state => state.childentries[item.id] || []);
@@ -23,5 +24,5 @@ export default function DeleteButton(props) {
                className={(props.className || '') + ' btn btn-primary'}
                type="button"
                onClick={() => onDelete(item, parentpath)}>
-               Delete</button>);
+               {text.delete}</button>);
 }

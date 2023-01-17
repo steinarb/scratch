@@ -6,6 +6,7 @@ import { LOGOUT_REQUEST } from '../reduxactions';
 
 export default function LoginLogoutButton(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const loggedIn = useSelector(state => state.loggedIn);
     const username = useSelector(state => state.username);
     const canLogin = useSelector(state => state.canLogin);
@@ -17,11 +18,11 @@ export default function LoginLogoutButton(props) {
 
     if (loggedIn) {
         return (<span className="{props.styleName} alert alert-primary" role="alert">
-                    Logged in as {username} <span className="alert-link" onClick={() => dispatch(LOGOUT_REQUEST())}>Logout</span>
+                    {text.loggedinas} {username} <span className="alert-link" onClick={() => dispatch(LOGOUT_REQUEST())}>{text.logout}</span>
                 </span>);
     }
 
     const returnpath = item.path || '/';
     const loginpath = '/login?' + stringify({ returnpath });
-    return(<span className="alert alert-primary" role="alert">Not logged in <NavLink className="alert-link" to={loginpath}>Log in</NavLink></span>);
+    return(<span className="alert alert-primary" role="alert">{text.notloggedin} <NavLink className="alert-link" to={loginpath}>{text.login}</NavLink></span>);
 }

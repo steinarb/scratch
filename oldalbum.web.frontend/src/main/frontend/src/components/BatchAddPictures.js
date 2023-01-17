@@ -10,6 +10,7 @@ export default function BatchAddPictures(props) {
     const { item, className='' } = props;
     const { id } = item;
     const parent = id; // The new pictures will have this as a parent
+    const text = useSelector(state => state.displayTexts);
     const showEditControls = useSelector(state => state.showEditControls);
     const batchAddUrl = useSelector(state => state.batchAddUrl);
     const importYear = useSelector(state => state.batchAddImportYear);
@@ -32,7 +33,7 @@ export default function BatchAddPictures(props) {
                             value={batchAddUrl}
                             onChange={e => dispatch(BATCH_ADD_URL_FIELD_CHANGED(e.target.value))}/>
                     </div>
-                    <label htmlFor="importYear" className="col-form-label col-1">Year</label>
+                    <label htmlFor="importYear" className="col-form-label col-1">{text.year}</label>
                     <div className="col-2">
                         <input
                             id="importYear"
@@ -45,7 +46,7 @@ export default function BatchAddPictures(props) {
                         className="btn btn-primary col-4"
                         type="button"
                         onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl, importYear }))}>
-                        Batch add pictures
+                        {text.batchaddpictures}
                     </button>
                 </div>
             </div>

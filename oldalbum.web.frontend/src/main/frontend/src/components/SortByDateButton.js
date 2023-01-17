@@ -4,6 +4,7 @@ import { SORT_ALBUM_ENTRIES_BY_DATE_REQUEST } from '../reduxactions';
 
 export default function DeleteButton(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const showEditControls = useSelector(state => state.showEditControls);
     const dispatch = useDispatch();
 
@@ -17,6 +18,6 @@ export default function DeleteButton(props) {
             className={(props.className || '') + ' btn btn-primary'}
             type="button"
             onClick={() => dispatch(SORT_ALBUM_ENTRIES_BY_DATE_REQUEST(item))}>
-            Sort by date</button>
+            {text.sortbydate}</button>
     );
 }

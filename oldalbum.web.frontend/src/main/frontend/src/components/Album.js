@@ -21,6 +21,7 @@ import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 
 export default function Album(props) {
     const { item } = props;
+    const text = useSelector(state => state.displayTexts);
     const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
     const children = useSelector(state => state.childentries[item.id] || []);
     const previous = useSelector(state => state.previousentry[item.id]);
@@ -53,7 +54,7 @@ export default function Album(props) {
                         <div className="container">
                             <div className="column">
                                 <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-                                <div className="row">Up</div>
+                                <div className="row">{text.up}</div>
                             </div>
                         </div>
                     </NavLink>

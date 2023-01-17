@@ -1,10 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
 
 export default function NotFound() {
+    const text = useSelector(state => state.displayTexts);
 
     return (
         <div>
@@ -13,7 +15,7 @@ export default function NotFound() {
                     <div className="container">
                         <div className="column">
                             <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-                            <div className="row">Up</div>
+                            <div className="row">{text.up}</div>
                         </div>
                     </div>
                 </NavLink>
@@ -29,7 +31,7 @@ export default function NotFound() {
                     </div>
                 </div>
             </nav>
-            <p>The resource you were looking for, was not found.</p>
+            <p>{text.resourcenotfound}</p>
         </div>
     );
 }

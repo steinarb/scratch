@@ -12,6 +12,7 @@ import {
 } from '../reduxactions';
 
 export default function ModifyAlbum() {
+    const text = useSelector(state => state.displayTexts);
     const parent = useSelector(state => state.albumentryParent);
     const path = useSelector(state => state.albumentryPath);
     const basename = useSelector(state => state.albumentryBasename);
@@ -29,16 +30,16 @@ export default function ModifyAlbum() {
                     <div className="container">
                         <div className="column">
                             <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-                            <div className="row">Up</div>
+                            <div className="row">{text.up}</div>
                         </div>
                     </div>
                 </NavLink>
-                <h1>Modify album</h1>
+                <h1>{text.modifyalbum}</h1>
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row">
-                        <label htmlFor="parent" className="col-form-label col-5">Parent</label>
+                        <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
                         <div className="col-7">
                             <select
                                 id="parent"
@@ -50,13 +51,13 @@ export default function ModifyAlbum() {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="path" className="col-form-label col-5">Path</label>
+                        <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
                         <div className="col-7">
                             <input id="path" className="form-control" type="text" value={path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="basename" className="col-form-label col-5">Base file name</label>
+                        <label htmlFor="basename" className="col-form-label col-5">{text.basefilename}</label>
                         <div className="col-7">
                             <input
                                 id="basename"
@@ -68,7 +69,7 @@ export default function ModifyAlbum() {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="title" className="col-form-label col-5">Title</label>
+                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input
                                 id="title"
@@ -79,7 +80,7 @@ export default function ModifyAlbum() {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label htmlFor="description" className="col-form-label col-5">Description</label>
+                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
                             <input
                                 id="description"
@@ -96,19 +97,19 @@ export default function ModifyAlbum() {
                             type="checkbox"
                             checked={requireLogin}
                             onChange={e => dispatch(MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
-                        <label htmlFor="require-login" className="form-check-label col-11">Require logged in user</label>
+                        <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
                     </div>
                     <div className="container">
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED())}>
-                            Update</button>
+                            {text.update}</button>
                         <button
                             className="btn btn-primary ml-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED())}>
-                            Cancel</button>
+                            {text.cancel}</button>
                     </div>
                 </div>
             </form>
