@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import ThumbnailImg from './ThumbnailImg';
 
-function Thumbnail(props) {
+export default function Thumbnail(props) {
     const { entry, className='' } = props;
 
     return (
@@ -13,5 +13,3 @@ function Thumbnail(props) {
         </div>
     );
 }
-
-export default Thumbnail;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ThumbnailImg(props) {
+export default function ThumbnailImg(props) {
     const { entry } = props;
 
     if (entry.thumbnailUrl) {
@@ -13,5 +13,3 @@ function ThumbnailImg(props) {
         <img className="img-thumbnail fullsize-img-thumbnail" src={entry.imageUrl} />
     );
 }
-
-export default ThumbnailImg;
