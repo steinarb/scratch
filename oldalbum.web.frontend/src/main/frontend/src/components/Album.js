@@ -5,6 +5,7 @@ import { push } from 'redux-first-history';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
+import Locale from './Locale';
 import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
@@ -65,6 +66,7 @@ export default function Album(props) {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <div className="navbar-nav">
+                        <Locale className="nav-item" />
                         <CopyLinkButton className="nav-item" />
                         <EditModeButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>
