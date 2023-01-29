@@ -36,7 +36,7 @@
         <junit.jupiter.version>5.9.2</junit.jupiter.version>
         <mockrunner.version>2.0.6</mockrunner.version>
         <mockito.version>5.0.0</mockito.version>
-        <assertj.version>3.23.1</assertj.version>
+        <assertj.version>3.24.2</assertj.version>
         <pax.jdbc.version>1.5.3</pax.jdbc.version>
         <liquibase-feature.version>4.17.1</liquibase-feature.version>
         <jsoup.version>1.15.3</jsoup.version>
