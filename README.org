@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                                                           |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------------|
+| <2023-03-05 Sun 23:16> |  1.1.21 | liquibase 4.19.0, postgresql 42.5.4, pax-jdbc 1.5.5, jsoup 1.15.4, mockito 5.1.1                                     |
 | <2023-01-29 Sun 19:08> |  1.1.20 | junit jupiter 5.9.2, mockito 5.0.0, assertj 3.24.2, nexus-staging-maven-plugin 1.6.13, maven-release-plugin 3.0.0-M7 |
 | <2023-01-28 Sat 18:10> |  1.1.19 | Use karaf 4.4.2                                                                                                      |
 | <2023-01-14 Sat 13:43> |  1.1.18 | User servlet 1.6.4 to get 404 response override in frontends                                                         |
@@ -59,7 +60,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
       <parent>
           <groupId>no.priv.bang.pom</groupId>
           <artifactId>bang-pom</artifactId>
-          <version>1.1.20</version>
+          <version>1.1.21</version>
       </parent>
     #+end_src
  2. Import the BoM into your project's dependencyManagement (the bang-bom.version maven property is set by the parent):
