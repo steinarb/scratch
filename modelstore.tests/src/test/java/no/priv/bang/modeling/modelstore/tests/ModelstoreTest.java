@@ -4,23 +4,20 @@ import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
+import org.apache.karaf.itests.KarafTestSupport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
@@ -32,25 +29,26 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class ModelstoreTest extends ModelstoreIntegrationtestBase {
-
-    @Inject
-    private Modelstore modelstoreService;
+public class ModelstoreTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
-        final MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf-minimal").type("zip").versionAsInProject();
-        final MavenArtifactUrlReference authserviceFeatureRepo = maven().groupId("no.priv.bang.modeling.modelstore").artifactId("modelstore.backend").version("LATEST").type("xml").classifier("features");
-        return options(
-            karafDistributionConfiguration().frameworkUrl(karafUrl).unpackDirectory(new File("target/exam")).useDeployFolder(false).runEmbedded(true),
-            configureConsole().ignoreLocalConsole().ignoreRemoteShell(),
-            features(authserviceFeatureRepo, "modelstore.backend"),
-            junitBundles());
+        final var modelstoreFeatureRepo = maven()
+            .groupId("no.priv.bang.modeling.modelstore")
+            .artifactId("modelstore.backend")
+            .version("LATEST")
+            .type("xml")
+            .classifier("features");
+        Option[] options = new Option[] {
+            features(modelstoreFeatureRepo, "modelstore.backend")
+        };
+        return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
     }
 
     @Test
-    public void modelstoreIntegrationTest() {
+    public void modelstoreIntegrationTest() throws Exception {
         // Verify that the service could be injected
+        var modelstoreService = getOsgiService(Modelstore.class);
         assertNotNull(modelstoreService);
 
         // Actually use the service to create some propertysets
@@ -66,7 +64,9 @@ public class ModelstoreTest extends ModelstoreIntegrationtestBase {
     }
 
     @Test
-    public void testList() {
+    public void testList() throws Exception {
+        installAndAssertFeature("modelstore.backend");
+        var modelstoreService = getOsgiService(Modelstore.class);
         ModelContext context = modelstoreService.getDefaultContext();
         ValueList list = context.createList();
         assertEquals(0, list.size());
@@ -102,7 +102,8 @@ public class ModelstoreTest extends ModelstoreIntegrationtestBase {
     }
 
     @Test
-    public void testEmbeddedAspects() {
+    public void testEmbeddedAspects() throws Exception {
+        var modelstoreService = getOsgiService(Modelstore.class);
         ModelContext context = modelstoreService.getDefaultContext();
         int numberOfEmbeddedAspects = 6; // Adjust when adding embedded aspects
 
@@ -116,11 +117,11 @@ public class ModelstoreTest extends ModelstoreIntegrationtestBase {
      *
      * Have to write to the pipe from a different thread than the reader,
      * or else it will deadlock.
-     *
-     * @throws IOException
+     * @throws Exception
      */
     @Test
-    public void testPersistRestoreModelContextUsingPipedStreams() throws IOException {
+    public void testPersistRestoreModelContextUsingPipedStreams() throws Exception {
+        var modelstoreService = getOsgiService(Modelstore.class);
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         final ModelContext context1 = modelstoreService.restoreContext(carsAndBicylesStream);
         assertEquals(6, context1.listAllAspects().size());

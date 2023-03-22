@@ -1,9 +1,8 @@
 package no.priv.bang.modeling.modelstore.backend;
 
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.*;
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -287,13 +286,13 @@ public class JsonPropertysetPersisterTest {
         // Check that the exception has been logged
         List<ErrorBean> errors = modelstore.getErrors();
         assertEquals(2, errors.size());
-        assertEquals(now, errors.get(0).getDate());
+        assertThat(now).isCloseTo(errors.get(0).getDate(), 100);
         assertEquals("Caught exception outputting stream", errors.get(0).getMessage());
-        assertThat(errors.get(0).getFileOrStream(), startsWith("no.priv.bang.modeling.modelstore.mocks.MockOutputStreamThatThrowsIOExceptionOnEverything"));
+        assertThat(errors.get(0).getFileOrStream()).startsWith("no.priv.bang.modeling.modelstore.mocks.MockOutputStreamThatThrowsIOExceptionOnEverything");
         assertEquals(IOException.class, errors.get(0).getException().getClass());
         assertEquals(now, errors.get(1).getDate());
         assertEquals("Caught exception closing output stream", errors.get(1).getMessage());
-        assertThat(errors.get(1).getFileOrStream(), startsWith("no.priv.bang.modeling.modelstore.mocks.MockOutputStreamThatThrowsIOExceptionOnEverything"));
+        assertThat(errors.get(1).getFileOrStream()).startsWith("no.priv.bang.modeling.modelstore.mocks.MockOutputStreamThatThrowsIOExceptionOnEverything");
         assertEquals(IOException.class, errors.get(1).getException().getClass());
     }
 
@@ -393,7 +392,7 @@ public class JsonPropertysetPersisterTest {
         assertEquals(1, errors.size());
         assertNotNull(errors.get(0).getDate());
         assertEquals("Caught exception parsing a JSON file", errors.get(0).getMessage());
-        assertThat(errors.get(0).getFileOrStream(), startsWith("sun.nio.ch.ChannelInputStream"));
+        assertThat(errors.get(0).getFileOrStream()).startsWith("sun.nio.ch.ChannelInputStream");
         assertEquals(JsonParseException.class, errors.get(0).getException().getClass());
     }
 

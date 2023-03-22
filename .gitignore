@@ -1,6 +1,7 @@
 .classpath
 .project
 .settings/
+/.metadata/
 /README.md
 /modelstore.gogoshell/runner/
 /modelstore.tests/test.log
