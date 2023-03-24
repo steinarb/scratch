@@ -1,12 +1,12 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
-
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -21,7 +21,7 @@ public class IdValueTest {
 
     private Value value;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         value = new IdValue(UUID.fromString("e40fb164-3dd3-43b8-839f-8781bbcb2a15"));
     }

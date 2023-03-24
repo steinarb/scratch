@@ -1,9 +1,9 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;

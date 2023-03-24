@@ -3,8 +3,8 @@ package no.priv.bang.modeling.modelstore.backend;
 import static no.priv.bang.modeling.modelstore.backend.Aspects.*;
 import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.compareAllPropertysets;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.UUID;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.fasterxml.jackson.core.JsonFactory;
 
@@ -30,8 +29,8 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
  */
 public class ModelContextImplTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    File folder;
 
     /**
      * Unit test for {@link ModelContextImpl#merge(ModelContext} when the
@@ -48,15 +47,15 @@ public class ModelContextImplTest {
     public void testMergeNoOverlapBetweenContexts() throws IOException {
         ModelContext context = new ModelContextImpl();
         buildPropertysetA(context, UUID.randomUUID());
-        assertEquals("Expected context to contain 1 propertyset", 1, context.listAllPropertysets().size());
+        assertEquals(1, context.listAllPropertysets().size(), "Expected context to contain 1 propertyset");
 
         ModelContext otherContext = new ModelContextImpl();
         UUID bId = UUID.randomUUID();
         buildPropertysetB(otherContext, bId);
-        assertEquals("Expected otherContext to contain 1 propertyset", 1, otherContext.listAllPropertysets().size());
+        assertEquals(1, otherContext.listAllPropertysets().size(), "Expected otherContext to contain 1 propertyset");
 
         context.merge(otherContext);
-        assertEquals("Expected context to contain 2 propertysets", 2, context.listAllPropertysets().size());
+        assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain 2 propertysets");
         // Verify that the copied "B" is the same as the original B
         // TODO decide if PropertysetRecordingSaveTime.equals() should include the context in comparison, for now: get the inner PropertysetImpl instances and compare them instead
         Propertyset originalB = findWrappedPropertyset(otherContext.findPropertyset(bId));
@@ -64,7 +63,7 @@ public class ModelContextImplTest {
         assertEquals(originalB, mergedB);
 
         // Save and restore the merged context and verify that the restored context is the same as the merged context
-        File propertysetsFile = folder.newFile("mergedcontext.json");
+        File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         JsonFactory factory = new JsonFactory();
         JsonPropertysetPersister persister = new JsonPropertysetPersister(factory);
@@ -94,7 +93,7 @@ public class ModelContextImplTest {
         ModelContext context = new ModelContextImpl();
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);
-        assertEquals("Expected context to contain 1 propertyset", 1, context.listAllPropertysets().size());
+        assertEquals(1, context.listAllPropertysets().size(), "Expected context to contain 1 propertyset");
 
         // Wait a few milliseconds to get a different time stamp
         Thread.sleep(10);
@@ -106,7 +105,7 @@ public class ModelContextImplTest {
         otherContext.findPropertyset(aId).addAspect(generalObjectAspect);
         buildPropertysetB(otherContext, bId);
         otherContext.findPropertyset(bId).addAspect(generalObjectAspect);
-        assertEquals("Expected otherContext to contain 2 propertysets", 2, otherContext.listAllPropertysets().size());
+        assertEquals(2, otherContext.listAllPropertysets().size(), "Expected otherContext to contain 2 propertysets");
 
         // Wait a few milliseconds to get a different time stamp, then create "b" in the
         // in the first context, with a slightly newer time stamp, meaning it should be kept
@@ -115,12 +114,12 @@ public class ModelContextImplTest {
         context.findPropertyset(bId).setLongProperty("value", 4); // Change the value, should be kept after merge
         Propertyset modelAspect = context.findPropertyset(modelAspectId);
         context.findPropertyset(bId).addAspect(modelAspect);
-        assertEquals("Expected context to contain 2 propertysets", 2, context.listAllPropertysets().size());
+        assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain 2 propertysets");
 
         context.merge(otherContext);
 
         // Verify the merge results
-        assertEquals("Expected context to contain 2 propertysets", 2, context.listAllPropertysets().size());
+        assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain 2 propertysets");
         // Check that the "value" in "b" and in "a" both come from otherContext, since there is no lastmodifiedtime recorded
         assertEquals(42, context.findPropertyset(aId).getLongProperty("value").longValue());
         assertEquals(1.2, context.findPropertyset(bId).getDoubleProperty("value").doubleValue(), 0.0);
@@ -133,7 +132,7 @@ public class ModelContextImplTest {
         assertEquals(generalObjectAspectId, context.findPropertyset(bId).getAspects().get(1).asReference().getId());
 
         // Save and restore the merged context and verify that the restored context is the same as the merged context
-        File propertysetsFile = folder.newFile("mergedcontext.json");
+        File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         JsonFactory factory = new JsonFactory();
         JsonPropertysetPersister persister = new JsonPropertysetPersister(factory);
@@ -177,7 +176,7 @@ public class ModelContextImplTest {
     public void testToString() {
         ModelContext context = new ModelContextImpl();
         addPropertysetsToContext(context);
-        assertThat(context.toString(), startsWith("ModelContextImpl "));
+        assertThat(context.toString()).startsWith("ModelContextImpl ");
     }
 
     private void addPropertysetsToContext(ModelContext context) {

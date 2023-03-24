@@ -1,11 +1,11 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link NilValue}.

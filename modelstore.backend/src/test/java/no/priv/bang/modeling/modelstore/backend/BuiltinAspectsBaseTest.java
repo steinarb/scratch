@@ -3,10 +3,10 @@
  */
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
@@ -26,7 +26,7 @@ public class BuiltinAspectsBaseTest {
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         modelstore = new ModelstoreProvider();
         context = modelstore.createContext();

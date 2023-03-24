@@ -1,9 +1,9 @@
 package no.priv.bang.modeling.modelstore.backend;
 
 import static no.priv.bang.modeling.modelstore.backend.ModelContexts.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 

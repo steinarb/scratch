@@ -1,7 +1,7 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +9,9 @@ import java.nio.file.Files;
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.fasterxml.jackson.core.JsonFactory;
 
@@ -38,10 +37,10 @@ public class ModelContextRecordingMetadataTest {
     private Propertyset vehicleAspect;
     private PropertysetRecordingSaveTime carAspect;
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    File folder;
 
-    @Before
+    @BeforeEach
     public void setup() {
         jsonFactory = new JsonFactory();
         persister = new JsonPropertysetPersister(jsonFactory);
@@ -63,7 +62,7 @@ public class ModelContextRecordingMetadataTest {
         Propertyset wrappedOutback = context.findPropertyset(outbackId);
         assertEquals("Subaru", unwrappedOutback.getStringProperty("manufacturer"));
         assertEquals("Subaru", wrappedOutback.getStringProperty("manufacturer"));
-        assertEquals("Expected wrapped and unwrapped propertyset to test equal", wrappedOutback, unwrappedOutback);
+        assertEquals(wrappedOutback, unwrappedOutback, "Expected wrapped and unwrapped propertyset to test equal");
     }
 
     /**
@@ -109,7 +108,7 @@ public class ModelContextRecordingMetadataTest {
         assertNotNull(context.getLastmodifieddate(ferrari2));
 
         // Save to and restore from a file
-        File propertysetsFile = folder.newFile("save_restore_cars_and_bikes.json");
+        File propertysetsFile = new File(folder, "save_restore_cars_and_bikes.json");
         persister.persist(Files.newOutputStream(propertysetsFile.toPath()), context);
         ModelContext nonMetadataRecordingContext2 = new ModelContextImpl();
         persister.restore(Files.newInputStream(propertysetsFile.toPath()), nonMetadataRecordingContext2);
@@ -248,7 +247,7 @@ public class ModelContextRecordingMetadataTest {
         addPropertysetsToContext(inner);
         ModelContext context = new ModelContextRecordingMetadata(inner);
         addPropertysetsToContext(context);
-        assertThat(context.toString(), startsWith("ModelContextRecordingMetadata "));
+        assertThat(context.toString()).startsWith("ModelContextRecordingMetadata ");
     }
 
     private void addPropertysetsToContext(ModelContext context) {

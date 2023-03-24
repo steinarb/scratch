@@ -1,8 +1,6 @@
 package no.priv.bang.modeling.modelstore;
 
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,15 +10,16 @@ import java.io.PipedOutputStream;
 import java.nio.file.Files;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import no.priv.bang.modeling.modelstore.backend.ModelstoreProvider;
 import no.priv.bang.modeling.modelstore.services.ErrorBean;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 /**
  * Unit test for the {@link Modelstore} interface and its
@@ -30,8 +29,8 @@ import org.junit.rules.TemporaryFolder;
  *
  */
 public class ModelstoreTest {
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    File folder;
 
     /**
      * Test fetching the default context of a
@@ -42,7 +41,7 @@ public class ModelstoreTest {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         assertNotNull(context);
-        assertEquals("Expected the built-in aspects", 6, context.listAllAspects().size());
+        assertEquals(6, context.listAllAspects().size(), "Expected the built-in aspects");
     }
 
     /**
@@ -70,7 +69,7 @@ public class ModelstoreTest {
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         ModelContext context1 = modelstore.restoreContext(carsAndBicylesStream);
 
-        File saveFile = folder.newFile();
+        File saveFile = new File(folder, "save");
         OutputStream saveStream = Files.newOutputStream(saveFile.toPath());
         modelstore.persistContext(saveStream, context1);
 

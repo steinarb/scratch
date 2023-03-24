@@ -2,10 +2,10 @@ package no.priv.bang.modeling.modelstore.backend;
 
 import java.util.UUID;
 
-import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;

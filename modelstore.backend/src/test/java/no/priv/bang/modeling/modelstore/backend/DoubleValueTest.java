@@ -1,9 +1,10 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -18,7 +19,7 @@ public class DoubleValueTest {
 
     private Value value;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         value = toDoubleValue(3.14);
     }

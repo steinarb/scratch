@@ -1,13 +1,13 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 
 import java.util.Collection;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
@@ -338,7 +338,7 @@ public class PropertysetImplTest {
         otherpropertyset.setComplexProperty("corner", propertyset.getComplexProperty("upperLeftCorner"));
         otherpropertyset.getComplexProperty("corner").setDoubleProperty("x", 77);
         assertEquals(77.0, otherpropertyset.getComplexProperty("corner").getDoubleProperty("x"), 0.0);
-        assertEquals("Expected original to be unchanged", 75.3, propertyset.getComplexProperty("upperLeftCorner").getDoubleProperty("x"), 0.0);
+        assertEquals(75.3, propertyset.getComplexProperty("upperLeftCorner").getDoubleProperty("x"), 0.0, "Expected original to be unchanged");
     }
 
     /**
@@ -435,7 +435,7 @@ public class PropertysetImplTest {
         otherpropertyset.setListProperty("listValue", propertyset.getListProperty("listValue"));
         otherpropertyset.getListProperty("listValue").add(378);
         assertEquals(3, otherpropertyset.getListProperty("listValue").size());
-        assertEquals("Expected original to be unchanged", 2, propertyset.getListProperty("listValue").size());
+        assertEquals(2, propertyset.getListProperty("listValue").size(), "Expected original to be unchanged");
     }
 
     @Test
@@ -467,11 +467,11 @@ public class PropertysetImplTest {
         otherpropertyset.setProperty("a", propertyset.getProperty("a"));
         otherpropertyset.getComplexProperty("a").setLongProperty("l", 43);
         assertEquals(43, otherpropertyset.getComplexProperty("a").getLongProperty("l").longValue());
-        assertEquals("Expected original value to be unchanged", 42, propertyset.getComplexProperty("a").getLongProperty("l").longValue());
+        assertEquals(42, propertyset.getComplexProperty("a").getLongProperty("l").longValue(), "Expected original value to be unchanged");
         otherpropertyset.setProperty("b", propertyset.getProperty("b"));
         otherpropertyset.getListProperty("b").add("wow");
         assertEquals(2, otherpropertyset.getListProperty("b").size());
-        assertEquals("Expected original value to be unchanged", 1, propertyset.getListProperty("b").size());
+        assertEquals(1, propertyset.getListProperty("b").size(), "Expected original value to be unchanged");
     }
 
     /**
@@ -654,27 +654,27 @@ public class PropertysetImplTest {
         // Check that modifying values in the copy doesn't affect the original
         copy.setBooleanProperty("a", false);
         assertFalse(copy.getBooleanProperty("a").booleanValue());
-        assertTrue("Expected unchanged value", propertyset.getBooleanProperty("a").booleanValue());
+        assertTrue(propertyset.getBooleanProperty("a").booleanValue(), "Expected unchanged value");
         copy.setLongProperty("b", 43);
         assertEquals(43, copy.getLongProperty("b").longValue());
-        assertEquals("Expected unchanged value", 42, propertyset.getLongProperty("b").longValue());
+        assertEquals(42, propertyset.getLongProperty("b").longValue(), "Expected unchanged value");
         copy.setDoubleProperty("c", 1.1);
         assertEquals(1.1, copy.getDoubleProperty("c"), 0.0);
-        assertEquals("Expected unchanged value", 2.7, propertyset.getDoubleProperty("c"), 0.0);
+        assertEquals(2.7, propertyset.getDoubleProperty("c"), 0.0, "Expected unchanged value");
         copy.setStringProperty("d", "bar foo");
         assertEquals("bar foo", copy.getStringProperty("d"));
-        assertEquals("Expected unchanged value", "foo bar", propertyset.getStringProperty("d"));
+        assertEquals("foo bar", propertyset.getStringProperty("d"), "Expected unchanged value");
         Propertyset originalReferencedPropertyset = copy.getReferenceProperty("e");
         Propertyset newReferencedPropertyset = context.findPropertyset(UUID.randomUUID());
         copy.setReferenceProperty("e", newReferencedPropertyset);
         assertEquals(newReferencedPropertyset, copy.getReferenceProperty("e"));
-        assertEquals("Expected unchanged value", originalReferencedPropertyset, propertyset.getReferenceProperty("e"));
+        assertEquals(originalReferencedPropertyset, propertyset.getReferenceProperty("e"), "Expected unchanged value");
         copy.getComplexProperty("f").setLongProperty("z", 35);
         assertEquals(1, copy.getComplexProperty("f").getPropertynames().size());
-        assertEquals("Expected unchanged value", 0, propertyset.getComplexProperty("f").getPropertynames().size());
+        assertEquals(0, propertyset.getComplexProperty("f").getPropertynames().size(), "Expected unchanged value");
         copy.getListProperty("g").add(3.7);
         assertEquals(2, copy.getListProperty("g").size());
-        assertEquals("Expected unchanged value", 1, propertyset.getListProperty("g").size());
+        assertEquals(1, propertyset.getListProperty("g").size(), "Expected unchanged value");
     }
 
     private Value createIdValue(ModelContext context) {

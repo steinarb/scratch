@@ -1,13 +1,13 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
@@ -26,7 +26,7 @@ public class PropertysetRecordingSaveTimeTest {
     private ModelContext innerContext;
     private ModelContext context;
     private Propertyset propertyset;
-    @Before
+    @BeforeEach
     public void setup() {
         innerContext = new ModelContextImpl();
         context = new ModelContextRecordingMetadata(innerContext);
@@ -218,14 +218,14 @@ public class PropertysetRecordingSaveTimeTest {
         // This is a back door: it is possible to manipulate a complex property without changing the timestamp on the propertyset
         propertyset.getComplexProperty("e").setStringProperty("cc", "modified");
         Date lastmodifiedTimeAfterSetProperty1 = context.getLastmodifieddate(propertyset);
-        assertEquals("Expected the time stamps to be identical", lastmodifiedTimeBeforeSetProperty, lastmodifiedTimeAfterSetProperty1);
+        assertEquals(lastmodifiedTimeBeforeSetProperty, lastmodifiedTimeAfterSetProperty1, "Expected the time stamps to be identical");
         assertEquals("modified", propertyset.getComplexProperty("e").getStringProperty("cc"));
         Thread.sleep(10); // Sleep a little to get a different timestamp
         Propertyset complex = propertyset.getComplexProperty("e");
         complex.setStringProperty("cc", "modified again");
         propertyset.setComplexProperty("e", complex);
         Date lastmodifiedTimeAfterSetProperty2 = context.getLastmodifieddate(propertyset);
-        assertNotEquals("Expected modification time to be changed", lastmodifiedTimeAfterSetProperty1, lastmodifiedTimeAfterSetProperty2);
+        assertNotEquals(lastmodifiedTimeAfterSetProperty1, lastmodifiedTimeAfterSetProperty2, "Expected modification time to be changed");
         assertEquals("modified again", propertyset.getComplexProperty("e").getStringProperty("cc"));
     }
 
@@ -259,14 +259,14 @@ public class PropertysetRecordingSaveTimeTest {
         // This is a back door: it is possible to manipulate a list property without changing the timestamp on the propertyset
         propertyset.getListProperty("g").add("modified");
         Date lastmodifiedTimeAfterSetProperty1 = context.getLastmodifieddate(propertyset);
-        assertEquals("Expected the time stamps to be identical", lastmodifiedTimeBeforeSetProperty, lastmodifiedTimeAfterSetProperty1);
+        assertEquals(lastmodifiedTimeBeforeSetProperty, lastmodifiedTimeAfterSetProperty1, "Expected the time stamps to be identical");
         assertEquals(3, propertyset.getListProperty("g").size());
         Thread.sleep(10); // Sleep a little to get a different timestamp
         ValueList list = propertyset.getListProperty("g");
         list.add("modified again");
         propertyset.setListProperty("g", list);
         Date lastmodifiedTimeAfterSetProperty2 = context.getLastmodifieddate(propertyset);
-        assertNotEquals("Expected modification time to be changed", lastmodifiedTimeAfterSetProperty1, lastmodifiedTimeAfterSetProperty2);
+        assertNotEquals(lastmodifiedTimeAfterSetProperty1, lastmodifiedTimeAfterSetProperty2, "Expected modification time to be changed");
         assertEquals(4, propertyset.getListProperty("g").size());
     }
 
@@ -301,7 +301,7 @@ public class PropertysetRecordingSaveTimeTest {
 
         // Compare underlying object
         Propertyset inner = innerContext.findPropertyset(propertysetId);
-        assertTrue("Expected inner object to compare equals to wrapper", propertyset.equals(inner));
+        assertTrue(propertyset.equals(inner), "Expected inner object to compare equals to wrapper");
     }
 
     /**
@@ -309,6 +309,6 @@ public class PropertysetRecordingSaveTimeTest {
      */
     @Test
     public void testToString() {
-        assertThat(propertyset.toString(), startsWith("PropertysetRecordingSaveTime "));
+        assertThat(propertyset.toString()).startsWith("PropertysetRecordingSaveTime ");
     }
 }

@@ -1,9 +1,10 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
@@ -20,7 +21,7 @@ public class ComplexValueTest {
     private Propertyset complexProperty;
     private Value value;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         complexProperty = new PropertysetImpl();
         complexProperty.setBooleanProperty("boolean", Boolean.TRUE);

@@ -1,8 +1,6 @@
 package no.priv.bang.modeling.modelstore;
 
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,14 +9,14 @@ import java.nio.file.Files;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
 import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 import static no.priv.bang.modeling.modelstore.backend.Aspects.*;
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.*;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -40,8 +38,8 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  *
  */
 public class ModelContextTest {
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    File folder;
 
     @Test
     public void testCreatePropertyset() {
@@ -128,25 +126,25 @@ public class ModelContextTest {
 
         // Check that the "id" property can't be set
         propertyset.setStringProperty("id", "foo bar");
-        assertEquals("Expected the \"id\" property to still hold the id", newPropertysetId.toString(), propertyset.getStringProperty("id"));
+        assertEquals(newPropertysetId.toString(), propertyset.getStringProperty("id"), "Expected the \"id\" property to still hold the id");
         propertyset.setBooleanProperty("id", Boolean.TRUE);
-        assertEquals("Expected the \"id\" property to not be affected by setting a boolean value", Boolean.FALSE, propertyset.getBooleanProperty("id"));
+        assertEquals(Boolean.FALSE, propertyset.getBooleanProperty("id"), "Expected the \"id\" property to not be affected by setting a boolean value");
         propertyset.setLongProperty("id", Long.valueOf(7));
-        assertEquals("Expected the \"id\" property to not be affected by setting an integer value", Long.valueOf(0), propertyset.getLongProperty("id"));
+        assertEquals(Long.valueOf(0), propertyset.getLongProperty("id"), "Expected the \"id\" property to not be affected by setting an integer value");
         propertyset.setDoubleProperty("id", Double.valueOf(3.14));
-        assertEquals("Expected the \"id\" property to not be affected by setting an integer value", Double.valueOf(0.0), propertyset.getDoubleProperty("id"));
+        assertEquals(Double.valueOf(0.0), propertyset.getDoubleProperty("id"), "Expected the \"id\" property to not be affected by setting an integer value");
         Propertyset complexValue = context.createPropertyset();
         propertyset.setComplexProperty("id", complexValue);
         Propertyset returnedComplexProperty = propertyset.getComplexProperty("id");
-        assertEquals("Expected the \"id\" property not to be affected by setting a complex value", getNilPropertyset(), returnedComplexProperty);
+        assertEquals(getNilPropertyset(), returnedComplexProperty, "Expected the \"id\" property not to be affected by setting a complex value");
         assertFalse(returnedComplexProperty.hasId());
         assertEquals(getNil().asId(), returnedComplexProperty.getId());
         Propertyset referencedPropertyset = context.findPropertyset(UUID.randomUUID());
         referencedPropertyset.setReferenceProperty("id", referencedPropertyset);
-        assertEquals("Expected the \"id\" property not to be affected by setting an object reference", getNilPropertyset(), propertyset.getReferenceProperty("id"));
+        assertEquals(getNilPropertyset(), propertyset.getReferenceProperty("id"), "Expected the \"id\" property not to be affected by setting an object reference");
         ValueList listValue = newList();
         propertyset.setListProperty("id", listValue);
-        assertEquals("Expected the \"id\" property not to be affected by setting an object reference", getNil().asList(), propertyset.getListProperty("id"));
+        assertEquals(getNil().asList(), propertyset.getListProperty("id"), "Expected the \"id\" property not to be affected by setting an object reference");
 
         // Verify that asking for the same id again will return the same object
         assertEquals(propertyset, context.findPropertyset(newPropertysetId));
@@ -212,7 +210,7 @@ public class ModelContextTest {
 
         JsonFactory jsonFactory = new JsonFactory();
         JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
-        File propertysetsFile = folder.newFile("propertysets.json");
+        File propertysetsFile = new File(folder, "propertysets.json");
         persister.persist(propertysetsFile, context);
 
         // Parse the written data
@@ -241,7 +239,7 @@ public class ModelContextTest {
         JsonFactory jsonFactory = new JsonFactory();
 
         // Write an objectId
-        File objectIdFile = folder.newFile("objectid.json");
+        File objectIdFile = new File(folder, "objectid.json");
         JsonGenerator generator = new JsonGeneratorWithReferences(jsonFactory.createGenerator(objectIdFile, JsonEncoding.UTF8));
         assertTrue(generator.canWriteObjectId());
         generator.writeObjectId(a.getId());
@@ -253,7 +251,7 @@ public class ModelContextTest {
         assertEquals(expectedObjectIdAsJson, objectId);
 
         // Write an object reference
-        File objectReferenceFile = folder.newFile("objectreference.json");
+        File objectReferenceFile = new File(folder, "objectreference.json");
         JsonGenerator generator2 = new JsonGeneratorWithReferences(jsonFactory.createGenerator(objectReferenceFile, JsonEncoding.UTF8));
         assertTrue(generator2.canWriteObjectId());
         generator2.writeObjectRef(a.getReferenceProperty("b").getId());
@@ -275,15 +273,15 @@ public class ModelContextTest {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         buildPropertysetA(context, UUID.randomUUID());
-        assertEquals("Expected context to contain metadata+1 propertyset", 2, context.listAllPropertysets().size());
+        assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain metadata+1 propertyset");
 
         ModelContext otherContext = modelstore.createContext();
         UUID bId = UUID.randomUUID();
         buildPropertysetB(otherContext, bId);
-        assertEquals("Expected otherContext to contain metadata+1 propertyset", 2, otherContext.listAllPropertysets().size());
+        assertEquals(2, otherContext.listAllPropertysets().size(), "Expected otherContext to contain metadata+1 propertyset");
 
         context.merge(otherContext);
-        assertEquals("Expected context to contain metadata+2 propertysets", 3, context.listAllPropertysets().size());
+        assertEquals(3, context.listAllPropertysets().size(), "Expected context to contain metadata+2 propertysets");
         // Verify that the copied "B" is the same as the original B
         // TODO decide if PropertysetRecordingSaveTime.equals() should include the context in comparison, for now: get the inner PropertysetImpl instances and compare them instead
         Propertyset originalB = findWrappedPropertyset(otherContext.findPropertyset(bId));
@@ -291,7 +289,7 @@ public class ModelContextTest {
         assertEquals(originalB, mergedB);
 
         // Save and restore the merged context and verify that the restored context is the same as the merged context
-        File propertysetsFile = folder.newFile("mergedcontext.json");
+        File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         modelstore.persistContext(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
@@ -313,7 +311,7 @@ public class ModelContextTest {
         ModelContext context = modelstore.createContext();
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);
-        assertEquals("Expected context to contain metadata+1 propertyset", 2, context.listAllPropertysets().size());
+        assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain metadata+1 propertyset");
 
         // Wait a few milliseconds to get a different time stamp
         Thread.sleep(10);
@@ -325,7 +323,7 @@ public class ModelContextTest {
         otherContext.findPropertyset(aId).addAspect(generalObjectAspect);
         buildPropertysetB(otherContext, bId);
         otherContext.findPropertyset(bId).addAspect(generalObjectAspect);
-        assertEquals("Expected otherContext to contain metadata+2 propertysets", 3, otherContext.listAllPropertysets().size());
+        assertEquals(3, otherContext.listAllPropertysets().size(), "Expected otherContext to contain metadata+2 propertysets");
 
         // Wait a few milliseconds to get a different time stamp, then create "b" in the
         // in the first context, with a slightly newer time stamp, meaning it should be kept
@@ -334,12 +332,12 @@ public class ModelContextTest {
         context.findPropertyset(bId).setLongProperty("value", 4); // Change the value, should be kept after merge
         Propertyset modelAspect = context.findPropertyset(modelAspectId);
         context.findPropertyset(bId).addAspect(modelAspect);
-        assertEquals("Expected context to contain metadata+2 propertysets", 3, context.listAllPropertysets().size());
+        assertEquals(3, context.listAllPropertysets().size(), "Expected context to contain metadata+2 propertysets");
 
         context.merge(otherContext);
 
         // Verify the merge results
-        assertEquals("Expected context to contain metadata+2 propertysets", 3, context.listAllPropertysets().size());
+        assertEquals(3, context.listAllPropertysets().size(), "Expected context to contain metadata+2 propertysets");
         // Check that the "value" in "b" is from "context" and the "value" in "a" is from "otherContext"
         assertEquals(42, context.findPropertyset(aId).getLongProperty("value").longValue());
         assertEquals(4, context.findPropertyset(bId).getLongProperty("value").longValue());
@@ -352,7 +350,7 @@ public class ModelContextTest {
         assertEquals(generalObjectAspectId, context.findPropertyset(bId).getAspects().get(1).asReference().getId());
 
         // Save and restore the merged context and verify that the restored context is the same as the merged context
-        File propertysetsFile = folder.newFile("mergedcontext.json");
+        File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         modelstore.persistContext(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
@@ -373,7 +371,7 @@ public class ModelContextTest {
         ModelContext context = modelstore.createContext();
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);
-        assertEquals("Expected context to contain metadata+1 propertyset", 2, context.listAllPropertysets().size());
+        assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain metadata+1 propertyset");
         Collection<Propertyset> propertysetsBeforeMerge = context.listAllPropertysets();
 
         // Try merging with null

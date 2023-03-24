@@ -1,12 +1,11 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
-
 import java.util.Collections;
-import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -21,7 +20,7 @@ public class EmptyValueListTest {
 
     private ValueList list;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         list = new EmptyValueList();
     }
@@ -98,9 +97,9 @@ public class EmptyValueListTest {
         assertNotNull(list.listIterator());
     }
 
-    @Test(expected=IndexOutOfBoundsException.class)
+    @Test
     public void testListIteratorWithArg() {
-        assertNotNull(list.listIterator(135));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.listIterator(135));
     }
 
     @Test
@@ -138,10 +137,9 @@ public class EmptyValueListTest {
         assertEquals(0, list.size());
     }
 
-    @Test(expected=IndexOutOfBoundsException.class)
+    @Test
     public void testSubList() {
-        List<Value> sublist = list.subList(1, 2);
-        assertTrue(sublist.isEmpty());
+        assertThrows(IndexOutOfBoundsException.class, () -> list.subList(1, 2));
     }
 
     @Test

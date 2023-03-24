@@ -1,12 +1,12 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
-
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
@@ -23,7 +23,7 @@ public class ReferenceValueTest {
     private Propertyset referencedObject;
     private Value value;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         referencedObject = new PropertysetImpl(UUID.fromString("276dbd6e-dc46-4c14-af9e-83c63c10e0b3"));
         referencedObject.setBooleanProperty("boolean", Boolean.TRUE);

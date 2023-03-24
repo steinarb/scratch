@@ -1,8 +1,9 @@
 package no.priv.bang.modeling.modelstore.backend;
 
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.*;
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,18 +16,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.osgi.service.component.annotations.Deactivate;
+
 import no.priv.bang.modeling.modelstore.mocks.MockOutputStreamThatThrowsIOExceptionOnEverything;
 import no.priv.bang.modeling.modelstore.services.ErrorBean;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
-
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -38,11 +37,8 @@ import com.fasterxml.jackson.core.JsonParseException;
  *
  */
 public class JsonPropertysetPersisterTest {
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    @TempDir
+    File folder;
 
     /**
      * Parse a file with propertysets and aspects.
@@ -118,7 +114,7 @@ public class JsonPropertysetPersisterTest {
         assertTrue(propertyset.getBooleanProperty("unfalse"));
 
         // Output the boolean values to a different file
-        File propertysetsFile = folder.newFile("boolean.json");
+        File propertysetsFile = new File(folder, "boolean.json");
         persister.persist(propertysetsFile, context);
 
         // Read the file back in and compare it with the original
@@ -155,7 +151,7 @@ public class JsonPropertysetPersisterTest {
         assertEquals(2, context.listAllPropertysets().size());
 
         // Output the two propertysets to a different file
-        File twoObjectsFile = folder.newFile("two_objects.json");
+        File twoObjectsFile = new File(folder, "two_objects.json");
         persister.persist(twoObjectsFile, context);
 
         // Read the file back in and compare it with the original
@@ -191,7 +187,7 @@ public class JsonPropertysetPersisterTest {
         assertEquals(7, propertyset.getListProperty("listofthings").size());
 
         // Output the two propertysets to a different file
-        File saveRestoreFile = folder.newFile("list_property.json");
+        File saveRestoreFile = new File(folder, "list_property.json");
         persister.persist(saveRestoreFile, context);
 
         // Read the file back in and compare it with the original
@@ -213,14 +209,13 @@ public class JsonPropertysetPersisterTest {
      */
     @Test
     public void testPersistNullFile() throws IOException {
-        thrown.expect(NullPointerException.class);
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
         JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
 
         // Read the contents of the file into memory
-        persister.persist((File)null, context);
+        assertThrows(NullPointerException.class, () -> persister.persist((File)null, context));
     }
 
     /**
@@ -230,7 +225,6 @@ public class JsonPropertysetPersisterTest {
      */
     @Test
     public void testPersistFileInNonexistingDirectory() throws IOException {
-        thrown.expect(FileNotFoundException.class);
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -240,7 +234,7 @@ public class JsonPropertysetPersisterTest {
         File noSuchDirectory = new File("/nosuchdirectory/file.json");
 
         // Read the contents of the file into memory
-        persister.persist(noSuchDirectory, context);
+        assertThrows(FileNotFoundException.class, () -> persister.persist(noSuchDirectory, context));
     }
 
     /**
@@ -331,7 +325,6 @@ public class JsonPropertysetPersisterTest {
      */
     @Test
     public void testRestoreFileNotJson() throws URISyntaxException, JsonParseException, IOException {
-        thrown.expect(JsonParseException.class);
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -341,7 +334,7 @@ public class JsonPropertysetPersisterTest {
         File notJsonFile = getResourceAsFile("/json/not_json.json");
 
         // Read the contents of the file into memory
-        persister.restore(notJsonFile, context);
+        assertThrows(JsonParseException.class, () -> persister.restore(notJsonFile, context));
     }
 
     /**
@@ -491,7 +484,7 @@ public class JsonPropertysetPersisterTest {
      *
      * @throws IOException
      */
-    @Ignore
+    @Deactivate
     @Test
     public void generatePropertysetWithId() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
@@ -500,7 +493,7 @@ public class JsonPropertysetPersisterTest {
         context.findPropertyset(UUID.randomUUID());
         JsonFactory jsonFactory = new JsonFactory();
         JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
-        File propertysetsFile = folder.newFile("propertyset.json");
+        File propertysetsFile = new File(folder, "propertyset.json");
         persister.persist(propertysetsFile, context);
         String contents = new String(Files.readAllBytes(propertysetsFile.toPath()));
         System.out.println(contents);
@@ -512,7 +505,7 @@ public class JsonPropertysetPersisterTest {
      *
      * @throws IOException
      */
-    @Ignore
+    @Deactivate
     @Test
     public void generateSimpleModel() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
@@ -548,7 +541,7 @@ public class JsonPropertysetPersisterTest {
 
         JsonFactory jsonFactory = new JsonFactory();
         JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
-        File propertysetsFile = folder.newFile("testmodel.json");
+        File propertysetsFile = new File(folder, "testmodel.json");
         persister.persist(propertysetsFile, context);
         String contents = new String(Files.readAllBytes(propertysetsFile.toPath()));
         System.out.println(contents);

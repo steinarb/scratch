@@ -1,11 +1,11 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static org.junit.Assert.*;
 import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
@@ -52,10 +52,10 @@ public class ValueArrayListTest {
         addlist.add(list.get(2));
         addlist.get(0).asComplexProperty().setStringProperty("a", "bar foo");
         assertEquals("bar foo", addlist.get(0).asComplexProperty().getStringProperty("a"));
-        assertEquals("Expected original to be unchanged", "foo bar", list.get(1).asComplexProperty().getStringProperty("a"));
+        assertEquals("foo bar", list.get(1).asComplexProperty().getStringProperty("a"), "Expected original to be unchanged");
         addlist.get(1).asList().add("bar");
         assertEquals(2, addlist.get(1).asList().size());
-        assertEquals("Expected original to be unchanged", 1, list.get(2).asList().size());
+        assertEquals(1, list.get(2).asList().size(), "Expected original to be unchanged");
         ValueList setlist = newList();
         setlist.add(true);
         setlist.add(true); // Just add something to be able to set index 0 and 1
@@ -63,10 +63,10 @@ public class ValueArrayListTest {
         setlist.set(1, list.get(2));
         setlist.get(0).asComplexProperty().setStringProperty("a", "foobar");
         assertEquals("foobar", setlist.get(0).asComplexProperty().getStringProperty("a"));
-        assertEquals("Expected original to be unchanged", "foo bar", list.get(1).asComplexProperty().getStringProperty("a"));
+        assertEquals("foo bar", list.get(1).asComplexProperty().getStringProperty("a"), "Expected original to be unchanged");
         setlist.get(1).asList().add("bar");
         assertEquals(2, setlist.get(1).asList().size());
-        assertEquals("Expected original to be unchanged", 1, list.get(2).asList().size());
+        assertEquals(1, list.get(2).asList().size(), "Expected original to be unchanged");
     }
 
     /**
@@ -175,13 +175,13 @@ public class ValueArrayListTest {
         otherlist.add(list.get(1).asComplexProperty());
         otherlist.get(0).asComplexProperty().setDoubleProperty("c", 3.78);
         assertEquals(3.78, otherlist.get(0).asComplexProperty().getDoubleProperty("c"), 0.0);
-        assertEquals("Expected original value to be unchanged", 3.14, list.get(1).asComplexProperty().getDoubleProperty("c"), 0.0);
+        assertEquals(3.14, list.get(1).asComplexProperty().getDoubleProperty("c"), 0.0, "Expected original value to be unchanged");
         ValueList otherlist2 = newList();
         otherlist2.add(true); // Dummy add to get a settable position in the list
         otherlist2.set(0, list.get(1).asComplexProperty());
         otherlist2.get(0).asComplexProperty().setDoubleProperty("c", 2.78);
         assertEquals(2.78, otherlist2.get(0).asComplexProperty().getDoubleProperty("c"), 0.0);
-        assertEquals("Expected original value to be unchanged", 3.14, list.get(1).asComplexProperty().getDoubleProperty("c"), 0.0);
+        assertEquals(3.14, list.get(1).asComplexProperty().getDoubleProperty("c"), 0.0, "Expected original value to be unchanged");
     }
 
     /**
@@ -225,10 +225,10 @@ public class ValueArrayListTest {
         otherlist.set(1, list.get(2).asList());
         otherlist.get(0).asList().add(3.7);
         assertEquals(4, otherlist.get(0).asList().size());
-        assertEquals("Expected the original to be unchanged", 3, list.get(1).asList().size());
+        assertEquals(3, list.get(1).asList().size(), "Expected the original to be unchanged");
         otherlist.get(1).asList().add(54);
         assertEquals(3, otherlist.get(1).asList().size());
-        assertEquals("Expected the original to be unchanged", 2, list.get(2).asList().size());
+        assertEquals(2, list.get(2).asList().size(), "Expected the original to be unchanged");
     }
 
     /**
@@ -248,26 +248,26 @@ public class ValueArrayListTest {
         // Modify elements in the copy and verify that there is no effect on the original
         copy.set(0, false);
         assertFalse(copy.get(0).asBoolean());
-        assertTrue("Expected original to be unchanged", original.get(0).asBoolean());
+        assertTrue(original.get(0).asBoolean(), "Expected original to be unchanged");
         copy.set(1, 43);
         assertEquals(43, copy.get(1).asLong().longValue());
-        assertEquals("Expected original to be unchanged", 42, original.get(1).asLong().longValue());
+        assertEquals(42, original.get(1).asLong().longValue(), "Expected original to be unchanged");
         copy.set(2, 2.78);
         assertEquals(2.78, copy.get(2).asDouble(), 0.0);
-        assertEquals("Expected original to be unchanged", 2.7, original.get(2).asDouble(), 0.0);
+        assertEquals(2.7, original.get(2).asDouble(), 0.0, "Expected original to be unchanged");
         copy.set(3, "bar foo");
         assertEquals("bar foo", copy.get(3).asString());
         Propertyset originalReference = copy.get(4).asReference();
         Propertyset newReference = context.findPropertyset(UUID.randomUUID());
         copy.set(4, newReference);
         assertEquals(newReference, copy.get(4).asReference());
-        assertEquals("Expected original to be unchanged", originalReference, original.get(4).asReference());
+        assertEquals(originalReference, original.get(4).asReference(), "Expected original to be unchanged");
         copy.get(5).asComplexProperty().setStringProperty("d", "foobar");
         assertEquals("foobar", copy.get(5).asComplexProperty().getStringProperty("d"));
-        assertEquals("Expected original to be unchanged", "bar foo", original.get(5).asComplexProperty().getStringProperty("d"));
+        assertEquals("bar foo", original.get(5).asComplexProperty().getStringProperty("d"), "Expected original to be unchanged");
         copy.get(6).asList().add(3);
         assertEquals(2, copy.get(6).asList().size());
-        assertEquals("Expected original to be unchanged", 1, original.get(6).asList().size());
+        assertEquals(1, original.get(6).asList().size(), "Expected original to be unchanged");
     }
 
     private void populateList(ValueList list, ModelContext context, UUID id) {
