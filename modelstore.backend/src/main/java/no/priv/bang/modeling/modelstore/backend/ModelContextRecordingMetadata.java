@@ -20,7 +20,7 @@ import static no.priv.bang.modeling.modelstore.backend.ModelContexts.*;
 
 public class ModelContextRecordingMetadata implements ModelContext {
 
-    private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
     private ModelContext impl;
     private Map<UUID,Date> lastmodifiedtime = new HashMap<UUID, Date>();
 
