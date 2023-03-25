@@ -43,8 +43,7 @@ public class JsonPropertysetPersister {
     }
 
     public void persist(OutputStream jsonstream, ModelContext context) {
-        try {
-            JsonGenerator generator = factory.createGenerator(jsonstream);
+        try(var generator = factory.createGenerator(jsonstream)) {
             outputPropertySets(generator, context.listAllPropertysets());
         } catch (Exception e) {
             context.logError("Caught exception outputting stream", jsonstream, e);
