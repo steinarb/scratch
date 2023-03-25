@@ -486,7 +486,7 @@ class JsonPropertysetPersisterTest {
      */
     @Deactivate
     @Test
-    void generatePropertysetWithId() throws IOException {
+    void generatePropertysetWithId() throws IOException { // NOSONAR not really a unit test so no need for asserts
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         context.findPropertyset(UUID.randomUUID());
@@ -507,7 +507,7 @@ class JsonPropertysetPersisterTest {
      */
     @Deactivate
     @Test
-    void generateSimpleModel() throws IOException {
+    void generateSimpleModel() throws IOException { // NOSONAR not really a unit test so no need for asserts
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         Propertyset modelAspect = context.findPropertyset(modelstore.getModelAspectId());

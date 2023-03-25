@@ -64,7 +64,7 @@ class ModelstoreTest {
      * @throws IOException
      */
     @Test
-    void testPersistRestoreModelContext() throws IOException {
+    void testPersistRestoreModelContext() throws IOException { // NOSONAR assert inside compareAllPropertysets
         Modelstore modelstore = new ModelstoreProvider();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         ModelContext context1 = modelstore.restoreContext(carsAndBicylesStream);
@@ -89,7 +89,7 @@ class ModelstoreTest {
      * @throws IOException
      */
     @Test
-    void testPersistRestoreModelContextUsingPipedStreams() throws IOException {
+    void testPersistRestoreModelContextUsingPipedStreams() throws IOException { // NOSONAR assert inside compareAllPropertysets
         final Modelstore modelstore = new ModelstoreProvider();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         final ModelContext context1 = modelstore.restoreContext(carsAndBicylesStream);
