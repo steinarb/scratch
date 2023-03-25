@@ -17,92 +17,92 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class IdValueTest {
+class IdValueTest {
 
     private Value value;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         value = new IdValue(UUID.fromString("e40fb164-3dd3-43b8-839f-8781bbcb2a15"));
     }
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertTrue(value.isId());
     }
 
     @Test
-    public void testAsId() {
+    void testAsId() {
         assertNotEquals(getNil().asId(), value.asId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertFalse(value.isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertFalse(value.asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertFalse(value.isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(0), value.asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertFalse(value.isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(0), value.asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(value.isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals(value.asId().toString(), value.asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertFalse(value.isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(getNilPropertyset(), value.asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertFalse(value.isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(getNilPropertyset(), value.asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertFalse(value.isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList emptyList = value.asList();
         assertTrue(emptyList.isEmpty());
     }
@@ -111,7 +111,7 @@ public class IdValueTest {
      * Test av {@link IdValue#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         IdValue nullIdValue = new IdValue(null);
         assertEquals(31, nullIdValue.hashCode());
         assertEquals(-511156377, value.hashCode());
@@ -121,7 +121,7 @@ public class IdValueTest {
      * Test av {@link IdValue#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         IdValue nullIdValue = new IdValue(null);
         assertFalse(nullIdValue.equals(null));
         assertFalse(nullIdValue.equals(getNil().asId()));
@@ -139,7 +139,7 @@ public class IdValueTest {
      * Test av {@link IdValue#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         assertEquals("IdValue [value=e40fb164-3dd3-43b8-839f-8781bbcb2a15]", value.toString());
     }
 

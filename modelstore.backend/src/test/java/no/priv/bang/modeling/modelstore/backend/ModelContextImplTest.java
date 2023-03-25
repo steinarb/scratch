@@ -27,7 +27,7 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
  * @author Steinar Bang
  *
  */
-public class ModelContextImplTest {
+class ModelContextImplTest {
 
     @TempDir
     File folder;
@@ -44,7 +44,7 @@ public class ModelContextImplTest {
      * @throws IOException
      */
     @Test
-    public void testMergeNoOverlapBetweenContexts() throws IOException {
+    void testMergeNoOverlapBetweenContexts() throws IOException {
         ModelContext context = new ModelContextImpl();
         buildPropertysetA(context, UUID.randomUUID());
         assertEquals(1, context.listAllPropertysets().size(), "Expected context to contain 1 propertyset");
@@ -89,7 +89,7 @@ public class ModelContextImplTest {
      * @throws InterruptedException
      */
     @Test
-    public void testMergeWithOverlapBetweenContexts() throws IOException, InterruptedException {
+    void testMergeWithOverlapBetweenContexts() throws IOException, InterruptedException {
         ModelContext context = new ModelContextImpl();
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);
@@ -147,7 +147,7 @@ public class ModelContextImplTest {
      * Unit test for {@link ModelContextImpl#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         ModelContext context = new ModelContextImpl();
         assertEquals(216866173, context.hashCode());
         addPropertysetsToContext(context);
@@ -158,7 +158,7 @@ public class ModelContextImplTest {
      * Unit test for {@link ModelContextImpl#equals()}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         ModelContext context = new ModelContextImpl();
         addPropertysetsToContext(context);
         assertTrue(context.equals(context));
@@ -173,7 +173,7 @@ public class ModelContextImplTest {
      * Unit test for {@link ModelContextImpl#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         ModelContext context = new ModelContextImpl();
         addPropertysetsToContext(context);
         assertThat(context.toString()).startsWith("ModelContextImpl ");

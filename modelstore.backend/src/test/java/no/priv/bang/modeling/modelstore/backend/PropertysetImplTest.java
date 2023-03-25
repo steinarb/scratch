@@ -15,14 +15,14 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
-public class PropertysetImplTest {
+class PropertysetImplTest {
 
     /**
      * Test creating an empty {@link PropertysetImpl} class and verify
      * the expected empty values for all property types.
      */
     @Test
-    public void testCreateEmptyPropertyset() {
+    void testCreateEmptyPropertyset() {
         Propertyset propertyset = new PropertysetImpl();
         assertFalse(propertyset.isNil());
 
@@ -46,7 +46,7 @@ public class PropertysetImplTest {
      * Test getting a bool from various property types
      */
     @Test
-    public void testGetBooleanProperty() {
+    void testGetBooleanProperty() {
         Propertyset propertyset = new PropertysetImpl();
 
         Boolean trueValue = Boolean.valueOf(true);
@@ -117,7 +117,7 @@ public class PropertysetImplTest {
      * Test getting an integer from various property types
      */
     @Test
-    public void testGetLongProperty() {
+    void testGetLongProperty() {
         Propertyset propertyset = new PropertysetImpl();
         assertFalse(propertyset.isNil());
 
@@ -179,7 +179,7 @@ public class PropertysetImplTest {
      * Test getting a double from various property types
      */
     @Test
-    public void testGetDoubleProperty() {
+    void testGetDoubleProperty() {
         Propertyset propertyset = new PropertysetImpl();
         assertFalse(propertyset.isNil());
 
@@ -241,7 +241,7 @@ public class PropertysetImplTest {
      * Test getting a string back from various property types.
      */
     @Test
-    public void testGetStringProperty() {
+    void testGetStringProperty() {
         Propertyset propertyset = new PropertysetImpl();
 
         // Set a string property and get it back as a string
@@ -286,7 +286,7 @@ public class PropertysetImplTest {
      * something other than {@link PropertysetNil#getNil()},
      */
     @Test
-    public void testGetComplexProperty() {
+    void testGetComplexProperty() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         Propertyset propertyset = context.createPropertyset();
@@ -348,7 +348,7 @@ public class PropertysetImplTest {
      * something other than {@link PropertysetNil#getNil()},
      */
     @Test
-    public void testGetReferenceProperty() {
+    void testGetReferenceProperty() {
         Propertyset propertyset = new PropertysetImpl();
 
         // Set an object reference property value and read it back
@@ -391,7 +391,7 @@ public class PropertysetImplTest {
      * Test getting a list property back from various types.
      */
     @Test
-    public void testGetListProperty() {
+    void testGetListProperty() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         Propertyset propertyset = context.createPropertyset();
@@ -439,7 +439,7 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testEmptyPropertysetEqualsPropertysetNil() {
+    void testEmptyPropertysetEqualsPropertysetNil() {
         Propertyset emptypropertyset = new PropertysetImpl();
         Propertyset nil = getNilPropertyset();
         assertTrue(emptypropertyset.equals(nil));
@@ -447,7 +447,7 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testGetProperty() {
+    void testGetProperty() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         Propertyset emptypropertyset = context.createPropertyset();
@@ -478,7 +478,7 @@ public class PropertysetImplTest {
      * Corner case unit tests for {@link Propertyset#setProperty(String, Value)}.
      */
     @Test
-    public void testSetProperty() {
+    void testSetProperty() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
 
@@ -503,7 +503,7 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         Propertyset emptypropertyset = new PropertysetImpl();
         assertEquals(31, emptypropertyset.hashCode());
         ModelContext context = new ModelstoreProvider().getDefaultContext();
@@ -514,7 +514,7 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         Propertyset emptypropertyset = new PropertysetImpl();
         assertTrue(emptypropertyset.equals(emptypropertyset));
         assertFalse(emptypropertyset.equals(null));
@@ -532,14 +532,14 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         Propertyset emptypropertyset = new PropertysetImpl();
         assertEquals("PropertysetImpl [properties={}]", emptypropertyset.toString());
         // No test for a propertyset with properties, because they are written in a non-predictable order
     }
 
     @Test
-    public void testCopyConstructor() {
+    void testCopyConstructor() {
         ModelContext context = new ModelstoreProvider().getDefaultContext();
         UUID id = UUID.randomUUID();
         Propertyset propertyset = new PropertysetImpl();
@@ -550,7 +550,7 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testCopyConstructorOnPropertysetWithIdAndAspect() {
+    void testCopyConstructorOnPropertysetWithIdAndAspect() {
         ModelContext context = new ModelstoreProvider().getDefaultContext();
         UUID id = UUID.randomUUID();
         UUID propsetId = UUID.randomUUID();
@@ -565,7 +565,7 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testCopyValues() {
+    void testCopyValues() {
         ModelContext context = new ModelContextImpl();
         Propertyset propertyset = context.createPropertyset();
         UUID referencedPropertysetId = UUID.randomUUID();
@@ -598,7 +598,7 @@ public class PropertysetImplTest {
     }
 
     @Test
-    public void testCopyValuesOnPropertysetWithIdAndAspect() {
+    void testCopyValuesOnPropertysetWithIdAndAspect() {
         ModelContext context = new ModelContextImpl();
         UUID id = UUID.randomUUID();
         UUID propsetId = UUID.randomUUID();

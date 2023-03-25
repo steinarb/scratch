@@ -18,13 +18,13 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class ReferenceValueTest {
+class ReferenceValueTest {
 
     private Propertyset referencedObject;
     private Value value;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         referencedObject = new PropertysetImpl(UUID.fromString("276dbd6e-dc46-4c14-af9e-83c63c10e0b3"));
         referencedObject.setBooleanProperty("boolean", Boolean.TRUE);
         referencedObject.setLongProperty("long", Long.valueOf(42));
@@ -34,82 +34,82 @@ public class ReferenceValueTest {
     }
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertFalse(value.isId());
     }
 
     @Test
-    public void testAsId() {
+    void testAsId() {
         assertEquals(getNil().asId(), value.asId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertFalse(value.isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertFalse(value.asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertFalse(value.isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(0), value.asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertFalse(value.isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(0.0), value.asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(value.isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals("", value.asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertFalse(value.isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(getNilPropertyset(), value.asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertTrue(value.isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(referencedObject, value.asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertFalse(value.isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList emptyList = value.asList();
         assertTrue(emptyList.isEmpty());
     }
@@ -118,7 +118,7 @@ public class ReferenceValueTest {
      * Test av {@link ReferenceValue#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         Value nullReferenceValue = toReferenceValue(null);
         assertEquals(31, nullReferenceValue.hashCode());
         assertEquals(1755681326, value.hashCode());
@@ -128,7 +128,7 @@ public class ReferenceValueTest {
      * Test av {@link ReferenceValue#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         Value nullReferenceValue = toReferenceValue(null);
         assertFalse(nullReferenceValue.equals(null));
         assertFalse(nullReferenceValue.equals(getNil().asComplexProperty()));
@@ -148,7 +148,7 @@ public class ReferenceValueTest {
      * Test av {@link ReferenceValue#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         Value nullReferenceValue = toReferenceValue(null);
         assertEquals("ReferenceValue [value=00000000-0000-0000-0000-000000000000]", nullReferenceValue.toString());
         assertEquals("ReferenceValue [value=276dbd6e-dc46-4c14-af9e-83c63c10e0b3]", value.toString());

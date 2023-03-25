@@ -36,7 +36,7 @@ import com.fasterxml.jackson.core.JsonParseException;
  * @author Steinar Bang
  *
  */
-public class JsonPropertysetPersisterTest {
+class JsonPropertysetPersisterTest {
     @TempDir
     File folder;
 
@@ -47,7 +47,7 @@ public class JsonPropertysetPersisterTest {
      * @throws JsonParseException
      */
     @Test
-    public void testParseComplexFile() throws URISyntaxException, JsonParseException, IOException {
+    void testParseComplexFile() throws URISyntaxException, JsonParseException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         File carsAndBicycles = getResourceAsFile("/json/cars_and_bicycles.json");
@@ -69,7 +69,7 @@ public class JsonPropertysetPersisterTest {
      * @throws JsonParseException
      */
     @Test
-    public void testParseIdNotFirst() throws URISyntaxException, JsonParseException, IOException {
+    void testParseIdNotFirst() throws URISyntaxException, JsonParseException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         File carsAndBicyclesIdNotFirst = getResourceAsFile("/json/cars_and_bicycles_id_not_first.json");
@@ -98,7 +98,7 @@ public class JsonPropertysetPersisterTest {
      * @throws JsonParseException
      */
     @Test
-    public void parseBooleanProperties() throws URISyntaxException, JsonParseException, IOException {
+    void parseBooleanProperties() throws URISyntaxException, JsonParseException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         File withBoolean = getResourceAsFile("/json/with_boolean.json");
@@ -137,7 +137,7 @@ public class JsonPropertysetPersisterTest {
      * @throws JsonParseException
      */
     @Test
-    public void parseObjectOnTop() throws URISyntaxException, JsonParseException, IOException {
+    void parseObjectOnTop() throws URISyntaxException, JsonParseException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         File withBoolean = getResourceAsFile("/json/object_on_top.json");
@@ -171,7 +171,7 @@ public class JsonPropertysetPersisterTest {
      * @throws JsonParseException
      */
     @Test
-    public void parseListProperty() throws URISyntaxException, JsonParseException, IOException {
+    void parseListProperty() throws URISyntaxException, JsonParseException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         File withListProperty = getResourceAsFile("/json/with_list_property.json");
@@ -208,7 +208,7 @@ public class JsonPropertysetPersisterTest {
      * @throws IOException
      */
     @Test
-    public void testPersistNullFile() throws IOException {
+    void testPersistNullFile() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -224,7 +224,7 @@ public class JsonPropertysetPersisterTest {
      * @throws IOException
      */
     @Test
-    public void testPersistFileInNonexistingDirectory() throws IOException {
+    void testPersistFileInNonexistingDirectory() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -242,7 +242,7 @@ public class JsonPropertysetPersisterTest {
      * try output into a null {@link OutputStream}.
      */
     @Test
-    public void testPersistNullStream() {
+    void testPersistNullStream() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -267,7 +267,7 @@ public class JsonPropertysetPersisterTest {
      * try output into a {@link MockOutputStreamThatThrowsIOExceptionOnEverything}.
      */
     @Test
-    public void testPersistIntoStreamThrowingExceptions() {
+    void testPersistIntoStreamThrowingExceptions() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -297,7 +297,7 @@ public class JsonPropertysetPersisterTest {
      * @throws JsonParseException
      */
     @Test
-    public void testRestoreNullFile() throws JsonParseException, IOException {
+    void testRestoreNullFile() throws JsonParseException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -324,7 +324,7 @@ public class JsonPropertysetPersisterTest {
      * @throws JsonParseException
      */
     @Test
-    public void testRestoreFileNotJson() throws URISyntaxException, JsonParseException, IOException {
+    void testRestoreFileNotJson() throws URISyntaxException, JsonParseException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -342,7 +342,7 @@ public class JsonPropertysetPersisterTest {
      * try parsing a null {@link InputStream}.
      */
     @Test
-    public void testRestoreNullStream() {
+    void testRestoreNullStream() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -367,7 +367,7 @@ public class JsonPropertysetPersisterTest {
      * @throws IOException
      */
     @Test
-    public void testRestoreStreamNotJson() throws URISyntaxException, IOException {
+    void testRestoreStreamNotJson() throws URISyntaxException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -396,7 +396,7 @@ public class JsonPropertysetPersisterTest {
      * @throws IOException
      */
     @Test
-    public void testRestoreFromStream() throws URISyntaxException, IOException {
+    void testRestoreFromStream() throws URISyntaxException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -426,7 +426,7 @@ public class JsonPropertysetPersisterTest {
      * @throws IOException
      */
     @Test
-    public void testRestoreEmptyArrayFromStream() throws URISyntaxException, IOException {
+    void testRestoreEmptyArrayFromStream() throws URISyntaxException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -456,7 +456,7 @@ public class JsonPropertysetPersisterTest {
      * @throws IOException
      */
     @Test
-    public void testRestoreObjectOnTopLevelFromStream() throws URISyntaxException, IOException {
+    void testRestoreObjectOnTopLevelFromStream() throws URISyntaxException, IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
@@ -486,7 +486,7 @@ public class JsonPropertysetPersisterTest {
      */
     @Deactivate
     @Test
-    public void generatePropertysetWithId() throws IOException {
+    void generatePropertysetWithId() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         context.findPropertyset(UUID.randomUUID());
@@ -507,7 +507,7 @@ public class JsonPropertysetPersisterTest {
      */
     @Deactivate
     @Test
-    public void generateSimpleModel() throws IOException {
+    void generateSimpleModel() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         Propertyset modelAspect = context.findPropertyset(modelstore.getModelAspectId());

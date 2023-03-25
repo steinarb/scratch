@@ -17,12 +17,12 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
  * @author Steinar Bang
  *
  */
-public class PropertysetsTest {
+class PropertysetsTest {
     /**
      * Unit tests for {@link Propertysets#findWrappedPropertyset(no.priv.bang.modeling.modelstore.Propertyset)}.
      */
     @Test
-    public void testFindWrappedPropertyset() {
+    void testFindWrappedPropertyset() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
 

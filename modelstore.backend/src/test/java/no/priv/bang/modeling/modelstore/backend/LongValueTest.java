@@ -15,92 +15,92 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class LongValueTest {
+class LongValueTest {
 
     private Value value;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         value = toLongValue(42);
     }
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertFalse(value.isId());
     }
 
     @Test
-    public void testAsId() {
+    void testAsId() {
         assertEquals(getNil().asId(), value.asId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertFalse(value.isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertTrue(value.asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertTrue(value.isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(42), value.asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertFalse(value.isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(42.0), value.asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(value.isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals("42", value.asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertFalse(value.isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(getNilPropertyset(), value.asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertFalse(value.isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(getNilPropertyset(), value.asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertFalse(value.isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList emptyList = value.asList();
         assertTrue(emptyList.isEmpty());
     }
@@ -109,7 +109,7 @@ public class LongValueTest {
      * Test av {@link LongValue#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         Value nullLongValue = toLongValue(null);
         assertEquals(31, nullLongValue.hashCode());
         assertEquals(73, value.hashCode());
@@ -119,7 +119,7 @@ public class LongValueTest {
      * Test av {@link LongValue#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         Value nullLongValue = toLongValue(null);
         assertFalse(nullLongValue.equals(null));
         assertFalse(nullLongValue.equals(getNil()));
@@ -132,7 +132,7 @@ public class LongValueTest {
      * Test av {@link LongValue#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         Value nullLongValue = toLongValue(null);
         assertEquals("LongValue [value=0]", nullLongValue.toString());
         assertEquals("LongValue [value=42]", value.toString());

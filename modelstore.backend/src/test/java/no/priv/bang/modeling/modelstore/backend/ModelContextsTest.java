@@ -13,13 +13,13 @@ import no.priv.bang.modeling.modelstore.services.ModelContext;
  * @author Steinar Bang
  *
  */
-public class ModelContextsTest {
+class ModelContextsTest {
 
     /**
      * Unit test for {@link ModelContexts#findWrappedModelContext(no.priv.bang.modeling.modelstore.ModelContext)}.
      */
     @Test
-    public void testFindWrappedModelContext() {
+    void testFindWrappedModelContext() {
         ModelContext inner = new ModelContextImpl();
         ModelContext context = new ModelContextRecordingMetadata(inner);
         assertSame(inner, findWrappedModelContext(context));

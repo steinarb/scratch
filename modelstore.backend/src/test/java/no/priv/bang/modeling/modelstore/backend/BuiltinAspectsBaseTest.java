@@ -18,7 +18,7 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
  * @author Steinar Bang
  *
  */
-public class BuiltinAspectsBaseTest {
+class BuiltinAspectsBaseTest {
 
     private Modelstore modelstore;
     private ModelContext context;
@@ -27,7 +27,7 @@ public class BuiltinAspectsBaseTest {
      * @throws java.lang.Exception
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         modelstore = new ModelstoreProvider();
         context = modelstore.createContext();
     }
@@ -36,7 +36,7 @@ public class BuiltinAspectsBaseTest {
      * Unit test for {@link BuiltinAspectsBase#getMetadataAspectId()}
      */
     @Test
-    public void testGetMetadataAspectId() {
+    void testGetMetadataAspectId() {
         Propertyset metadataAspect = context.findPropertyset(modelstore.getMetadataAspectId());
         assertEquals("metadata", metadataAspect.getStringProperty("title"));
     }
@@ -45,7 +45,7 @@ public class BuiltinAspectsBaseTest {
      * Unit test for {@link BuiltinAspectsBase#getGeneralObjectAspectId()}
      */
     @Test
-    public void testGetGeneralObjectAspectId() {
+    void testGetGeneralObjectAspectId() {
         Propertyset generalObjectAspect = context.findPropertyset(modelstore.getGeneralObjectAspectId());
         assertEquals("general object", generalObjectAspect.getStringProperty("title"));
     }
@@ -54,7 +54,7 @@ public class BuiltinAspectsBaseTest {
      * Unit test for {@link BuiltinAspectsBase#getRelationshipAspectId()}
      */
     @Test
-    public void testGetRelationshipAspectId() {
+    void testGetRelationshipAspectId() {
         Propertyset relationshipAspect = context.findPropertyset(modelstore.getRelationshipAspectId());
         assertEquals("relationship", relationshipAspect.getStringProperty("title"));
     }
@@ -63,7 +63,7 @@ public class BuiltinAspectsBaseTest {
      * Unit test for {@link BuiltinAspectsBase#getGeneralRelationshipAspectId()}
      */
     @Test
-    public void testGetGeneralRelationshipAspectId() {
+    void testGetGeneralRelationshipAspectId() {
         Propertyset generalRelationshipAspect = context.findPropertyset(modelstore.getGeneralRelationshipAspectId());
         assertEquals("general relationship", generalRelationshipAspect.getStringProperty("title"));
     }
@@ -72,7 +72,7 @@ public class BuiltinAspectsBaseTest {
      * Unit test for {@link BuiltinAspectsBase#getModelAspectId()}
      */
     @Test
-    public void testGetModelAspectId() {
+    void testGetModelAspectId() {
         Propertyset modelAspect = context.findPropertyset(modelstore.getModelAspectId());
         assertEquals("model", modelAspect.getStringProperty("title"));
     }
@@ -81,7 +81,7 @@ public class BuiltinAspectsBaseTest {
      * Unit test for {@link BuiltinAspectsBase#getAspectContainerAspectId()}
      */
     @Test
-    public void testGetAspectContainerAspectId() {
+    void testGetAspectContainerAspectId() {
         Propertyset aspectContainerAspect = context.findPropertyset(modelstore.getAspectContainerAspectId());
         assertEquals("aspect container", aspectContainerAspect.getStringProperty("title"));
     }

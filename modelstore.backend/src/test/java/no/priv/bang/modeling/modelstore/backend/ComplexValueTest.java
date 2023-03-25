@@ -16,13 +16,13 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class ComplexValueTest {
+class ComplexValueTest {
 
     private Propertyset complexProperty;
     private Value value;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         complexProperty = new PropertysetImpl();
         complexProperty.setBooleanProperty("boolean", Boolean.TRUE);
         complexProperty.setLongProperty("long", Long.valueOf(42));
@@ -32,82 +32,82 @@ public class ComplexValueTest {
     }
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertFalse(value.isId());
     }
 
     @Test
-    public void testAsId() {
+    void testAsId() {
         assertEquals(getNil().asId(), value.asId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertFalse(value.isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertFalse(value.asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertFalse(value.isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(0), value.asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertFalse(value.isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(0.0), value.asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(value.isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals("", value.asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertTrue(value.isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(complexProperty, value.asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertFalse(value.isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(getNilPropertyset(), value.asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertFalse(value.isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList emptyList = value.asList();
         assertTrue(emptyList.isEmpty());
     }
@@ -116,7 +116,7 @@ public class ComplexValueTest {
      * Test av {@link ComplexValue#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         Value nullComplexValue = toComplexValue(null);
         assertEquals(31, nullComplexValue.hashCode());
         assertEquals(1958288831, value.hashCode());
@@ -126,7 +126,7 @@ public class ComplexValueTest {
      * Test av {@link ComplexValue#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         Value nullComplexValue = toComplexValue(null);
         assertFalse(nullComplexValue.equals(null));
         assertFalse(nullComplexValue.equals(getNil().asComplexProperty()));
@@ -140,7 +140,7 @@ public class ComplexValueTest {
      * Test av {@link ComplexValue#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         Value nullComplexValue = toComplexValue(null);
         assertEquals("ComplexValue [value=PropertysetNil []]", nullComplexValue.toString());
         assertEquals("ComplexValue [value=PropertysetImpl [properties={boolean=BooleanValue [value=true], string=StringValue [value=foo bar], double=DoubleValue [value=2.78], long=LongValue [value=42]}]]", value.toString());

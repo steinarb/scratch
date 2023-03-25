@@ -15,92 +15,92 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class DoubleValueTest {
+class DoubleValueTest {
 
     private Value value;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         value = toDoubleValue(3.14);
     }
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertFalse(value.isId());
     }
 
     @Test
-    public void testAsId() {
+    void testAsId() {
         assertEquals(getNil().asId(), value.asId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertFalse(value.isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertTrue(value.asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertFalse(value.isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(3), value.asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertTrue(value.isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(3.14), value.asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(value.isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals("3.14", value.asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertFalse(value.isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(getNilPropertyset(), value.asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertFalse(value.isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(getNilPropertyset(), value.asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertFalse(value.isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList emptyList = value.asList();
         assertTrue(emptyList.isEmpty());
     }
@@ -109,7 +109,7 @@ public class DoubleValueTest {
      * Test av {@link DoubleValue#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         Value nullDoubleValue = toDoubleValue(null);
         assertEquals(31, nullDoubleValue.hashCode());
         Value pi = toDoubleValue(3.14);
@@ -120,7 +120,7 @@ public class DoubleValueTest {
      * Test av {@link DoubleValue#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         Value nullDoubleValue = toDoubleValue(null);
         assertFalse(nullDoubleValue.equals(null));
         assertFalse(nullDoubleValue.equals(getNil()));
@@ -133,7 +133,7 @@ public class DoubleValueTest {
      * Test av {@link DoubleValue#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         Value nullDoubleValue = toDoubleValue(null);
         assertEquals("DoubleValue [value=0.0]", nullDoubleValue.toString());
         Value e = toDoubleValue(2.78);

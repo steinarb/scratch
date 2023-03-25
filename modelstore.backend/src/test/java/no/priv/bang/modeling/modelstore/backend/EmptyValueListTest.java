@@ -16,17 +16,17 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class EmptyValueListTest {
+class EmptyValueListTest {
 
     private ValueList list;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         list = new EmptyValueList();
     }
 
     @Test
-    public void testAdd() {
+    void testAdd() {
         assertFalse(list.add((Value)null));
         assertEquals(0, list.size());
         list.add(1024, null);
@@ -52,74 +52,74 @@ public class EmptyValueListTest {
     }
 
     @Test
-    public void testAddAll() {
+    void testAddAll() {
         assertFalse(list.addAll(new EmptyValueList()));
         assertFalse(list.addAll(0, new EmptyValueList()));
     }
 
     @Test
-    public void testContains() {
+    void testContains() {
         assertFalse(list.contains(null));
     }
 
     @Test
-    public void testContainsAll() {
+    void testContainsAll() {
         assertTrue(list.containsAll(new EmptyValueList()));
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
         assertEquals(getNil(), list.get(135));
     }
 
     @Test
-    public void testIndexOf() {
+    void testIndexOf() {
         assertEquals(-1, list.indexOf(null));
     }
 
     @Test
-    public void testIsEmpty() {
+    void testIsEmpty() {
         assertTrue(list.isEmpty());
     }
 
     @Test
-    public void testIterator() {
+    void testIterator() {
         assertNotNull(list.iterator());
     }
 
     @Test
-    public void testLastIndexOf() {
+    void testLastIndexOf() {
         assertEquals(-1, list.lastIndexOf(null));
     }
 
     @Test
-    public void testListIterator() {
+    void testListIterator() {
         assertNotNull(list.listIterator());
     }
 
     @Test
-    public void testListIteratorWithArg() {
+    void testListIteratorWithArg() {
         assertThrows(IndexOutOfBoundsException.class, () -> list.listIterator(135));
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         assertFalse(list.remove(null));
         assertEquals(getNil(), list.remove(135));
     }
 
     @Test
-    public void testRemoveAll() {
+    void testRemoveAll() {
         assertFalse(list.removeAll(Collections.emptyList()));
     }
 
     @Test
-    public void testRetainAll() {
+    void testRetainAll() {
         assertFalse(list.retainAll(Collections.emptyList()));
     }
 
     @Test
-    public void testSet() {
+    void testSet() {
         assertEquals(getNil(), list.set(135, (Value)null));
         assertEquals(getNil(), list.set(135, Boolean.TRUE));
         assertEquals(getNil(), list.set(135, true));
@@ -133,17 +133,17 @@ public class EmptyValueListTest {
     }
 
     @Test
-    public void testSize() {
+    void testSize() {
         assertEquals(0, list.size());
     }
 
     @Test
-    public void testSubList() {
+    void testSubList() {
         assertThrows(IndexOutOfBoundsException.class, () -> list.subList(1, 2));
     }
 
     @Test
-    public void testToArray() {
+    void testToArray() {
         Object[] array1 = list.toArray();
         assertEquals(0, array1.length);
         Value[] valueArray = new Value[10];

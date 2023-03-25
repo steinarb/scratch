@@ -14,13 +14,13 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class PropertysetNilTest {
+class PropertysetNilTest {
 
     /**
      * Unit test for {@link PropertysetNil#getPropertynames()}.
      */
     @Test
-    public void testGetPropertyNames() {
+    void testGetPropertyNames() {
         Propertyset nilPropertyset = getNilPropertyset();
         assertEquals(0, nilPropertyset.getPropertynames().size());
     }
@@ -30,7 +30,7 @@ public class PropertysetNilTest {
      * {@link PropertysetNil#setProperty(String, Value)}
      */
     @Test
-    public void testGetSetGetProperty() {
+    void testGetSetGetProperty() {
         Propertyset nilPropertyset = getNilPropertyset();
         Propertyset propertyset = new PropertysetImpl();
         propertyset.setStringProperty("string", "this is stringvalue");
@@ -85,7 +85,7 @@ public class PropertysetNilTest {
      * {@link PropertysetNil#addAspect(Propertyset)}.
      */
     @Test
-    public void testAspects() {
+    void testAspects() {
         Propertyset nilPropertyset = getNilPropertyset();
         Propertyset propertyset = new PropertysetImpl();
         propertyset.setStringProperty("string", "this is stringvalue");
@@ -105,7 +105,7 @@ public class PropertysetNilTest {
      * Unit test for {@link PropertysetNil#equals()}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         Propertyset nilPropertyset = getNilPropertyset();
         Propertyset propertyset = new PropertysetImpl();
 

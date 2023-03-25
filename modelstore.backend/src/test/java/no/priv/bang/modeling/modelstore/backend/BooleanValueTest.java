@@ -15,92 +15,92 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class BooleanValueTest {
+class BooleanValueTest {
 
     private Value value;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         value = toBooleanValue(Boolean.TRUE);
     }
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertFalse(value.isId());
     }
 
     @Test
-    public void testAsId() {
+    void testAsId() {
         assertEquals(getNil().asId(), value.asId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertTrue(value.isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertTrue(value.asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertFalse(value.isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(1), value.asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertFalse(value.isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(1), value.asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(value.isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals("true", value.asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertFalse(value.isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(getNilPropertyset(), value.asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertFalse(value.isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(getNilPropertyset(), value.asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertFalse(value.isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList emptyList = value.asList();
         assertTrue(emptyList.isEmpty());
     }
@@ -109,7 +109,7 @@ public class BooleanValueTest {
      * Test av {@link BooleanValue#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         Value nullBooleanValue = toBooleanValue(null);
         assertEquals(1268, nullBooleanValue.hashCode());
         Value trueBooleanValue = toBooleanValue(Boolean.TRUE);
@@ -120,7 +120,7 @@ public class BooleanValueTest {
      * Test av {@link BooleanValue#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         Value nullBooleanValue = toBooleanValue(null);
         Value falseBooleanValue = toBooleanValue(Boolean.FALSE);
         Value trueBooleanValue = toBooleanValue(Boolean.TRUE);
@@ -135,7 +135,7 @@ public class BooleanValueTest {
      * Test av {@link BooleanValue#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         Value nullBooleanValue = toBooleanValue(null);
         assertEquals("BooleanValue [value=false]", nullBooleanValue.toString());
         Value falseBooleanValue = toBooleanValue(Boolean.FALSE);

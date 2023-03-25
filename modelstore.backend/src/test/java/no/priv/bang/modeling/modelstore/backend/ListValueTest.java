@@ -15,13 +15,13 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class ListValueTest {
+class ListValueTest {
 
     private ValueList valueList;
     private Value value;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         valueList = newList();
         valueList.add(toBooleanValue(Boolean.TRUE));
         valueList.add(toLongValue(42));
@@ -31,82 +31,82 @@ public class ListValueTest {
     }
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertFalse(value.isId());
     }
 
     @Test
-    public void testAsId() {
+    void testAsId() {
         assertEquals(getNil().asId(), value.asId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertFalse(value.isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertFalse(value.asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertFalse(value.isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(0), value.asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertFalse(value.isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(0.0), value.asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(value.isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals("", value.asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertFalse(value.isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(getNilPropertyset(), value.asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertFalse(value.isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(getNilPropertyset(), value.asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertTrue(value.isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList list = value.asList();
         assertFalse(list.isEmpty());
         assertEquals(valueList.size(), list.size());
@@ -117,7 +117,7 @@ public class ListValueTest {
      * equal to the list extracted from a {@link NilValue}.
      */
     @Test
-    public void testEmptyListEqualsNilList() {
+    void testEmptyListEqualsNilList() {
         Value emptylist = toListValue(newList(), false);
         Value nil = getNil();
         assertTrue(emptylist.equals(nil));
@@ -130,7 +130,7 @@ public class ListValueTest {
      * Test av {@link ListValue#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         Value nullListValue = toListValue(null);
         assertEquals(32, nullListValue.hashCode());
         Value foo = toListValue(newList(), false);
@@ -142,7 +142,7 @@ public class ListValueTest {
      * Test av {@link ListValue#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         Value nullListValue = toListValue(null);
         Value emptyvalue = toListValue(newList(), false);
         ValueList list = newList();
@@ -166,7 +166,7 @@ public class ListValueTest {
      * Test av {@link ListValue#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         Value nullListValue = toListValue(null);
         assertEquals("ListValue [value=[]]", nullListValue.toString());
         ValueList list = newList();

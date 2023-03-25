@@ -29,7 +29,7 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class ModelContextRecordingMetadataTest {
+class ModelContextRecordingMetadataTest {
     private JsonFactory jsonFactory;
     private JsonPropertysetPersister persister;
     private ModelContextImpl nonMetadataRecordingContext;
@@ -41,7 +41,7 @@ public class ModelContextRecordingMetadataTest {
     File folder;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         jsonFactory = new JsonFactory();
         persister = new JsonPropertysetPersister(jsonFactory);
         nonMetadataRecordingContext = new ModelContextImpl();
@@ -56,7 +56,7 @@ public class ModelContextRecordingMetadataTest {
      * wrapper and comparing the propertyset and propertyset-with-a-wrapper.
      */
     @Test
-    public void testCreateModelContextRecordingMetadata() {
+    void testCreateModelContextRecordingMetadata() {
         UUID outbackId = UUID.fromString("5b66f36b-4de8-4099-9044-ad9fcc6dc4d1");
         Propertyset unwrappedOutback = nonMetadataRecordingContext.findPropertyset(outbackId);
         Propertyset wrappedOutback = context.findPropertyset(outbackId);
@@ -72,7 +72,7 @@ public class ModelContextRecordingMetadataTest {
      * @throws IOException
      */
     @Test
-    public void testInitialPropertysetModifiedTimeValuesModifyPropertysetsSaveAndRestor() throws IOException {
+    void testInitialPropertysetModifiedTimeValuesModifyPropertysetsSaveAndRestor() throws IOException {
         // Verify that initial modification times are all null (no persisted modification times)
         UUID outbackId = UUID.fromString("5b66f36b-4de8-4099-9044-ad9fcc6dc4d1");
         Propertyset outback1 = context.findPropertyset(outbackId);
@@ -131,7 +131,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextRecordingMetadata#createList()}.
      */
     @Test
-    public void testCreateList() {
+    void testCreateList() {
         ValueList list = context.createList();
         assertEquals(0, list.size());
         list.add(1);
@@ -144,7 +144,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextRecordingMetadata#createPropertyset()}.
      */
     @Test
-    public void testCreatePropertyset() {
+    void testCreatePropertyset() {
         Propertyset propertyset = context.createPropertyset();
         assertFalse(propertyset.hasId());
         assertEquals(0, propertyset.getPropertynames().size());
@@ -158,7 +158,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextRecordingMetadata#listAllPropertysets()}.
      */
     @Test
-    public void testListAllPropertysets() {
+    void testListAllPropertysets() {
         assertEquals(9, context.listAllPropertysets().size());
     }
 
@@ -166,7 +166,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextRecordingMetadata#listAllAspects()}.
      */
     @Test
-    public void testListAllAspects() {
+    void testListAllAspects() {
         assertEquals(9, context.listAllAspects().size());
     }
 
@@ -174,7 +174,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextRecordingMetadata#findObjectsOfAspect(Propertyset)}.
      */
     @Test
-    public void testFindObjectsOfAspects() {
+    void testFindObjectsOfAspects() {
         assertEquals(5, context.findObjectsOfAspect(vehicleAspect).size());
         assertEquals(3, context.findObjectsOfAspect(carAspect.getPropertyset()).size());
     }
@@ -184,7 +184,7 @@ public class ModelContextRecordingMetadataTest {
      * Test unparsable {@link UUID} and {@link Date} values.
      */
     @Test
-    public void testSetLastmodfiedtimes() {
+    void testSetLastmodfiedtimes() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContextRecordingMetadata context = (ModelContextRecordingMetadata) modelstore.createContext();
         Propertyset metadataWithErrors = createMetadataWithErrors(context);
@@ -212,7 +212,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextImpl#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         ModelContext inner = new ModelContextImpl();
         ModelContext context = new ModelContextRecordingMetadata(inner);
         assertEquals(-1866972311, context.hashCode());
@@ -224,7 +224,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextImpl#equals()}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         ModelContext inner = new ModelContextImpl();
         addPropertysetsToContext(inner);
         ModelContext context = new ModelContextRecordingMetadata(inner);
@@ -242,7 +242,7 @@ public class ModelContextRecordingMetadataTest {
      * Unit test for {@link ModelContextImpl#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         ModelContext inner = new ModelContextImpl();
         addPropertysetsToContext(inner);
         ModelContext context = new ModelContextRecordingMetadata(inner);

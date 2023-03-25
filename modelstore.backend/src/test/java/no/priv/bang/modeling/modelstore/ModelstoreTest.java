@@ -28,7 +28,7 @@ import no.priv.bang.modeling.modelstore.services.Modelstore;
  * @author Steinar Bang
  *
  */
-public class ModelstoreTest {
+class ModelstoreTest {
     @TempDir
     File folder;
 
@@ -37,7 +37,7 @@ public class ModelstoreTest {
      * {@link Modelstore}.
      */
     @Test
-    public void testGetModelContext() {
+    void testGetModelContext() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         assertNotNull(context);
@@ -49,7 +49,7 @@ public class ModelstoreTest {
      * containing a JSON file.
      */
     @Test
-    public void testRestoreModelContext() {
+    void testRestoreModelContext() {
         Modelstore modelstore = new ModelstoreProvider();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         ModelContext context = modelstore.restoreContext(carsAndBicylesStream);
@@ -64,7 +64,7 @@ public class ModelstoreTest {
      * @throws IOException
      */
     @Test
-    public void testPersistRestoreModelContext() throws IOException {
+    void testPersistRestoreModelContext() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         ModelContext context1 = modelstore.restoreContext(carsAndBicylesStream);
@@ -89,7 +89,7 @@ public class ModelstoreTest {
      * @throws IOException
      */
     @Test
-    public void testPersistRestoreModelContextUsingPipedStreams() throws IOException {
+    void testPersistRestoreModelContextUsingPipedStreams() throws IOException {
         final Modelstore modelstore = new ModelstoreProvider();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         final ModelContext context1 = modelstore.restoreContext(carsAndBicylesStream);
@@ -122,7 +122,7 @@ public class ModelstoreTest {
      * @throws InterruptedException
      */
     @Test
-    public void testLogMultithreading() throws IOException, InterruptedException {
+    void testLogMultithreading() throws IOException, InterruptedException {
         final Modelstore modelstore = new ModelstoreProvider();
 
         Thread other = new Thread(new Runnable() {

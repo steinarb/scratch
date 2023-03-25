@@ -18,12 +18,12 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class ValueArrayListTest {
+class ValueArrayListTest {
     /**
      * Test of basic list operations.
      */
     @Test
-    public void testAddGetPutRemove() {
+    void testAddGetPutRemove() {
         ModelContext context = new ModelstoreProvider().getDefaultContext();
         ValueList list = newList();
         assertEquals(0, list.size());
@@ -73,7 +73,7 @@ public class ValueArrayListTest {
      * Test of basic list operations for boolean values.
      */
     @Test
-    public void testAddSetGetBoolean() {
+    void testAddSetGetBoolean() {
         ValueList list = newList();
         assertEquals(0, list.size());
         list.add(Boolean.TRUE);
@@ -90,7 +90,7 @@ public class ValueArrayListTest {
      * Test of basic list operations for long values.
      */
     @Test
-    public void testAddSetGetLong() {
+    void testAddSetGetLong() {
         ValueList list = newList();
         assertEquals(0, list.size());
         list.add(Long.valueOf(1));
@@ -107,7 +107,7 @@ public class ValueArrayListTest {
      * Test of basic list operations for double values.
      */
     @Test
-    public void testAddSetGetDouble() {
+    void testAddSetGetDouble() {
         ValueList list = newList();
         assertEquals(0, list.size());
         list.add(Double.valueOf(1.0));
@@ -124,7 +124,7 @@ public class ValueArrayListTest {
      * Test of basic list operations for string values.
      */
     @Test
-    public void testAddSetGetString() {
+    void testAddSetGetString() {
         ValueList list = newList();
         assertEquals(0, list.size());
         list.add("foo");
@@ -146,7 +146,7 @@ public class ValueArrayListTest {
      * does with a null.
      */
     @Test
-    public void testAddSetGetPropertyset() {
+    void testAddSetGetPropertyset() {
         ModelContext modelContext = new ModelstoreProvider().getDefaultContext();
         Propertyset objectWithoutId = modelContext.createPropertyset();
         objectWithoutId.setDoubleProperty("c", 3.14);
@@ -191,7 +191,7 @@ public class ValueArrayListTest {
      * does with a null.
      */
     @Test
-    public void testAddSetGetValueList() {
+    void testAddSetGetValueList() {
         ValueList value1 = newList();
         value1.add(3.14);
         value1.add(2.78);
@@ -235,7 +235,7 @@ public class ValueArrayListTest {
      * Test av {@link ValueArrayList#equals(Object)}.
      */
     @Test
-    public void testCopyConstructor() {
+    void testCopyConstructor() {
         ModelContext context = new ModelstoreProvider().getDefaultContext();
         UUID id = UUID.randomUUID();
         ValueList original = newList();
@@ -291,7 +291,7 @@ public class ValueArrayListTest {
      * Test av {@link ValueArrayList#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         ValueList list = newList();
         assertEquals(32, list.hashCode());
         list.add(toLongValue(1L));
@@ -302,7 +302,7 @@ public class ValueArrayListTest {
      * Test av {@link ValueArrayList#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         ValueList list = newList();
         assertTrue(list.equals(list));
         assertFalse(list.equals(null));

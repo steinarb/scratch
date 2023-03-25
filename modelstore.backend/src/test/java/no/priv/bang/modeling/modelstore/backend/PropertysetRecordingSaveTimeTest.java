@@ -19,7 +19,7 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class PropertysetRecordingSaveTimeTest {
+class PropertysetRecordingSaveTimeTest {
 
     private final static UUID generalObjectId = UUID.fromString("06cee83c-2ca8-44b8-8035-c79586665532");
     private final static UUID propertysetId = UUID.fromString("a72f6189-f132-4714-8f11-6258967a74ce");
@@ -27,7 +27,7 @@ public class PropertysetRecordingSaveTimeTest {
     private ModelContext context;
     private Propertyset propertyset;
     @BeforeEach
-    public void setup() {
+    void setup() {
         innerContext = new ModelContextImpl();
         context = new ModelContextRecordingMetadata(innerContext);
         propertyset = context.findPropertyset(propertysetId );
@@ -57,7 +57,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#isNil()}.
      */
     @Test
-    public void testIsNil() {
+    void testIsNil() {
         assertFalse(propertyset.isNil());
     }
 
@@ -65,7 +65,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#getPropertynames()}.
      */
     @Test
-    public void testGetPropertynames() {
+    void testGetPropertynames() {
         assertEquals(9, propertyset.getPropertynames().size());
     }
 
@@ -73,7 +73,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#getProperty()}.
      */
     @Test
-    public void testGetProperty() {
+    void testGetProperty() {
         assertTrue(propertyset.getProperty("a").isBoolean());
     }
 
@@ -82,7 +82,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetProperty() throws InterruptedException {
+    void testSetProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to get a different timestamp
@@ -95,7 +95,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#hasAspect()}.
      */
     @Test
-    public void testHasAspect() {
+    void testHasAspect() {
         assertTrue(propertyset.hasAspect());
     }
 
@@ -103,7 +103,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#getAspects()}.
      */
     @Test
-    public void testGetAspects() {
+    void testGetAspects() {
         assertEquals(1, propertyset.getAspects().size());
     }
 
@@ -111,7 +111,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#hasId()}.
      */
     @Test
-    public void testHasId() {
+    void testHasId() {
         assertTrue(propertyset.hasId());
     }
 
@@ -119,7 +119,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#getId()}.
      */
     @Test
-    public void testGetId() {
+    void testGetId() {
         assertEquals(propertysetId, propertyset.getId());
     }
 
@@ -130,7 +130,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetGetBooleanProperty() throws InterruptedException {
+    void testSetGetBooleanProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to get a different timestamp
@@ -152,7 +152,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetGetLongProperty() throws InterruptedException {
+    void testSetGetLongProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to get a different timestamp
@@ -174,7 +174,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetGetDoubleProperty() throws InterruptedException {
+    void testSetGetDoubleProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to get a different timestamp
@@ -195,7 +195,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetGetStringProperty() throws InterruptedException {
+    void testSetGetStringProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to get a different timestamp
@@ -211,7 +211,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetGetComplexProperty() throws InterruptedException {
+    void testSetGetComplexProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to make it possible to get a different time stamp
@@ -235,7 +235,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetGetReferenceProperty() throws InterruptedException {
+    void testSetGetReferenceProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to get a different timestamp
@@ -252,7 +252,7 @@ public class PropertysetRecordingSaveTimeTest {
      * @throws InterruptedException
      */
     @Test
-    public void testSetGetListProperty() throws InterruptedException {
+    void testSetGetListProperty() throws InterruptedException {
         // Expected the set value to change the lastmodifiedtime of the propertyset
         Date lastmodifiedTimeBeforeSetProperty = context.getLastmodifieddate(propertyset);
         Thread.sleep(10); // Sleep a little to make it possible to get a different time stamp
@@ -274,7 +274,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#hashCode()}.
      */
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         assertEquals(-1095503838, propertyset.hashCode());
     }
 
@@ -282,7 +282,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#equals(Object)}.
      */
     @Test
-    public void testEquals() {
+    void testEquals() {
         assertTrue(propertyset.equals(propertyset));
         assertFalse(propertyset.equals(null));
         // Same underlying object, different wrapper
@@ -308,7 +308,7 @@ public class PropertysetRecordingSaveTimeTest {
      * Unit test of {@link PropertysetRecordingSaveTime#toString()}.
      */
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(propertyset.toString()).startsWith("PropertysetRecordingSaveTime ");
     }
 }

@@ -37,12 +37,12 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-public class ModelContextTest {
+class ModelContextTest {
     @TempDir
     File folder;
 
     @Test
-    public void testCreatePropertyset() {
+    void testCreatePropertyset() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
 
@@ -61,7 +61,7 @@ public class ModelContextTest {
     }
 
     @Test
-    public void testList() {
+    void testList() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
 
@@ -99,7 +99,7 @@ public class ModelContextTest {
     }
 
     @Test
-    public void testEmbeddedAspects() {
+    void testEmbeddedAspects() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         int numberOfEmbeddedAspects = 6; // Adjust when adding embedded aspects
@@ -109,7 +109,7 @@ public class ModelContextTest {
     }
 
     @Test
-    public void testFindPropertysetById() {
+    void testFindPropertysetById() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
 
@@ -151,7 +151,7 @@ public class ModelContextTest {
     }
 
     @Test
-    public void testFindPropertysetOfAspect() {
+    void testFindPropertysetOfAspect() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
 
@@ -174,7 +174,7 @@ public class ModelContextTest {
      * Test setting multiple aspects on a Propertyset
      */
     @Test
-    public void testPropertysetWithMultipleAspects() {
+    void testPropertysetWithMultipleAspects() {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
 
@@ -203,7 +203,7 @@ public class ModelContextTest {
     }
 
     @Test
-    public void experimentalJacksonPersist() throws IOException {
+    void experimentalJacksonPersist() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.getDefaultContext();
         buildModelWithAspects(context);
@@ -224,7 +224,7 @@ public class ModelContextTest {
     }
 
     @Test
-    public void testJsonGeneratorWithReference() throws IOException {
+    void testJsonGeneratorWithReference() throws IOException {
         // Create two propertysets with ids, and make a reference to propertyset
         // "b" from propertyset "a".
         Modelstore modelstore = new ModelstoreProvider();
@@ -269,7 +269,7 @@ public class ModelContextTest {
      * @throws IOException
      */
     @Test
-    public void testMergeNoOverlapBetweenContexts() throws IOException {
+    void testMergeNoOverlapBetweenContexts() throws IOException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         buildPropertysetA(context, UUID.randomUUID());
@@ -306,7 +306,7 @@ public class ModelContextTest {
      * @throws InterruptedException
      */
     @Test
-    public void testMergeWithOverlapBetweenContexts() throws IOException, InterruptedException {
+    void testMergeWithOverlapBetweenContexts() throws IOException, InterruptedException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         UUID aId = UUID.randomUUID();
@@ -366,7 +366,7 @@ public class ModelContextTest {
      * @throws InterruptedException
      */
     @Test
-    public void testMergeWithNull() throws IOException, InterruptedException {
+    void testMergeWithNull() throws IOException, InterruptedException {
         Modelstore modelstore = new ModelstoreProvider();
         ModelContext context = modelstore.createContext();
         UUID aId = UUID.randomUUID();

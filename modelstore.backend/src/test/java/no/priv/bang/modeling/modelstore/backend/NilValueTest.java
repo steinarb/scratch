@@ -13,81 +13,81 @@ import org.junit.jupiter.api.Test;
  * @author Steinar Bang
  *
  */
-public class NilValueTest {
+class NilValueTest {
 
     @Test
-    public void testIsId() {
+    void testIsId() {
         assertFalse(getNil().isId());
     }
 
     @Test
-    public void testIsBoolean() {
+    void testIsBoolean() {
         assertFalse(getNil().isBoolean());
     }
 
     @Test
-    public void testAsBoolean() {
+    void testAsBoolean() {
         assertFalse(getNil().asBoolean());
         assertEquals(Boolean.valueOf(false), getNil().asBoolean());
     }
 
     @Test
-    public void testIsLong() {
+    void testIsLong() {
         assertFalse(getNil().isLong());
     }
 
     @Test
-    public void testAsLong() {
+    void testAsLong() {
         assertEquals(Long.valueOf(0), getNil().asLong());
     }
 
     @Test
-    public void testIsDouble() {
+    void testIsDouble() {
         assertFalse(getNil().isDouble());
     }
 
     @Test
-    public void testAsDouble() {
+    void testAsDouble() {
         assertEquals(Double.valueOf(0.0), getNil().asDouble());
     }
 
     @Test
-    public void testIsString() {
+    void testIsString() {
         assertFalse(getNil().isString());
     }
 
     @Test
-    public void testAsString() {
+    void testAsString() {
         assertEquals("", getNil().asString());
     }
 
     @Test
-    public void testIsComplexProperty() {
+    void testIsComplexProperty() {
         assertFalse(getNil().isComplexProperty());
     }
 
     @Test
-    public void testAsComplexProperty() {
+    void testAsComplexProperty() {
         assertEquals(getNilPropertyset(), getNil().asComplexProperty());
     }
 
     @Test
-    public void testIsReference() {
+    void testIsReference() {
         assertFalse(getNil().isReference());
     }
 
     @Test
-    public void testAsReference() {
+    void testAsReference() {
         assertEquals(getNilPropertyset(), getNil().asReference());
     }
 
     @Test
-    public void testIsList() {
+    void testIsList() {
         assertFalse(getNil().isList());
     }
 
     @Test
-    public void testAsList() {
+    void testAsList() {
         ValueList emptyList = getNil().asList();
         assertTrue(emptyList.isEmpty());
         assertEquals(0, emptyList.size());
@@ -102,12 +102,12 @@ public class NilValueTest {
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         assertEquals(0, getNil().hashCode());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertEquals("NilValue []", getNil().toString());
     }
 
