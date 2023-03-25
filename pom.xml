@@ -19,10 +19,12 @@
         <module>modelstore.services</module>
         <module>modelstore.backend</module>
         <module>modelstore.tests</module>
+        <module>jacoco-coverage-report</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
