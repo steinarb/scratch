@@ -1,5 +1,6 @@
 package no.priv.bang.modeling.modelstore.testutils;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.net.URISyntaxException;
