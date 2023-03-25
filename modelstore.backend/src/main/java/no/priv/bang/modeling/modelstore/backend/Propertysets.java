@@ -33,4 +33,6 @@ public class Propertysets {
         return propertyset;
     }
 
+    private Propertysets() { /* static class */ }
+
 }

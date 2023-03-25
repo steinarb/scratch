@@ -18,4 +18,5 @@ public class Aspects {
     public static final UUID modelAspectId = UUID.fromString("dae363e5-4757-4be7-b5d6-c3e7409c472c");
     public static final UUID aspectContainerAspectId = UUID.fromString("48168b6e-808b-4fe7-9997-c4eadeda2c6d");
 
+    private Aspects() { /* static class */ }
 }

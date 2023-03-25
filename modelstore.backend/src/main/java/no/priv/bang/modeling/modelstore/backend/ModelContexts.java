@@ -105,4 +105,6 @@ public class ModelContexts {
         return propertysetIds;
     }
 
+    private ModelContexts() { /* static class */ }
+
 }

@@ -165,4 +165,6 @@ public class Values {
         return new ValueArrayList();
     }
 
+    private Values() { /* static class */ }
+
 }
