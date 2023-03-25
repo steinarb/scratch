@@ -134,7 +134,7 @@ public class JsonPropertysetPersister {
     }
 
     private void outputArray(JsonGenerator generator, ValueList listvalue) throws IOException {
-        generator.writeStartArray(listvalue.size());
+        generator.writeStartArray();
         for (Value listElement : listvalue) {
             if (listElement.isReference()) {
                 generator.writeObjectRef(listElement.asReference().getId());
