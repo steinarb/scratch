@@ -13,7 +13,6 @@ import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
@@ -57,7 +56,7 @@ public class JsonPropertysetPersister {
         }
     }
 
-    public void restore(File propertysetsFile, ModelContext modelContext) throws JsonParseException, IOException {
+    public void restore(File propertysetsFile, ModelContext modelContext) throws IOException {
         if (propertysetsFile != null) {
             JsonParser parser = factory.createParser(propertysetsFile);
             parseUntilEnd(modelContext, parser);
@@ -155,7 +154,7 @@ public class JsonPropertysetPersister {
         generator.writeEndArray();
     }
 
-    private void parseUntilEnd(ModelContext modelContext, JsonParser parser) throws IOException, JsonParseException {
+    private void parseUntilEnd(ModelContext modelContext, JsonParser parser) throws IOException {
         while (parser.nextToken() != null) {
             JsonToken currentToken = parser.getCurrentToken();
             if (currentToken == JsonToken.START_ARRAY) {
@@ -166,7 +165,7 @@ public class JsonPropertysetPersister {
         }
     }
 
-    private Value parseArray(JsonParser parser, ModelContext modelContext) throws JsonParseException, IOException {
+    private Value parseArray(JsonParser parser, ModelContext modelContext) throws IOException {
         ValueList propertyList = newList();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
             JsonToken currentToken = parser.getCurrentToken();
@@ -190,7 +189,7 @@ public class JsonPropertysetPersister {
         return toListValue(propertyList, false);
     }
 
-    private Value parseObject(JsonParser parser, ModelContext modelContext) throws JsonParseException, IOException {
+    private Value parseObject(JsonParser parser, ModelContext modelContext) throws IOException {
         Propertyset propertyset = null;
         while (parser.nextToken() != JsonToken.END_OBJECT) {
             String currentFieldName = parser.getCurrentName();
