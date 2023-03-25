@@ -128,12 +128,12 @@ class ComplexValueTest {
     @Test
     void testEquals() {
         Value nullComplexValue = toComplexValue(null);
-        assertFalse(nullComplexValue.equals(null));
-        assertFalse(nullComplexValue.equals(getNil().asComplexProperty()));
-        assertTrue(nullComplexValue.equals(nullComplexValue));
-        assertFalse(nullComplexValue.equals(value));
-        assertFalse(value.equals(nullComplexValue));
-        assertTrue(value.equals(value));
+        assertNotEquals(nullComplexValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(nullComplexValue, getNil().asComplexProperty());
+        assertEquals(nullComplexValue, nullComplexValue);
+        assertNotEquals(nullComplexValue, value);
+        assertNotEquals(value, nullComplexValue);
+        assertEquals(value, value);
     }
 
     /**

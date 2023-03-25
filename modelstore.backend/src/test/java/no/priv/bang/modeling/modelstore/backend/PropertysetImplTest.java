@@ -35,10 +35,10 @@ class PropertysetImplTest {
         String stringProperty = propertyset.getStringProperty("stringProperty");
         assertEquals("", stringProperty);
         Propertyset complexProperty = propertyset.getComplexProperty("complexProperty");
-        assertNotNull(complexProperty);
+        assertNotEquals(complexProperty, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
         assertTrue(complexProperty.isNil());
         Propertyset reference = propertyset.getReferenceProperty("reference");
-        assertNotNull(reference);
+        assertNotEquals(reference, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
         assertTrue(reference.isNil());
     }
 
@@ -78,7 +78,7 @@ class PropertysetImplTest {
         assertEquals(Boolean.valueOf(true), positiveIntAsBool);
 
         // Set a null value and get a false boolean value back
-        propertyset.setBooleanProperty("nullValue", null);
+        propertyset.setBooleanProperty("nullValue", null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
         Boolean nullValue = propertyset.getBooleanProperty("nullValue");
         assertEquals(Boolean.valueOf(false), nullValue);
 
@@ -442,8 +442,8 @@ class PropertysetImplTest {
     void testEmptyPropertysetEqualsPropertysetNil() {
         Propertyset emptypropertyset = new PropertysetImpl();
         Propertyset nil = getNilPropertyset();
-        assertTrue(emptypropertyset.equals(nil));
-        assertTrue(nil.equals(emptypropertyset));
+        assertEquals(emptypropertyset, nil);
+        assertEquals(nil, emptypropertyset);
     }
 
     @Test
@@ -516,9 +516,9 @@ class PropertysetImplTest {
     @Test
     void testEquals() {
         Propertyset emptypropertyset = new PropertysetImpl();
-        assertTrue(emptypropertyset.equals(emptypropertyset));
-        assertFalse(emptypropertyset.equals(null));
-        assertTrue(emptypropertyset.equals(getNilPropertyset()));
+        assertEquals(emptypropertyset, emptypropertyset);
+        assertNotEquals(emptypropertyset, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertEquals(emptypropertyset, getNilPropertyset());
 
         // Compare two identical but propertysets that aren't the same object
         ModelContext context = new ModelstoreProvider().getDefaultContext();
@@ -527,8 +527,8 @@ class PropertysetImplTest {
         populatePropertyset(propertyset1, context, id);
         Propertyset propertyset2 = new PropertysetImpl();
         populatePropertyset(propertyset2, context, id);
-        assertTrue(propertyset1.equals(propertyset2));
-        assertTrue(propertyset2.equals(propertyset1));
+        assertEquals(propertyset1, propertyset2);
+        assertEquals(propertyset2, propertyset1);
     }
 
     @Test

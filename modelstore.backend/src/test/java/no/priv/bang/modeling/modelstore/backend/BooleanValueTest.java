@@ -124,11 +124,11 @@ class BooleanValueTest {
         Value nullBooleanValue = toBooleanValue(null);
         Value falseBooleanValue = toBooleanValue(Boolean.FALSE);
         Value trueBooleanValue = toBooleanValue(Boolean.TRUE);
-        assertFalse(nullBooleanValue.equals(null));
-        assertFalse(nullBooleanValue.equals(getNil()));
-        assertTrue(nullBooleanValue.equals(nullBooleanValue));
-        assertTrue(nullBooleanValue.equals(falseBooleanValue));
-        assertFalse(nullBooleanValue.equals(trueBooleanValue));
+        assertNotEquals(nullBooleanValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(nullBooleanValue, getNil());
+        assertEquals(nullBooleanValue, nullBooleanValue);
+        assertEquals(nullBooleanValue, falseBooleanValue);
+        assertNotEquals(nullBooleanValue, trueBooleanValue);
     }
 
     /**

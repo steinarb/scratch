@@ -228,14 +228,14 @@ class ModelContextRecordingMetadataTest {
         ModelContext inner = new ModelContextImpl();
         addPropertysetsToContext(inner);
         ModelContext context = new ModelContextRecordingMetadata(inner);
-        assertTrue(context.equals(context));
-        assertFalse(context.equals(null));
-        assertFalse(context.equals(new PropertysetImpl()));
-        assertFalse(context.equals(new ModelContextRecordingMetadata(new ModelContextImpl())));
+        assertEquals(context, context);
+        assertNotNull(context);
+        assertNotEquals(context, new PropertysetImpl());
+        assertNotEquals(context, new ModelContextRecordingMetadata(new ModelContextImpl()));
         ModelContext identicalInner = new ModelContextImpl();
         addPropertysetsToContext(identicalInner);
         ModelContext identicalContext = new ModelContextRecordingMetadata(identicalInner);
-        assertTrue(context.equals(identicalContext));
+        assertEquals(context, identicalContext);
     }
 
     /**

@@ -283,25 +283,25 @@ class PropertysetRecordingSaveTimeTest {
      */
     @Test
     void testEquals() {
-        assertTrue(propertyset.equals(propertyset));
-        assertFalse(propertyset.equals(null));
+        assertEquals(propertyset, propertyset);
+        assertNotEquals(propertyset, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
         // Same underlying object, different wrapper
         Propertyset copyOfPropertyset = context.findPropertyset(propertysetId);
-        assertTrue(propertyset.equals(copyOfPropertyset));
-        assertTrue(copyOfPropertyset.equals(propertyset));
+        assertEquals(propertyset, copyOfPropertyset);
+        assertEquals(copyOfPropertyset, propertyset);
 
         // Same underlying object, different context
         ModelContext context2 = new ModelContextRecordingMetadata(innerContext);
         Propertyset otherContextPropertyset = context2.findPropertyset(propertysetId);
-        assertFalse(propertyset.equals(otherContextPropertyset));
+        assertNotEquals(propertyset, otherContextPropertyset);
 
         // Same context, different propertyset
         Propertyset otherPropertyset = context.findPropertyset(UUID.randomUUID());
-        assertFalse(propertyset.equals(otherPropertyset));
+        assertNotEquals(propertyset, otherPropertyset);
 
         // Compare underlying object
         Propertyset inner = innerContext.findPropertyset(propertysetId);
-        assertTrue(propertyset.equals(inner), "Expected inner object to compare equals to wrapper");
+        assertEquals(propertyset, inner, "Expected inner object to compare equals to wrapper");
     }
 
     /**

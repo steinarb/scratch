@@ -142,11 +142,11 @@ class StringValueTest {
     void testEquals() {
         Value nullStringValue = toStringValue(null);
         Value value = toStringValue("foobar");
-        assertFalse(nullStringValue.equals(null));
-        assertFalse(nullStringValue.equals(getNil()));
-        assertTrue(nullStringValue.equals(nullStringValue));
-        assertFalse(nullStringValue.equals(value));
-        assertFalse(value.equals(nullStringValue));
+        assertNotEquals(nullStringValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(nullStringValue, getNil());
+        assertEquals(nullStringValue, nullStringValue);
+        assertNotEquals(nullStringValue, value);
+        assertNotEquals(value, nullStringValue);
     }
 
     /**

@@ -121,11 +121,11 @@ class LongValueTest {
     @Test
     void testEquals() {
         Value nullLongValue = toLongValue(null);
-        assertFalse(nullLongValue.equals(null));
-        assertFalse(nullLongValue.equals(getNil()));
-        assertTrue(nullLongValue.equals(nullLongValue));
-        assertFalse(nullLongValue.equals(value));
-        assertFalse(value.equals(nullLongValue));
+        assertNotEquals(nullLongValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(nullLongValue, getNil());
+        assertEquals(nullLongValue, nullLongValue);
+        assertNotEquals(nullLongValue, value);
+        assertNotEquals(value, nullLongValue);
     }
 
     /**

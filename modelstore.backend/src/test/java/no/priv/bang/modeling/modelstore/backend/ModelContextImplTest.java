@@ -161,12 +161,12 @@ class ModelContextImplTest {
     void testEquals() {
         ModelContext context = new ModelContextImpl();
         addPropertysetsToContext(context);
-        assertTrue(context.equals(context));
-        assertFalse(context.equals(null));
-        assertFalse(context.equals(new PropertysetImpl()));
+        assertEquals(context, context);
+        assertNotEquals(context, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(context, new PropertysetImpl());
         ModelContext identicalContext = new ModelContextImpl();
         addPropertysetsToContext(identicalContext);
-        assertTrue(context.equals(identicalContext));
+        assertEquals(context, identicalContext);
     }
 
     /**

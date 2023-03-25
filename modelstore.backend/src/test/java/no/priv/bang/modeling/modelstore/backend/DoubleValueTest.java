@@ -122,11 +122,11 @@ class DoubleValueTest {
     @Test
     void testEquals() {
         Value nullDoubleValue = toDoubleValue(null);
-        assertFalse(nullDoubleValue.equals(null));
-        assertFalse(nullDoubleValue.equals(getNil()));
-        assertTrue(nullDoubleValue.equals(nullDoubleValue));
-        assertFalse(nullDoubleValue.equals(value));
-        assertFalse(value.equals(nullDoubleValue));
+        assertNotEquals(nullDoubleValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(nullDoubleValue, getNil());
+        assertEquals(nullDoubleValue, nullDoubleValue);
+        assertNotEquals(nullDoubleValue, value);
+        assertNotEquals(value, nullDoubleValue);
     }
 
     /**

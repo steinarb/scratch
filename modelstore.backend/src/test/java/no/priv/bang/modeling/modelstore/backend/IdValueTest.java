@@ -123,16 +123,16 @@ class IdValueTest {
     @Test
     void testEquals() {
         IdValue nullIdValue = new IdValue(null);
-        assertFalse(nullIdValue.equals(null));
-        assertFalse(nullIdValue.equals(getNil().asId()));
-        assertTrue(nullIdValue.equals(nullIdValue));
-        assertFalse(nullIdValue.equals(value));
-        assertFalse(value.equals(nullIdValue));
-        assertTrue(value.equals(value));
+        assertNotEquals(nullIdValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(nullIdValue, getNil().asId());
+        assertEquals(nullIdValue, nullIdValue);
+        assertNotEquals(nullIdValue, value);
+        assertNotEquals(value, nullIdValue);
+        assertEquals(value, value);
 
         // Different object with the same UUID compares as equal
         IdValue value2 = new IdValue(UUID.fromString(value.asString()));
-        assertTrue(value.equals(value2));
+        assertEquals(value, value2);
     }
 
     /**

@@ -120,10 +120,10 @@ class ListValueTest {
     void testEmptyListEqualsNilList() {
         Value emptylist = toListValue(newList(), false);
         Value nil = getNil();
-        assertTrue(emptylist.equals(nil));
+        assertEquals(emptylist, nil);
 
         // TODO: should the equals be implemented in the nil object as well?
-        assertFalse(nil.equals(emptylist));
+        assertNotEquals(nil, emptylist);
     }
 
     /**
@@ -148,18 +148,18 @@ class ListValueTest {
         ValueList list = newList();
         list.add(toDoubleValue(3.14));
         Value otherValue = toListValue(list, false);
-        assertFalse(nullListValue.equals(null));
-        assertTrue(nullListValue.equals(getNil()));
-        assertTrue(nullListValue.equals(nullListValue));
-        assertTrue(nullListValue.equals(emptyvalue));
-        assertFalse(emptyvalue.equals(nullListValue));
-        assertTrue(value.equals(value));
-        assertFalse(value.equals(emptyvalue));
-        assertFalse(value.equals(nullListValue));
-        assertFalse(emptyvalue.equals(value));
+        assertNotEquals(nullListValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertEquals(nullListValue, getNil());
+        assertEquals(nullListValue, nullListValue);
+        assertEquals(nullListValue, emptyvalue);
+        assertNotEquals(emptyvalue, nullListValue);
+        assertEquals(value, value);
+        assertNotEquals(value, emptyvalue);
+        assertNotEquals(value, nullListValue);
+        assertNotEquals(emptyvalue, value);
         Value stringvalue = toStringValue("foobar");
-        assertFalse(value.equals(stringvalue));
-        assertFalse(value.equals(otherValue));
+        assertNotEquals(value, stringvalue);
+        assertNotEquals(value, otherValue);
     }
 
     /**

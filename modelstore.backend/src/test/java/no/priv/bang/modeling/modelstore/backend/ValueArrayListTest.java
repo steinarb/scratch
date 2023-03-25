@@ -304,16 +304,16 @@ class ValueArrayListTest {
     @Test
     void testEquals() {
         ValueList list = newList();
-        assertTrue(list.equals(list));
-        assertFalse(list.equals(null));
+        assertEquals(list, list);
+        assertNotEquals(list, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
         ValueList emptylist = newList();
-        assertTrue(list.equals(emptylist));
-        assertFalse(list.equals(getNil().asList()));
-        assertFalse(list.equals(new EmptyValueList()));
+        assertEquals(list, emptylist);
+        assertNotEquals(list, getNil().asList());
+        assertNotEquals(list, new EmptyValueList());
         list.add(toLongValue(1L));
-        assertFalse(list.equals(emptylist));
+        assertNotEquals(list, emptylist);
         ValueList otherlistWithSameItem = newList();
         otherlistWithSameItem.add(toLongValue(1L));
-        assertTrue(list.equals(otherlistWithSameItem));
+        assertEquals(list, otherlistWithSameItem);
     }
 }

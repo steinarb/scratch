@@ -130,17 +130,17 @@ class ReferenceValueTest {
     @Test
     void testEquals() {
         Value nullReferenceValue = toReferenceValue(null);
-        assertFalse(nullReferenceValue.equals(null));
-        assertFalse(nullReferenceValue.equals(getNil().asComplexProperty()));
-        assertTrue(nullReferenceValue.equals(nullReferenceValue));
-        assertFalse(nullReferenceValue.equals(value));
-        assertFalse(value.equals(nullReferenceValue));
-        assertTrue(value.equals(value));
+        assertNotEquals(nullReferenceValue, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+        assertNotEquals(nullReferenceValue,getNil().asComplexProperty());
+        assertEquals(nullReferenceValue, nullReferenceValue);
+        assertNotEquals(nullReferenceValue, value);
+        assertNotEquals(value, nullReferenceValue);
+        assertEquals(value, value);
 
         // Compare two different object with no id property
         Value refToNoId = toReferenceValue(new PropertysetImpl());
         Value refToNoId2 = toReferenceValue(new PropertysetImpl());
-        assertTrue(refToNoId.equals(refToNoId2));
+        assertEquals(refToNoId, refToNoId2);
 
     }
 

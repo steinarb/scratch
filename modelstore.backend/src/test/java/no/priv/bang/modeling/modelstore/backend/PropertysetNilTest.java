@@ -109,17 +109,17 @@ class PropertysetNilTest {
         Propertyset nilPropertyset = getNilPropertyset();
         Propertyset propertyset = new PropertysetImpl();
 
-        assertTrue(nilPropertyset.equals(nilPropertyset));
-        assertFalse(nilPropertyset.equals(null));
+        assertEquals(nilPropertyset, nilPropertyset);
+        assertNotEquals(nilPropertyset, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
 
         // Nil compares equals to an empty non-nil propertyset
-        assertTrue(nilPropertyset.equals(propertyset));
+        assertEquals(nilPropertyset, propertyset);
 
         // But add a property to that propertyset and it will no longer compare
         propertyset.setStringProperty("string", "this is stringvalue");
-        assertFalse(nilPropertyset.equals(propertyset));
+        assertNotEquals(nilPropertyset, propertyset);
 
         // A string is not equals to a propertyset, nil or not.
-        assertFalse(nilPropertyset.equals("foo bar"));
+        assertNotEquals(nilPropertyset, "foo bar"); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
     }
 }
