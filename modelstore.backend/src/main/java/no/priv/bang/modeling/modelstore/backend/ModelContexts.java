@@ -18,7 +18,7 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 public class ModelContexts {
 
     // A reserved ID used by the metadata object.
-    final static UUID metadataId = UUID.fromString("b1ad694b-4003-412b-8249-a7d1a0a24cf3");
+    static final UUID metadataId = UUID.fromString("b1ad694b-4003-412b-8249-a7d1a0a24cf3");
 
     public static ModelContext findWrappedModelContext(ModelContext modelcontext) {
         if (modelcontext instanceof ModelContextRecordingMetadata) {
@@ -55,8 +55,8 @@ public class ModelContexts {
      * @param context the context that will contain the merge results
      * @param otherContext the context that is merged into the other context, this context is unchanged after the merge
      */
-    static public void merge(ModelContext context, ModelContext otherContext) {
-    	if (otherContext == null) {
+    public static void merge(ModelContext context, ModelContext otherContext) {
+        if (otherContext == null) {
             // No point in testing for null in the first argument, because this
             // will always be "this" when called from a ModelContext implementation
             // and if used in a different way, must be done from inside this package

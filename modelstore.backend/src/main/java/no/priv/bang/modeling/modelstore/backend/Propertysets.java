@@ -11,8 +11,8 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 public class Propertysets {
 
     // Shared constants for Propertyset implementations
-    final public static String idKey = "id";
-    final public static String aspectsKey = "aspects";
+    public static final String idKey = "id";
+    public static final String aspectsKey = "aspects";
 
     /**
      * If the {@link Propertyset} argument's implementation is wrapping a

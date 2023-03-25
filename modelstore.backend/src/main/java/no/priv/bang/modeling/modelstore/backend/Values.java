@@ -19,7 +19,7 @@ public class Values {
      *
      * @return a reference to {@link PropertysetNil}.
      */
-    static public Propertyset getNilPropertyset() {
+    public static Propertyset getNilPropertyset() {
         return PropertysetNil.getNil();
     }
 
@@ -28,7 +28,7 @@ public class Values {
      *
      * @return a reference to {@link NilValue}.
      */
-    static public Value getNil() {
+    public static Value getNil() {
         return NilValue.getNil();
     }
 
@@ -38,7 +38,7 @@ public class Values {
      * @param boolValue the value to wrap
      * @return a {@link BooleanValue} instance
      */
-    static public Value toBooleanValue(Boolean boolValue) {
+    public static Value toBooleanValue(Boolean boolValue) {
         return new BooleanValue(boolValue);
     }
 
@@ -48,7 +48,7 @@ public class Values {
      * @param boolValue the value to wrap
      * @return a {@link BooleanValue} instance
      */
-    static public Value toBooleanValue(boolean boolValue) {
+    public static Value toBooleanValue(boolean boolValue) {
         return toBooleanValue(Boolean.valueOf(boolValue));
     }
 
@@ -58,7 +58,7 @@ public class Values {
      * @param intValue the value to wrap
      * @return a {@link LongValue} instance
      */
-    static public Value toLongValue(Long intValue) {
+    public static Value toLongValue(Long intValue) {
         return new LongValue(intValue);
     }
 
@@ -68,7 +68,7 @@ public class Values {
      * @param intValue the value to wrap
      * @return a {@link LongValue} instance
      */
-    static public Value toLongValue(long intValue) {
+    public static Value toLongValue(long intValue) {
         return toLongValue(Long.valueOf(intValue));
     }
 
@@ -78,7 +78,7 @@ public class Values {
      * @param doubleValue the value to wrap
      * @return a {@link DoubleValue} instance
      */
-    static public Value toDoubleValue(Double doubleValue) {
+    public static Value toDoubleValue(Double doubleValue) {
         return new DoubleValue(doubleValue);
     }
 
@@ -88,7 +88,7 @@ public class Values {
      * @param doubleValue the value to wrap
      * @return a {@link DoubleValue} instance
      */
-    static public Value toDoubleValue(double doubleValue) {
+    public static Value toDoubleValue(double doubleValue) {
         return toDoubleValue(Double.valueOf(doubleValue));
     }
 
@@ -98,7 +98,7 @@ public class Values {
      * @param stringValue the value to wrap
      * @return a {@link StringValue} instance
      */
-    static public Value toStringValue(String stringValue) {
+    public static Value toStringValue(String stringValue) {
         return new StringValue(stringValue);
     }
 
@@ -108,7 +108,7 @@ public class Values {
      * @param complexValue the value to wrap
      * @return a {@link ComplexValue} instance
      */
-    static public Value toComplexValue(Propertyset complexValue) {
+    public static Value toComplexValue(Propertyset complexValue) {
         return toComplexValue(complexValue, true);
     }
 
@@ -119,7 +119,7 @@ public class Values {
      * @param makeDefensiveCopy if true, create a copy of the complexValue and give the copy to the value
      * @return a {@link ComplexValue} instance
      */
-    static public Value toComplexValue(Propertyset complexValue, boolean makeDefensiveCopy) {
+    public static Value toComplexValue(Propertyset complexValue, boolean makeDefensiveCopy) {
         Propertyset value = makeDefensiveCopy && complexValue != null ? new PropertysetImpl(complexValue) : complexValue;
         return new ComplexValue(value);
     }
@@ -130,7 +130,7 @@ public class Values {
      * @param referencedValue the value to wrap
      * @return a {@link ReferenceValue} instance
      */
-    static public Value toReferenceValue(Propertyset referencedValue) {
+    public static Value toReferenceValue(Propertyset referencedValue) {
         return new ReferenceValue(referencedValue);
     }
 
@@ -161,7 +161,7 @@ public class Values {
      *
      * @return a new empty instance of {@link ValueArrayList}.
      */
-    static public ValueList newList() {
+    public static ValueList newList() {
         return new ValueArrayList();
     }
 

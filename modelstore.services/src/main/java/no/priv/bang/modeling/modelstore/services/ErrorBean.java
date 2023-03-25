@@ -13,10 +13,10 @@ import java.util.Date;
  */
 public class ErrorBean {
 
-    final private Date date;
-    final private String message;
-    final private String fileOrStream;
-    final private Exception exception;
+    private final Date date;
+    private final String message;
+    private final String fileOrStream;
+    private final Exception exception;
 
     /**
      * Create an ErrorBean instances.

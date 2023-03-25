@@ -19,7 +19,7 @@ import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
  *
  */
 public class PropertysetImpl implements Propertyset {
-    final private Map<String, Value> properties = new HashMap<String, Value>();
+    private final Map<String, Value> properties = new HashMap<String, Value>();
 
     public PropertysetImpl(UUID id) {
         properties.put(idKey, new IdValue(id));
