@@ -26,7 +26,7 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 public class ModelContextImpl implements ModelContext {
 
     protected final UUID metadataId = UUID.fromString("b1ad694b-4003-412b-8249-a7d1a0a24cf3");
-    private Map<UUID, Propertyset> propertysets = new HashMap<UUID, Propertyset>();
+    private Map<UUID, Propertyset> propertysets = new HashMap<>();
     private Set<Propertyset> embeddedAspects;
     private Modelstore modelstore; // Only used for logging
 
@@ -70,7 +70,7 @@ public class ModelContextImpl implements ModelContext {
      * @see no.priv.bang.modeling.modelstore.ModelContext#listAllPropertysets()
      */
     public Collection<Propertyset> listAllPropertysets() {
-        List<Propertyset> allPropertysetsExcludingEmbedded = new ArrayList<Propertyset>(propertysets.size());
+        List<Propertyset> allPropertysetsExcludingEmbedded = new ArrayList<>(propertysets.size());
         for (Propertyset propertyset : propertysets.values()) {
             if (!embeddedAspects.contains(propertyset)) {
                 allPropertysetsExcludingEmbedded.add(propertyset);
@@ -84,7 +84,7 @@ public class ModelContextImpl implements ModelContext {
      * @see no.priv.bang.modeling.modelstore.ModelContext#listAllAspects()
      */
     public Collection<Propertyset> listAllAspects() {
-        Set<Propertyset> allAspects = new HashSet<Propertyset>(embeddedAspects);
+        Set<Propertyset> allAspects = new HashSet<>(embeddedAspects);
         for (Entry<UUID, Propertyset> propertyset : propertysets.entrySet()) {
             if (propertyset.getValue().hasAspect()) {
                 ValueList aspects = propertyset.getValue().getAspects();
@@ -108,7 +108,7 @@ public class ModelContextImpl implements ModelContext {
      * @see no.priv.bang.modeling.modelstore.ModelContext#findObjectsOfAspect(no.priv.bang.modeling.modelstore.Propertyset)
      */
     public Collection<Propertyset> findObjectsOfAspect(Propertyset aspect) {
-        List<Propertyset> objectsOfAspect = new ArrayList<Propertyset>();
+        List<Propertyset> objectsOfAspect = new ArrayList<>();
         for (Entry<UUID, Propertyset> propertysetEntry : propertysets.entrySet()) {
             ValueList aspectList = propertysetEntry.getValue().getListProperty("aspects");
             for (Value aspectValue : aspectList) {
@@ -128,7 +128,7 @@ public class ModelContextImpl implements ModelContext {
             JsonFactory jsonFactory = new JsonFactory();
             JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
             persister.restore(aspectsFile, this);
-            embeddedAspects = new HashSet<Propertyset>(propertysets.values());
+            embeddedAspects = new HashSet<>(propertysets.values());
         } catch (Exception e) { }
     }
 
@@ -140,7 +140,7 @@ public class ModelContextImpl implements ModelContext {
             return aspects;
         } else {
             // No more base aspects, create the set and add myself
-            Set<Propertyset> aspects = new HashSet<Propertyset>();
+            Set<Propertyset> aspects = new HashSet<>();
             aspects.add(aspect);
             return aspects;
         }

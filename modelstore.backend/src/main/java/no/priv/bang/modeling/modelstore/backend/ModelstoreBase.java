@@ -59,7 +59,7 @@ class ModelstoreBase extends BuiltinAspectsBase implements Modelstore {
     public List<ErrorBean> getErrors() {
         synchronized (errors) {
             // Defensive copy
-            return new ArrayList<ErrorBean>(errors);
+            return new ArrayList<>(errors);
         }
     }
 

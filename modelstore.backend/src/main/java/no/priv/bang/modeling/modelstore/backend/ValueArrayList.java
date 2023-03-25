@@ -15,7 +15,7 @@ class ValueArrayList extends AbstractList<Value> implements ValueList {
     List<Value> arrayList;
 
     public ValueArrayList(ValueList original) {
-        arrayList = new ArrayList<Value>(original);
+        arrayList = new ArrayList<>(original);
         deepDefensiveCopyWhenNeeded();
     }
 
@@ -24,7 +24,7 @@ class ValueArrayList extends AbstractList<Value> implements ValueList {
     }
 
     public ValueArrayList(int initialCapacity) {
-        arrayList = new ArrayList<Value>(initialCapacity);
+        arrayList = new ArrayList<>(initialCapacity);
     }
 
     private void deepDefensiveCopyWhenNeeded() {

@@ -22,7 +22,7 @@ public class ModelContextRecordingMetadata implements ModelContext {
 
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
     private ModelContext impl;
-    private Map<UUID,Date> lastmodifiedtime = new HashMap<UUID, Date>();
+    private Map<UUID,Date> lastmodifiedtime = new HashMap<>();
 
     public ModelContextRecordingMetadata(ModelContext nonMetadataRecordingContext) {
         impl = nonMetadataRecordingContext;
@@ -69,7 +69,7 @@ public class ModelContextRecordingMetadata implements ModelContext {
 
     public Collection<Propertyset> listAllPropertysets() {
         Collection<Propertyset> implist = impl.listAllPropertysets();
-        ArrayList<Propertyset> retlist = new ArrayList<Propertyset>(implist.size() + 1);
+        ArrayList<Propertyset> retlist = new ArrayList<>(implist.size() + 1);
         retlist.add(createMetadata());
         for (Propertyset propertyset : implist) {
             if (!metadataId.equals(propertyset.getId())) {

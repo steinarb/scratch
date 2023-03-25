@@ -94,7 +94,7 @@ public class ModelContexts {
     }
 
     private static Collection<UUID> findPropertysetIds(Collection<Propertyset> propertysets) {
-        List<UUID> propertysetIds = new ArrayList<UUID>(propertysets.size()-1);
+        List<UUID> propertysetIds = new ArrayList<>(propertysets.size()-1);
         for (Propertyset propertyset : propertysets) {
             UUID propertysetId = propertyset.getId();
             if (!metadataId.equals(propertysetId)) {
