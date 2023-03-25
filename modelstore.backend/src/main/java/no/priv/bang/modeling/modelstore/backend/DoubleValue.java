@@ -31,6 +31,7 @@ class DoubleValue extends ValueBase {
         }
     }
 
+    @Override
     public boolean isDouble() {
         return true;
     }

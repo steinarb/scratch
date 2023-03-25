@@ -31,6 +31,7 @@ class LongValue extends ValueBase {
         }
     }
 
+    @Override
     public boolean isLong() {
         return true;
     }

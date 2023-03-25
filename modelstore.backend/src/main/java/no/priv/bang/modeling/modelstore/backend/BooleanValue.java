@@ -32,6 +32,7 @@ class BooleanValue extends ValueBase {
         }
     }
 
+    @Override
     public boolean isBoolean() {
         return true;
     }
@@ -62,6 +63,7 @@ class BooleanValue extends ValueBase {
         return getNilPropertyset();
     }
 
+    @Override
     public boolean isList() {
         return false;
     }
