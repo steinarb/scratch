@@ -17,13 +17,7 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 class LongValue extends ValueBase {
     private Long value;
 
-    /**
-     * Create new instances of {@link LongValue}.
-     *
-     * @param value the value to wrap
-     * @deprecated use {@link Values#toLongValue(Long)} instead
-     */
-    public LongValue(Long value) {
+    LongValue(Long value) {
         if (null == value) {
             this.value = getNil().asLong();
         } else {

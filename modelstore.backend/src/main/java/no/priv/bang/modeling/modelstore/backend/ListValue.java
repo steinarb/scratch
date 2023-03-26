@@ -9,13 +9,7 @@ class ListValue extends ValueBase {
 
     private ValueList value;
 
-    /**
-     * Create a new instance of {@link ListValue}.
-     *
-     * @param value the value to wrap
-     * @deprecated use {@link Values#toListValue(ValueList)} instead
-     */
-    public ListValue(ValueList value) {
+    ListValue(ValueList value) {
         if (null == value) {
             this.value = getNil().asList();
         } else {

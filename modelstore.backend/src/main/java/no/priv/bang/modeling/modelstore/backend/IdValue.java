@@ -12,7 +12,7 @@ class IdValue implements Value {
 
     private UUID value;
 
-    public IdValue(UUID value) {
+    IdValue(UUID value) {
         if (value != null) {
             this.value = value;
         } else {

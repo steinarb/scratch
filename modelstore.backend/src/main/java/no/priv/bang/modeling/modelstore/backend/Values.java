@@ -11,7 +11,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * @author Steinar Bang
  *
  */
-@SuppressWarnings("deprecation")
 public class Values {
 
     /**

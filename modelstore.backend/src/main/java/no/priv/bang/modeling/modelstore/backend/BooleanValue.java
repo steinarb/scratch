@@ -18,12 +18,6 @@ class BooleanValue extends ValueBase {
 
     private Boolean value;
 
-    /**
-     * Create new instance of {@link BooleanValue}
-     *
-     * @param value the value to wrap.
-     * @deprecated Use {@link Values#toBooleanValue(Boolean)} instead
-     */
     BooleanValue(Boolean value) {
         if (null == value) {
             this.value = getNil().asBoolean();

@@ -13,13 +13,7 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
  */
 class ReferenceValue extends PropertysetValueBase {
 
-    /**
-     * Create a new instance of {@link ReferenceValue}.
-     *
-     * @param value the value to wrap
-     * @deprecated use {@link Values#toReferenceValue(Propertyset)} instead
-     */
-    public ReferenceValue(Propertyset value) {
+    ReferenceValue(Propertyset value) {
         super(value);
     }
 

@@ -17,13 +17,7 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 class StringValue extends ValueBase {
     private String value;
 
-    /**
-     * Create a new instance of {@link StringValue}.
-     *
-     * @param value the value to wrap
-     * @deprecated use {@link Values#toStringValue(String)} instead
-     */
-    public StringValue(String value) {
+    StringValue(String value) {
         if (null == value) {
             this.value = getNil().asString();
         } else {

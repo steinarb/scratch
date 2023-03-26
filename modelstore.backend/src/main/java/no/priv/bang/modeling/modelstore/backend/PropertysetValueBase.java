@@ -9,7 +9,7 @@ public abstract class PropertysetValueBase extends ValueBase {
 
     protected Propertyset value;
 
-    public PropertysetValueBase(Propertyset value) {
+    protected PropertysetValueBase(Propertyset value) {
         if (null == value) {
             this.value = getNilPropertyset();
         } else {

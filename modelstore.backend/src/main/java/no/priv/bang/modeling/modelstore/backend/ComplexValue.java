@@ -7,13 +7,7 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 
 class ComplexValue extends PropertysetValueBase {
 
-    /**
-     * Create a new instance of {@link ComplexValue}.
-     *
-     * @param value the value to wrap
-     * @deprecated use {@link Values#toComplexValue(Propertyset)} instead
-     */
-    public ComplexValue(Propertyset value) {
+    ComplexValue(Propertyset value) {
         super(value);
     }
 

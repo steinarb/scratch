@@ -17,13 +17,7 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 class DoubleValue extends ValueBase {
     private Double value;
 
-    /**
-     * Create new instances of {@link DoubleValue}.
-     *
-     * @param value the value to wrap
-     * @deprecated use {@link Values#toDoubleValue(Double)} instead
-     */
-    public DoubleValue(Double value) {
+    DoubleValue(Double value) {
         if (null == value) {
             this.value = getNil().asDouble();
         } else {
