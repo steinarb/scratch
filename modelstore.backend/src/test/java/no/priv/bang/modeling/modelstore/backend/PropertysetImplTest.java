@@ -485,14 +485,14 @@ class PropertysetImplTest {
         // Verify that id can't be set
         Value idValue = createIdValue(context);
         Propertyset propertyset = context.createPropertyset();
-        propertyset.setProperty(idKey, idValue);
-        assertEquals(getNil(), propertyset.getProperty(idKey));
+        propertyset.setProperty(ID_KEY, idValue);
+        assertEquals(getNil(), propertyset.getProperty(ID_KEY));
         assertEquals(getNilPropertyset().getId(), propertyset.getId());
 
         // Verify that aspects can't be set as a property
         Value aspectsValue = createAspectsValue(context);
-        propertyset.setProperty(aspectsKey, aspectsValue);
-        assertEquals(getNil(), propertyset.getProperty(aspectsKey));
+        propertyset.setProperty(ASPECTS_KEY, aspectsValue);
+        assertEquals(getNil(), propertyset.getProperty(ASPECTS_KEY));
         assertFalse(propertyset.hasAspect());
         assertEquals(0, propertyset.getAspects().size());
 
@@ -634,11 +634,11 @@ class PropertysetImplTest {
 
     private void assertAllPropertiesExceptIdAndAspectEquals(Propertyset propertyset1, Propertyset propertyset2) {
         Collection<String> propertynames1 = propertyset1.getPropertynames();
-        propertynames1.remove(idKey);
-        propertynames1.remove(aspectsKey);
+        propertynames1.remove(ID_KEY);
+        propertynames1.remove(ASPECTS_KEY);
         Collection<String> propertynames2 = propertyset2.getPropertynames();
-        propertynames2.remove(idKey);
-        propertynames2.remove(aspectsKey);
+        propertynames2.remove(ID_KEY);
+        propertynames2.remove(ASPECTS_KEY);
         assertEquals(propertynames1, propertynames2);
         for (String propertyname : propertynames1) {
             Value value1 = propertyset1.getProperty(propertyname);
@@ -679,7 +679,7 @@ class PropertysetImplTest {
 
     private Value createIdValue(ModelContext context) {
         Propertyset propertysetWithId = context.findPropertyset(UUID.randomUUID());
-        Value idValue = propertysetWithId.getProperty(idKey);
+        Value idValue = propertysetWithId.getProperty(ID_KEY);
         return idValue;
     }
 

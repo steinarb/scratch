@@ -214,7 +214,7 @@ public class JsonPropertysetPersister {
                 return toReferenceValue(referencedPropertyset);
             }
 
-            if (idKey.equals(currentFieldName)) {
+            if (ID_KEY.equals(currentFieldName)) {
                 parser.nextToken();
                 String idValue = parser.getText();
                 UUID id = UUID.fromString(idValue);
@@ -226,7 +226,7 @@ public class JsonPropertysetPersister {
                     propertyset = modelContext.findPropertyset(id);
                     propertyset.copyValues(complexvalue);
                 }
-            } else if (aspectsKey.equals(currentFieldName)) {
+            } else if (ASPECTS_KEY.equals(currentFieldName)) {
                 propertyset = createPropertysetIfNull(propertyset);
                 parser.nextToken();
                 JsonToken currentToken = parser.getCurrentToken();

@@ -22,7 +22,7 @@ final class NilValue implements Value {
     private final Boolean nullBooleanValue = Boolean.valueOf(false);
     private final Long nullLongValue = Long.valueOf(0);
     private final Double nullDoubleValue = Double.valueOf(0);
-    private static final String emptyStringValue = "";
+    private static final String EMPTY_STRING_VALUE = "";
     private final ValueList emptyValueList = new EmptyValueList();
 
     static Value getNil() {
@@ -68,7 +68,7 @@ final class NilValue implements Value {
     }
 
     public String asString() {
-        return emptyStringValue;
+        return EMPTY_STRING_VALUE;
     }
 
     public boolean isComplexProperty() {

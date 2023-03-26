@@ -22,14 +22,14 @@ public class PropertysetImpl implements Propertyset {
     private final Map<String, Value> properties = new HashMap<>();
 
     public PropertysetImpl(UUID id) {
-        properties.put(idKey, new IdValue(id));
+        properties.put(ID_KEY, new IdValue(id));
     }
 
     public PropertysetImpl() { }
 
     public PropertysetImpl(Propertyset propertyset) {
         if (propertyset.hasId()) {
-            properties.put(idKey, new IdValue(propertyset.getId()));
+            properties.put(ID_KEY, new IdValue(propertyset.getId()));
         }
 
         copyValues(propertyset);
@@ -41,7 +41,7 @@ public class PropertysetImpl implements Propertyset {
         }
 
         for (String propertyname : propertyset.getPropertynames()) {
-            if (!aspectsKey.equals(propertyname) && !idKey.equals(propertyname)) {
+            if (!ASPECTS_KEY.equals(propertyname) && !ID_KEY.equals(propertyname)) {
                 Value propertyvalue = propertyset.getProperty(propertyname);
                 setProperty(propertyname, propertyvalue);
             }
@@ -68,7 +68,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setProperty(String propertyname, Value property) {
-        if (idKey.equals(propertyname) || aspectsKey.equals(propertyname)) {
+        if (ID_KEY.equals(propertyname) || ASPECTS_KEY.equals(propertyname)) {
             return; // Set nothing
         } else if (null != property && property.isComplexProperty()) {
             properties.put(propertyname, toComplexValue(property.asComplexProperty()));
@@ -84,7 +84,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public boolean hasAspect() {
-        Value rawValue = properties.get(aspectsKey);
+        Value rawValue = properties.get(ASPECTS_KEY);
         if (null != rawValue) {
             return !rawValue.asList().isEmpty();
         }
@@ -93,7 +93,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public ValueList getAspects() {
-        Value rawValue = properties.get(aspectsKey);
+        Value rawValue = properties.get(ASPECTS_KEY);
         if (null != rawValue) {
             return rawValue.asList();
         }
@@ -102,7 +102,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void addAspect(Propertyset aspect) {
-        Value rawValue = properties.get(aspectsKey);
+        Value rawValue = properties.get(ASPECTS_KEY);
         if (null != rawValue) {
             ValueList aspectList = rawValue.asList();
             if (!aspectContainedInList(aspectList, aspect)) {
@@ -111,7 +111,7 @@ public class PropertysetImpl implements Propertyset {
         } else {
             ValueList aspectList = newList();
             aspectList.add(Values.toReferenceValue(aspect));
-            properties.put(aspectsKey, Values.toListValue(aspectList, false));
+            properties.put(ASPECTS_KEY, Values.toListValue(aspectList, false));
         }
     }
 
@@ -126,12 +126,12 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public boolean hasId() {
-        return properties.containsKey(idKey);
+        return properties.containsKey(ID_KEY);
     }
 
     public UUID getId() {
         if (hasId()) {
-            return properties.get(idKey).asId();
+            return properties.get(ID_KEY).asId();
         }
 
         return getNil().asId();
@@ -147,13 +147,13 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setBooleanProperty(String propertyname, Boolean boolValue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toBooleanValue(boolValue));
         }
     }
 
     public void setBooleanProperty(String propertyname, boolean boolValue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toBooleanValue(boolValue));
         }
     }
@@ -168,13 +168,13 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setLongProperty(String propertyname, Long intValue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toLongValue(intValue));
         }
     }
 
     public void setLongProperty(String propertyname, long intvalue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toLongValue(intvalue));
         }
     }
@@ -189,13 +189,13 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setDoubleProperty(String propertyname, Double doubleValue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toDoubleValue(doubleValue));
         }
     }
 
     public void setDoubleProperty(String propertyname, double doubleValue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toDoubleValue(doubleValue));
         }
     }
@@ -210,7 +210,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setStringProperty(String propertyname, String stringValue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toStringValue(stringValue));
         }
     }
@@ -225,7 +225,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setComplexProperty(String propertyname, Propertyset complexProperty) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toComplexValue(complexProperty));
         }
     }
@@ -240,7 +240,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setReferenceProperty(String propertyname, Propertyset referencedObject) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toReferenceValue(referencedObject));
         }
     }
@@ -255,7 +255,7 @@ public class PropertysetImpl implements Propertyset {
     }
 
     public void setListProperty(String propertyname, ValueList listValue) {
-        if (!idKey.equals(propertyname)) {
+        if (!ID_KEY.equals(propertyname)) {
             properties.put(propertyname, toListValue(listValue));
         }
     }
