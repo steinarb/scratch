@@ -123,7 +123,7 @@ public class ModelContextImpl implements ModelContext {
             JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
             persister.restore(aspectsFile, this);
             embeddedAspects = new HashSet<>(propertysets.values());
-        } catch (Exception e) { }
+        } catch (Exception e) { /* skip and continue */ }
     }
 
     Set<Propertyset> followInheritanceChain(Propertyset aspect) {
