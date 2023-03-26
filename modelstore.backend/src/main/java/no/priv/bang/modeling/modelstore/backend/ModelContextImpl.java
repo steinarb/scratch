@@ -57,13 +57,7 @@ public class ModelContextImpl implements ModelContext {
      * @see no.priv.bang.modeling.modelstore.ModelContext#findPropertyset(java.util.UUID)
      */
     public Propertyset findPropertyset(UUID id) {
-        Propertyset propertyset = propertysets.get(id);
-        if (null == propertyset) {
-            propertyset = new PropertysetImpl(id);
-            propertysets.put(id, propertyset);
-        }
-
-        return propertyset;
+        return propertysets.computeIfAbsent(id, PropertysetImpl::new);
     }
 
     /* (non-Javadoc)
