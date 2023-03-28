@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -22,10 +23,12 @@ public class ModelContextRecordingMetadata implements ModelContext {
 
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
     private ModelContext impl;
+    private DateFactory dateFactory;
     private Map<UUID,Date> lastmodifiedtime = new HashMap<>();
 
-    public ModelContextRecordingMetadata(ModelContext nonMetadataRecordingContext) {
+    public ModelContextRecordingMetadata(ModelContext nonMetadataRecordingContext, DateFactory dateFactory) {
         impl = nonMetadataRecordingContext;
+        this.dateFactory = dateFactory;
         Propertyset metadata = impl.findPropertyset(metadataId);
         setLastmodifiedtimes(metadata);
     }
@@ -99,7 +102,7 @@ public class ModelContextRecordingMetadata implements ModelContext {
      * @param propertyset the {@link Propertyset} to set a timestamp for
      */
     public void modifiedPropertyset(Propertyset propertyset) {
-        lastmodifiedtime.put(propertyset.getId(), new Date());
+        lastmodifiedtime.put(propertyset.getId(), dateFactory.now());
     }
 
     public Date getLastmodifieddate(Propertyset propertyset) {

@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonFactory;
 
+import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ErrorBean;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
@@ -24,8 +25,13 @@ class ModelstoreBase extends BuiltinAspectsBase implements Modelstore {
 
     private ModelContext context = new ModelContextImpl(this);
     private List<ErrorBean> errors = Collections.synchronizedList(new ArrayList<ErrorBean>());
+    private DateFactory dateFactory = Date::new;
 
     protected ModelstoreBase() {
+    }
+
+    public void setDateFactory(DateFactory dateFactory) {
+        this.dateFactory = dateFactory;
     }
 
     public ModelContext getDefaultContext() {
@@ -34,7 +40,7 @@ class ModelstoreBase extends BuiltinAspectsBase implements Modelstore {
 
     public ModelContext createContext() {
         ModelContextImpl ctxt = new ModelContextImpl(this);
-        return new ModelContextRecordingMetadata(ctxt);
+        return new ModelContextRecordingMetadata(ctxt, dateFactory);
     }
 
     public ModelContext restoreContext(InputStream jsonfilestream) {
@@ -43,7 +49,7 @@ class ModelstoreBase extends BuiltinAspectsBase implements Modelstore {
         JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
         persister.restore(jsonfilestream, ctxt);
 
-        return new ModelContextRecordingMetadata(ctxt);
+        return new ModelContextRecordingMetadata(ctxt, null);
     }
 
     public void persistContext(OutputStream jsonfilestream, ModelContext context) {

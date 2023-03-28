@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonFactory;
 
+import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
@@ -29,6 +30,7 @@ public class ModelContextImpl implements ModelContext {
     private Map<UUID, Propertyset> propertysets = new HashMap<>();
     private Set<Propertyset> embeddedAspects;
     private Modelstore modelstore; // Only used for logging
+    private DateFactory dateFactory = Date::new;
 
     public ModelContextImpl() {
         this(null);
@@ -142,7 +144,7 @@ public class ModelContextImpl implements ModelContext {
 
     public Date getLastmodifieddate(Propertyset propertyset) {
         // This class does not store metadata for its propertysets, just give the current time
-        return new Date();
+        return dateFactory.now();
     }
 
     public void merge(ModelContext otherContext) {

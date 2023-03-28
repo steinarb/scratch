@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -29,7 +30,14 @@ class PropertysetRecordingSaveTimeTest {
     @BeforeEach
     void setup() {
         innerContext = new ModelContextImpl();
-        context = new ModelContextRecordingMetadata(innerContext);
+        var dateFactory = new DateFactory() {
+
+                @Override
+                public Date now() {
+                    return new Date();
+                }
+            };
+        context = new ModelContextRecordingMetadata(innerContext, dateFactory);
         propertyset = context.findPropertyset(propertysetId );
         addProperties(propertyset);
     }
@@ -291,7 +299,7 @@ class PropertysetRecordingSaveTimeTest {
         assertEquals(copyOfPropertyset, propertyset);
 
         // Same underlying object, different context
-        ModelContext context2 = new ModelContextRecordingMetadata(innerContext);
+        ModelContext context2 = new ModelContextRecordingMetadata(innerContext, null);
         Propertyset otherContextPropertyset = context2.findPropertyset(propertysetId);
         assertNotEquals(propertyset, otherContextPropertyset);
 
