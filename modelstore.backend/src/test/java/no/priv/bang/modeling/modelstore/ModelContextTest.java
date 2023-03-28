@@ -313,8 +313,6 @@ class ModelContextTest {
         buildPropertysetA(context, aId);
         assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain metadata+1 propertyset");
 
-        // Wait a few milliseconds to get a different time stamp
-        Thread.sleep(10);
         ModelContext otherContext = modelstore.createContext();
         UUID bId = UUID.randomUUID();
         buildPropertysetA(otherContext, aId);
