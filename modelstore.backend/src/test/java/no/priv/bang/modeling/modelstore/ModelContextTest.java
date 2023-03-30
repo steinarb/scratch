@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -17,6 +20,8 @@ import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 import static no.priv.bang.modeling.modelstore.backend.Aspects.*;
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -25,6 +30,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import no.priv.bang.modeling.modelstore.backend.JsonGeneratorWithReferences;
 import no.priv.bang.modeling.modelstore.backend.JsonPropertysetPersister;
 import no.priv.bang.modeling.modelstore.backend.ModelstoreProvider;
+import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
@@ -307,7 +313,19 @@ class ModelContextTest {
      */
     @Test
     void testMergeWithOverlapBetweenContexts() throws IOException, InterruptedException {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var instant = LocalDateTime.now().toInstant(ZoneOffset.UTC);
+        var dateFactory = mock(DateFactory.class);
+        when(dateFactory.now())
+            .thenReturn(Date.from(instant.plusMillis(1000)))
+            .thenReturn(Date.from(instant.plusMillis(2000)))
+            .thenReturn(Date.from(instant.plusMillis(3000)))
+            .thenReturn(Date.from(instant.plusMillis(4000)))
+            .thenReturn(Date.from(instant.plusMillis(5000)))
+            .thenReturn(Date.from(instant.plusMillis(6000)))
+            .thenReturn(Date.from(instant.plusMillis(7000)))
+            .thenReturn(Date.from(instant.plusMillis(8000)));
+        modelstore.setDateFactory(dateFactory);
         ModelContext context = modelstore.createContext();
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);
@@ -323,9 +341,6 @@ class ModelContextTest {
         otherContext.findPropertyset(bId).addAspect(generalObjectAspect);
         assertEquals(3, otherContext.listAllPropertysets().size(), "Expected otherContext to contain metadata+2 propertysets");
 
-        // Wait a few milliseconds to get a different time stamp, then create "b" in the
-        // in the first context, with a slightly newer time stamp, meaning it should be kept
-        Thread.sleep(10);
         buildPropertysetB(context, bId);
         context.findPropertyset(bId).setLongProperty("value", 4); // Change the value, should be kept after merge
         Propertyset modelAspect = context.findPropertyset(modelAspectId);

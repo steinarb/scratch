@@ -95,8 +95,6 @@ class ModelContextImplTest {
         buildPropertysetA(context, aId);
         assertEquals(1, context.listAllPropertysets().size(), "Expected context to contain 1 propertyset");
 
-        // Wait a few milliseconds to get a different time stamp
-        Thread.sleep(10);
         ModelContext otherContext = new ModelContextImpl();
         UUID bId = UUID.randomUUID();
         buildPropertysetA(otherContext, aId);
@@ -107,9 +105,6 @@ class ModelContextImplTest {
         otherContext.findPropertyset(bId).addAspect(generalObjectAspect);
         assertEquals(2, otherContext.listAllPropertysets().size(), "Expected otherContext to contain 2 propertysets");
 
-        // Wait a few milliseconds to get a different time stamp, then create "b" in the
-        // in the first context, with a slightly newer time stamp, meaning it should be kept
-        Thread.sleep(10);
         buildPropertysetB(context, bId);
         context.findPropertyset(bId).setLongProperty("value", 4); // Change the value, should be kept after merge
         Propertyset modelAspect = context.findPropertyset(modelAspectId);
