@@ -130,16 +130,11 @@ class ModelstoreTest {
                     for (int i = 0; i < 500; i++) {
                         String message = "Error in other thread " + i;
                         modelstore.logError(message, null, null);
-                        try {
-                            Thread.sleep(1);
-                        } catch (InterruptedException e) { }
                     }
                 }
             });
         other.start();
 
-        // Throw a little sand in the works in this thread
-        Thread.sleep(10);
         modelstore.logError("Error in this thread 1", null, null);
         List<ErrorBean> temp = modelstore.getErrors();
         assertNotNull(temp);
