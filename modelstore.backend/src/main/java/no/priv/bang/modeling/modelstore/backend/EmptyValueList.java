@@ -1,6 +1,7 @@
 package no.priv.bang.modeling.modelstore.backend;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
@@ -137,6 +138,24 @@ public final class EmptyValueList extends AbstractList<Value> implements ValueLi
     @Override
     public <T> T[] toArray(T[] a) {
         return (T[]) emptyArray;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Arrays.hashCode(emptyArray);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        var other = (ValueList) obj;
+        return other.isEmpty();
     }
 
 }

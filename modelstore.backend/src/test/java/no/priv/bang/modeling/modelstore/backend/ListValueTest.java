@@ -132,7 +132,7 @@ class ListValueTest {
     @Test
     void testHashCode() {
         Value nullListValue = toListValue(null);
-        assertEquals(32, nullListValue.hashCode());
+        assertEquals(63, nullListValue.hashCode());
         Value foo = toListValue(newList(), false);
         assertEquals(63, foo.hashCode());
         assertEquals(-24528609, value.hashCode());
