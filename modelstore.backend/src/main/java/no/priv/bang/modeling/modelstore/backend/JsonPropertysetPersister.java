@@ -194,19 +194,7 @@ public class JsonPropertysetPersister {
         while (parser.nextToken() != JsonToken.END_OBJECT) {
             String currentFieldName = parser.getCurrentName();
             if ("ref".equals(currentFieldName)) {
-                // This is an object reference, rather than an object
-                parser.nextToken();
-                String refValue = parser.getText();
-                UUID refId = UUID.fromString(refValue);
-
-                // Note: This will create an empty placeholder if the referenced object
-                // hasn't been parsed yet.
-                // When the referenced object is parsed it will retrieve the same
-                // placeholder and start filling in its properties.
-                Propertyset referencedPropertyset = modelContext.findPropertyset(refId);
-
-                // Complete the object, by consuming the END_OBJECT before returning
-                parser.nextToken();
+                Propertyset referencedPropertyset = parseObjectReference(parser, modelContext);
 
                 // Return with the reference.
                 // If this should happen to be a regular object with a field named "ref",
@@ -215,58 +203,90 @@ public class JsonPropertysetPersister {
             }
 
             if (ID_KEY.equals(currentFieldName)) {
-                parser.nextToken();
-                String idValue = parser.getText();
-                UUID id = UUID.fromString(idValue);
-                if (propertyset == null) {
-                    propertyset = modelContext.findPropertyset(id);
-                } else {
-                    // Need to copy existing properties parsed earlier
-                    Propertyset complexvalue = propertyset;
-                    propertyset = modelContext.findPropertyset(id);
-                    propertyset.copyValues(complexvalue);
-                }
+                propertyset = parseIdProperty(parser, modelContext, propertyset);
             } else if (ASPECTS_KEY.equals(currentFieldName)) {
-                propertyset = createPropertysetIfNull(propertyset);
-                parser.nextToken();
-                JsonToken currentToken = parser.getCurrentToken();
-                if (currentToken == JsonToken.START_ARRAY) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    Value aspects = parseArray(parser, modelContext);
-                    for (Value aspectValue : aspects.asList()) {
-                        propertyset.addAspect(aspectValue.asReference());
-                    }
-                }
+                propertyset = parsingAspectProperty(parser, modelContext, propertyset);
             } else {
-                // Parsing all ordinary properties of a propertyset
-                parser.nextToken();
-                JsonToken currentToken = parser.getCurrentToken();
-                if (currentToken == JsonToken.VALUE_STRING) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    propertyset.setStringProperty(currentFieldName, parser.getText());
-                } else if (currentToken == JsonToken.VALUE_NUMBER_FLOAT) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    propertyset.setDoubleProperty(currentFieldName, parser.getDoubleValue());
-                } else if (currentToken == JsonToken.VALUE_NUMBER_INT) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    propertyset.setLongProperty(currentFieldName, parser.getLongValue());
-                } else if (currentToken == JsonToken.VALUE_TRUE) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    propertyset.setBooleanProperty(currentFieldName, true);
-                } else if (currentToken == JsonToken.VALUE_FALSE) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    propertyset.setBooleanProperty(currentFieldName, false);
-                } else if (currentToken == JsonToken.START_OBJECT) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    propertyset.setProperty(currentFieldName, parseObject(parser, modelContext));
-                } else if (currentToken == JsonToken.START_ARRAY) {
-                    propertyset = createPropertysetIfNull(propertyset);
-                    propertyset.setProperty(currentFieldName, parseArray(parser, modelContext));
-                }
+                propertyset = parsingAllOrdinaryPropertiesOfAPropertyset(parser, modelContext, propertyset, currentFieldName);
             }
         }
 
         return toComplexValue(createPropertysetIfNull(propertyset), false);
+    }
+
+    private Propertyset parseObjectReference(JsonParser parser, ModelContext modelContext) throws IOException {
+        parser.nextToken();
+        String refValue = parser.getText();
+        UUID refId = UUID.fromString(refValue);
+
+        // Note: This will create an empty placeholder if the referenced object
+        // hasn't been parsed yet.
+        // When the referenced object is parsed it will retrieve the same
+        // placeholder and start filling in its properties.
+        Propertyset referencedPropertyset = modelContext.findPropertyset(refId);
+
+        // Complete the object, by consuming the END_OBJECT before returning
+        parser.nextToken();
+        return referencedPropertyset;
+    }
+
+    private Propertyset parseIdProperty(JsonParser parser, ModelContext modelContext, Propertyset propertyset)
+        throws IOException {
+        parser.nextToken();
+        String idValue = parser.getText();
+        UUID id = UUID.fromString(idValue);
+        if (propertyset == null) {
+            propertyset = modelContext.findPropertyset(id);
+        } else {
+            // Need to copy existing properties parsed earlier
+            Propertyset complexvalue = propertyset;
+            propertyset = modelContext.findPropertyset(id);
+            propertyset.copyValues(complexvalue);
+        }
+        return propertyset;
+    }
+
+    private Propertyset parsingAspectProperty(JsonParser parser, ModelContext modelContext, Propertyset propertyset)
+        throws IOException {
+        parser.nextToken();
+        JsonToken currentToken = parser.getCurrentToken();
+        if (currentToken == JsonToken.START_ARRAY) {
+            propertyset = createPropertysetIfNull(propertyset);
+            Value aspects = parseArray(parser, modelContext);
+            for (Value aspectValue : aspects.asList()) {
+                propertyset.addAspect(aspectValue.asReference());
+            }
+        }
+        return propertyset;
+    }
+
+    private Propertyset parsingAllOrdinaryPropertiesOfAPropertyset(JsonParser parser, ModelContext modelContext,
+                                                                   Propertyset propertyset, String currentFieldName) throws IOException {
+        parser.nextToken();
+        JsonToken currentToken = parser.getCurrentToken();
+        if (currentToken == JsonToken.VALUE_STRING) {
+            propertyset = createPropertysetIfNull(propertyset);
+            propertyset.setStringProperty(currentFieldName, parser.getText());
+        } else if (currentToken == JsonToken.VALUE_NUMBER_FLOAT) {
+            propertyset = createPropertysetIfNull(propertyset);
+            propertyset.setDoubleProperty(currentFieldName, parser.getDoubleValue());
+        } else if (currentToken == JsonToken.VALUE_NUMBER_INT) {
+            propertyset = createPropertysetIfNull(propertyset);
+            propertyset.setLongProperty(currentFieldName, parser.getLongValue());
+        } else if (currentToken == JsonToken.VALUE_TRUE) {
+            propertyset = createPropertysetIfNull(propertyset);
+            propertyset.setBooleanProperty(currentFieldName, true);
+        } else if (currentToken == JsonToken.VALUE_FALSE) {
+            propertyset = createPropertysetIfNull(propertyset);
+            propertyset.setBooleanProperty(currentFieldName, false);
+        } else if (currentToken == JsonToken.START_OBJECT) {
+            propertyset = createPropertysetIfNull(propertyset);
+            propertyset.setProperty(currentFieldName, parseObject(parser, modelContext));
+        } else if (currentToken == JsonToken.START_ARRAY) {
+            propertyset = createPropertysetIfNull(propertyset);
+            propertyset.setProperty(currentFieldName, parseArray(parser, modelContext));
+        }
+        return propertyset;
     }
 
     private Propertyset createPropertysetIfNull(Propertyset propertyset) {
