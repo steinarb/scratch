@@ -24,3 +24,15 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy javadoc
+      uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        javadoc-branch: javadoc
+        java-version: 11
+        target-folder: javadoc # url will be https://<username>.github.io/<repo>/javadoc, This can be left as nothing to generate javadocs in the root folder.
+        project: maven
+        subdirectories: modelstore.services modelstore.backend
