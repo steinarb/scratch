@@ -13,7 +13,22 @@
  file LICENSE for the terms and specifics of the license.
 ** Development stuff
 
+[[https://github.com/steinarb/modelstore/actions/workflows/modelstore-maven-ci-build.yml][file:https://github.com/steinarb/modelstore/actions/workflows/modelstore-maven-ci-build.yml/badge.svg]]
 [[https://coveralls.io/r/steinarb/modelstore][file:https://coveralls.io/repos/steinarb/modelstore/badge.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=alert_status#.svg]]
+
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/images/project_badges/sonarcloud-white.svg]]
+
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=sqale_index#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=coverage#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=ncloc#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=code_smells#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=sqale_rating#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=security_rating#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=bugs#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=vulnerabilities#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=duplicated_lines_density#.svg]]
+[[https://sonarcloud.io/summary/new_code?id=steinarb_modelstore][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_modelstore&metric=reliability_rating#.svg]]
 
   - [[https://github.com/steinarb/modelstore][Source code repository]]
   - [[https://coveralls.io/r/steinarb/modelstore][Test coverage history on coveralls]]
