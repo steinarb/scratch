@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-app-pom</artifactId>
-        <version>1.1.21</version>
+        <version>1.1.23</version>
     </parent>
     <groupId>no.priv.bang.modeling.modelstore</groupId>
     <artifactId>modelstore</artifactId>
@@ -98,5 +98,18 @@
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <show>private</show>
+                    <source>11</source>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
