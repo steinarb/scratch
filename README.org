@@ -159,6 +159,13 @@ Having "property" in the name doesn't make sense for the list of values, and mak
      4. ModelBuilder (sounds good, but might make people expect the builder pattern...?)
      5. ModelProducer
      6. ObjectProducer
+ - <2023-04-03 Mon 13:37> Current plan:
+   1. First create a ValueCreator interface in modelstore.services, that contains all the methods in the static class Values
+   2. Then create a new bundle modelstore.values that contains a DS component that implements ValueCreator
+   3. Then (maybe) create an Aspects interface (not sure what should go into it?)
+   4. Then (again: maybe) create a new bundle modelstore.aspects that contains a DS component for Aspects
+   5. Then create a Models interface for creating and composing Models in modelstore.services
+   6. Then create a bundle modelstore.models containing a DS component that provides a DS component for Models and requires the ValueCreator service
 ** TODO create an OSGi bundle modelstore.client
  - <2019-08-12 man. 21:27> This is a to be a convenient starting point for using modelstore
  - <2019-08-12 man. 21:30> Design:
