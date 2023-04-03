@@ -1,0 +1,22 @@
+[
+    {
+        "id": "36345d51-6a86-4aa6-b9ce-c3d37e0584a3",
+        "name": "listpropertyexample",
+        "description": "This propertyset has a property containing a list",
+        "listofthings": [
+            "Some text",
+            3.14,
+            4,
+            true,
+            false,
+            [
+                1,
+                2,
+                3
+            ],
+            {
+                "a": 2.78
+            }
+        ]
+    }
+]

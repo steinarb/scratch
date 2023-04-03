@@ -1,0 +1,8 @@
+[
+    {
+        "id": "c6f2c1e4-4af0-4b24-8bd6-6f299235b9a4",
+        "description": "A propertyset containing boolean properties",
+        "untrue": false,
+        "unfalse": true
+    }
+]
