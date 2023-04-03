@@ -25,8 +25,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * This persist and restore the contents of a Modelstore to/from a
  * JSON {@link File}.
  *
- * @author Steinar Bang
- *
  */
 public class JsonPropertysetPersister {
 

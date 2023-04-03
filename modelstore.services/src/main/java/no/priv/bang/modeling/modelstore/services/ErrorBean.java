@@ -8,8 +8,6 @@ import java.util.Date;
  * An immutable bean that is used to hold error messages logged when modelstore
  * catches (and represses) exceptions.
  *
- * @author Steinar Bang
- *
  */
 public class ErrorBean {
 

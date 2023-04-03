@@ -14,8 +14,6 @@ import static no.priv.bang.modeling.modelstore.backend.Values.*;
  * This list is empty and it cannot have objects added, and
  * it will throw no exceptions on value access.
  *
- * @author Steinar Bang
- *
  */
 public final class EmptyValueList extends AbstractList<Value> implements ValueList {
     private final Value[] emptyArray = new Value[0];

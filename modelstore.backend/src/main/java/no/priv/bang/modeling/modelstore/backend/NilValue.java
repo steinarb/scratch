@@ -12,8 +12,6 @@ import static no.priv.bang.modeling.modelstore.backend.Values.*;
  * A nil property value object.  This is a singleton that can be
  * accessed using a static method.
  *
- * @author Steinar Bang
- *
  */
 final class NilValue implements Value {
 

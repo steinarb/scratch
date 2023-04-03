@@ -6,8 +6,6 @@ import java.util.UUID;
  * Contains the {@link UUID} ids of the builtin aspects that will be
  * present in all {@link ModelContext} objects.
  *
- * @author Steinar Bang
- *
  */
 public interface BuiltinAspects {
     /**

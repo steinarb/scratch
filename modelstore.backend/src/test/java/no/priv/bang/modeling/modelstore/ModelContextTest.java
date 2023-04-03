@@ -40,8 +40,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * Unit test for the {@link ModelContext} interface and its
  * implementations.
  *
- * @author Steinar Bang
- *
  */
 class ModelContextTest {
     @TempDir

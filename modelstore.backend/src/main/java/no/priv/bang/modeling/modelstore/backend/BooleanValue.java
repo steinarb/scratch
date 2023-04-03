@@ -11,8 +11,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * Will return well defined values if asked to return a different
  * property type.
  *
- * @author Steinar Bang
- *
  */
 class BooleanValue extends ValueBase {
 

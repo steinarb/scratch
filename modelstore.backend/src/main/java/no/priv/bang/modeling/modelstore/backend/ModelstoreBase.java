@@ -18,8 +18,6 @@ import no.priv.bang.modeling.modelstore.services.Modelstore;
  * Class implementing Modelstore for use as a base
  * class for Provider classes for Modelstore.
  *
- * @author Steinar Bang
- *
  */
 class ModelstoreBase extends BuiltinAspectsBase implements Modelstore {
 

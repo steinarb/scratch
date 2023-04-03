@@ -9,8 +9,6 @@ import java.io.OutputStream;
  * This is an {@link OutputStream} that will throw {@link IOException} on
  * all methods declaring {@link IOException}.
  *
- * @author Steinar Bang
- *
  */
 public class MockOutputStreamThatThrowsIOExceptionOnEverything extends OutputStream {
 

@@ -14,8 +14,6 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 /**
  * Unit tests for class {@link Propertysets}.
  *
- * @author Steinar Bang
- *
  */
 class PropertysetsTest {
     /**

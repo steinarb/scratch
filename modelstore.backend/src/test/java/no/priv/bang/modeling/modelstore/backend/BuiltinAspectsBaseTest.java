@@ -15,8 +15,6 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 /**
  * Unit tests for {@link BuiltinAspectsBase}
  *
- * @author Steinar Bang
- *
  */
 class BuiltinAspectsBaseTest {
 

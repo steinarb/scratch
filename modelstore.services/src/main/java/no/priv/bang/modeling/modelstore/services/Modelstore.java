@@ -11,8 +11,6 @@ import java.util.List;
  * This interface can be used to create new propertysets, and it can be used
  * to retrieve existing propertysets.
  *
- * @author Steinar Bang
- *
  */
 public interface Modelstore extends BuiltinAspects {
 

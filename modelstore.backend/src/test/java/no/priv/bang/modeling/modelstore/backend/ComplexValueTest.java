@@ -13,8 +13,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 /**
  * Unit tests for {@link ComplexValue}.
  *
- * @author Steinar Bang
- *
  */
 class ComplexValueTest {
 

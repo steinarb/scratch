@@ -15,8 +15,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 /**
  * Unit tests for {@link ReferenceValue}.
  *
- * @author Steinar Bang
- *
  */
 class ReferenceValueTest {
 

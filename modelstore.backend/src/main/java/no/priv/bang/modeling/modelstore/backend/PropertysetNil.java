@@ -14,8 +14,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * instead of null, for undefined property values, or values that
  * cannot be cast to a {@link Propertyset}
  *
- * @author Steinar Bang
- *
  */
 public final class PropertysetNil implements Propertyset {
 

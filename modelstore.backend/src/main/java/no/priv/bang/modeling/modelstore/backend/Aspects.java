@@ -6,8 +6,6 @@ import java.util.UUID;
  * Constants and static functions related to aspects, which are
  * Propertyset instances defining Propertyset schemas.
  *
- * @author Steinar Bang
- *
  */
 public class Aspects {
     // IDs of built-in aspects

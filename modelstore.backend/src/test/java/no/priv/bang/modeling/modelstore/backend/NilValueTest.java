@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for {@link NilValue}.
  *
- * @author Steinar Bang
- *
  */
 class NilValueTest {
 

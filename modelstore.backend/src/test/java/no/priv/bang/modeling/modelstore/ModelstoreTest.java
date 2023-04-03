@@ -25,8 +25,6 @@ import no.priv.bang.modeling.modelstore.services.Modelstore;
  * Unit test for the {@link Modelstore} interface and its
  * implementations.
  *
- * @author Steinar Bang
- *
  */
 class ModelstoreTest {
     @TempDir

@@ -13,8 +13,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * the {@link ModelContextRecordingMetadata} that is used
  * to set the lastmodifiedtime of the {@link Propertyset}.
  *
- * @author Steinar Bang
- *
  */
 class PropertysetRecordingSaveTime implements Propertyset {
 

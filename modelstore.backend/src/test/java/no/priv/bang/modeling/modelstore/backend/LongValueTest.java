@@ -12,8 +12,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 /**
  * Unit tests for {@link LongValue}.
  *
- * @author Steinar Bang
- *
  */
 class LongValueTest {
 

@@ -24,8 +24,6 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 /**
  * Unit tests for class {@link ModelContextImpl}.
  *
- * @author Steinar Bang
- *
  */
 class ModelContextImplTest {
 

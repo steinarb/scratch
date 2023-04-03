@@ -11,8 +11,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 /**
  * Unit tests for {@link PropertysetNil}.
  *
- * @author Steinar Bang
- *
  */
 class PropertysetNilTest {
 

@@ -33,8 +33,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 /**
  * Unit tests for {@link JsonPropertysetPersister}.
  *
- * @author Steinar Bang
- *
  */
 class JsonPropertysetPersisterTest {
     @TempDir

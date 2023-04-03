@@ -12,8 +12,6 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 /**
  * Common code and constants for {@link ModelContext} implementations.
  *
- * @author Steinar Bang
- *
  */
 public class ModelContexts {
 

@@ -14,8 +14,6 @@ import java.util.UUID;
  * The raw property accessors will return null values for unset
  * properties, but the raw accessors are mainly intended for reflection.
  *
- * @author Steinar Bang
- *
  */
 public interface Propertyset {
 

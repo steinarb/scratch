@@ -13,8 +13,6 @@ import no.priv.bang.modeling.modelstore.services.Value;
 /**
  * Contains static methods used in more than one unit test.
  *
- * @author Steinar Bang
- *
  */
 public class TestUtils {
 

@@ -15,8 +15,6 @@ import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 /**
  * Implementation of {@link Propertyset} backed by a {@link Map}.
  *
- * @author Steinar Bang
- *
  */
 public class PropertysetImpl implements Propertyset {
     private final Map<String, Value> properties = new HashMap<>();

@@ -8,8 +8,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * A class with static methods for wrapping Java property values
  * in {@link Value} objects.
  *
- * @author Steinar Bang
- *
  */
 public class Values {
 

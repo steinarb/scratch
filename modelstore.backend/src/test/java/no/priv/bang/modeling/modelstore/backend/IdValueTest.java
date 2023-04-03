@@ -14,8 +14,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 /**
  * Unit tests for {@link IdValue}.
  *
- * @author Steinar Bang
- *
  */
 class IdValueTest {
 

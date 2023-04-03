@@ -19,8 +19,6 @@ import java.util.UUID;
  * {@link Propertyset}, the {@link Propertyset} with the newest modification date
  * will win in case of conflict.
  *
- * @author Steinar Bang
- *
  */
 public interface ModelContext {
     /**

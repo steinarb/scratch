@@ -6,8 +6,6 @@ import java.util.UUID;
 /**
  * Defines a wrapper for a property in a PropertySet.
  *
- * @author Steinar Bang
- *
  */
 public interface Value {
     boolean isId();

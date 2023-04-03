@@ -5,8 +5,6 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 /**
  * Static methods for manipulating {@link Propertyset} instances.
  *
- * @author Steinar Bang
- *
  */
 public class Propertysets {
 

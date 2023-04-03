@@ -9,8 +9,6 @@ import com.fasterxml.jackson.core.util.JsonGeneratorDelegate;
 /**
  * A {@link JsonGenerator} that can write object IDs and references.
  *
- * @author Steinar Bang
- *
  */
 public class JsonGeneratorWithReferences extends JsonGeneratorDelegate {
 

@@ -10,8 +10,6 @@ import no.priv.bang.modeling.modelstore.services.ModelContext;
 /**
  * Unit tests for {@link ModelContexts}
  *
- * @author Steinar Bang
- *
  */
 class ModelContextsTest {
 

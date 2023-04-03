@@ -14,8 +14,6 @@ import static no.priv.bang.modeling.modelstore.backend.Values.*;
  * This leaves classes actually wrapping a type with only having to
  * override the actual method that will return true.
  *
- * @author Steinar Bang
- *
  */
 public abstract class ValueBase implements Value {
 

@@ -8,8 +8,6 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
  * A property value that references a {@link Propertyset} (a "pointer"
  * value).  This type is essential for building graphs.
  *
- * @author Steinar Bang
- *
  */
 class ReferenceValue extends PropertysetValueBase {
 

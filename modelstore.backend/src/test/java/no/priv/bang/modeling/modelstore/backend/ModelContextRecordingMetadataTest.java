@@ -26,8 +26,6 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  * changes to other propertysets in a propertyset saved with
  * the rest.
  *
- * @author Steinar Bang
- *
  */
 class ModelContextRecordingMetadataTest {
     private JsonFactory jsonFactory;

@@ -12,8 +12,6 @@ import no.priv.bang.modeling.modelstore.services.BuiltinAspects;
  * be used either as an OSGi service alone or as a base class
  * for the Modelstore implementation.
  *
- * @author Steinar Bang
- *
  */
 public class BuiltinAspectsBase implements BuiltinAspects {
 
