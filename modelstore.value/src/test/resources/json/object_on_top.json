@@ -1,0 +1,26 @@
+{
+    "metadata": {
+        "lastsaved": {
+            "34f0e0f1-f471-4321-b732-bac03bc12068": {
+                "time": "2015-06-16 22:37",
+                "user": "sb"
+            },
+            "809349e1-0bb8-49db-b08f-7af11b10fa42": {
+                "time": "2015-06-03 16:45",
+                "user": "sb"
+            }
+        }
+    },
+    "propertysets": [
+        {
+            "id": "34f0e0f1-f471-4321-b732-bac03bc12068",
+            "name": "first",
+            "description": "The first is not the last"
+        },
+        {
+            "id": "809349e1-0bb8-49db-b08f-7af11b10fa42",
+            "name": "second",
+            "description": "The second is not the first"
+        }
+    ]
+}

@@ -1,0 +1,81 @@
+[
+    {
+        "id" : "7fd99b6c-603c-4965-8fc3-00e2d2ac2202",
+        "model" : "Tacoma I",
+        "manufacturer" : "HEAD",
+        "aspects" : [{"ref":"38dfbb1e-ee47-48a6-9804-486b7e8e0e50"} ],
+        "frameNumber" : "001-234-509-374-331"
+    },
+    {
+        "id" : "42810a4d-b757-430a-a839-75737a027c59",
+        "title" : "vehicle",
+        "aspect" : "object",
+        "properties" : {
+            "modelname" : {
+                "aspect" : "string"
+            },
+            "definition" : {
+                "aspect" : "integer",
+                "minimum" : 0,
+                "description" : "Number of wheels on the vehicle"
+            }
+        }
+    },
+    {
+        "id" : "5b66f36b-4de8-4099-9044-ad9fcc6dc4d1",
+        "model" : "Outback",
+        "engineSize" : 2.5,
+        "manufacturer" : "Subaru",
+        "enginePower" : 125.0,
+        "aspects" : [{"ref":"7d4a452a-a502-4333-bd0b-f42dc4d1bc82"} ]
+    },
+    {
+        "id" : "31c4b2e9-c66f-40d6-9b5e-fe8a26947460",
+        "model" : "P1800",
+        "engineSize" : 1.8,
+        "manufacturer" : "Volvo",
+        "enginePower" : 84.58,
+        "aspects" : [{"ref":"7d4a452a-a502-4333-bd0b-f42dc4d1bc82"} ]
+    }, {
+        "id" : "7d4a452a-a502-4333-bd0b-f42dc4d1bc82",
+        "inherits":{"ref":"42810a4d-b757-430a-a839-75737a027c59"},
+        "title" : "car",
+        "aspect" : "object",
+        "properties" : {
+            "engineSize" : {
+                "aspect" : "number",
+                "description" : "Engine displacement in litres"
+            },
+            "enginePower" : {
+                "aspect" : "number",
+                "description" : "Engine power in kW"
+            }
+        }
+    },
+    {
+        "id" : "384d417e-a38a-4b5d-ad39-23148545a1b8",
+        "model" : "Fatbike 2015",
+        "manufacturer" : "Nakamura",
+        "aspects" : [{"ref":"38dfbb1e-ee47-48a6-9804-486b7e8e0e50"} ],
+        "frameNumber" : "003-577-943-547-931"
+    },
+    {
+        "id" : "38dfbb1e-ee47-48a6-9804-486b7e8e0e50",
+        "inherits":{"ref":"42810a4d-b757-430a-a839-75737a027c59"},
+        "title" : "bicycle",
+        "aspect" : "object",
+        "properties" : {
+            "framenumber" : {
+                "definition" : "Unique identifier for the bicycle"
+            }
+        }
+    },
+    {
+        "id" : "bb87fff5-9582-4ab1-9890-942fc35d44b2",
+        "model" : "550 Barchetta",
+        "engineSize" : 5.5,
+        "manufacturer" : "Ferrari",
+        "enginePower" : 357.0,
+        "aspects" : [{"ref":"7d4a452a-a502-4333-bd0b-f42dc4d1bc82"} ]
+    }
+]
