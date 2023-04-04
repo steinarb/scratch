@@ -13,13 +13,14 @@ import java.util.UUID;
 
 import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
+import no.priv.bang.modeling.modelstore.services.ModificationRecorder;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
 import static no.priv.bang.modeling.modelstore.backend.Aspects.*;
 import static no.priv.bang.modeling.modelstore.backend.ModelContexts.*;
 
-public class ModelContextRecordingMetadata implements ModelContext {
+public class ModelContextRecordingMetadata implements ModelContext, ModificationRecorder {
 
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
     private ModelContext impl;
