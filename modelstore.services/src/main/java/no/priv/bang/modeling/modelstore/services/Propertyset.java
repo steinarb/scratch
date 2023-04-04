@@ -1,6 +1,7 @@
 package no.priv.bang.modeling.modelstore.services;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -15,7 +16,7 @@ import java.util.UUID;
  * properties, but the raw accessors are mainly intended for reflection.
  *
  */
-public interface Propertyset {
+public interface Propertyset extends Map<String, Value> {
 
     /**
      * Copy all property values from the propertyset given as
