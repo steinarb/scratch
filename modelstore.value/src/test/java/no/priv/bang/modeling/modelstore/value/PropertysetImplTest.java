@@ -1,16 +1,17 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static no.priv.bang.modeling.modelstore.value.Values.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
+import static no.priv.bang.modeling.modelstore.services.Propertyset.*;
+import static no.priv.bang.modeling.modelstore.value.Propertysets.*;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.modeling.modelstore.services.ModelContext;
-import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -287,12 +288,11 @@ class PropertysetImplTest {
      */
     @Test
     void testGetComplexProperty() {
-        Modelstore modelstore = new ModelstoreProvider();
-        ModelContext context = modelstore.getDefaultContext();
-        Propertyset propertyset = context.createPropertyset();
+        var valueCreator = new ValueCreatorProvider();
+        var propertyset = valueCreator.newPropertyset(UUID.randomUUID());
 
         // Set a complex property and retrieve it.
-        Propertyset point = context.createPropertyset();
+        Propertyset point = valueCreator.newPropertyset();
         point.setDoubleProperty("x", 75.3);
         point.setDoubleProperty("y", 145.3);
         propertyset.setComplexProperty("upperLeftCorner", point);
@@ -334,7 +334,7 @@ class PropertysetImplTest {
         assertEquals(getNilPropertyset(), propertyset.getComplexProperty("referenceValue"));
 
         // Verify deep copy on set
-        Propertyset otherpropertyset = context.createPropertyset();
+        Propertyset otherpropertyset = valueCreator.newPropertyset(UUID.randomUUID());
         otherpropertyset.setComplexProperty("corner", propertyset.getComplexProperty("upperLeftCorner"));
         otherpropertyset.getComplexProperty("corner").setDoubleProperty("x", 77);
         assertEquals(77.0, otherpropertyset.getComplexProperty("corner").getDoubleProperty("x"), 0.0);
@@ -392,9 +392,8 @@ class PropertysetImplTest {
      */
     @Test
     void testGetListProperty() {
-        Modelstore modelstore = new ModelstoreProvider();
-        ModelContext context = modelstore.getDefaultContext();
-        Propertyset propertyset = context.createPropertyset();
+        var valueCreator = new ValueCreatorProvider();
+        var propertyset = valueCreator.newPropertyset(UUID.randomUUID());
 
         // Set and get a list value, and verify that its members can be accessed.
         ValueList listValue = newList();
@@ -431,7 +430,7 @@ class PropertysetImplTest {
         assertEquals(getNil().asList(), propertyset.getListProperty("referencedObject"));
 
         // Verify deep copy on set
-        Propertyset otherpropertyset = context.createPropertyset();
+        Propertyset otherpropertyset = valueCreator.newPropertyset();
         otherpropertyset.setListProperty("listValue", propertyset.getListProperty("listValue"));
         otherpropertyset.getListProperty("listValue").add(378);
         assertEquals(3, otherpropertyset.getListProperty("listValue").size());
@@ -448,22 +447,21 @@ class PropertysetImplTest {
 
     @Test
     void testGetProperty() {
-        Modelstore modelstore = new ModelstoreProvider();
-        ModelContext context = modelstore.getDefaultContext();
-        Propertyset emptypropertyset = context.createPropertyset();
+        var valueCreator = new ValueCreatorProvider();
+        var emptypropertyset = valueCreator.newPropertyset();
         Value nosuchproperty = emptypropertyset.getProperty("nosuchproperty");
         assertEquals(getNil(), nosuchproperty);
-        Propertyset propertyset = context.createPropertyset();
+        var propertyset = valueCreator.newPropertyset();
         propertyset.setProperty("null", null);
         assertEquals(getNilPropertyset(), propertyset.getComplexProperty("null"));
 
         // Verify deep copy for complex and list properties
-        propertyset.setComplexProperty("a", context.createPropertyset());
+        propertyset.setComplexProperty("a", valueCreator.newPropertyset());
         propertyset.getComplexProperty("a").setLongProperty("l", 42);
         propertyset.setListProperty("b", newList());
         propertyset.getListProperty("b").add(345);
 
-        Propertyset otherpropertyset = context.createPropertyset();
+        var otherpropertyset = valueCreator.newPropertyset();
         otherpropertyset.setProperty("a", propertyset.getProperty("a"));
         otherpropertyset.getComplexProperty("a").setLongProperty("l", 43);
         assertEquals(43, otherpropertyset.getComplexProperty("a").getLongProperty("l").longValue());
@@ -479,18 +477,17 @@ class PropertysetImplTest {
      */
     @Test
     void testSetProperty() {
-        Modelstore modelstore = new ModelstoreProvider();
-        ModelContext context = modelstore.createContext();
+        var valueCreator = new ValueCreatorProvider();
 
         // Verify that id can't be set
-        Value idValue = createIdValue(context);
-        Propertyset propertyset = context.createPropertyset();
+        Value idValue = createIdValue(valueCreator);
+        Propertyset propertyset = valueCreator.newPropertyset();
         propertyset.setProperty(ID_KEY, idValue);
         assertEquals(getNil(), propertyset.getProperty(ID_KEY));
         assertEquals(getNilPropertyset().getId(), propertyset.getId());
 
         // Verify that aspects can't be set as a property
-        Value aspectsValue = createAspectsValue(context);
+        Value aspectsValue = createAspectsValue(valueCreator);
         propertyset.setProperty(ASPECTS_KEY, aspectsValue);
         assertEquals(getNil(), propertyset.getProperty(ASPECTS_KEY));
         assertFalse(propertyset.hasAspect());
@@ -504,29 +501,29 @@ class PropertysetImplTest {
 
     @Test
     void testHashCode() {
+        var valueCreator = new ValueCreatorProvider();
         Propertyset emptypropertyset = new PropertysetImpl();
         assertEquals(31, emptypropertyset.hashCode());
-        ModelContext context = new ModelstoreProvider().getDefaultContext();
         UUID id = UUID.fromString("8ce20479-8876-4d84-98a3-c14b53715c5d");
         Propertyset propertyset = new PropertysetImpl();
-        populatePropertyset(propertyset, context, id);
+        populatePropertyset(propertyset, valueCreator, id);
         assertEquals(201512373, propertyset.hashCode());
     }
 
     @Test
     void testEquals() {
+        var valueCreator = new ValueCreatorProvider();
         Propertyset emptypropertyset = new PropertysetImpl();
         assertEquals(emptypropertyset, emptypropertyset);
         assertNotEquals(emptypropertyset, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
         assertEquals(emptypropertyset, getNilPropertyset());
 
         // Compare two identical but propertysets that aren't the same object
-        ModelContext context = new ModelstoreProvider().getDefaultContext();
         UUID id = UUID.randomUUID();
         Propertyset propertyset1 = new PropertysetImpl();
-        populatePropertyset(propertyset1, context, id);
+        populatePropertyset(propertyset1, valueCreator, id);
         Propertyset propertyset2 = new PropertysetImpl();
-        populatePropertyset(propertyset2, context, id);
+        populatePropertyset(propertyset2, valueCreator, id);
         assertEquals(propertyset1, propertyset2);
         assertEquals(propertyset2, propertyset1);
     }
@@ -540,36 +537,36 @@ class PropertysetImplTest {
 
     @Test
     void testCopyConstructor() {
-        ModelContext context = new ModelstoreProvider().getDefaultContext();
+        var valueCreator = new ValueCreatorProvider();
         UUID id = UUID.randomUUID();
         Propertyset propertyset = new PropertysetImpl();
-        populatePropertyset(propertyset, context, id);
+        populatePropertyset(propertyset, valueCreator, id);
 
         Propertyset copy = new PropertysetImpl(propertyset);
-        compareOriginalUnchangedByCopyChange(context, propertyset, copy);
+        compareOriginalUnchangedByCopyChange(valueCreator, propertyset, copy);
     }
 
     @Test
     void testCopyConstructorOnPropertysetWithIdAndAspect() {
-        ModelContext context = new ModelstoreProvider().getDefaultContext();
+        var valueCreator = new ValueCreatorProvider();
         UUID id = UUID.randomUUID();
         UUID propsetId = UUID.randomUUID();
-        Propertyset propertyset = context.findPropertyset(propsetId);
+        Propertyset propertyset = valueCreator.newPropertyset(propsetId);
         UUID aspectId = UUID.randomUUID();
-        Propertyset aspect = context.findPropertyset(aspectId);
+        Propertyset aspect = valueCreator.newPropertyset(aspectId);
         propertyset.addAspect(aspect);
-        populatePropertyset(propertyset, context, id);
+        populatePropertyset(propertyset, valueCreator, id);
 
         Propertyset copy = new PropertysetImpl(propertyset);
-        compareOriginalUnchangedByCopyChange(context, propertyset, copy);
+        compareOriginalUnchangedByCopyChange(valueCreator, propertyset, copy);
     }
 
     @Test
     void testCopyValues() {
-        ModelContext context = new ModelContextImpl();
-        Propertyset propertyset = context.createPropertyset();
+        var valueCreator = new ValueCreatorProvider();
+        Propertyset propertyset = valueCreator.newPropertyset();
         UUID referencedPropertysetId = UUID.randomUUID();
-        populatePropertyset(propertyset, context, referencedPropertysetId);
+        populatePropertyset(propertyset, valueCreator, referencedPropertysetId);
 
         // Make a copy to compare with afterwards
         PropertysetImpl copyOfPropertyset = new PropertysetImpl(propertyset);
@@ -583,14 +580,14 @@ class PropertysetImplTest {
         assertEquals(propertyset, copyOfPropertyset);
 
         // Copy from a propertyset with id
-        Propertyset propertysetWithId = context.findPropertyset(UUID.randomUUID());
-        populatePropertyset(propertysetWithId, context, referencedPropertysetId);
+        Propertyset propertysetWithId = valueCreator.newPropertyset(UUID.randomUUID());
+        populatePropertyset(propertysetWithId, valueCreator, referencedPropertysetId);
 
         // propertysets are not equal because one has an id
         assertNotEquals(propertyset, propertysetWithId);
 
         // Make a non-id copy of the propertyset with id
-        Propertyset copyOfPropertysetWithId = context.createPropertyset();
+        Propertyset copyOfPropertysetWithId = valueCreator.newPropertyset();
         copyOfPropertysetWithId.copyValues(propertysetWithId);
 
         // The copy if the propertyset with id is equal to the propertyset without id
@@ -599,25 +596,24 @@ class PropertysetImplTest {
 
     @Test
     void testCopyValuesOnPropertysetWithIdAndAspect() {
-        ModelContext context = new ModelContextImpl();
+        var valueCreator = new ValueCreatorProvider();
         UUID id = UUID.randomUUID();
         UUID propsetId = UUID.randomUUID();
-        Propertyset propertyset = context.findPropertyset(propsetId);
+        Propertyset propertyset = valueCreator.newPropertyset(propsetId);
         UUID aspectId = UUID.randomUUID();
-        Propertyset aspect = context.findPropertyset(aspectId);
+        Propertyset aspect = valueCreator.newPropertyset(aspectId);
         propertyset.addAspect(aspect);
-        populatePropertyset(propertyset, context, id);
+        populatePropertyset(propertyset, valueCreator, id);
 
-        // Create a Propertyset with the same id in a different context and assign the values of the first
-        ModelContext context2 = new ModelContextImpl();
-        Propertyset copy = context2.findPropertyset(propsetId);
+        // Create a Propertyset with the same id and assign the values of the first
+        var copy = valueCreator.newPropertyset(propsetId);
         copy.copyValues(propertyset);
         assertNotSame(propertyset, copy); // Obviously...
         // Compare the inner Propertyset since the metadata-recording wrappers compare context in their equals methods
         assertEquals(propertyset, findWrappedPropertyset(copy));
 
         // Create a Propertyset without id and copy into it and compare
-        Propertyset propertysetWithoutId = context.createPropertyset();
+        Propertyset propertysetWithoutId = valueCreator.newPropertyset();
         propertysetWithoutId.copyValues(propertyset);
         assertNotSame(propertyset, propertysetWithoutId); // Obviously...
         assertNotEquals(propertyset, propertysetWithoutId); // No "id" on one of them, so not the same
@@ -625,11 +621,84 @@ class PropertysetImplTest {
         assertAllPropertiesExceptIdAndAspectEquals(propertyset, propertysetWithoutId);
 
         // Test copy to a propertyset with a different id in the same context
-        Propertyset propertysetWithNewId = context.findPropertyset(UUID.randomUUID());
+        var propertysetWithNewId = valueCreator.newPropertyset(UUID.randomUUID());
         propertysetWithNewId.copyValues(propertyset);
         assertNotEquals(propertyset, propertysetWithNewId); // Different "id" on the two
         assertEquals(propertyset.getAspects(), propertysetWithNewId.getAspects());
         assertAllPropertiesExceptIdAndAspectEquals(propertyset, propertysetWithNewId);
+    }
+
+    @Test
+    void testAddAspects() {
+        var valueCreator = new ValueCreatorProvider();
+        var propertyset = valueCreator.newPropertyset(UUID.randomUUID());
+        assertFalse(propertyset.hasAspect());
+        assertThat(propertyset.getAspects()).isEmpty();
+
+        // Add an aspect to the propertyset and verify that it adds to the list
+        var aspect1 = valueCreator.newPropertyset(UUID.randomUUID());
+        propertyset.addAspect(aspect1);
+        assertTrue(propertyset.hasAspect());
+        assertThat(propertyset.getAspects()).hasSize(1);
+
+        // Verify that adding the same aspect again doesn't add to the list
+        propertyset.addAspect(aspect1);
+        assertThat(propertyset.getAspects()).hasSize(1);
+
+        // Verify that adding a different aspect adds to the list
+        var aspect2 = valueCreator.newPropertyset(UUID.randomUUID());
+        propertyset.addAspect(aspect2);
+        assertThat(propertyset.getAspects()).hasSize(2);
+    }
+
+    @Test
+    void testThatIdPropertyCantBeOverwritten() {
+        var valueCreator = new ValueCreatorProvider();
+        var propertyset = valueCreator.newPropertyset(UUID.randomUUID());
+        var idValue = propertyset.get(ID_KEY);
+        propertyset.setBooleanProperty(ID_KEY, Boolean.TRUE);
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setBooleanProperty(ID_KEY, true);
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setLongProperty(ID_KEY, Long.valueOf(42L));
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setLongProperty(ID_KEY, 42L);
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setDoubleProperty(ID_KEY, Double.valueOf(3.14));
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setDoubleProperty(ID_KEY, 3.14);
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setStringProperty(ID_KEY, "foo");
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setComplexProperty(ID_KEY, valueCreator.newPropertyset());
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setReferenceProperty(ID_KEY, valueCreator.newPropertyset());
+        assertEquals(idValue, propertyset.get(ID_KEY));
+        propertyset.setListProperty(ID_KEY, valueCreator.newValueList());
+        assertEquals(idValue, propertyset.get(ID_KEY));
+    }
+
+    @Test
+    void testMapBehaviour() {
+        var valueCreator = new ValueCreatorProvider();
+        var mapToCopy = Map.of("pi", valueCreator.fromDouble(3.14), "meaning", valueCreator.fromLong(42L));
+        var propertyset = valueCreator.newPropertyset();
+        assertThat(propertyset).isEmpty();
+        propertyset.putAll(mapToCopy);
+        assertThat(propertyset).hasSize(mapToCopy.size());
+        assertThat(propertyset.keySet()).containsExactlyInAnyOrderElementsOf(mapToCopy.keySet());
+        assertThat(propertyset.entrySet()).hasSize(mapToCopy.entrySet().size());
+        assertThat(propertyset.values()).containsExactlyInAnyOrderElementsOf(mapToCopy.values());
+        assertTrue(propertyset.containsKey("pi"));
+        assertTrue(propertyset.containsValue(new LongValue(42L)));
+        var barValue = valueCreator.fromString("bar");
+        propertyset.put("foo", barValue);
+        assertThat(propertyset).hasSizeGreaterThan(mapToCopy.size());
+        assertEquals(barValue, propertyset.remove("foo"));
+        assertEquals(valueCreator.getNil(), propertyset.remove("foo"));
+        assertThat(propertyset).hasSize(mapToCopy.size());
+        propertyset.clear();
+        assertThat(propertyset).isEmpty();
     }
 
     private void assertAllPropertiesExceptIdAndAspectEquals(Propertyset propertyset1, Propertyset propertyset2) {
@@ -647,7 +716,7 @@ class PropertysetImplTest {
         }
     }
 
-    private void compareOriginalUnchangedByCopyChange(ModelContext context, Propertyset propertyset, Propertyset copy) {
+    private void compareOriginalUnchangedByCopyChange(ValueCreatorProvider valueCreator, Propertyset propertyset, Propertyset copy) {
         assertNotSame(propertyset, copy); // Obviously...
         assertEquals(propertyset, copy);
 
@@ -665,7 +734,7 @@ class PropertysetImplTest {
         assertEquals("bar foo", copy.getStringProperty("d"));
         assertEquals("foo bar", propertyset.getStringProperty("d"), "Expected unchanged value");
         Propertyset originalReferencedPropertyset = copy.getReferenceProperty("e");
-        Propertyset newReferencedPropertyset = context.findPropertyset(UUID.randomUUID());
+        Propertyset newReferencedPropertyset = valueCreator.newPropertyset(UUID.randomUUID());
         copy.setReferenceProperty("e", newReferencedPropertyset);
         assertEquals(newReferencedPropertyset, copy.getReferenceProperty("e"));
         assertEquals(originalReferencedPropertyset, propertyset.getReferenceProperty("e"), "Expected unchanged value");
@@ -677,28 +746,28 @@ class PropertysetImplTest {
         assertEquals(1, propertyset.getListProperty("g").size(), "Expected unchanged value");
     }
 
-    private Value createIdValue(ModelContext context) {
-        Propertyset propertysetWithId = context.findPropertyset(UUID.randomUUID());
+    private Value createIdValue(ValueCreatorProvider valueCreator) {
+        Propertyset propertysetWithId = valueCreator.newPropertyset(UUID.randomUUID());
         Value idValue = propertysetWithId.getProperty(ID_KEY);
         return idValue;
     }
 
-    private Value createAspectsValue(ModelContext context) {
-        ValueList aspectlist = context.createList();
-        aspectlist.add(context.findPropertyset(UUID.randomUUID()));
-        aspectlist.add(context.findPropertyset(UUID.randomUUID()));
-        aspectlist.add(context.findPropertyset(UUID.randomUUID()));
-        Value aspectsValue = Values.toListValue(aspectlist, false);
+    private Value createAspectsValue(ValueCreatorProvider valueCreator) {
+        var aspectlist = valueCreator.newValueList();
+        aspectlist.add(valueCreator.newPropertyset(UUID.randomUUID()));
+        aspectlist.add(valueCreator.newPropertyset(UUID.randomUUID()));
+        aspectlist.add(valueCreator.newPropertyset(UUID.randomUUID()));
+        var aspectsValue = valueCreator.fromValueList(aspectlist);
         return aspectsValue;
     }
 
-    private void populatePropertyset(Propertyset propertyset, ModelContext context, UUID id) {
+    private void populatePropertyset(Propertyset propertyset, ValueCreatorProvider valueCreator, UUID id) {
         propertyset.setBooleanProperty("a", true);
         propertyset.setLongProperty("b", 42);
         propertyset.setDoubleProperty("c", 2.7);
         propertyset.setStringProperty("d", "foo bar");
-        propertyset.setReferenceProperty("e", context.findPropertyset(id));
-        propertyset.setComplexProperty("f", context.createPropertyset());
+        propertyset.setReferenceProperty("e", valueCreator.newPropertyset(id));
+        propertyset.setComplexProperty("f", valueCreator.newPropertyset());
         ValueList list = newList();
         list.add("foobar");
         propertyset.setListProperty("g", list);

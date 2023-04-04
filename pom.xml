@@ -17,6 +17,7 @@
 
     <modules>
         <module>modelstore.services</module>
+        <module>modelstore.value</module>
         <module>modelstore.backend</module>
         <module>modelstore.tests</module>
         <module>jacoco-coverage-report</module>

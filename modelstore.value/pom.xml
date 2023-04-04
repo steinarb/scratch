@@ -7,10 +7,10 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>modelstore.backend</artifactId>
+    <artifactId>modelstore.value</artifactId>
     <packaging>bundle</packaging>
 
-    <name>modelstore backend DS component</name>
+    <name>modelstore value creator DS component</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

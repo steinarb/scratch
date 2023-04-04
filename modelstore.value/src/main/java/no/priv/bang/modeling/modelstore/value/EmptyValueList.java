@@ -1,4 +1,4 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static no.priv.bang.modeling.modelstore.value.Values.*;
 
 /**
  * A list implementation that signifies the nil list value.

@@ -1,7 +1,6 @@
 package no.priv.bang.modeling.modelstore.backend;
 
 import static no.priv.bang.modeling.modelstore.backend.Aspects.*;
-import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.compareAllPropertysets;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +19,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
+import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
 
 /**
  * Unit tests for class {@link ModelContextImpl}.
@@ -43,6 +43,7 @@ class ModelContextImplTest {
      */
     @Test
     void testMergeNoOverlapBetweenContexts() throws IOException {
+        var valueCreator = new ValueCreatorProvider();
         ModelContext context = new ModelContextImpl();
         buildPropertysetA(context, UUID.randomUUID());
         assertEquals(1, context.listAllPropertysets().size(), "Expected context to contain 1 propertyset");
@@ -56,15 +57,15 @@ class ModelContextImplTest {
         assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain 2 propertysets");
         // Verify that the copied "B" is the same as the original B
         // TODO decide if PropertysetRecordingSaveTime.equals() should include the context in comparison, for now: get the inner PropertysetImpl instances and compare them instead
-        Propertyset originalB = findWrappedPropertyset(otherContext.findPropertyset(bId));
-        Propertyset mergedB = findWrappedPropertyset(context.findPropertyset(bId));
+        Propertyset originalB = valueCreator.unwrapPropertyset(otherContext.findPropertyset(bId));
+        Propertyset mergedB = valueCreator.unwrapPropertyset(context.findPropertyset(bId));
         assertEquals(originalB, mergedB);
 
         // Save and restore the merged context and verify that the restored context is the same as the merged context
         File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         JsonFactory factory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, null);
         persister.persist(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
         ModelContext restoredContext = new ModelContextImpl();
@@ -128,7 +129,7 @@ class ModelContextImplTest {
         File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         JsonFactory factory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, null);
         persister.persist(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
         ModelContext restoredContext = new ModelContextImpl();
@@ -152,11 +153,12 @@ class ModelContextImplTest {
      */
     @Test
     void testEquals() {
+        var valueCreator = new ValueCreatorProvider();
         ModelContext context = new ModelContextImpl();
         addPropertysetsToContext(context);
         assertEquals(context, context);
         assertNotEquals(context, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
-        assertNotEquals(context, new PropertysetImpl());
+        assertNotEquals(context, valueCreator.newPropertyset());
         ModelContext identicalContext = new ModelContextImpl();
         addPropertysetsToContext(identicalContext);
         assertEquals(context, identicalContext);

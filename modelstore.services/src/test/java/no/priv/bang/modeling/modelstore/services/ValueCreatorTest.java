@@ -36,6 +36,10 @@ class ValueCreatorTest {
         assertNull(complexValue);
         Value referenceValue = service.toReferenceValue(propertyset);
         assertNull(referenceValue);
+        ValueList valueList = service.newValueList();
+        assertNull(valueList);
+        Value valueListValue = service.fromValueList(valueList);
+        assertNull(valueListValue);
     }
 
 }

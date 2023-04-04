@@ -19,6 +19,7 @@ import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
+import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
 
 /**
  * Unit tests for {@link ModelContextRecordingMetadata} which
@@ -30,10 +31,12 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 class ModelContextRecordingMetadataTest {
     private JsonFactory jsonFactory;
     private JsonPropertysetPersister persister;
+    private ValueCreatorProvider valueCreator;
+    private DateFactory dateFactory;
     private ModelContextImpl nonMetadataRecordingContext;
     private ModelContextRecordingMetadata context;
     private Propertyset vehicleAspect;
-    private PropertysetRecordingSaveTime carAspect;
+    private Propertyset carAspect;
 
     @TempDir
     File folder;
@@ -41,19 +44,20 @@ class ModelContextRecordingMetadataTest {
     @BeforeEach
     void setup() {
         jsonFactory = new JsonFactory();
-        persister = new JsonPropertysetPersister(jsonFactory);
+        persister = new JsonPropertysetPersister(jsonFactory, null);
         nonMetadataRecordingContext = new ModelContextImpl();
         persister.restore(getClass().getResourceAsStream("/json/cars_and_bicycles_id_not_first.json"), nonMetadataRecordingContext);
-        var dateFactory = new DateFactory() {
+        valueCreator = new ValueCreatorProvider();
+        dateFactory = new DateFactory() {
 
                 @Override
                 public Date now() {
                     return new Date();
                 }
             };
-        context = new ModelContextRecordingMetadata(nonMetadataRecordingContext, dateFactory);
+        context = new ModelContextRecordingMetadata(nonMetadataRecordingContext, dateFactory, valueCreator);
         vehicleAspect = context.findPropertyset(UUID.fromString("42810a4d-b757-430a-a839-75737a027c59"));
-        carAspect = (PropertysetRecordingSaveTime)context.findPropertyset(UUID.fromString("7d4a452a-a502-4333-bd0b-f42dc4d1bc82"));
+        carAspect = context.findPropertyset(UUID.fromString("7d4a452a-a502-4333-bd0b-f42dc4d1bc82"));
     }
 
     /**
@@ -117,7 +121,7 @@ class ModelContextRecordingMetadataTest {
         persister.persist(Files.newOutputStream(propertysetsFile.toPath()), context);
         ModelContext nonMetadataRecordingContext2 = new ModelContextImpl();
         persister.restore(Files.newInputStream(propertysetsFile.toPath()), nonMetadataRecordingContext2);
-        ModelContext context2 = new ModelContextRecordingMetadata(nonMetadataRecordingContext2, null);
+        ModelContext context2 = new ModelContextRecordingMetadata(nonMetadataRecordingContext2, dateFactory, valueCreator);
 
         // Compare time stamps of restored context context3 with timstamps before storage (context2)
         Propertyset outback3 = context2.findPropertyset(outbackId);
@@ -181,7 +185,7 @@ class ModelContextRecordingMetadataTest {
     @Test
     void testFindObjectsOfAspects() {
         assertEquals(5, context.findObjectsOfAspect(vehicleAspect).size());
-        assertEquals(3, context.findObjectsOfAspect(carAspect.getPropertyset()).size());
+        assertEquals(3, context.findObjectsOfAspect(valueCreator.unwrapPropertyset(carAspect)).size());
     }
 
     /**
@@ -218,15 +222,8 @@ class ModelContextRecordingMetadataTest {
      */
     @Test
     void testHashCode() {
-        var dateFactory = new DateFactory() {
-
-                @Override
-                public Date now() {
-                    return new Date();
-                }
-            };
         ModelContext inner = new ModelContextImpl();
-        ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory);
+        ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory, valueCreator);
         assertEquals(-1866972311, context.hashCode());
         addPropertysetsToContext(inner);
         assertEquals(-267642137, context.hashCode());
@@ -239,14 +236,14 @@ class ModelContextRecordingMetadataTest {
     void testEquals() {
         ModelContext inner = new ModelContextImpl();
         addPropertysetsToContext(inner);
-        ModelContext context = new ModelContextRecordingMetadata(inner, null);
+        ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory, valueCreator);
         assertEquals(context, context);
         assertNotNull(context);
-        assertNotEquals(context, new PropertysetImpl());
-        assertNotEquals(context, new ModelContextRecordingMetadata(new ModelContextImpl(), null));
+        assertNotEquals(context, valueCreator.newPropertyset());
+        assertNotEquals(context, new ModelContextRecordingMetadata(new ModelContextImpl(), dateFactory, valueCreator));
         ModelContext identicalInner = new ModelContextImpl();
         addPropertysetsToContext(identicalInner);
-        ModelContext identicalContext = new ModelContextRecordingMetadata(identicalInner, null);
+        ModelContext identicalContext = new ModelContextRecordingMetadata(identicalInner, dateFactory, valueCreator);
         assertEquals(context, identicalContext);
     }
 
@@ -257,14 +254,7 @@ class ModelContextRecordingMetadataTest {
     void testToString() {
         ModelContext inner = new ModelContextImpl();
         addPropertysetsToContext(inner);
-        var dateFactory = new DateFactory() {
-
-                @Override
-                public Date now() {
-                    return new Date();
-                }
-            };
-        ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory);
+        ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory, valueCreator);
         addPropertysetsToContext(context);
         assertThat(context.toString()).startsWith("ModelContextRecordingMetadata ");
     }

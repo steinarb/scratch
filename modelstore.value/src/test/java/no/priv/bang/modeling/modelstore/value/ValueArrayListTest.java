@@ -1,13 +1,12 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static no.priv.bang.modeling.modelstore.value.Values.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -22,12 +21,12 @@ class ValueArrayListTest {
      */
     @Test
     void testAddGetPutRemove() {
-        ModelContext context = new ModelstoreProvider().getDefaultContext();
-        ValueList list = newList();
+        var valueCreator = new ValueCreatorProvider();
+        var list = valueCreator.newValueList();
         assertEquals(0, list.size());
         list.add(toStringValue("a"));
         list.add(toLongValue(4L));
-        Propertyset propertyset = context.createPropertyset();
+        Propertyset propertyset = valueCreator.newPropertyset();
         propertyset.setStringProperty("a", "foo bar");
         list.add(propertyset);
         ValueList listelement = newList();
@@ -145,11 +144,11 @@ class ValueArrayListTest {
      */
     @Test
     void testAddSetGetPropertyset() {
-        ModelContext modelContext = new ModelstoreProvider().getDefaultContext();
-        Propertyset objectWithoutId = modelContext.createPropertyset();
+        var valueCreator = new ValueCreatorProvider();
+        Propertyset objectWithoutId = valueCreator.newPropertyset();
         objectWithoutId.setDoubleProperty("c", 3.14);
         UUID id = UUID.randomUUID();
-        Propertyset objectWithId = modelContext.findPropertyset(id);
+        Propertyset objectWithId = valueCreator.newPropertyset(id);
         objectWithId.setLongProperty("a", Long.valueOf(2));
         objectWithId.setStringProperty("b", "foo bar");
         Propertyset nullObject = null;
@@ -234,10 +233,10 @@ class ValueArrayListTest {
      */
     @Test
     void testCopyConstructor() {
-        ModelContext context = new ModelstoreProvider().getDefaultContext();
+        var valueCreator = new ValueCreatorProvider();
         UUID id = UUID.randomUUID();
         ValueList original = newList();
-        populateList(original, context, id);
+        populateList(original, valueCreator, id);
 
         ValueList copy = new ValueArrayList(original);
         assertNotSame(original, copy); // Obviously...
@@ -256,7 +255,7 @@ class ValueArrayListTest {
         copy.set(3, "bar foo");
         assertEquals("bar foo", copy.get(3).asString());
         Propertyset originalReference = copy.get(4).asReference();
-        Propertyset newReference = context.findPropertyset(UUID.randomUUID());
+        Propertyset newReference = valueCreator.newPropertyset(UUID.randomUUID());
         copy.set(4, newReference);
         assertEquals(newReference, copy.get(4).asReference());
         assertEquals(originalReference, original.get(4).asReference(), "Expected original to be unchanged");
@@ -268,13 +267,13 @@ class ValueArrayListTest {
         assertEquals(1, original.get(6).asList().size(), "Expected original to be unchanged");
     }
 
-    private void populateList(ValueList list, ModelContext context, UUID id) {
+    private void populateList(ValueList list, ValueCreatorProvider valueCreator, UUID id) {
         list.add(true);
         list.add(42);
         list.add(2.7);
         list.add("foo bar");
-        list.add(context.findPropertyset(id));
-        Propertyset propertyset = context.createPropertyset();
+        list.add(valueCreator.newPropertyset(id));
+        Propertyset propertyset = valueCreator.newPropertyset();
         propertyset.setBooleanProperty("a", true);
         propertyset.setLongProperty("b", 47);
         propertyset.setDoubleProperty("c", 3.14);

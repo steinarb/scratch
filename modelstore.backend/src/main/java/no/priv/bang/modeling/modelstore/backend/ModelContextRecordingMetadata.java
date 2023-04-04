@@ -15,6 +15,7 @@ import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.ModificationRecorder;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
+import no.priv.bang.modeling.modelstore.services.ValueCreator;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
 import static no.priv.bang.modeling.modelstore.backend.Aspects.*;
@@ -25,11 +26,12 @@ public class ModelContextRecordingMetadata implements ModelContext, Modification
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
     private ModelContext impl;
     private DateFactory dateFactory;
+    private ValueCreator valueCreator;
     private Map<UUID,Date> lastmodifiedtime = new HashMap<>();
-
-    public ModelContextRecordingMetadata(ModelContext nonMetadataRecordingContext, DateFactory dateFactory) {
+    public ModelContextRecordingMetadata(ModelContext nonMetadataRecordingContext, DateFactory dateFactory, ValueCreator valueCreator) {
         impl = nonMetadataRecordingContext;
         this.dateFactory = dateFactory;
+        this.valueCreator = valueCreator;
         Propertyset metadata = impl.findPropertyset(metadataId);
         setLastmodifiedtimes(metadata);
     }
@@ -68,7 +70,7 @@ public class ModelContextRecordingMetadata implements ModelContext, Modification
     }
 
     public Propertyset findPropertyset(UUID id) {
-        return new PropertysetRecordingSaveTime(this, impl.findPropertyset(id));
+        return valueCreator.wrapInModificationTracker(this, impl.findPropertyset(id));
     }
 
     public Collection<Propertyset> listAllPropertysets() {
@@ -89,9 +91,14 @@ public class ModelContextRecordingMetadata implements ModelContext, Modification
     }
 
     public Collection<Propertyset> findObjectsOfAspect(Propertyset aspect) {
-        if (aspect instanceof PropertysetRecordingSaveTime) {
-            PropertysetRecordingSaveTime outerAspect = (PropertysetRecordingSaveTime) aspect;
-            return impl.findObjectsOfAspect(outerAspect.getPropertyset());
+        var aspectClass = aspect.getClass();
+        if ("no.priv.bang.modeling.modelstore.value.PropertysetRecordingSaveTime".equals(aspectClass.getCanonicalName())) {
+            try {
+                var propertysetGetter = aspectClass.getMethod("getPropertyset");
+                return impl.findObjectsOfAspect((Propertyset)propertysetGetter.invoke(aspect));
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to find objects of aspect from PropertysetRecordingSaveTime instance", e);
+            }
         }
 
         return impl.findObjectsOfAspect(aspect);

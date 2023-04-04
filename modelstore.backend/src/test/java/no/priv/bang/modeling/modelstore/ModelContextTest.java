@@ -12,11 +12,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
 import static no.priv.bang.modeling.modelstore.backend.Aspects.*;
 import static no.priv.bang.modeling.modelstore.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +34,7 @@ import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
+import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
 
 /**
  * Unit test for the {@link ModelContext} interface and its
@@ -42,12 +42,21 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  *
  */
 class ModelContextTest {
+    private ValueCreatorProvider valueCreator;
+
     @TempDir
     File folder;
 
+    @BeforeEach
+    void setup() {
+        valueCreator = new ValueCreatorProvider();
+    }
+
     @Test
     void testCreatePropertyset() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
 
         // Get a propertyset instance and verify that it is a non-nil instance
@@ -55,7 +64,7 @@ class ModelContextTest {
         Propertyset propertyset = context.createPropertyset();
         assertFalse(propertyset.isNil());
         assertFalse(propertyset.hasId());
-        assertEquals(getNil().asId(), propertyset.getId());
+        assertEquals(valueCreator.getNil().asId(), propertyset.getId());
         // First get the default value for a non-existing property
         assertEquals("", propertyset.getStringProperty("stringProperty"));
         // Set the value as a different type
@@ -66,7 +75,9 @@ class ModelContextTest {
 
     @Test
     void testList() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
 
         ValueList list = context.createList();
@@ -104,7 +115,9 @@ class ModelContextTest {
 
     @Test
     void testEmbeddedAspects() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
         int numberOfEmbeddedAspects = 6; // Adjust when adding embedded aspects
 
@@ -114,7 +127,9 @@ class ModelContextTest {
 
     @Test
     void testFindPropertysetById() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
 
         // Get a propertyset by id and verify that it is empty initially
@@ -140,15 +155,15 @@ class ModelContextTest {
         Propertyset complexValue = context.createPropertyset();
         propertyset.setComplexProperty("id", complexValue);
         Propertyset returnedComplexProperty = propertyset.getComplexProperty("id");
-        assertEquals(getNilPropertyset(), returnedComplexProperty, "Expected the \"id\" property not to be affected by setting a complex value");
+        assertEquals(valueCreator.getNilPropertyset(), returnedComplexProperty, "Expected the \"id\" property not to be affected by setting a complex value");
         assertFalse(returnedComplexProperty.hasId());
-        assertEquals(getNil().asId(), returnedComplexProperty.getId());
+        assertEquals(valueCreator.getNil().asId(), returnedComplexProperty.getId());
         Propertyset referencedPropertyset = context.findPropertyset(UUID.randomUUID());
         referencedPropertyset.setReferenceProperty("id", referencedPropertyset);
-        assertEquals(getNilPropertyset(), propertyset.getReferenceProperty("id"), "Expected the \"id\" property not to be affected by setting an object reference");
-        ValueList listValue = newList();
+        assertEquals(valueCreator.getNilPropertyset(), propertyset.getReferenceProperty("id"), "Expected the \"id\" property not to be affected by setting an object reference");
+        var listValue = valueCreator.newValueList();
         propertyset.setListProperty("id", listValue);
-        assertEquals(getNil().asList(), propertyset.getListProperty("id"), "Expected the \"id\" property not to be affected by setting an object reference");
+        assertEquals(valueCreator.getNil().asList(), propertyset.getListProperty("id"), "Expected the \"id\" property not to be affected by setting an object reference");
 
         // Verify that asking for the same id again will return the same object
         assertEquals(propertyset, context.findPropertyset(newPropertysetId));
@@ -156,7 +171,9 @@ class ModelContextTest {
 
     @Test
     void testFindPropertysetOfAspect() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
 
         buildModelWithAspects(context);
@@ -179,7 +196,9 @@ class ModelContextTest {
      */
     @Test
     void testPropertysetWithMultipleAspects() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
 
         // Create two aspects
@@ -208,12 +227,14 @@ class ModelContextTest {
 
     @Test
     void experimentalJacksonPersist() throws IOException {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
         buildModelWithAspects(context);
 
         JsonFactory jsonFactory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, null);
         File propertysetsFile = new File(folder, "propertysets.json");
         persister.persist(propertysetsFile, context);
 
@@ -231,7 +252,9 @@ class ModelContextTest {
     void testJsonGeneratorWithReference() throws IOException {
         // Create two propertysets with ids, and make a reference to propertyset
         // "b" from propertyset "a".
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.getDefaultContext();
         UUID idA = UUID.randomUUID();
         Propertyset a = context.findPropertyset(idA);
@@ -274,7 +297,9 @@ class ModelContextTest {
      */
     @Test
     void testMergeNoOverlapBetweenContexts() throws IOException {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.createContext();
         buildPropertysetA(context, UUID.randomUUID());
         assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain metadata+1 propertyset");
@@ -288,8 +313,8 @@ class ModelContextTest {
         assertEquals(3, context.listAllPropertysets().size(), "Expected context to contain metadata+2 propertysets");
         // Verify that the copied "B" is the same as the original B
         // TODO decide if PropertysetRecordingSaveTime.equals() should include the context in comparison, for now: get the inner PropertysetImpl instances and compare them instead
-        Propertyset originalB = findWrappedPropertyset(otherContext.findPropertyset(bId));
-        Propertyset mergedB = findWrappedPropertyset(context.findPropertyset(bId));
+        Propertyset originalB = valueCreator.unwrapPropertyset(otherContext.findPropertyset(bId));
+        Propertyset mergedB = valueCreator.unwrapPropertyset(context.findPropertyset(bId));
         assertEquals(originalB, mergedB);
 
         // Save and restore the merged context and verify that the restored context is the same as the merged context
@@ -312,6 +337,8 @@ class ModelContextTest {
     @Test
     void testMergeWithOverlapBetweenContexts() throws IOException, InterruptedException {
         var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         var instant = LocalDateTime.now().toInstant(ZoneOffset.UTC);
         var dateFactory = mock(DateFactory.class);
         when(dateFactory.now())
@@ -378,7 +405,9 @@ class ModelContextTest {
      */
     @Test
     void testMergeWithNull() throws IOException, InterruptedException {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
         ModelContext context = modelstore.createContext();
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);
@@ -411,7 +440,7 @@ class ModelContextTest {
             }
         }
 
-        return getNilPropertyset();
+        return valueCreator.getNilPropertyset();
     }
 
     private Propertyset buildGeneralObjectAspect(ModelContext context) {

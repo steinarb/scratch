@@ -19,7 +19,7 @@ class ModelContextsTest {
     @Test
     void testFindWrappedModelContext() {
         ModelContext inner = new ModelContextImpl();
-        ModelContext context = new ModelContextRecordingMetadata(inner, null);
+        ModelContext context = new ModelContextRecordingMetadata(inner, null, null);
         assertSame(inner, findWrappedModelContext(context));
         assertSame(inner, findWrappedModelContext(inner));
     }
