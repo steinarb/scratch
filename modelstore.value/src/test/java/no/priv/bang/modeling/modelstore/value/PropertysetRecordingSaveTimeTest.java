@@ -325,4 +325,29 @@ class PropertysetRecordingSaveTimeTest {
     void testToString() {
         assertThat(propertyset.toString()).startsWith("PropertysetRecordingSaveTime ");
     }
+
+    @Test
+    void testMapBehaviour() {
+        var valueCreator = new ValueCreatorProvider();
+        var mapToCopy = Map.of("pi", valueCreator.fromDouble(3.14), "meaning", valueCreator.fromLong(42L));
+        var inner = valueCreator.newPropertyset();
+        var propertyset = valueCreator.wrapInModificationTracker(recorder, inner);
+        assertThat(propertyset).isEmpty();
+        propertyset.putAll(mapToCopy);
+        assertThat(propertyset).hasSize(mapToCopy.size());
+        assertThat(propertyset.keySet()).containsExactlyInAnyOrderElementsOf(mapToCopy.keySet());
+        assertThat(propertyset.entrySet()).hasSize(mapToCopy.entrySet().size());
+        assertThat(propertyset.values()).containsExactlyInAnyOrderElementsOf(mapToCopy.values());
+        assertTrue(propertyset.containsKey("pi"));
+        assertTrue(propertyset.containsValue(new LongValue(42L)));
+        var barValue = valueCreator.fromString("bar");
+        propertyset.put("foo", barValue);
+        assertThat(propertyset).hasSizeGreaterThan(mapToCopy.size());
+        assertEquals(barValue, propertyset.get("foo"));
+        assertEquals(barValue, propertyset.remove("foo"));
+        assertEquals(valueCreator.getNil(), propertyset.remove("foo"));
+        assertThat(propertyset).hasSize(mapToCopy.size());
+        propertyset.clear();
+        assertThat(propertyset).isEmpty();
+    }
 }
