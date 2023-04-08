@@ -28,6 +28,7 @@ public class ModelContextRecordingMetadata implements ModelContext, Modification
     private DateFactory dateFactory;
     private ValueCreator valueCreator;
     private Map<UUID,Date> lastmodifiedtime = new HashMap<>();
+
     public ModelContextRecordingMetadata(ModelContext nonMetadataRecordingContext, DateFactory dateFactory, ValueCreator valueCreator) {
         impl = nonMetadataRecordingContext;
         this.dateFactory = dateFactory;

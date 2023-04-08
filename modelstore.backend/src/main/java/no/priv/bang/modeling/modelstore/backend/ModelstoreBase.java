@@ -22,7 +22,7 @@ import no.priv.bang.modeling.modelstore.services.ValueCreator;
  */
 class ModelstoreBase extends BuiltinAspectsBase implements Modelstore {
 
-    private ModelContext context = new ModelContextImpl(this);
+    private ModelContext context = null;
     private List<ErrorBean> errors = Collections.synchronizedList(new ArrayList<ErrorBean>());
     private DateFactory dateFactory = Date::new;
     private ValueCreator valueCreator;
@@ -36,6 +36,10 @@ class ModelstoreBase extends BuiltinAspectsBase implements Modelstore {
 
     protected void doSetValueCreator(ValueCreator valueCreator) {
         this.valueCreator = valueCreator;
+    }
+
+    protected void doActivate() {
+        context = new ModelContextImpl(this);
     }
 
     public ModelContext getDefaultContext() {

@@ -57,6 +57,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
 
         // Get a propertyset instance and verify that it is a non-nil instance
@@ -78,6 +79,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
 
         ValueList list = context.createList();
@@ -118,6 +120,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
         int numberOfEmbeddedAspects = 6; // Adjust when adding embedded aspects
 
@@ -130,6 +133,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
 
         // Get a propertyset by id and verify that it is empty initially
@@ -174,6 +178,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
 
         buildModelWithAspects(context);
@@ -199,6 +204,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
 
         // Create two aspects
@@ -230,16 +236,19 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
         buildModelWithAspects(context);
 
         JsonFactory jsonFactory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, null);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, valueCreator);
         File propertysetsFile = new File(folder, "propertysets.json");
         persister.persist(propertysetsFile, context);
 
         // Parse the written data
-        Modelstore modelstore2 = new ModelstoreProvider();
+        var modelstore2 = new ModelstoreProvider();
+        modelstore2.setValueCreator(valueCreator);
+        modelstore2.activate();
         ModelContext context2 = modelstore2.getDefaultContext();
         persister.restore(propertysetsFile, context2);
 
@@ -255,6 +264,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
         UUID idA = UUID.randomUUID();
         Propertyset a = context.findPropertyset(idA);
@@ -300,6 +310,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.createContext();
         buildPropertysetA(context, UUID.randomUUID());
         assertEquals(2, context.listAllPropertysets().size(), "Expected context to contain metadata+1 propertyset");
@@ -339,6 +350,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         var instant = LocalDateTime.now().toInstant(ZoneOffset.UTC);
         var dateFactory = mock(DateFactory.class);
         when(dateFactory.now())
@@ -408,6 +420,7 @@ class ModelContextTest {
         var modelstore = new ModelstoreProvider();
         var valueCreator = new ValueCreatorProvider();
         modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.createContext();
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);

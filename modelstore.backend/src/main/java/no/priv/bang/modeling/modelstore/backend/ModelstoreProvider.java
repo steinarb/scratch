@@ -1,5 +1,6 @@
 package no.priv.bang.modeling.modelstore.backend;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -17,5 +18,10 @@ public class ModelstoreProvider extends ModelstoreBase  {
     @Reference
     public void setValueCreator(ValueCreator valueCreator) {
         doSetValueCreator(valueCreator);
+    }
+
+    @Activate
+    public void activate() {
+        doActivate();
     }
 }

@@ -2,6 +2,8 @@ package no.priv.bang.modeling.modelstore.backend;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,11 +45,14 @@ class ModelContextRecordingMetadataTest {
 
     @BeforeEach
     void setup() {
-        jsonFactory = new JsonFactory();
-        persister = new JsonPropertysetPersister(jsonFactory, null);
-        nonMetadataRecordingContext = new ModelContextImpl();
-        persister.restore(getClass().getResourceAsStream("/json/cars_and_bicycles_id_not_first.json"), nonMetadataRecordingContext);
         valueCreator = new ValueCreatorProvider();
+        jsonFactory = new JsonFactory();
+        persister = new JsonPropertysetPersister(jsonFactory, valueCreator);
+        var modelstore = new ModelstoreProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
+        nonMetadataRecordingContext = (ModelContextImpl) modelstore.getDefaultContext();
+        persister.restore(getClass().getResourceAsStream("/json/cars_and_bicycles_id_not_first.json"), nonMetadataRecordingContext);
         dateFactory = new DateFactory() {
 
                 @Override
@@ -119,7 +124,10 @@ class ModelContextRecordingMetadataTest {
         // Save to and restore from a file
         File propertysetsFile = new File(folder, "save_restore_cars_and_bikes.json");
         persister.persist(Files.newOutputStream(propertysetsFile.toPath()), context);
-        ModelContext nonMetadataRecordingContext2 = new ModelContextImpl();
+        var modelstore2 = new ModelstoreProvider();
+        modelstore2.setValueCreator(valueCreator);
+        modelstore2.activate();
+        var nonMetadataRecordingContext2 = modelstore2.getDefaultContext();
         persister.restore(Files.newInputStream(propertysetsFile.toPath()), nonMetadataRecordingContext2);
         ModelContext context2 = new ModelContextRecordingMetadata(nonMetadataRecordingContext2, dateFactory, valueCreator);
 
@@ -194,7 +202,9 @@ class ModelContextRecordingMetadataTest {
      */
     @Test
     void testSetLastmodfiedtimes() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContextRecordingMetadata context = (ModelContextRecordingMetadata) modelstore.createContext();
         Propertyset metadataWithErrors = createMetadataWithErrors(context);
         context.setLastmodifiedtimes(metadataWithErrors);
@@ -222,7 +232,9 @@ class ModelContextRecordingMetadataTest {
      */
     @Test
     void testHashCode() {
-        ModelContext inner = new ModelContextImpl();
+        var modelstore = mock(Modelstore.class);
+        when(modelstore.getValueCreator()).thenReturn(valueCreator);
+        ModelContext inner = new ModelContextImpl(modelstore);
         ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory, valueCreator);
         assertEquals(-1866972311, context.hashCode());
         addPropertysetsToContext(inner);
@@ -234,14 +246,16 @@ class ModelContextRecordingMetadataTest {
      */
     @Test
     void testEquals() {
-        ModelContext inner = new ModelContextImpl();
+        var modelstore = mock(Modelstore.class);
+        when(modelstore.getValueCreator()).thenReturn(valueCreator);
+        ModelContext inner = new ModelContextImpl(modelstore);
         addPropertysetsToContext(inner);
         ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory, valueCreator);
         assertEquals(context, context);
         assertNotNull(context);
         assertNotEquals(context, valueCreator.newPropertyset());
-        assertNotEquals(context, new ModelContextRecordingMetadata(new ModelContextImpl(), dateFactory, valueCreator));
-        ModelContext identicalInner = new ModelContextImpl();
+        assertNotEquals(context, new ModelContextRecordingMetadata(new ModelContextImpl(modelstore), dateFactory, valueCreator));
+        ModelContext identicalInner = new ModelContextImpl(modelstore);
         addPropertysetsToContext(identicalInner);
         ModelContext identicalContext = new ModelContextRecordingMetadata(identicalInner, dateFactory, valueCreator);
         assertEquals(context, identicalContext);
@@ -252,7 +266,9 @@ class ModelContextRecordingMetadataTest {
      */
     @Test
     void testToString() {
-        ModelContext inner = new ModelContextImpl();
+        var modelstore = mock(Modelstore.class);
+        when(modelstore.getValueCreator()).thenReturn(valueCreator);
+        ModelContext inner = new ModelContextImpl(modelstore);
         addPropertysetsToContext(inner);
         ModelContext context = new ModelContextRecordingMetadata(inner, dateFactory, valueCreator);
         addPropertysetsToContext(context);

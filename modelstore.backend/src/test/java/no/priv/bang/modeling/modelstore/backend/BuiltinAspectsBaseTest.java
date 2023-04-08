@@ -9,8 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.ModelContext;
-import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
+import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
 
 /**
  * Unit tests for {@link BuiltinAspectsBase}
@@ -18,7 +18,7 @@ import no.priv.bang.modeling.modelstore.services.Propertyset;
  */
 class BuiltinAspectsBaseTest {
 
-    private Modelstore modelstore;
+    private ModelstoreProvider modelstore;
     private ModelContext context;
 
     /**
@@ -26,7 +26,10 @@ class BuiltinAspectsBaseTest {
      */
     @BeforeEach
     void setUp() {
+        var valueCreator = new ValueCreatorProvider();
         modelstore = new ModelstoreProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         context = modelstore.createContext();
     }
 

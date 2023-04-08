@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -26,9 +27,19 @@ import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
  *
  */
 class ModelContextImplTest {
+    private ValueCreatorProvider valueCreator;
+    private ModelstoreProvider modelstore;
 
     @TempDir
     File folder;
+
+    @BeforeEach
+    void setup() {
+        valueCreator = new ValueCreatorProvider();
+        modelstore = new ModelstoreProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
+    }
 
     /**
      * Unit test for {@link ModelContextImpl#merge(ModelContext} when the
@@ -43,12 +54,11 @@ class ModelContextImplTest {
      */
     @Test
     void testMergeNoOverlapBetweenContexts() throws IOException {
-        var valueCreator = new ValueCreatorProvider();
-        ModelContext context = new ModelContextImpl();
+        ModelContext context = new ModelContextImpl(modelstore);
         buildPropertysetA(context, UUID.randomUUID());
         assertEquals(1, context.listAllPropertysets().size(), "Expected context to contain 1 propertyset");
 
-        ModelContext otherContext = new ModelContextImpl();
+        ModelContext otherContext = new ModelContextImpl(modelstore);
         UUID bId = UUID.randomUUID();
         buildPropertysetB(otherContext, bId);
         assertEquals(1, otherContext.listAllPropertysets().size(), "Expected otherContext to contain 1 propertyset");
@@ -68,7 +78,7 @@ class ModelContextImplTest {
         JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, null);
         persister.persist(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
-        ModelContext restoredContext = new ModelContextImpl();
+        ModelContext restoredContext = new ModelContextImpl(modelstore);
         persister.restore(loadStream, restoredContext);
         compareAllPropertysets(context, restoredContext);
     }
@@ -89,12 +99,12 @@ class ModelContextImplTest {
      */
     @Test
     void testMergeWithOverlapBetweenContexts() throws IOException, InterruptedException {
-        ModelContext context = new ModelContextImpl();
+        ModelContext context = new ModelContextImpl(modelstore);
         UUID aId = UUID.randomUUID();
         buildPropertysetA(context, aId);
         assertEquals(1, context.listAllPropertysets().size(), "Expected context to contain 1 propertyset");
 
-        ModelContext otherContext = new ModelContextImpl();
+        ModelContext otherContext = new ModelContextImpl(modelstore);
         UUID bId = UUID.randomUUID();
         buildPropertysetA(otherContext, aId);
         otherContext.findPropertyset(aId).setLongProperty("value", 42);
@@ -132,7 +142,7 @@ class ModelContextImplTest {
         JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, null);
         persister.persist(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
-        ModelContext restoredContext = new ModelContextImpl();
+        ModelContext restoredContext = new ModelContextImpl(modelstore);
         persister.restore(loadStream, restoredContext);
         compareAllPropertysets(context, restoredContext);
     }
@@ -153,13 +163,12 @@ class ModelContextImplTest {
      */
     @Test
     void testEquals() {
-        var valueCreator = new ValueCreatorProvider();
-        ModelContext context = new ModelContextImpl();
+        ModelContext context = new ModelContextImpl(modelstore);
         addPropertysetsToContext(context);
         assertEquals(context, context);
         assertNotEquals(context, null); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
         assertNotEquals(context, valueCreator.newPropertyset());
-        ModelContext identicalContext = new ModelContextImpl();
+        ModelContext identicalContext = new ModelContextImpl(modelstore);
         addPropertysetsToContext(identicalContext);
         assertEquals(context, identicalContext);
     }
@@ -169,7 +178,7 @@ class ModelContextImplTest {
      */
     @Test
     void testToString() {
-        ModelContext context = new ModelContextImpl();
+        ModelContext context = new ModelContextImpl(modelstore);
         addPropertysetsToContext(context);
         assertThat(context.toString()).startsWith("ModelContextImpl ");
     }
