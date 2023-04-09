@@ -2,12 +2,15 @@ package no.priv.bang.modeling.modelstore.value;
 
 import java.util.UUID;
 
+import org.osgi.service.component.annotations.Component;
+
 import no.priv.bang.modeling.modelstore.services.ModificationRecorder;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueCreator;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
+@Component(service=ValueCreator.class, immediate = true)
 public class ValueCreatorProvider implements ValueCreator {
 
     @Override
