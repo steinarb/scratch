@@ -92,17 +92,7 @@ public class ModelContextRecordingMetadata implements ModelContext, Modification
     }
 
     public Collection<Propertyset> findObjectsOfAspect(Propertyset aspect) {
-        var aspectClass = aspect.getClass();
-        if ("no.priv.bang.modeling.modelstore.value.PropertysetRecordingSaveTime".equals(aspectClass.getCanonicalName())) {
-            try {
-                var propertysetGetter = aspectClass.getMethod("getPropertyset");
-                return impl.findObjectsOfAspect((Propertyset)propertysetGetter.invoke(aspect));
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to find objects of aspect from PropertysetRecordingSaveTime instance", e);
-            }
-        }
-
-        return impl.findObjectsOfAspect(aspect);
+        return impl.findObjectsOfAspect(valueCreator.unwrapPropertyset(aspect));
     }
 
     /**
