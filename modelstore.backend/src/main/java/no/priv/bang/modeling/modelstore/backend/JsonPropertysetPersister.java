@@ -7,8 +7,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.UUID;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
+import static no.priv.bang.modeling.modelstore.services.Propertyset.*;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -19,6 +18,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
+import no.priv.bang.modeling.modelstore.services.ValueCreator;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
 /**
@@ -29,9 +29,11 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 public class JsonPropertysetPersister {
 
     private JsonFactory factory;
+    private ValueCreator valueCreator;
 
-    public JsonPropertysetPersister(JsonFactory factory) {
+    public JsonPropertysetPersister(JsonFactory factory, ValueCreator valueCreator) {
         this.factory = factory;
+        this.valueCreator = valueCreator;
     }
 
     public void persist(File propertysetsFile, ModelContext modelContext) throws IOException {
@@ -164,19 +166,19 @@ public class JsonPropertysetPersister {
     }
 
     private Value parseArray(JsonParser parser, ModelContext modelContext) throws IOException {
-        ValueList propertyList = newList();
+        ValueList propertyList = valueCreator.newValueList();
         while (parser.nextToken() != JsonToken.END_ARRAY) {
             JsonToken currentToken = parser.getCurrentToken();
             if (currentToken == JsonToken.VALUE_STRING) {
-                propertyList.add(toStringValue(parser.getText()));
+                propertyList.add(valueCreator.fromString(parser.getText()));
             } else if (currentToken == JsonToken.VALUE_NUMBER_FLOAT) {
-                propertyList.add(toDoubleValue(parser.getDoubleValue()));
+                propertyList.add(valueCreator.fromDouble(parser.getDoubleValue()));
             } else if (currentToken == JsonToken.VALUE_NUMBER_INT) {
-                propertyList.add(toLongValue(parser.getLongValue()));
+                propertyList.add(valueCreator.fromLong(parser.getLongValue()));
             } else if (currentToken == JsonToken.VALUE_TRUE) {
-                propertyList.add(toBooleanValue(true));
+                propertyList.add(valueCreator.fromBoolean(true));
             } else if (currentToken == JsonToken.VALUE_FALSE) {
-                propertyList.add(toBooleanValue(false));
+                propertyList.add(valueCreator.fromBoolean(false));
             } else if (currentToken == JsonToken.START_OBJECT) {
                 propertyList.add(parseObject(parser, modelContext));
             } else if (currentToken == JsonToken.START_ARRAY) {
@@ -184,7 +186,7 @@ public class JsonPropertysetPersister {
             }
         }
 
-        return toListValue(propertyList, false);
+        return valueCreator.fromValueList(propertyList);
     }
 
     private Value parseObject(JsonParser parser, ModelContext modelContext) throws IOException {
@@ -197,7 +199,7 @@ public class JsonPropertysetPersister {
                 // Return with the reference.
                 // If this should happen to be a regular object with a field named "ref",
                 // then parsing will fail because next token isn't the expected values
-                return toReferenceValue(referencedPropertyset);
+                return valueCreator.toReferenceValue(referencedPropertyset);
             }
 
             if (ID_KEY.equals(currentFieldName)) {
@@ -209,7 +211,7 @@ public class JsonPropertysetPersister {
             }
         }
 
-        return toComplexValue(createPropertysetIfNull(propertyset), false);
+        return valueCreator.toComplexValue(createPropertysetIfNull(propertyset));
     }
 
     private Propertyset parseObjectReference(JsonParser parser, ModelContext modelContext) throws IOException {
@@ -288,7 +290,7 @@ public class JsonPropertysetPersister {
     }
 
     private Propertyset createPropertysetIfNull(Propertyset propertyset) {
-        propertyset = (propertyset != null) ? propertyset : new PropertysetImpl();
+        propertyset = (propertyset != null) ? propertyset : valueCreator.newPropertyset();
         return propertyset;
     }
 

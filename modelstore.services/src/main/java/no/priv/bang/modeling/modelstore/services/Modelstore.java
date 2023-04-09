@@ -35,4 +35,11 @@ public interface Modelstore extends BuiltinAspects {
      */
     List<ErrorBean> getErrors();
 
+    /**
+     * Access factory used to create {@link Value} and {@link Propertyset} instances.
+     *
+     * @return a {@link ValueCreator} that can be used to create {@link Value} and {@link Propertyset} instances
+     */
+    ValueCreator getValueCreator();
+
 }

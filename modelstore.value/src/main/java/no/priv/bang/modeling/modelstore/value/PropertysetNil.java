@@ -1,7 +1,9 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import no.priv.bang.modeling.modelstore.services.Propertyset;
@@ -165,6 +167,66 @@ public final class PropertysetNil implements Propertyset {
     @Override
     public String toString() {
         return "PropertysetNil []";
+    }
+
+    @Override
+    public void clear() {
+        // No-op
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return false;
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return false;
+    }
+
+    @Override
+    public Set<Entry<String, Value>> entrySet() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Value get(Object key) {
+        return NilValue.getNil();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Value put(String arg0, Value arg1) {
+        return NilValue.getNil();
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Value> m) {
+        // No-op
+    }
+
+    @Override
+    public Value remove(Object key) {
+        return NilValue.getNil();
+    }
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
+    public Collection<Value> values() {
+        return Collections.emptyList();
     }
 
 }

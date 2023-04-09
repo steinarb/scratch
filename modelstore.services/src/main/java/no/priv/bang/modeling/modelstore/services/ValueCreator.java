@@ -59,6 +59,8 @@ public interface ValueCreator {
      */
     Value fromString(String value);
 
+    Value fromValueList(ValueList valueList);
+
     /**
      * Create a new, empty, id-less {@link Propertyset}.
      * Id-less propertysets are intended as complex properties.
@@ -76,6 +78,25 @@ public interface ValueCreator {
     Propertyset newPropertyset(UUID id);
 
     /**
+     * Wrap a {@link Propertyset} in a new {@link Propertyset} that will record all modifications
+     * to the propertyset in a {@link ModificationRecorder}.
+     *
+     * @param recorder the {@link ModificationRecorder} used to track modifications to the {@link Propertyset}
+     * @param propertyset the wrapped {@link Propertyset}
+     * @return a {@link Propertyset} that will track all modifications in a {@link ModificationRecorder}
+     */
+    Propertyset wrapInModificationTracker(ModificationRecorder recorder, Propertyset propertyset);
+
+    /**
+     * If the propertyset is wrapped in a different propertyset, then return the inner propertyset
+     * if not, just return the argument as-is.
+     *
+     * @param propertyset the propertyset to unwrap
+     * @return the unwrapped propertyset
+     */
+    Propertyset unwrapPropertyset(Propertyset propertyset);
+
+    /**
      * Create an embedded object value from a propertyset
      *
      * @param propertyset the object to put in the value
@@ -90,5 +111,7 @@ public interface ValueCreator {
      * @return a "pointer" {@link Value}
      */
     Value toReferenceValue(Propertyset propertyset);
+
+    ValueList newValueList();
 
 }

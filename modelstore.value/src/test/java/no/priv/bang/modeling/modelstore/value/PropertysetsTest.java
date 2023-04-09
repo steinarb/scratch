@@ -1,14 +1,14 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
+import static no.priv.bang.modeling.modelstore.value.Propertysets.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import no.priv.bang.modeling.modelstore.services.ModelContext;
-import no.priv.bang.modeling.modelstore.services.Modelstore;
+import no.priv.bang.modeling.modelstore.services.ModificationRecorder;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 
 /**
@@ -21,11 +21,12 @@ class PropertysetsTest {
      */
     @Test
     void testFindWrappedPropertyset() {
-        Modelstore modelstore = new ModelstoreProvider();
-        ModelContext context = modelstore.createContext();
+        var recorder = mock(ModificationRecorder.class);
+        var valueCreator = new ValueCreatorProvider();
+        var inner = valueCreator.newPropertyset(UUID.randomUUID());
 
         // Test unwrapping of a wrapped propertyset
-        Propertyset wrappedPropertyset = context.findPropertyset(UUID.randomUUID());
+        var wrappedPropertyset = new PropertysetRecordingSaveTime(recorder, inner);
         Propertyset unwrappedPropertyset = findWrappedPropertyset(wrappedPropertyset);
         assertNotSame(wrappedPropertyset, unwrappedPropertyset); // Not the same object
         assertEquals(wrappedPropertyset, unwrappedPropertyset); // A wrapper tests equal to the propertyset it wraps

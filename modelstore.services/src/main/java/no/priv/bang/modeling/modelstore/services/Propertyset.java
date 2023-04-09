@@ -18,6 +18,10 @@ import java.util.UUID;
  */
 public interface Propertyset extends Map<String, Value> {
 
+    // Shared constants for Propertyset implementations
+    public static final String ID_KEY = "id";
+    public static final String ASPECTS_KEY = "aspects";
+
     /**
      * Copy all property values from the propertyset given as
      * argument into the current propertyset, except for the

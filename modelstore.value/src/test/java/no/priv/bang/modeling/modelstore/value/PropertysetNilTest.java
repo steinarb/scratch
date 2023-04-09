@@ -1,8 +1,12 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
+import static no.priv.bang.modeling.modelstore.value.Values.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.modeling.modelstore.services.Propertyset;
@@ -13,6 +17,13 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
  *
  */
 class PropertysetNilTest {
+
+    private ValueCreatorProvider valueCreator;
+
+    @BeforeEach
+    void setup() {
+        valueCreator = new ValueCreatorProvider();
+    }
 
     /**
      * Unit test for {@link PropertysetNil#getPropertynames()}.
@@ -29,7 +40,7 @@ class PropertysetNilTest {
      */
     @Test
     void testGetSetGetProperty() {
-        Propertyset nilPropertyset = getNilPropertyset();
+        var nilPropertyset = valueCreator.getNilPropertyset();
         Propertyset propertyset = new PropertysetImpl();
         propertyset.setStringProperty("string", "this is stringvalue");
         assertEquals(getNil(), nilPropertyset.getProperty("nomatter"));
@@ -84,7 +95,7 @@ class PropertysetNilTest {
      */
     @Test
     void testAspects() {
-        Propertyset nilPropertyset = getNilPropertyset();
+        var nilPropertyset = valueCreator.getNilPropertyset();
         Propertyset propertyset = new PropertysetImpl();
         propertyset.setStringProperty("string", "this is stringvalue");
 
@@ -104,7 +115,7 @@ class PropertysetNilTest {
      */
     @Test
     void testEquals() {
-        Propertyset nilPropertyset = getNilPropertyset();
+        var nilPropertyset = valueCreator.getNilPropertyset();
         Propertyset propertyset = new PropertysetImpl();
 
         assertEquals(nilPropertyset, nilPropertyset);
@@ -119,5 +130,68 @@ class PropertysetNilTest {
 
         // A string is not equals to a propertyset, nil or not.
         assertNotEquals(nilPropertyset, "foo bar"); // NOSONAR the point here is to test propertyset.equals, so no the arguments should not be swapped
+    }
+
+    @Test
+    void testCopyValuesHasNoEffect() {
+        var original = valueCreator.newPropertyset();
+        original.setDoubleProperty("pi", 3.14);
+        var nilPropertyset = valueCreator.getNilPropertyset();
+        assertThat(nilPropertyset).isEmpty();
+        nilPropertyset.copyValues(original);
+        assertThat(nilPropertyset).isEmpty();
+    }
+
+    @Test
+    void testHasId() {
+        var nilPropertyset = valueCreator.getNilPropertyset();
+        assertFalse(nilPropertyset.hasId());
+    }
+
+    @Test
+    void testSetBooleanPropertyHasNoEffect() {
+        var nilPropertyset = valueCreator.getNilPropertyset();
+        assertThat(nilPropertyset).isEmpty();
+        nilPropertyset.setBooleanProperty("dummy", Boolean.TRUE);
+        assertThat(nilPropertyset).isEmpty();
+    }
+
+    @Test
+    void testSetLongPropertyHasNoEffect() {
+        var nilPropertyset = valueCreator.getNilPropertyset();
+        assertThat(nilPropertyset).isEmpty();
+        nilPropertyset.setLongProperty("dummy", Long.valueOf(42L));
+        assertThat(nilPropertyset).isEmpty();
+    }
+
+    @Test
+    void testSetDoublePropertyHasNoEffect() {
+        var nilPropertyset = valueCreator.getNilPropertyset();
+        assertThat(nilPropertyset).isEmpty();
+        nilPropertyset.setDoubleProperty("dummy", Double.valueOf(3.14));
+        assertThat(nilPropertyset).isEmpty();
+    }
+
+    @Test
+    void testThatMapBehaviourIsReadonlyAndEmpty() {
+        var mapToCopy = Map.of("pi", valueCreator.fromDouble(3.14), "meaning", valueCreator.fromLong(42L));
+        var nilPropertyset = valueCreator.getNilPropertyset();
+        assertThat(nilPropertyset).isEmpty();
+        nilPropertyset.putAll(mapToCopy);
+        assertThat(nilPropertyset).isEmpty();
+        var barValue = valueCreator.fromString("bar");
+        nilPropertyset.put("foo", barValue);
+        assertThat(nilPropertyset).isEmpty();
+        assertFalse(nilPropertyset.containsKey("pi"));
+        assertFalse(nilPropertyset.containsValue(new LongValue(42L)));
+        assertEquals(valueCreator.getNil(), nilPropertyset.get("foo"));
+        assertEquals(valueCreator.getNil(), nilPropertyset.remove("foo"));
+        assertThat(nilPropertyset).isEmpty();
+        nilPropertyset.clear();
+        assertThat(nilPropertyset).isEmpty();
+        assertThat(nilPropertyset.keySet()).isEmpty();
+        assertThat(nilPropertyset.entrySet()).isEmpty();
+        assertThat(nilPropertyset.values()).isEmpty();
+        assertEquals(0, nilPropertyset.size());
     }
 }

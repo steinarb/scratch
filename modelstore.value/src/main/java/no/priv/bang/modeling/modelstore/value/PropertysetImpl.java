@@ -1,16 +1,16 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
-import static no.priv.bang.modeling.modelstore.backend.Propertysets.*;
+import static no.priv.bang.modeling.modelstore.value.Values.*;
 
 /**
  * Implementation of {@link Propertyset} backed by a {@link Map}.
@@ -292,6 +292,67 @@ public class PropertysetImpl implements Propertyset {
     @Override
     public String toString() {
         return "PropertysetImpl [properties=" + properties + "]";
+    }
+
+    @Override
+    public void clear() {
+        properties.clear();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return properties.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return properties.containsValue(value);
+    }
+
+    @Override
+    public Set<Entry<String, Value>> entrySet() {
+        return properties.entrySet();
+    }
+
+    @Override
+    public Value get(Object key) {
+        return properties.getOrDefault(key, NilValue.getNil());
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return properties.isEmpty();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return properties.keySet();
+    }
+
+    @Override
+    public Value put(String key, Value value) {
+        return properties.put(key, value);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Value> map) {
+        properties.putAll(map);
+    }
+
+    @Override
+    public Value remove(Object key) {
+        var removed = properties.remove(key);
+        return removed == null ? NilValue.getNil() : removed;
+    }
+
+    @Override
+    public int size() {
+        return properties.size();
+    }
+
+    @Override
+    public Collection<Value> values() {
+        return properties.values();
     }
 
 }

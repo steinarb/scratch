@@ -1,7 +1,5 @@
 package no.priv.bang.modeling.modelstore.backend;
 
-import static no.priv.bang.modeling.modelstore.backend.Values.*;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,21 +43,21 @@ public class ModelContextImpl implements ModelContext {
      * @see no.priv.bang.modeling.modelstore.ModelContext#createPropertyset()
      */
     public Propertyset createPropertyset() {
-        return new PropertysetImpl();
+        return modelstore.getValueCreator().newPropertyset();
     }
 
     /* (non-Javadoc)
      * @see no.priv.bang.modeling.modelstore.ModelContext#createList()
      */
     public ValueList createList() {
-        return newList();
+        return modelstore.getValueCreator().newValueList();
     }
 
     /* (non-Javadoc)
      * @see no.priv.bang.modeling.modelstore.ModelContext#findPropertyset(java.util.UUID)
      */
     public Propertyset findPropertyset(UUID id) {
-        return propertysets.computeIfAbsent(id, PropertysetImpl::new);
+        return propertysets.computeIfAbsent(id, i -> modelstore.getValueCreator().newPropertyset(i));
     }
 
     /* (non-Javadoc)
@@ -86,10 +84,10 @@ public class ModelContextImpl implements ModelContext {
                 ValueList aspects = propertyset.getValue().getAspects();
                 for (Value value : aspects) {
                     Propertyset aspect = value.asReference();
-                    if (!getNilPropertyset().equals(aspect)) {
+                    if (!modelstore.getValueCreator().getNilPropertyset().equals(aspect)) {
                         allAspects.add(aspect);
                         Propertyset baseAspect = aspect.getReferenceProperty("inherits");
-                        if (!getNilPropertyset().equals(baseAspect)) {
+                        if (!modelstore.getValueCreator().getNilPropertyset().equals(baseAspect)) {
                             allAspects.add(baseAspect);
                         }
                     }
@@ -122,7 +120,7 @@ public class ModelContextImpl implements ModelContext {
         try {
             InputStream aspectsFile = getClass().getResourceAsStream("/json/aspects.json");
             JsonFactory jsonFactory = new JsonFactory();
-            JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory);
+            JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, modelstore.getValueCreator());
             persister.restore(aspectsFile, this);
             embeddedAspects = new HashSet<>(propertysets.values());
         } catch (Exception e) { /* skip and continue */ }
@@ -130,7 +128,7 @@ public class ModelContextImpl implements ModelContext {
 
     Set<Propertyset> followInheritanceChain(Propertyset aspect) {
         Propertyset baseAspect = aspect.getReferenceProperty("inherits");
-        if (!getNilPropertyset().equals(baseAspect)) {
+        if (!modelstore.getValueCreator().getNilPropertyset().equals(baseAspect)) {
             Set<Propertyset> aspects = followInheritanceChain(baseAspect);
             aspects.add(aspect);
             return aspects;

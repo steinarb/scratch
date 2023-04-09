@@ -17,6 +17,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <artifactId>modelstore.value</artifactId>
+            <groupId>no.priv.bang.modeling.modelstore</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>modelstore.backend</artifactId>
             <groupId>no.priv.bang.modeling.modelstore</groupId>
             <version>${project.version}</version>

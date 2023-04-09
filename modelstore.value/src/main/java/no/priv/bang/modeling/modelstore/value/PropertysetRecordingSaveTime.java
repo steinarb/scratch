@@ -1,8 +1,11 @@
-package no.priv.bang.modeling.modelstore.backend;
+package no.priv.bang.modeling.modelstore.value;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import no.priv.bang.modeling.modelstore.services.ModificationRecorder;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.Value;
 import no.priv.bang.modeling.modelstore.services.ValueList;
@@ -10,17 +13,17 @@ import no.priv.bang.modeling.modelstore.services.ValueList;
 /**
  * This is an implementation of {@link Propertyset} that wraps a
  * {@link PropertysetImpl} object, and has a back reference to
- * the {@link ModelContextRecordingMetadata} that is used
+ * the ModelContextRecordingMetadata that is used
  * to set the lastmodifiedtime of the {@link Propertyset}.
  *
  */
 class PropertysetRecordingSaveTime implements Propertyset {
 
-    private ModelContextRecordingMetadata context;
+    private ModificationRecorder recorder;
     private Propertyset propertyset;
 
-    public PropertysetRecordingSaveTime(ModelContextRecordingMetadata context, Propertyset propertyset) {
-        this.context = context;
+    public PropertysetRecordingSaveTime(ModificationRecorder recorder, Propertyset propertyset) {
+        this.recorder = recorder;
         this.propertyset = propertyset;
     }
 
@@ -46,7 +49,7 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setProperty(String propertyname, Value property) {
         propertyset.setProperty(propertyname, property);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public void addAspect(Propertyset aspect) {
@@ -75,12 +78,12 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setBooleanProperty(String propertyname, Boolean boolValue) {
         propertyset.setBooleanProperty(propertyname, boolValue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public void setBooleanProperty(String propertyname, boolean boolValue) {
         propertyset.setBooleanProperty(propertyname, boolValue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public Long getLongProperty(String propertyname) {
@@ -89,12 +92,12 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setLongProperty(String propertyname, Long intValue) {
         propertyset.setLongProperty(propertyname, intValue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public void setLongProperty(String propertyname, long intvalue) {
         propertyset.setLongProperty(propertyname, intvalue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public Double getDoubleProperty(String propertyname) {
@@ -103,12 +106,12 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setDoubleProperty(String propertyname, Double doubleValue) {
         propertyset.setDoubleProperty(propertyname, doubleValue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public void setDoubleProperty(String propertyname, double doubleValue) {
         propertyset.setDoubleProperty(propertyname, doubleValue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public String getStringProperty(String propertyname) {
@@ -117,7 +120,7 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setStringProperty(String propertyname, String stringValue) {
         propertyset.setStringProperty(propertyname, stringValue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public Propertyset getComplexProperty(String propertyname) {
@@ -126,7 +129,7 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setComplexProperty(String propertyname, Propertyset complexProperty) {
         propertyset.setComplexProperty(propertyname, complexProperty);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public Propertyset getReferenceProperty(String propertyname) {
@@ -135,7 +138,7 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setReferenceProperty(String propertyname, Propertyset referencedObject) {
         propertyset.setReferenceProperty(propertyname, referencedObject);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     public ValueList getListProperty(String propertyname) {
@@ -144,7 +147,7 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     public void setListProperty(String propertyname, ValueList listValue) {
         propertyset.setListProperty(propertyname, listValue);
-        context.modifiedPropertyset(propertyset);
+        recorder.modifiedPropertyset(propertyset);
     }
 
     @Override
@@ -167,7 +170,7 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
         if (getClass() == obj.getClass()) {
             PropertysetRecordingSaveTime other = (PropertysetRecordingSaveTime) obj;
-            return propertyset.equals(other.propertyset) && context.equals(other.context);
+            return propertyset.equals(other.propertyset) && recorder.equals(other.recorder);
         }
 
         // Will compare equal to an unwrapped Propertyset, but unwrapped propertyset
@@ -177,7 +180,67 @@ class PropertysetRecordingSaveTime implements Propertyset {
 
     @Override
     public String toString() {
-        return "PropertysetRecordingSaveTime [context=" + context + ", propertyset=" + propertyset + "]";
+        return "PropertysetRecordingSaveTime [context=" + recorder + ", propertyset=" + propertyset + "]";
+    }
+
+    @Override
+    public void clear() {
+        propertyset.clear();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return propertyset.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return propertyset.containsValue(value);
+    }
+
+    @Override
+    public Set<Entry<String, Value>> entrySet() {
+        return propertyset.entrySet();
+    }
+
+    @Override
+    public Value get(Object key) {
+        return propertyset.get(key);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return propertyset.isEmpty();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return propertyset.keySet();
+    }
+
+    @Override
+    public Value put(String key, Value value) {
+        return propertyset.put(key, value);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Value> map) {
+        propertyset.putAll(map);
+    }
+
+    @Override
+    public Value remove(Object key) {
+        return propertyset.remove(key);
+    }
+
+    @Override
+    public int size() {
+        return propertyset.size();
+    }
+
+    @Override
+    public Collection<Value> values() {
+        return propertyset.values();
     }
 
 }

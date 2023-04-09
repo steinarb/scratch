@@ -20,6 +20,7 @@ import no.priv.bang.modeling.modelstore.backend.ModelstoreProvider;
 import no.priv.bang.modeling.modelstore.services.ErrorBean;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
 import no.priv.bang.modeling.modelstore.services.Modelstore;
+import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
 
 /**
  * Unit test for the {@link Modelstore} interface and its
@@ -36,7 +37,10 @@ class ModelstoreTest {
      */
     @Test
     void testGetModelContext() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
         assertNotNull(context);
         assertEquals(6, context.listAllAspects().size(), "Expected the built-in aspects");
@@ -48,7 +52,10 @@ class ModelstoreTest {
      */
     @Test
     void testRestoreModelContext() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         ModelContext context = modelstore.restoreContext(carsAndBicylesStream);
 
@@ -63,7 +70,10 @@ class ModelstoreTest {
      */
     @Test
     void testPersistRestoreModelContext() throws IOException { // NOSONAR assert inside compareAllPropertysets
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         ModelContext context1 = modelstore.restoreContext(carsAndBicylesStream);
 
@@ -88,7 +98,10 @@ class ModelstoreTest {
      */
     @Test
     void testPersistRestoreModelContextUsingPipedStreams() throws IOException { // NOSONAR assert inside compareAllPropertysets
-        final Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         InputStream carsAndBicylesStream = getClass().getResourceAsStream("/json/cars_and_bicycles.json");
         final ModelContext context1 = modelstore.restoreContext(carsAndBicylesStream);
 
