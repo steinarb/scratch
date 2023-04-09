@@ -75,7 +75,7 @@ class ModelContextImplTest {
         File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         JsonFactory factory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, null);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, valueCreator);
         persister.persist(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
         ModelContext restoredContext = new ModelContextImpl(modelstore);
@@ -139,7 +139,7 @@ class ModelContextImplTest {
         File propertysetsFile = new File(folder, "mergedcontext.json");
         OutputStream saveStream = Files.newOutputStream(propertysetsFile.toPath());
         JsonFactory factory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, null);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(factory, valueCreator);
         persister.persist(saveStream, context);
         InputStream loadStream = Files.newInputStream(propertysetsFile.toPath());
         ModelContext restoredContext = new ModelContextImpl(modelstore);
@@ -152,7 +152,7 @@ class ModelContextImplTest {
      */
     @Test
     void testHashCode() {
-        ModelContext context = new ModelContextImpl();
+        ModelContext context = new ModelContextImpl(modelstore);
         assertEquals(216866173, context.hashCode());
         addPropertysetsToContext(context);
         assertEquals(-1809752513, context.hashCode());

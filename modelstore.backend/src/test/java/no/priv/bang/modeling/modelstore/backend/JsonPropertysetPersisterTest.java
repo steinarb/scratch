@@ -24,7 +24,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import no.priv.bang.modeling.modelstore.mocks.MockOutputStreamThatThrowsIOExceptionOnEverything;
 import no.priv.bang.modeling.modelstore.services.ErrorBean;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
-import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
@@ -405,7 +404,7 @@ class JsonPropertysetPersisterTest {
     void testRestoreFromStream() throws URISyntaxException, IOException {
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, null);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, valueCreator);
 
         // A file that isn't JSON
         File jsonFile = getResourceAsFile("/json/cars_and_bicycles.json");
@@ -463,7 +462,7 @@ class JsonPropertysetPersisterTest {
     void testRestoreObjectOnTopLevelFromStream() throws URISyntaxException, IOException {
         ModelContext context = modelstore.createContext();
         JsonFactory jsonFactory = new JsonFactory();
-        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, null);
+        JsonPropertysetPersister persister = new JsonPropertysetPersister(jsonFactory, valueCreator);
 
         // A file that isn't JSON
         File jsonFile = getResourceAsFile("/json/object_on_top.json");

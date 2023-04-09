@@ -37,7 +37,10 @@ class ModelstoreTest {
      */
     @Test
     void testGetModelContext() {
-        Modelstore modelstore = new ModelstoreProvider();
+        var modelstore = new ModelstoreProvider();
+        var valueCreator = new ValueCreatorProvider();
+        modelstore.setValueCreator(valueCreator);
+        modelstore.activate();
         ModelContext context = modelstore.getDefaultContext();
         assertNotNull(context);
         assertEquals(6, context.listAllAspects().size(), "Expected the built-in aspects");

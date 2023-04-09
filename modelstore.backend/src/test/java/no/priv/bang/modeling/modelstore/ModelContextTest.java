@@ -31,7 +31,6 @@ import no.priv.bang.modeling.modelstore.backend.JsonPropertysetPersister;
 import no.priv.bang.modeling.modelstore.backend.ModelstoreProvider;
 import no.priv.bang.modeling.modelstore.services.DateFactory;
 import no.priv.bang.modeling.modelstore.services.ModelContext;
-import no.priv.bang.modeling.modelstore.services.Modelstore;
 import no.priv.bang.modeling.modelstore.services.Propertyset;
 import no.priv.bang.modeling.modelstore.services.ValueList;
 import no.priv.bang.modeling.modelstore.value.ValueCreatorProvider;
