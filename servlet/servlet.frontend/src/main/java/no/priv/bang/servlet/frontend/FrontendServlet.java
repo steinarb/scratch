@@ -78,10 +78,16 @@ public class FrontendServlet extends HttpServlet{
 
             String resource = findResourceFromPathInfo(pathInfo);
             String contentType = guessContentTypeFromResourceName(resource);
+
+            if (thisIsAResourceThatShouldModifyHeaders(request, pathInfo, resource, contentType)) {
+                modifyHeaders(response, request, pathInfo, resource, contentType);
+            }
+
             if (thisIsAResourceThatShouldBeProcessed(request, pathInfo, resource, contentType)) {
                 processResource(response, request, pathInfo, resource, contentType);
                 return;
             }
+
             response.setContentType(contentType);
             try(ServletOutputStream responseBody = response.getOutputStream()) {
                 try(InputStream resourceFromClasspath = getClass().getClassLoader().getResourceAsStream(resource)) {
@@ -98,6 +104,38 @@ public class FrontendServlet extends HttpServlet{
             logger.error("Frontend servlet caught exception ", e);
             response.setStatus(SC_INTERNAL_SERVER_ERROR); // Report internal server error
         }
+    }
+
+    /**
+     * This is a method that should be overridden in a subclass to detect
+     * if a resource should modify the HTTP headers, e.g. adding cache-control
+     * headers, and setting expiry time.
+     * @param request the request as received by the servlet framework
+     * @param pathInfo the path information from the request URL, potentially with a "/" added
+     * @param resource the classpath resource name (e.g. 'index.html' or 'bundle.js')
+     * @param contentType the content type as detected by {@link FrontendServlet}
+     *
+     * @return true if the HTTP headers of the resource should be modified
+     */
+    protected boolean thisIsAResourceThatShouldModifyHeaders(HttpServletRequest request, String pathInfo, String resource, String contentType) {
+        return false;
+    }
+
+    /**
+     * This is a method that will be called for resources that should modify
+     * the HTTP headers of the response. Subclasses should replace the method
+     * to do processing.  The base class implementation returns status code 501
+     * Not Implemented.
+     *
+     * @param response Implementors of this method needs to set content type, status code and body in the response object
+     * @param request the request as received by the servlet framework
+     * @param pathInfo the path information from the request URL, potentially with a "/" added
+     * @param resource This is the resource matching the pathInfo
+     * @param contentType the content type as detected by {@link FrontendServlet}
+     * @throws IOException
+     */
+    protected void modifyHeaders(HttpServletResponse response, HttpServletRequest request, String pathInfo, String resource, String contentType) throws IOException {
+        /* replace in derived class to modify HTTP headers */
     }
 
     /**

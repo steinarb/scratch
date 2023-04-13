@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
@@ -110,6 +111,39 @@ class FrontendServletTest {
         assertEquals(2, servlet.getRoutes().size());
         servlet.setRoutes("/", "/addstore", "/statistics", "/login");
         assertEquals(4, servlet.getRoutes().size());
+    }
+
+    static class FrontendServletThatModifiesHeaders extends FrontendServlet {
+        private static final long serialVersionUID = -1123678063196681870L;
+
+        @Override
+        protected boolean thisIsAResourceThatShouldModifyHeaders(HttpServletRequest request, String pathInfo, String resource, String contentType) {
+            return true;
+        }
+
+        @Override
+        protected void modifyHeaders(HttpServletResponse response, HttpServletRequest request, String pathInfo, String resource, String contentType) throws IOException {
+            // TODO Auto-generated method stub
+            super.modifyHeaders(response, request, pathInfo, resource, contentType);
+        }
+
+    }
+
+    @Test
+    void testServletThatModifiesHeaders() throws Exception {
+        var request = new MockHttpServletRequest();
+        request.setPathInfo("/");
+        var response = new MockHttpServletResponse();
+        var logservice = new MockLogService();
+        var servlet = new FrontendServletThatModifiesHeaders();
+        servlet.setLogService(logservice);
+
+        servlet.doGet(request, response);
+        assertEquals(SC_OK, response.getStatus());
+        assertEquals("text/html", response.getContentType());
+        String responseBody = response.getOutputStreamContent();
+        assertThat(responseBody).contains("bundle.js");
+        response.getHeaders("cache-control");
     }
 
     static class FrontendServletThatDoesProcessing extends FrontendServlet {
