@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                                                           |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------------|
+| <2023-04-14 Fri 17:36> |  1.1.26 | Use version 1.6.5 of bang-servlet to avoid caching HTML hosting webapp frontends                                     |
 | <2023-04-10 Mon 00:10> |  1.1.25 | Ensure feature file maven dependencies will resolve in "mvn site:site" builds                                        |
 | <2023-04-09 Sun 17:13> |  1.1.24 | Add explicit manifest generation execution to maven-bundle-plugin to lose eclipse m2e warning                        |
 | <2023-04-02 Sun 13:12> |  1.1.23 | Add <pluginManagement> entry for maven-site-plugin 3.12.1 to bang-pom/pom.xml                                        |
@@ -64,7 +65,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
       <parent>
           <groupId>no.priv.bang.pom</groupId>
           <artifactId>bang-pom</artifactId>
-          <version>1.1.25</version>
+          <version>1.1.26</version>
       </parent>
     #+end_src
  2. Import the BoM into your project's dependencyManagement (the bang-bom.version maven property is set by the parent):
