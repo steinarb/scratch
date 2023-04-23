@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.oldalbum</groupId>
         <artifactId>oldalbum</artifactId>
-        <version>1.9.8-SNAPSHOT</version>
+        <version>1.9.8</version>
     </parent>
     <artifactId>oldalbum.db.liquibase.test</artifactId>
 
@@ -229,7 +229,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -242,7 +242,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
