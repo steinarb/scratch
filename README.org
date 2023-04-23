@@ -44,6 +44,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2023-04-23 Sun 14:07> |   1.9.8 | Avoid caching of the webapp frontend                                                                           |
 | <2023-03-06 Mon 22:29> |   1.9.7 | Use liquibase 4.19.0, pax-jdbc 1.5.5, postgresql jdbc 42.5.4, karaf 4.4.3                                      |
 | <2023-01-20 Fri 23:51> |   1.9.6 | Add sort-by-date functionality, improved navigation, improved 404 and 403 responses                            |
 | <2022-12-10 Sat 16:35> |   1.9.5 | Upgrade authservice to 1.15.1, because the BOM of 1.15.0 was broken                                            |
