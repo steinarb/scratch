@@ -12,6 +12,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
 
 | Date                   | Version | Highlights                                                                                                           |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------------|
+| <2023-04-24 Mon 18:49> |  1.1.28 | Use jersey-karaf 1.9.4 to pull in jersey 2.39.1 and jackson 2.14.2                                                   |
 | <2023-04-16 Sun 08:43> |  1.1.27 | Move karaf feature generation to target default phase compile (early enough for "mvn site:site")                     |
 | <2023-04-14 Fri 17:36> |  1.1.26 | Use version 1.6.5 of bang-servlet to avoid caching HTML hosting webapp frontends                                     |
 | <2023-04-10 Mon 00:10> |  1.1.25 | Ensure feature file maven dependencies will resolve in "mvn site:site" builds                                        |
@@ -66,7 +67,7 @@ The purpose of this maven parent, is to get a single point of change for boring 
       <parent>
           <groupId>no.priv.bang.pom</groupId>
           <artifactId>bang-pom</artifactId>
-          <version>1.1.27</version>
+          <version>1.1.28</version>
       </parent>
     #+end_src
  2. Import the BoM into your project's dependencyManagement (the bang-bom.version maven property is set by the parent):
