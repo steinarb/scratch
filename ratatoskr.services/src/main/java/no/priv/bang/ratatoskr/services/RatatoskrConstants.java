@@ -20,6 +20,7 @@ public class RatatoskrConstants {
     public static final String RATATOSKR_JDBC_USER = "ratatoskr.db.jdbc.user";
     public static final String RATATOSKR_JDBC_PASSWORD = "ratatoskr.db.jdbc.password"; // NOSONAR hard to write code to handle passwords without saying the word "password"
 
+    public static final String RATATOSKRADMIN_ROLE = "ratatoskradmin";
     public static final String RATATOSKRUSER_ROLE = "ratatoskruser";
 
     private RatatoskrConstants() {}

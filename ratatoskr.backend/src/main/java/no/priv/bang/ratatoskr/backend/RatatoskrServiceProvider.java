@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
@@ -290,12 +291,13 @@ public class RatatoskrServiceProvider implements RatatoskrService {
     }
 
     private void addRolesIfNotpresent() {
-        String ratatoskruser = RATATOSKRUSER_ROLE;
-        List<Role> roles = useradmin.getRoles();
-        Optional<Role> existingRole = roles.stream().filter(r -> ratatoskruser.equals(r.getRolename())).findFirst();
-        if (!existingRole.isPresent()) {
-            useradmin.addRole(Role.with().id(-1).rolename(ratatoskruser).description("Bruker av applikasjonen ratatoskr").build());
-        }
+        var ratatoskroles = Map.of(
+            RATATOSKRUSER_ROLE, "User of activitypub server ratatoskr",
+            RATATOSKRADMIN_ROLE, "Administrator of activitypub server ratatoskr");
+        Set<String> existingroles = useradmin.getRoles().stream().map(r -> r.getRolename()).collect(Collectors.toSet());
+        ratatoskroles.entrySet().stream()
+            .filter(r -> !existingroles.contains(r.getKey()))
+            .forEach(r ->  useradmin.addRole(Role.with().id(-1).rolename(r.getKey()).description(r.getValue()).build()));
     }
 
     Map<String, String> transformResourceBundleToMap(Locale locale) {

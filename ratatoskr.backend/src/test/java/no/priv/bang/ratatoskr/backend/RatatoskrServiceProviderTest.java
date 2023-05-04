@@ -16,6 +16,7 @@
 package no.priv.bang.ratatoskr.backend;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -40,7 +41,9 @@ import no.priv.bang.ratatoskr.services.beans.CounterBean;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
+import static no.priv.bang.ratatoskr.services.RatatoskrConstants.*;
 
 class RatatoskrServiceProviderTest {
     private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
@@ -124,6 +127,52 @@ class RatatoskrServiceProviderTest {
         boolean accountCreated = provider.lazilyCreateAccount("jad");
         assertFalse(accountCreated);
         assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testThatRolesAreAddedIfMissing() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        verify(useradmin, times(2)).addRole(any());
+    }
+
+    @Test
+    void testThatRolesAreNotAddedIfPresent() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var existingroles = Arrays.asList(
+            Role.with().rolename(RATATOSKRUSER_ROLE).build(),
+            Role.with().rolename(RATATOSKRADMIN_ROLE).build());
+        when(useradmin.getRoles()).thenReturn(existingroles);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        verify(useradmin, never()).addRole(any());
+    }
+
+    @Test
+    void testThatSomeRolesAreNotAddedIfNotAllRolesArePresent() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var existingroles = Arrays.asList(
+            Role.with().rolename(RATATOSKRADMIN_ROLE).build());
+        when(useradmin.getRoles()).thenReturn(existingroles);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        verify(useradmin, times(1)).addRole(any());
     }
 
     @Test
