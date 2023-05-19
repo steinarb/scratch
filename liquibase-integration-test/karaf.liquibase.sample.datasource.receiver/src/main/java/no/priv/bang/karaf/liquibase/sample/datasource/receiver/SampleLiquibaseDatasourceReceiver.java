@@ -64,7 +64,7 @@ public class SampleLiquibaseDatasourceReceiver implements SampleLiquibaseDatasou
     public List<Account> accounts() throws SQLException {
         try (var connection = datasource.getConnection()) {
             var accounts = new ArrayList<Account>();
-            var sql = "select * from accounts";
+            var sql = "select * from sampleapp_accounts";
             try(var statement = connection.createStatement()) {
                 try(var results = statement.executeQuery(sql)) {
                     while(results.next()) {
