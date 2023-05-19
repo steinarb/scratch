@@ -53,6 +53,11 @@ public class SampleLiquibaseDatasourceReceiver implements SampleLiquibaseDatasou
         } catch (SQLException e) {
             logger.info("Datasource errored when getting connection", e);
         }
+        try {
+            accounts();
+        } catch (SQLException e) {
+            logger.info("Unable to find accounts", e);
+        }
     }
 
     @Override
