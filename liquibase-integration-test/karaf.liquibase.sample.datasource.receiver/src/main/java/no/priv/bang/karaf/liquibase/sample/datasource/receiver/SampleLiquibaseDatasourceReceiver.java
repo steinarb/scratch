@@ -48,7 +48,7 @@ public class SampleLiquibaseDatasourceReceiver implements SampleLiquibaseDatasou
 
     @Activate
     public void activate() {
-        try (Connection connection = datasource.getConnection()) {
+        try (var connection = datasource.getConnection()) {
             logger.info("Liquibase sample data source receiver activated");
         } catch (SQLException e) {
             logger.info("Datasource errored when getting connection", e);
