@@ -1,5 +1,0 @@
-<features>
-    <feature name="${karaf-feature-name}">
-        <feature>pax-jdbc-derby</feature>
-    </feature>
-</features>
