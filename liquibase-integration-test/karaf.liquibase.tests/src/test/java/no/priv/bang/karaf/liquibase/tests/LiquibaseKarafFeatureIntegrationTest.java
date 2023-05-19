@@ -25,6 +25,7 @@ import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
+import no.priv.bang.karaf.liquibase.sample.services.Account;
 import no.priv.bang.karaf.liquibase.sample.services.SampleLiquibaseDatasourceReceiverService;
 
 import static org.junit.Assert.*;
@@ -56,6 +57,9 @@ public class LiquibaseKarafFeatureIntegrationTest extends KarafTestSupport {
         installAndAssertFeature("karaf-liquibase-sample-datasource-receiver");
         var service = getOsgiService(SampleLiquibaseDatasourceReceiverService.class);
         assertEquals(0, service.accounts().size());
+        var newAccount = Account.with().username("jad").build();
+        var accountsAfterAdd = service.addAccount(newAccount);
+        assertEquals(1, accountsAfterAdd.size());
     }
 
 }

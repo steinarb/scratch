@@ -20,5 +20,5 @@ import java.util.List;
 
 public interface SampleLiquibaseDatasourceReceiverService {
     List<Account> accounts() throws SQLException;
-    List<Account> addAccount(Account account);
+    List<Account> addAccount(Account account) throws SQLException;
 }

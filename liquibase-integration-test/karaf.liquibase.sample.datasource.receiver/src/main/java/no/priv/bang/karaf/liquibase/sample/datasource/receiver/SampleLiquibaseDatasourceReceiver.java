@@ -15,7 +15,6 @@
  */
 package no.priv.bang.karaf.liquibase.sample.datasource.receiver;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +80,16 @@ public class SampleLiquibaseDatasourceReceiver implements SampleLiquibaseDatasou
     }
 
     @Override
-    public List<Account> addAccount(Account account) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Account> addAccount(Account account) throws SQLException {
+        try (var connection = datasource.getConnection()) {
+            var sql = "insert into sampleapp_accounts (username) values (?)";
+            try(var statement = connection.prepareStatement(sql)) {
+                statement.setString(1, account.getUsername());
+                statement.execute();
+            }
+        }
+
+        return accounts();
     }
 
 }
