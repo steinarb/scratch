@@ -15,9 +15,10 @@
  */
 package no.priv.bang.karaf.liquibase.sample.services;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface SampleLiquibaseDatasourceReceiverService {
-    List<Account> accounts();
+    List<Account> accounts() throws SQLException;
     List<Account> addAccount(Account account);
 }
