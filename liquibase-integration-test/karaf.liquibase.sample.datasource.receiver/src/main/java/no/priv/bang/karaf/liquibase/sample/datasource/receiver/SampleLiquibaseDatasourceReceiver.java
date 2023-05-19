@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Steinar Bang
+ * Copyright 2022-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package no.priv.bang.karaf.liquibase.sample.datasource.receiver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+
 import javax.sql.DataSource;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -24,11 +26,14 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
+import no.priv.bang.karaf.liquibase.sample.services.Account;
+import no.priv.bang.karaf.liquibase.sample.services.SampleLiquibaseDatasourceReceiverService;
+
 @Component(immediate=true)
-public class SampleLiquibaseDatasourceReceiver {
+public class SampleLiquibaseDatasourceReceiver implements SampleLiquibaseDatasourceReceiverService {
 
     private Logger logger;
-	private DataSource datasource;
+    private DataSource datasource;
 
     @Reference
     public void setLogService(LogService logservice) {
@@ -43,10 +48,22 @@ public class SampleLiquibaseDatasourceReceiver {
     @Activate
     public void activate() {
         try (Connection connection = datasource.getConnection()) {
-        	logger.info("Liquibase sample data source receiver activated");
+            logger.info("Liquibase sample data source receiver activated");
         } catch (SQLException e) {
-        	logger.info("Datasource errored when getting connection", e);
-		}
+            logger.info("Datasource errored when getting connection", e);
+        }
+    }
+
+    @Override
+    public List<Account> accounts() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Account> addAccount(Account account) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
