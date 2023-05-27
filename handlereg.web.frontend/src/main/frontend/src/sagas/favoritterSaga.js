@@ -11,6 +11,10 @@ function hentFavoritter(username) {
     return axios.get('/handlereg/api/favoritter', { params: { username } });
 }
 
+function* sendFavoritterHent() {
+    yield put(FAVORITTER_HENT());
+}
+
 function* mottaFavoritter() {
     try {
         const username = yield select(state => state.loginresultat.brukernavn);
@@ -23,6 +27,6 @@ function* mottaFavoritter() {
 }
 
 export default function* favoritterSaga() {
-    yield takeLatest(OVERSIKT_MOTTA, mottaFavoritter);
+    yield takeLatest(OVERSIKT_MOTTA, sendFavoritterHent);
     yield takeLatest(FAVORITTER_HENT, mottaFavoritter);
 }
