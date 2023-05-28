@@ -1,7 +1,7 @@
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 import axios from 'axios';
 import {
-    OVERSIKT_MOTTA,
+    LOGINTILSTAND_MOTTA,
     FAVORITTER_HENT,
     FAVORITTER_MOTTA,
     FAVORITTER_ERROR,
@@ -27,6 +27,6 @@ function* mottaFavoritter() {
 }
 
 export default function* favoritterSaga() {
-    yield takeLatest(OVERSIKT_MOTTA, sendFavoritterHent);
+    yield takeLatest(LOGINTILSTAND_MOTTA, sendFavoritterHent);
     yield takeLatest(FAVORITTER_HENT, mottaFavoritter);
 }
