@@ -3,6 +3,7 @@ import { LOCATION_CHANGE } from 'redux-first-history';
 import {
     OVERSIKT_HENT,
     BUTIKKER_HENT,
+    FAVORITTER_HENT,
     SUMBUTIKK_HENT,
     HANDLINGERBUTIKK_HENT,
     SISTEHANDEL_HENT,
@@ -23,6 +24,7 @@ function* locationChange(action) {
     if (pathname === '/handlereg/hurtigregistrering') {
         yield put(OVERSIKT_HENT());
         yield put(BUTIKKER_HENT());
+        yield put(FAVORITTER_HENT());
         yield put(VIS_KVITTERING(false));
     }
 
