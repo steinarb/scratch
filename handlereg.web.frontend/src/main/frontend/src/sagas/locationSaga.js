@@ -1,4 +1,4 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, put, select } from 'redux-saga/effects';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import {
     OVERSIKT_HENT,
@@ -24,8 +24,11 @@ function* locationChange(action) {
     if (pathname === '/handlereg/hurtigregistrering') {
         yield put(OVERSIKT_HENT());
         yield put(BUTIKKER_HENT());
-        yield put(FAVORITTER_HENT());
         yield put(VIS_KVITTERING(false));
+        const brukernavn = yield select (state => (state.loginresultat || {}).brukernavn);
+        if (brukernavn) {
+            yield put(FAVORITTER_HENT());
+        }
     }
 
     if (pathname === '/handlereg/endrebutikk') {
