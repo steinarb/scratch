@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Steinar Bang
+ * Copyright 2018-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,19 +31,6 @@ public class HandleregLiquibase {
 
     public void updateSchema(Connection connection) throws LiquibaseException {
         applyLiquibaseChangelist(connection, "handlereg-db-changelog/db-changelog-1.0.1.xml");
-    }
-
-    public void forceReleaseLocks(Connection connection) throws LiquibaseException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connection);
-        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-            try(var liquibase = new Liquibase("handlereg-db-changelog/db-changelog-1.0.0.xml", classLoaderResourceAccessor, databaseConnection)) {
-                liquibase.forceReleaseLocks();
-            }
-        } catch (LiquibaseException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new HandleregException("Error closing resource when forcing Liquibase changelist lock for handlereg database", e);
-        }
     }
 
     private void applyLiquibaseChangelist(Connection connection, String changelistClasspathResource) throws LiquibaseException {
