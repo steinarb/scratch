@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,10 @@ class SampleDbLiquibaseRunnerTest {
     @Test
     void testCreateAndVerifySomeDataInSomeTables() throws Exception {
         DataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        var uuid = UUID.randomUUID().toString();
+        var jdbcUrl = "jdbc:derby:memory:" + uuid + ";create=true";
         Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:sample;create=true");
+        properties.setProperty(DataSourceFactory.JDBC_URL, jdbcUrl);
         DataSource datasource = dataSourceFactory.createDataSource(properties);
 
         MockLogService logservice = new MockLogService();
