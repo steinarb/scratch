@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.oldalbum</groupId>
         <artifactId>oldalbum</artifactId>
-        <version>1.9.12-SNAPSHOT</version>
+        <version>1.9.12</version>
     </parent>
     <artifactId>oldalbum.db.liquibase.production</artifactId>
 
