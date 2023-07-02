@@ -44,6 +44,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2023-07-02 Sun 20:55> |  1.9.12 | Use liquibase 4.23.0                                                                                           |
 | <2023-06-06 Tue 21:08> |  1.9.11 | Use authservice 1.15.7 and shiro 1.11.0                                                                        |
 | <2023-04-26 Wed 23:18> |  1.9.10 | Use jersey-karaf-feature 1.9.5, jackson 2.15.0                                                                 |
 | <2023-04-24 Mon 21:34> |   1.9.9 | Use jersey-karaf-feature 1.9.4, jersey 2.39.1, jackson 2.14.2                                                  |
