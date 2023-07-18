@@ -39,8 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-
 import javax.sql.DataSource;
 
 import org.jsoup.Jsoup;
@@ -475,7 +473,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<LocaleBean> availableLocales() {
-        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).collect(Collectors.toList());
+        return Arrays.asList(Locale.forLanguageTag("nb-NO"), Locale.UK).stream().map(l -> LocaleBean.with().locale(l).build()).toList();
     }
 
     @Override
