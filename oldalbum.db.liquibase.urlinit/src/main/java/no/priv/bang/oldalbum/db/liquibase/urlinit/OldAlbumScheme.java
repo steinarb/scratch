@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 @Component(immediate=true, property = "name=oldalbum")
 public class OldAlbumScheme implements PreHook {
     LoggerAdapter logger = new LoggerAdapter(getClass());
+    private OldAlbumLiquibase oldalbumLiquibase;
 
     @Reference
     public void setLogService(LogService logservice) {
@@ -40,21 +41,28 @@ public class OldAlbumScheme implements PreHook {
 
     @Activate
     public void activate() {
-        // Called when component is activated
+        oldalbumLiquibase = new OldAlbumLiquibase();
     }
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
         createInitialSchema(datasource);
+        updateSchema(datasource);
     }
 
     void createInitialSchema(DataSource datasource) throws SQLException {
         try (Connection connect = datasource.getConnection()) {
-            OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
         } catch (Exception e) {
             logger.error("Error creating handlreg test database", e);
         }
     }
 
+    private void updateSchema(DataSource datasource) {
+        try (Connection connect = datasource.getConnection()) {
+            oldalbumLiquibase.updateSchema(connect);
+        } catch (Exception e) {
+            logger.error("Error creating handlreg test database", e);
+        }
+    }
 }
