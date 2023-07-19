@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,17 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
-import liquibase.Liquibase;
-import liquibase.database.DatabaseConnection;
+import liquibase.Scope;
+import liquibase.Scope.ScopedRunner;
+import liquibase.changelog.ChangeLogParameters;
+import liquibase.command.CommandScope;
+import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
+import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 
 @Component(immediate=true)
@@ -98,15 +105,20 @@ public class OldAlbumUrlInitDatabase {
     private void setDatabaseContent(String contentLiquibaseChangelog) {
         Map<String, String> contentByFileName = new HashMap<>();
         contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
-        try(var accessor = new MockResourceAccessor(contentByFileName)) {
-            try(Connection connection = datasource.getConnection()) {
-                DatabaseConnection database = new JdbcConnection(connection);
-                try(var liquibase = new Liquibase("dumproutes.sql", accessor, database)) {
-                    liquibase.update("");
-                }
+        try(Connection connection = datasource.getConnection()) {
+            try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new MockResourceAccessor(contentByFileName));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "dumproutes.sql")
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
             }
         } catch (Exception e) {
-            logger.error("Failed to insert oldalbum database content into the database");
+            throw new OldAlbumException("Failed to load database from", e);
         }
     }
 

@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumUrlInitDatabaseTest {
@@ -82,8 +83,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        component.activate();
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     @Test
