@@ -89,16 +89,15 @@ public class OldAlbumUrlInitDatabase {
                     }
                     return builder.toString();
                 } else {
-                    logger.error(String.format("Failed to load oldalbum database content because HTTP statuscode of %s was %d", databaseContentUrl, statusCode));
-                    return null;
+                    var message = String.format("Failed to load oldalbum database content because HTTP statuscode of %s was %d", databaseContentUrl, statusCode);
+                    throw new OldAlbumException(message);
                 }
             } catch (IOException e) {
-                logger.error(String.format("Failed to load oldalbum database content because loading from %s failed", databaseContentUrl), e);
-                return null;
+                var message = String.format("Failed to load oldalbum database content because loading from %s failed", databaseContentUrl);
+                throw new OldAlbumException(message, e);
             }
         } else {
-            logger.error("Failed to load oldalbum database content because DATABASE_CONTENT_URL wasn't set");
-            return null;
+            throw new OldAlbumException("Failed to load oldalbum database content because DATABASE_CONTENT_URL wasn't set");
         }
     }
 

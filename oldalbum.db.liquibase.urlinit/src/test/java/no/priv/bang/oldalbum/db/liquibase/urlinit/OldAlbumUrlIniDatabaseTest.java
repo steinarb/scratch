@@ -106,8 +106,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        component.activate();
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     @Test
@@ -130,8 +129,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        component.activate();
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     @Test
@@ -151,8 +149,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        component.activate();
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     @Test
@@ -166,8 +163,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        component.activate();
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     @Test
@@ -181,8 +177,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        component.activate();
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     @Test
@@ -192,8 +187,7 @@ class OldAlbumUrlInitDatabaseTest {
         OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        component.activate();
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     private void addSchemaToDatasource(DataSource datasource, MockLogService logservice) throws SQLException {

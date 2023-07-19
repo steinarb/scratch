@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumSchemeTest {
@@ -63,8 +64,7 @@ class OldAlbumSchemeTest {
         OldAlbumScheme hook = new OldAlbumScheme();
         hook.setLogService(logservice);
         hook.activate();
-        hook.createInitialSchema(datasource);
-        assertEquals(1, logservice.getLogmessages().size());
+        assertThrows(OldAlbumException.class, () -> hook.createInitialSchema(datasource));
     }
 
     private DataSource createDataSource(String dbname) throws Exception {
