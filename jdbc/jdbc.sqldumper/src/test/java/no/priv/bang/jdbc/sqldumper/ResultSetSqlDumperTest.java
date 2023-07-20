@@ -1,0 +1,112 @@
+package no.priv.bang.jdbc.sqldumper;
+/*
+ * Copyright 2023 Steinar Bang
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License")
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
+import org.junit.jupiter.api.Test;
+import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
+import org.osgi.service.jdbc.DataSourceFactory;
+
+import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
+
+class ResultSetSqlDumperTest {
+    DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+
+    @Test
+    void testDumpResultSetOnOldalbum() throws Exception {
+        var changesetId = "sb:album_paths";
+        var sqldumper = new ResultSetSqlDumper();
+        var oldalbumDatasource = createOldalbumDbWithData("oldalbum1");
+        Path tempfile = Files.createTempFile(findTempdirAsTargetSubdir(), "oldalbum", "sql");
+        Files.delete(tempfile);
+        try(var outputstream = Files.newOutputStream(tempfile)) {
+            var sql = "select * from albumentries";
+            try(var connection = oldalbumDatasource.getConnection()) {
+                try(var statement = connection.createStatement()) {
+                    try(var resultset = statement.executeQuery(sql)) {
+                        sqldumper.dumpResultSetAsSql(changesetId, resultset, outputstream);
+                    }
+                }
+            }
+        }
+
+        var dumpedsql = Files.readString(tempfile);
+        assertThat(dumpedsql)
+            .startsWith("--liquibase formatted sql")
+            .contains("--changeset sb:saved_albumentries")
+            .contains("insert into ALBUMENTRIES (ALBUMENTRY_ID, PARENT, LOCALPATH, ALBUM, TITLE, DESCRIPTION, IMAGEURL, THUMBNAILURL, SORT, LASTMODIFIED, CONTENTTYPE, CONTENTLENGTH, REQUIRE_LOGIN) values")
+            .contains("1, 0, '/', true, 'Picture archive', '', '', '', 0, null, null, null")
+            .contains("11, 4, '/moto/vfr96/acirc3', false, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-10-04 18:28:58.0', 'image/jpeg', 57732");
+    }
+
+    @Test
+    void testFindSchema() throws Exception {
+        var sqldumper = new ResultSetSqlDumper();
+        var oldalbumDatasource = createOldalbumDbWithData("oldalbum1");
+        var sql = "select * from albumentries";
+        try(var connection = oldalbumDatasource.getConnection()) {
+            try(var statement = connection.createStatement()) {
+                try(var resultset = statement.executeQuery(sql)) {
+                    List<String> columnames = sqldumper.findColumnNames(resultset);
+                    assertThat(columnames).hasSize(13);
+                    Map<String, Integer> columntypes = sqldumper.findColumntypes(resultset);
+                    assertThat(columntypes).hasSize(columnames.size());
+                    String tablename = sqldumper.findTableName(resultset);
+                    assertEquals("ALBUMENTRIES", tablename);
+                }
+            }
+        }
+    }
+
+    private DataSource createOldalbumDbWithData(String dbname) throws Exception, SQLException {
+        var oldalbumDatasource = createDatasource(dbname);
+        var oldalbumSchemaAndData = new OldAlbumDerbyTestDatabase();
+        oldalbumSchemaAndData.activate();
+        oldalbumSchemaAndData.prepare(oldalbumDatasource);
+        return oldalbumDatasource;
+    }
+
+    private DataSource createDatasource(String dbname) throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
+        return derbyDataSourceFactory.createDataSource(properties);
+    }
+
+    private Path findTempdirAsTargetSubdir() throws Exception {
+        try(var inputstream = getClass().getClassLoader().getResourceAsStream("properties-from-pom.properties")) {
+            var properties = new Properties();
+            properties.load(inputstream);
+            var tempdir = Paths.get((String)properties.get("project-target-dir"), "temp");
+            if (!Files.exists(tempdir)) {
+                Files.createDirectory(tempdir);
+            }
+
+            return tempdir;
+        }
+    }
+}
