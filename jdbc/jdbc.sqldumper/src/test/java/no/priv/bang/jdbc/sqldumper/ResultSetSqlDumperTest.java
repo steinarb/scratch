@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 
 class ResultSetSqlDumperTest {
@@ -62,6 +63,9 @@ class ResultSetSqlDumperTest {
             .contains("insert into ALBUMENTRIES (ALBUMENTRY_ID, PARENT, LOCALPATH, ALBUM, TITLE, DESCRIPTION, IMAGEURL, THUMBNAILURL, SORT, LASTMODIFIED, CONTENTTYPE, CONTENTLENGTH, REQUIRE_LOGIN) values")
             .contains("1, 0, '/', true, 'Picture archive', '', '', '', 0, null, null, null")
             .contains("11, 4, '/moto/vfr96/acirc3', false, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-10-04 18:28:58.0', 'image/jpeg', 57732");
+
+        var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum2");
+        assertEmptyAlbumentries(restoredOldalbumDatasource);
     }
 
     @Test
@@ -83,11 +87,36 @@ class ResultSetSqlDumperTest {
         }
     }
 
-    private DataSource createOldalbumDbWithData(String dbname) throws Exception, SQLException {
+    private void assertEmptyAlbumentries(DataSource oldalbumDatasource) throws Exception {
+        var sql = "select * from albumentries";
+        try(var connection = oldalbumDatasource.getConnection()) {
+            try(var statement = connection.createStatement()) {
+                try(var resultset = statement.executeQuery(sql)) {
+                    assertFalse(resultset.next(), "Expected albumentries table to be empty");
+                }
+            }
+        }
+    }
+
+    private DataSource createOldalbumDbWithData(String dbname) throws Exception {
         var oldalbumDatasource = createDatasource(dbname);
         var oldalbumSchemaAndData = new OldAlbumDerbyTestDatabase();
         oldalbumSchemaAndData.activate();
         oldalbumSchemaAndData.prepare(oldalbumDatasource);
+        return oldalbumDatasource;
+    }
+
+    private DataSource createOldalbumDbWithouthData(String dbname) throws Exception {
+        var oldalbumDatasource = createDatasource(dbname);
+        var oldalbumSchema = new OldAlbumLiquibase();
+        try (var connection = oldalbumDatasource.getConnection()) {
+            oldalbumSchema.createInitialSchema(connection);
+        }
+
+        try (var connection = oldalbumDatasource.getConnection()) {
+            oldalbumSchema.updateSchema(connection);
+        }
+
         return oldalbumDatasource;
     }
 
