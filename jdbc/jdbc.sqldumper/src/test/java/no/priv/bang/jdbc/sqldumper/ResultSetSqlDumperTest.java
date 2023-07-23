@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -32,6 +32,16 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import liquibase.Scope;
+import liquibase.Scope.ScopedRunner;
+import liquibase.changelog.ChangeLogParameters;
+import liquibase.command.CommandScope;
+import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 
@@ -66,6 +76,8 @@ class ResultSetSqlDumperTest {
 
         var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum2");
         assertEmptyAlbumentries(restoredOldalbumDatasource);
+        setDatabaseContent(dumpedsql, restoredOldalbumDatasource);
+        assertAlbumentriesNotEmpty(restoredOldalbumDatasource);
     }
 
     @Test
@@ -94,6 +106,35 @@ class ResultSetSqlDumperTest {
                 try(var resultset = statement.executeQuery(sql)) {
                     assertFalse(resultset.next(), "Expected albumentries table to be empty");
                 }
+            }
+        }
+    }
+
+    private void assertAlbumentriesNotEmpty(DataSource oldalbumDatasource) throws Exception {
+        var sql = "select * from albumentries";
+        try(var connection = oldalbumDatasource.getConnection()) {
+            try(var statement = connection.createStatement()) {
+                try(var resultset = statement.executeQuery(sql)) {
+                    assertTrue(resultset.next(), "Expected albumentries table not to be empty");
+                }
+            }
+        }
+    }
+
+    private void setDatabaseContent(String contentLiquibaseChangelog, DataSource datasource) throws Exception {
+        Map<String, String> contentByFileName = new HashMap<>();
+        contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
+        try(var connection = datasource.getConnection()) {
+            try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new MockResourceAccessor(contentByFileName));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "dumproutes.sql")
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
             }
         }
     }

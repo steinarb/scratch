@@ -79,8 +79,8 @@ public class ResultSetSqlDumper {
         var values = new ArrayList<String>();
         for(String columname : columnames) {
             var stringValue = resultset.getString(columname);
-            if (columntypes.get(columname) == Types.VARCHAR && !resultset.wasNull()) {
-                values.add(String.format("'%s'", stringValue));
+            if (columntypes.get(columname) == Types.VARCHAR) {
+                values.add(quoteStringButNotNull(stringValue));
             } else if (columntypes.get(columname) == Types.TIMESTAMP && !resultset.wasNull()) {
                 values.add(String.format("'%s'", stringValue));
             } else {
@@ -90,6 +90,17 @@ public class ResultSetSqlDumper {
 
         writer.write(String.join(", ", values));
         writer.write(");\n");
+    }
+
+    private String quoteStringButNotNull(String string) {
+        if (string != null) {
+            StringBuilder builder = new StringBuilder(string.length() + 10);
+            builder.append("'");
+            builder.append(string.replace("'", "''"));
+            builder.append("'");
+            return builder.toString();
+        }
+        return string;
     }
 
 }
