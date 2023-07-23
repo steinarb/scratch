@@ -76,7 +76,7 @@ class ResultSetSqlDumperTest {
 
         var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum2");
         assertEmptyAlbumentries(restoredOldalbumDatasource);
-        setDatabaseContent(dumpedsql, restoredOldalbumDatasource);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
         assertAlbumentriesNotEmpty(restoredOldalbumDatasource);
     }
 
@@ -121,7 +121,7 @@ class ResultSetSqlDumperTest {
         }
     }
 
-    private void setDatabaseContent(String contentLiquibaseChangelog, DataSource datasource) throws Exception {
+    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {
         Map<String, String> contentByFileName = new HashMap<>();
         contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
         try(var connection = datasource.getConnection()) {
