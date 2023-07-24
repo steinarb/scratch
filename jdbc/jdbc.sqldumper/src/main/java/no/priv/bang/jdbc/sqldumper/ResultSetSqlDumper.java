@@ -26,6 +26,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>A Java class for dumping a JDBC
+ * {@link ResultSet} as an
+ * <a href="https://docs.liquibase.com/concepts/changelogs/sql-format.html">SQL
+ * formatted liquibase changeset</a>.
+ *
+ * <p>Sample usage:
+ * <pre>
+ *     private void dumpAlbumEntriesAsLiquibaseSql(DataSource oldalbumDatasource, OutputStream outputstream) throws SQLException, IOException {
+ *         var sqldumper = new ResultSetSqlDumper();
+ *         var changesetId = "sb:album_paths";
+ *         var sql = "select * from albumentries";
+ *         try(var connection = oldalbumDatasource.getConnection()) {
+ *             try(var statement = connection.createStatement()) {
+ *                 try(var resultset = statement.executeQuery(sql)) {
+ *                     sqldumper.dumpResultSetAsSql(changesetId, resultset, outputstream);
+ *                 }
+ *             }
+ *         }
+ *     }
+ * </pre>
+ *
+ * <p>Limitations:
+ * <ol>
+ * <li>The select that creates the {@link ResultSet} must be from a single table. I.e. the select cannot be a join between table. The SQL file will be generated but won't be importable</li>
+ * <li>The columns of the {@link ResultSet} can't be of complex types like structs or arrays, only numbers, strings, booleans and dates will work</li>
+ * <li>If an autoincremented key is part of the SQL dump, the counter won't be set right after the import, and there is no portable way of resetting the counter (different RDBMSes does it different ways)</li>
+ * </ol>
+ */
 public class ResultSetSqlDumper {
 
     /**
