@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
-public class ImageRequest {
+import no.priv.bang.beans.immutable.Immutable;
+
+public class ImageRequest extends Immutable { // NOSONAR Immutable handles added fields
 
     private String url;
 

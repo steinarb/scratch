@@ -1,6 +1,6 @@
 package no.priv.bang.oldalbum.services.bean;
 /*
- * Copyright 2022 Steinar Bang
+ * Copyright 2022-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@ package no.priv.bang.oldalbum.services.bean;
  * under the License.
  */
 
-public class BatchAddPicturesRequest {
+import no.priv.bang.beans.immutable.Immutable;
+
+public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable handles added fields
 
     private int parent;
     private String batchAddUrl;
