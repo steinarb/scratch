@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  * <p>A Java class for dumping a JDBC
- * {@link ResultSet} as an
+ * {@link ResultSet} to an {@link OutputStream} as an
  * <a href="https://docs.liquibase.com/concepts/changelogs/sql-format.html">SQL
  * formatted liquibase changeset</a>.
  *
