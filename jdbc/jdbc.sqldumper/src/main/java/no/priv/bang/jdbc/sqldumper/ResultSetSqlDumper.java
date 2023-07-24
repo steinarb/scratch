@@ -28,16 +28,30 @@ import java.util.Map;
 
 public class ResultSetSqlDumper {
 
-    public void dumpResultSetAsSql(String changesetId, ResultSet resultset, OutputStream outputstream) throws IOException, SQLException {
+    /**
+     * Traverse the JDBC {@link ResultSet} {@code
+     * resultSetToGenerateSqlFor} and output an <a
+     * href="https://www.liquibase.com/blog/liquibase-formatted-sql">SQL
+     * formatted liquibase changeset</a> to {@code outputStream} with
+     * a liquibase changeset id given by {@code changesetId}, on the
+     * form "author:id".
+     *
+     * @param changesetId the id to use on the generated changeset
+     * @param resultSetToGenerateSqlFor the JDBC {@link ResultSet} to generate output for
+     * @param outputstream where the liquibase SQL formatted changeset will be written
+     * @throws IOException when there is an error writing the changeset as SQL
+     * @throws SQLException when there is an error accessing the {@link ResultSet}
+     */
+    public void dumpResultSetAsSql(String changesetId, ResultSet resultSetToGenerateSqlFor, OutputStream outputstream) throws IOException, SQLException {
         try(var writer = new OutputStreamWriter(outputstream, "UTF-8")) {
             writer.write("--liquibase formatted sql\n");
             writer.write("--changeset sb:saved_albumentries\n");
-            var columnames = findColumnNames(resultset);
-            var columntypes = findColumntypes(resultset);
-            var tablename = findTableName(resultset);
-            while(resultset.next()) {
+            var columnames = findColumnNames(resultSetToGenerateSqlFor);
+            var columntypes = findColumntypes(resultSetToGenerateSqlFor);
+            var tablename = findTableName(resultSetToGenerateSqlFor);
+            while(resultSetToGenerateSqlFor.next()) {
                 addInsertStatement(writer, tablename, columnames);
-                addValues(writer, resultset, columnames, columntypes);
+                addValues(writer, resultSetToGenerateSqlFor, columnames, columntypes);
             }
         }
     }
