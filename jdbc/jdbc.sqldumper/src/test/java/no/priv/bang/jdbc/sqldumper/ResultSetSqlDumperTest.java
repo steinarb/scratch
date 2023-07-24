@@ -21,6 +21,10 @@ import static org.assertj.core.api.Assertions.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +46,7 @@ import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
+import no.priv.bang.jdbc.sqldumper.beans.AlbumEntry;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 
@@ -78,6 +83,9 @@ class ResultSetSqlDumperTest {
         assertEmptyAlbumentries(restoredOldalbumDatasource);
         setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
         assertAlbumentriesNotEmpty(restoredOldalbumDatasource);
+        var originalAlbumEntries = findAllAlbumentries(oldalbumDatasource);
+        var restoredAlbumEntries = findAllAlbumentries(restoredOldalbumDatasource);
+        assertThat(restoredAlbumEntries).containsExactlyElementsOf(originalAlbumEntries);
     }
 
     @Test
@@ -137,6 +145,52 @@ class ResultSetSqlDumperTest {
                             .execute());
             }
         }
+    }
+
+    private List<AlbumEntry> findAllAlbumentries(DataSource datasource) throws Exception {
+        List<AlbumEntry> allroutes = new ArrayList<>();
+
+        String sql = "select * from albumentries";
+        try (var connection = datasource.getConnection()) {
+            try (var statement = connection.createStatement()) {
+                try (var results = statement.executeQuery(sql)) {
+                    while (results.next()) {
+                        AlbumEntry route = unpackAlbumEntry(results);
+                        allroutes.add(route);
+                    }
+                }
+            }
+        }
+
+        return allroutes;
+    }
+
+    private AlbumEntry unpackAlbumEntry(ResultSet results) throws Exception {
+        return AlbumEntry.with()
+            .id(results.getInt("albumentry_id"))
+            .parent(results.getInt("parent"))
+            .path(results.getString("localpath"))
+            .album(results.getBoolean("album"))
+            .title(results.getString("title"))
+            .description(results.getString("description"))
+            .imageUrl(results.getString("imageurl"))
+            .thumbnailUrl(results.getString("thumbnailurl"))
+            .sort(results.getInt("sort"))
+            .lastModified(timestampToDate(results.getTimestamp("lastmodified")))
+            .contentType(results.getString("contenttype"))
+            .contentLength(results.getInt("contentlength"))
+            .requireLogin(results.getBoolean("require_login"))
+            .childcount(findChildCount(results))
+            .build();
+    }
+
+    private int findChildCount(ResultSet results) throws Exception {
+        int columncount = results.getMetaData().getColumnCount();
+        return columncount > 13 ? results.getInt(14) : 0;
+    }
+
+    private Date timestampToDate(Timestamp lastmodifiedTimestamp) {
+        return lastmodifiedTimestamp != null ? Date.from(lastmodifiedTimestamp.toInstant()) : null;
     }
 
     private DataSource createOldalbumDbWithData(String dbname) throws Exception {

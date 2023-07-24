@@ -26,6 +26,7 @@
     <properties>
         <karaf-feature-name>jdbc-sqldumper</karaf-feature-name>
         <oldalbum.version>1.9.14</oldalbum.version>
+        <beans.version>1.2.0</beans.version>
         <osgi-service-adapters.version>1.2.0</osgi-service-adapters.version>
         <project-target-dir>${project.build.directory}</project-target-dir>
     </properties>
@@ -77,6 +78,12 @@
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase.test</artifactId>
             <version>${oldalbum.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.beans</groupId>
+            <artifactId>beans.immutable</artifactId>
+            <version>${beans.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
