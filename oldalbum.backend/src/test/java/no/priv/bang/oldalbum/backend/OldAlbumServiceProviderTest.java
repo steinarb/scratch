@@ -49,8 +49,14 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
-import liquibase.Liquibase;
-import liquibase.database.DatabaseConnection;
+import liquibase.Scope;
+import liquibase.Scope.ScopedRunner;
+import liquibase.changelog.ChangeLogParameters;
+import liquibase.command.CommandScope;
+import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
+import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
@@ -824,15 +830,7 @@ class OldAlbumServiceProviderTest {
         DataSource emptybase = createEmptyBase("emptyoldalbum1");
         int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(0, rowsBeforeInsert);
-        Map<String, String> contentByFileName = new HashMap<>();
-        contentByFileName.put("dumproutes.sql", sql);
-        MockResourceAccessor accessor = new MockResourceAccessor(contentByFileName);
-        try(Connection connection = emptybase.getConnection()) {
-            DatabaseConnection database = new JdbcConnection(connection);
-            try(var liquibase = new Liquibase("dumproutes.sql", accessor, database)) {
-                liquibase.update("");
-            }
-        }
+        setDatabaseContentAsLiquibaseChangelog(emptybase, sql);
 
         // Check that the empty database now has the same number of rows as the original
         int rowsInOriginal = findAlbumentriesRows(datasource, false);
@@ -867,15 +865,7 @@ class OldAlbumServiceProviderTest {
         DataSource emptybase = createEmptyBase("emptyoldalbum2");
         int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(0, rowsBeforeInsert);
-        Map<String, String> contentByFileName = new HashMap<>();
-        contentByFileName.put("dumproutes.sql", sql);
-        MockResourceAccessor accessor = new MockResourceAccessor(contentByFileName);
-        try(Connection connection = emptybase.getConnection()) {
-            DatabaseConnection database = new JdbcConnection(connection);
-            try(var liquibase = new Liquibase("dumproutes.sql", accessor, database)) {
-                liquibase.update("");
-            }
-        }
+        setDatabaseContentAsLiquibaseChangelog(emptybase, sql);
 
         // Check that the empty database now has the same number of rows as the original
         int rowsInOriginal = findAlbumentriesRows(datasource, true);
@@ -1294,6 +1284,24 @@ class OldAlbumServiceProviderTest {
             oldAlbumLiquibase.updateSchema(connection);
         }
         return emptyDatasource;
+    }
+
+    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {
+        Map<String, String> contentByFileName = new HashMap<>();
+        contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
+        try(var connection = datasource.getConnection()) {
+            try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
+                Map<String, Object> scopeObjects = Map.of(
+                    Scope.Attr.database.name(), database,
+                    Scope.Attr.resourceAccessor.name(), new MockResourceAccessor(contentByFileName));
+
+                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
+                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "dumproutes.sql")
+                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
+                            .execute());
+            }
+        }
     }
 
     private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
