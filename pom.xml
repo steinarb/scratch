@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-authservice-client-pom</artifactId>
-        <version>1.1.33</version>
+        <version>1.1.34-SNAPSHOT</version>
     </parent>
     <groupId>no.priv.bang.oldalbum</groupId>
     <artifactId>oldalbum</artifactId>
@@ -96,6 +96,13 @@
                 <groupId>no.priv.bang.osgi.service.adapters</groupId>
                 <artifactId>adapters-bom</artifactId>
                 <version>${osgi-service-adapters.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.priv.bang.jdbc</groupId>
+                <artifactId>jdbc-bom</artifactId>
+                <version>${bang-jdbc-utils.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
