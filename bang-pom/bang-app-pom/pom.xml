@@ -30,7 +30,7 @@
         <bang-osgi-service.version>1.8.0</bang-osgi-service.version>
         <bang-servlet.version>1.6.7</bang-servlet.version>
         <bang-jdbc-utils.version>1.2.0</bang-jdbc-utils.version>
-        <datasourceproxy.version>1.1.1</datasourceproxy.version>
+        <datasourceproxy.version>${bang-jdbc-utils.version}</datasourceproxy.version>
         <beans.version>1.2.0</beans.version>
     </properties>
 
