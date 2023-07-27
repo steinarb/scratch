@@ -15,9 +15,12 @@
  */
 package no.priv.bang.oldalbum.backend;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +31,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -50,6 +52,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
+import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
@@ -281,46 +284,33 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public String dumpDatabaseSql(String username, boolean isLoggedn) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
-        StringBuilder builder = new StringBuilder();
-        builder.append("--liquibase formatted sql\n");
-        builder.append("--changeset sb:saved_albumentries\n");
+        var sqldumper = new ResultSetSqlDumper();
+        var outputStream = new ByteArrayOutputStream();
         String sql = "select * from albumentries where (not require_login or (require_login and require_login=?)) order by albumentry_id";
         try (Connection connection = datasource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isLoggedn);
                 try (ResultSet results = statement.executeQuery()) {
-                    while(results.next()) {
-                        int id = results.getInt(1);
-                        int parent = results.getInt(2);
-                        String path = quoteStringButNotNull(results.getString(3));
-                        boolean album = results.getBoolean(4);
-                        String title = quoteStringButNotNull(results.getString(5));
-                        String description = quoteStringButNotNull(results.getString(6));
-                        String imageUrl = quoteStringButNotNull(results.getString(7));
-                        String thumbnailUrl = quoteStringButNotNull(results.getString(8));
-                        int sort = results.getInt(9);
-                        Timestamp lastModifiedTimestamp = results.getTimestamp(10);
-                        String lastModified = lastModifiedTimestamp != null ? quoteStringButNotNull(formatter.format(lastModifiedTimestamp.toInstant())) : "null";
-                        String contentType = quoteStringButNotNull(results.getString(11));
-                        int contentLength = results.getInt(12);
-                        boolean requireLogin = results.getBoolean(13);
-                        builder.append(String.format("insert into albumentries (albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login) values (%d, %d, %s, %b, %s, %s, %s, %s, %d, %s, %s, %d, %b);", id, parent, path, album, title, description, imageUrl, thumbnailUrl, sort, lastModified, contentType, contentLength, requireLogin)).append("\n");
-                    }
+                    sqldumper.dumpResultSetAsSql("sb:saved_albumentries", results, outputStream);
                 }
             }
             try (Statement statement = connection.createStatement()) {
                 try (ResultSet results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
                     while(results.next()) {
                         int lastIdInDump = results.getInt(1);
-                        builder.append(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d", lastIdInDump + 1)).append("\n");
+                        try(var writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+                            writer.write(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d;\n", lastIdInDump + 1));
+                        }
                     }
                 }
             }
         } catch (SQLException e) {
             logger.error("Failed to find the list of paths the app can be entered in", e);
+        } catch (IOException e) {
+            logger.error("Failed to write the dumped liquibase changelist for the albumentries", e);
         }
-        return builder.toString();
+
+        return outputStream.toString(StandardCharsets.UTF_8);
     }
 
     int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) throws SQLException {
@@ -595,17 +585,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             lastmodified = Timestamp.from(Instant.ofEpochMilli(albumentry.getLastModified().getTime()));
         }
         return lastmodified;
-    }
-
-    private String quoteStringButNotNull(String string) {
-        if (string != null) {
-            StringBuilder builder = new StringBuilder(string.length() + 10);
-            builder.append("'");
-            builder.append(string.replace("'", "''"));
-            builder.append("'");
-            return builder.toString();
-        }
-        return string;
     }
 
     private void adjustSortValuesAfterEntryIsRemoved(Connection connection, int parentOfRemovedEntry, int sortOfRemovedEntry) throws SQLException {
