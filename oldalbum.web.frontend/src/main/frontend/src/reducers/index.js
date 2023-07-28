@@ -27,6 +27,7 @@ import errors from './errorsReducer';
 import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusReducer';
 import loggedIn from './loggedInReducer';
 import username from './usernameReducer';
+import sortingStatus from './sortingStatusReducer';
 import logstatusMessage from './logstatusMessageReducer';
 import showEditControls from './showEditControlsReducer';
 import editMode from './editModeReducer';
@@ -64,6 +65,7 @@ export default (routerReducer) => combineReducers({
     haveReceivedInitialLoginStatus,
     loggedIn,
     username,
+    sortingStatus,
     logstatusMessage,
     showEditControls,
     editMode,
