@@ -44,6 +44,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2023-07-30 Sun 14:50> |  1.9.15 | Use jersey 2.40 and jackson 2.15.2                                                                             |
 | <2023-07-14 Fri 14:46> |  1.9.14 | Mistaken unneccessary release for Java 17                                                                      |
 | <2023-07-08 Sat 23:53> |  1.9.13 | Use java 17                                                                                                    |
 | <2023-07-02 Sun 20:55> |  1.9.12 | Use liquibase 4.23.0                                                                                           |
