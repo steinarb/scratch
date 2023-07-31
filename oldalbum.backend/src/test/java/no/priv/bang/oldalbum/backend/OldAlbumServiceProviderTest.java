@@ -576,15 +576,19 @@ class OldAlbumServiceProviderTest {
         // Find the first and second entries of the "vfr" album
         AlbumEntry originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(1, originalFirstEntry.getSort());
+        var originalFirstEntryLastModifiedDate = originalFirstEntry.getLastModified();
         AlbumEntry secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
         assertEquals(2, secondEntry.getSort());
+        var originalSecondEntryLastModifiedDate = secondEntry.getLastModified();
 
         // Move from second to first
         allroutes = provider.moveEntryUp(secondEntry);
         secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
         assertEquals(1, secondEntry.getSort());
+        assertEquals(originalFirstEntryLastModifiedDate, secondEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
         originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(2, originalFirstEntry.getSort());
+        assertEquals(originalSecondEntryLastModifiedDate, originalFirstEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
 
         // Corner case test: Trying to move up from the first entry of the album
         // This should have no effect (and should not crash)
@@ -625,15 +629,19 @@ class OldAlbumServiceProviderTest {
         int numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
         AlbumEntry originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum, originalLastEntry.getSort());
+        var originalLastEntryLastModifiedDate = originalLastEntry.getLastModified();
         AlbumEntry secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum - 1, secondToLastEntry.getSort());
+        var secondToLastEntryLastModifiedDate = secondToLastEntry.getLastModified();
 
         // Move from second to last position to last position
         allroutes = provider.moveEntryDown(secondToLastEntry);
         secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.getSort());
+        assertEquals(originalLastEntryLastModifiedDate, secondToLastEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
         originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.getSort());
+        assertEquals(secondToLastEntryLastModifiedDate, originalLastEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
 
         // Corner case test: Trying to move down from the last entry of the album
         // This should have no effect (and should not crash)
