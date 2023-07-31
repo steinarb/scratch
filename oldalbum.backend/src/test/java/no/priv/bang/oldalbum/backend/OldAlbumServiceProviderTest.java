@@ -676,13 +676,13 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
         List<AlbumEntry> allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtomoveentriesin/").album(true).build());
-        var albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/")).findFirst().get();
-        var albumid = albumToSort.getId();
-        provider.addEntry(AlbumEntry.with().parent(albumid).path("/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
-        provider.addEntry(AlbumEntry.with().parent(albumid).path("/a").album(false).sort(2).lastModified(parseDate("1967-04-10T11:27:31Z")).build());
-        provider.addEntry(AlbumEntry.with().parent(albumid).path("/e").album(true).sort(3).build());
-        provider.addEntry(AlbumEntry.with().parent(albumid).path("/d").album(false).sort(4).lastModified(parseDate("2022-12-24T17:10:11Z")).build());
-        allroutes = provider.addEntry(AlbumEntry.with().parent(albumid).path("/c").album(false).sort(5).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
+        var albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/")).findFirst().get();
+        var albumid = albumToMoveEntriesIn.getId();
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/a").album(false).sort(2).lastModified(parseDate("1967-04-10T11:27:31Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/e").album(true).sort(3).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/d").album(false).sort(4).lastModified(parseDate("2022-12-24T17:10:11Z")).build());
+        allroutes = provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/c").album(false).sort(5).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
 
         // Verify that moving up over an image swaps the lastModifiedTime timestamp
         var c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
@@ -699,7 +699,7 @@ class OldAlbumServiceProviderTest {
         c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
         originalCLastModifiedDate = c.getLastModified();
         allroutes = provider.moveEntryUp(c);
-        cAfterMoveUp = albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        cAfterMoveUp = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
         assertEquals(originalCLastModifiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate not to be swapped when moving up over an album");
 
         // Verify that moving down over an image swaps the lastModifiedTime timestamp
@@ -717,7 +717,7 @@ class OldAlbumServiceProviderTest {
         b = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
         originalBLastModfiedDate = b.getLastModified();
         allroutes = provider.moveEntryDown(b);
-        bAfterMoveDown = albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
+        bAfterMoveDown = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
         assertEquals(originalBLastModfiedDate, bAfterMoveDown.getLastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
     }
 
