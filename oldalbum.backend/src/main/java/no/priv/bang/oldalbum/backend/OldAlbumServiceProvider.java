@@ -273,12 +273,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         try(Connection connection = datasource.getConnection()) {
             int numberOfEntriesInAlbum = findNumberOfEntriesInAlbum(connection, movedEntry.getParent());
             if (sort < numberOfEntriesInAlbum) {
-                int nextEntryId = findNextEntryInTheSameAlbum(connection, movedEntry, sort);
-                swapSortValues(connection, entryId, sort + 1, nextEntryId, sort);
+                findNextEntryInTheSameAlbum(connection, movedEntry, sort)
+                    .ifPresent(nextEntry -> swapSortAndModifiedTimes(connection, movedEntry, nextEntry));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.error(String.format("Failed to move album entry with id \"%d\"", entryId), e);
         }
+
         return fetchAllRoutes(null, true); // All edits are logged in
     }
 
@@ -355,18 +356,19 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return previousEntryId;
     }
 
-    int findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
-        int nextEntryId = 0;
+    Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
+        Optional<AlbumEntry> nextEntryId = Optional.empty();
         String findPreviousEntrySql = "select albumentry_id from albumentries where sort=? and parent=?";
         try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort + 1);
             statement.setInt(2, movedEntry.getParent());
             try(ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    nextEntryId = result.getInt(1);
+                    nextEntryId = Optional.of(unpackAlbumEntry(result));
                 }
             }
         }
+
         return nextEntryId;
     }
 
@@ -596,17 +598,26 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    private void swapSortValues(Connection connection, int entryId, int newIndex, int previousEntryId, int newIndexOfPreviousEntry) throws SQLException {
+    private void swapSortAndModifiedTimes(Connection connection, AlbumEntry movedEntry, AlbumEntry neighbourEntry) {
+        swapSortValues(connection, movedEntry.getId(), neighbourEntry.getSort(), neighbourEntry.getId(), movedEntry.getSort());
+    }
+
+    private void swapSortValues(Connection connection, int entryId, int newIndex, int neighbourEntryId, int newIndexOfNeighbourEntry) {
         String sql = "update albumentries set sort=? where albumentry_id=?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, newIndex);
             statement.setInt(2, entryId);
             statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new OldAlbumException(String.format("Failed to update sort value of moved entry %d", entryId), e);
         }
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, newIndexOfPreviousEntry);
-            statement.setInt(2, previousEntryId);
+
+        try(var statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, newIndexOfNeighbourEntry);
+            statement.setInt(2, neighbourEntryId);
             statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new OldAlbumException(String.format("Failed to update sort value of neighbouring entry %d", neighbourEntryId), e);
         }
     }
 
