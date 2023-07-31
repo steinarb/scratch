@@ -669,6 +669,59 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testThatDatesAreSwappedWhenMovinAlbumEntriesUpAndDownButNotWhenSwappingWithAlbums() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+        List<AlbumEntry> allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtomoveentriesin/").album(true).build());
+        var albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/")).findFirst().get();
+        var albumid = albumToSort.getId();
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/a").album(false).sort(2).lastModified(parseDate("1967-04-10T11:27:31Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/e").album(true).sort(3).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/d").album(false).sort(4).lastModified(parseDate("2022-12-24T17:10:11Z")).build());
+        allroutes = provider.addEntry(AlbumEntry.with().parent(albumid).path("/c").album(false).sort(5).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
+
+        // Verify that moving up over an image swaps the lastModifiedTime timestamp
+        var c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        var originalCLastModifiedDate = c.getLastModified();
+        var d = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/d")).findFirst().get();
+        var originalDLastModfiedDate = d.getLastModified();
+        allroutes = provider.moveEntryUp(c);
+        var cAfterMoveUp = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalDLastModfiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
+        var dAfterMoveUp = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/d")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, dAfterMoveUp.getLastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
+
+        // Verify that moving up over an album keeps the lastModifiedTime timestamp
+        c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        originalCLastModifiedDate = c.getLastModified();
+        allroutes = provider.moveEntryUp(c);
+        cAfterMoveUp = albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate not to be swapped when moving up over an album");
+
+        // Verify that moving down over an image swaps the lastModifiedTime timestamp
+        var b = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
+        var originalBLastModfiedDate = b.getLastModified();
+        c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        originalCLastModifiedDate = c.getLastModified();
+        allroutes = provider.moveEntryDown(b);
+        var bAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, bAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+        var cAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalBLastModfiedDate, cAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+
+        // Verify that moving down over an album keeps the lastModifiedTime timestamp
+        b = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
+        originalBLastModfiedDate = b.getLastModified();
+        allroutes = provider.moveEntryDown(b);
+        bAfterMoveDown = albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
+        assertEquals(originalBLastModfiedDate, bAfterMoveDown.getLastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
+    }
+
+    @Test
     void testAdjustSortValuesWhenMovingToDifferentAlbumNoExistingParent() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
