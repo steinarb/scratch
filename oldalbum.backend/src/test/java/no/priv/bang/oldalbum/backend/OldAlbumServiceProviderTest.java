@@ -576,15 +576,19 @@ class OldAlbumServiceProviderTest {
         // Find the first and second entries of the "vfr" album
         AlbumEntry originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(1, originalFirstEntry.getSort());
+        var originalFirstEntryLastModifiedDate = originalFirstEntry.getLastModified();
         AlbumEntry secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
         assertEquals(2, secondEntry.getSort());
+        var originalSecondEntryLastModifiedDate = secondEntry.getLastModified();
 
         // Move from second to first
         allroutes = provider.moveEntryUp(secondEntry);
         secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
         assertEquals(1, secondEntry.getSort());
+        assertEquals(originalFirstEntryLastModifiedDate, secondEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
         originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(2, originalFirstEntry.getSort());
+        assertEquals(originalSecondEntryLastModifiedDate, originalFirstEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
 
         // Corner case test: Trying to move up from the first entry of the album
         // This should have no effect (and should not crash)
@@ -625,15 +629,19 @@ class OldAlbumServiceProviderTest {
         int numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
         AlbumEntry originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum, originalLastEntry.getSort());
+        var originalLastEntryLastModifiedDate = originalLastEntry.getLastModified();
         AlbumEntry secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum - 1, secondToLastEntry.getSort());
+        var secondToLastEntryLastModifiedDate = secondToLastEntry.getLastModified();
 
         // Move from second to last position to last position
         allroutes = provider.moveEntryDown(secondToLastEntry);
         secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.getSort());
+        assertEquals(originalLastEntryLastModifiedDate, secondToLastEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
         originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.getSort());
+        assertEquals(secondToLastEntryLastModifiedDate, originalLastEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
 
         // Corner case test: Trying to move down from the last entry of the album
         // This should have no effect (and should not crash)
@@ -658,6 +666,59 @@ class OldAlbumServiceProviderTest {
         assertEquals(0, allroutes.size());
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
+    }
+
+    @Test
+    void testThatDatesAreSwappedWhenMovinAlbumEntriesUpAndDownButNotWhenSwappingWithAlbums() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+        List<AlbumEntry> allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtomoveentriesin/").album(true).build());
+        var albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/")).findFirst().get();
+        var albumid = albumToMoveEntriesIn.getId();
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/a").album(false).sort(2).lastModified(parseDate("1967-04-10T11:27:31Z")).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/e").album(true).sort(3).build());
+        provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/d").album(false).sort(4).lastModified(parseDate("2022-12-24T17:10:11Z")).build());
+        allroutes = provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/c").album(false).sort(5).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
+
+        // Verify that moving up over an image swaps the lastModifiedTime timestamp
+        var c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        var originalCLastModifiedDate = c.getLastModified();
+        var d = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/d")).findFirst().get();
+        var originalDLastModfiedDate = d.getLastModified();
+        allroutes = provider.moveEntryUp(c);
+        var cAfterMoveUp = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalDLastModfiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
+        var dAfterMoveUp = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/d")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, dAfterMoveUp.getLastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
+
+        // Verify that moving up over an album keeps the lastModifiedTime timestamp
+        c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        originalCLastModifiedDate = c.getLastModified();
+        allroutes = provider.moveEntryUp(c);
+        cAfterMoveUp = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate not to be swapped when moving up over an album");
+
+        // Verify that moving down over an image swaps the lastModifiedTime timestamp
+        var a = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        var originalALastModfiedDate = a.getLastModified();
+        c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        originalCLastModifiedDate = c.getLastModified();
+        allroutes = provider.moveEntryDown(a);
+        var aAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, aAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+        var cAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalALastModfiedDate, cAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+
+        // Verify that moving down over an album keeps the lastModifiedTime timestamp
+        a = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        originalALastModfiedDate = a.getLastModified();
+        allroutes = provider.moveEntryDown(a);
+        aAfterMoveDown = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        assertEquals(originalALastModfiedDate, aAfterMoveDown.getLastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
     }
 
     @Test
@@ -691,6 +752,83 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testSwapSortValuesFailOnFirst() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connection = mock(Connection.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortValues(connection, 0, 0, 0, 0));
+        assertThat(e.getMessage()).startsWith("Failed to update sort value of moved entry");
+    }
+
+    @Test
+    void testSwapSortValuesFailOnSecond() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connection = mock(Connection.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenReturn(1).thenThrow(SQLException.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortValues(connection, 0, 0, 0, 0));
+        assertThat(e.getMessage()).startsWith("Failed to update sort value of neighbouring entry");
+    }
+
+    @Test
+    void testSwapSortAndLastModifiedValuesFailOnFirst() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connection = mock(Connection.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenThrow(SQLException.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortAndLastModifiedValues(connection, 0, 0, new Date(), 0, 0, null));
+        assertThat(e.getMessage()).startsWith("Failed to update sort value of moved entry");
+    }
+
+    @Test
+    void testSwapSortAndLastModifiedValuesFailOnSecond() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connection = mock(Connection.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
+        when(statement.executeQuery()).thenReturn(results);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        when(statement.executeUpdate()).thenReturn(1).thenThrow(SQLException.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortAndLastModifiedValues(connection, 0, 0, new Date(), 0, 0, new Date()));
+        assertThat(e.getMessage()).startsWith("Failed to update sort value of neighbouring entry");
+    }
+
+    @Test
+    void testAtLeastOneEntryIsAlbum() {
+        var provider = new OldAlbumServiceProvider();
+        var picture1 = AlbumEntry.with().album(false).build();
+        var picture2 = AlbumEntry.with().album(false).build();
+        assertFalse(provider.atLeastOneEntryIsAlbum(picture1, picture2));
+        var album1 = AlbumEntry.with().album(true).build();
+        assertTrue(provider.atLeastOneEntryIsAlbum(picture1, album1));
+        assertTrue(provider.atLeastOneEntryIsAlbum(album1, picture1));
+        var album2 = AlbumEntry.with().album(true).build();
+        assertTrue(provider.atLeastOneEntryIsAlbum(album1, album2));
+    }
+
+    @Test
     void testFindNumberOfEntriesInAlbumEmptyResultSet() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
@@ -716,8 +854,8 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        int entryCount = provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
-        assertEquals(0, entryCount);
+        var previousEntry = provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
+        assertThat(previousEntry).isEmpty();
     }
 
     @Test
@@ -731,8 +869,8 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        int entryCount = provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
-        assertEquals(0, entryCount);
+        var nextEntry = provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
+        assertThat(nextEntry).isEmpty();
     }
 
     @Test
