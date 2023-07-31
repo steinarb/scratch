@@ -599,7 +599,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private void swapSortAndModifiedTimes(Connection connection, AlbumEntry movedEntry, AlbumEntry neighbourEntry) {
-        swapSortValues(connection, movedEntry.getId(), neighbourEntry.getSort(), neighbourEntry.getId(), movedEntry.getSort());
+        var sort = movedEntry.getSort();
+        swapSortValues(connection, movedEntry.getId(), sort + 1, neighbourEntry.getId(), sort);
     }
 
     private void swapSortValues(Connection connection, int entryId, int newIndex, int neighbourEntryId, int newIndexOfNeighbourEntry) {
