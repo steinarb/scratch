@@ -28,6 +28,8 @@ export default function Album(props) {
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const hash = useSelector(state => state.router.location.hash);
+    const showEditControls = useSelector(state => state.showEditControls);
+    const sortingStatus = useSelector(state => state.sortingStatus);
     const targetId = hash.substr(1);
     const dispatch = useDispatch();
     const title = pictureTitle(item);
@@ -85,6 +87,7 @@ export default function Album(props) {
                 <SortByDateButton className="mx-1 my-1" item={item} />
                 <BatchAddPictures className="" item={item} />
             </div>
+            {showEditControls && sortingStatus && <div className="alert alert-primary" role="alert">{sortingStatus}</div> }
             {item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             <div className="row" {...swipeHandlers}>
                 { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }

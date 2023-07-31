@@ -5,10 +5,10 @@ import {
     SORT_ALBUM_ENTRIES_BY_DATE_FAILURE,
 } from '../reduxactions';
 
-const localeReducer = createReducer("NEVER_SORTED", {
-    [SORT_ALBUM_ENTRIES_BY_DATE_REQUEST]: () => "SORTING_STARTED",
-    [SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE]: () => "SORTING_COMPLETE",
-    [SORT_ALBUM_ENTRIES_BY_DATE_FAILURE]: () => "SORTING_FAILED",
+const localeReducer = createReducer('', {
+    [SORT_ALBUM_ENTRIES_BY_DATE_REQUEST]: () => 'Sorting started',
+    [SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE]: () => 'Sorting complete',
+    [SORT_ALBUM_ENTRIES_BY_DATE_FAILURE]: () => 'Sorting failed',
 });
 
 export default localeReducer;
