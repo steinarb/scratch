@@ -295,16 +295,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     sqldumper.dumpResultSetAsSql("sb:saved_albumentries", results, outputStream);
                 }
             }
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
-                    while(results.next()) {
-                        int lastIdInDump = results.getInt(1);
-                        try(var writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-                            writer.write(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d;\n", lastIdInDump + 1));
-                        }
-                    }
-                }
-            }
+            addSqlToAdjustThePrimaryKeyGeneratorAfterImport(outputStream, connection);
         } catch (SQLException e) {
             logger.error("Failed to find the list of paths the app can be entered in", e);
         } catch (IOException e) {
@@ -312,6 +303,19 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
 
         return outputStream.toString(StandardCharsets.UTF_8);
+    }
+
+    private void addSqlToAdjustThePrimaryKeyGeneratorAfterImport(ByteArrayOutputStream outputStream, Connection connection) throws SQLException, IOException {
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
+                while(results.next()) {
+                    int lastIdInDump = results.getInt(1);
+                    try(var writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
+                        writer.write(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d;\n", lastIdInDump + 1));
+                    }
+                }
+            }
+        }
     }
 
     int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) throws SQLException {
