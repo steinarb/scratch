@@ -258,7 +258,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             int entryId = movedEntry.getId();
             try(Connection connection = datasource.getConnection()) {
                 findPreviousEntryInTheSameAlbum(connection, movedEntry, sort)
-                    .ifPresent(previousEntry -> swapSortAndModifiedTimes(connection, previousEntry, movedEntry));
+                    .ifPresent(previousEntry -> swapSortAndModifiedTimes(connection, movedEntry, previousEntry));
             } catch (SQLException e) {
                 logger.error(String.format("Failed to move album entry with id \"%d\"", entryId), e);
             }
