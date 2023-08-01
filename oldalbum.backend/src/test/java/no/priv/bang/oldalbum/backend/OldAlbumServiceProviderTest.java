@@ -777,8 +777,8 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        int entryCount = provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
-        assertEquals(0, entryCount);
+        var previousEntry = provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
+        assertThat(previousEntry).isEmpty();
     }
 
     @Test
