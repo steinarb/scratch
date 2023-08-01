@@ -599,18 +599,17 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private void swapSortAndModifiedTimes(Connection connection, AlbumEntry movedEntry, AlbumEntry neighbourEntry) {
-        var sort = movedEntry.getSort();
         boolean atLeastOneEntryIsAlbum = movedEntry.isAlbum() || neighbourEntry.isAlbum();
         if (atLeastOneEntryIsAlbum) {
-            swapSortValues(connection, movedEntry.getId(), sort + 1, neighbourEntry.getId(), sort);
+            swapSortValues(connection, movedEntry.getId(), neighbourEntry.getSort(), neighbourEntry.getId(), movedEntry.getSort());
         } else {
             swapSortAndLastModifiedValues(
                 connection,
                 movedEntry.getId(),
-                sort + 1,
+                neighbourEntry.getSort(),
                 neighbourEntry.getLastModified(),
                 neighbourEntry.getId(),
-                sort,
+                movedEntry.getSort(),
                 movedEntry.getLastModified());
         }
     }
