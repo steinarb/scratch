@@ -600,7 +600,19 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private void swapSortAndModifiedTimes(Connection connection, AlbumEntry movedEntry, AlbumEntry neighbourEntry) {
         var sort = movedEntry.getSort();
-        swapSortValues(connection, movedEntry.getId(), sort + 1, neighbourEntry.getId(), sort);
+        boolean atLeastOneEntryIsAlbum = movedEntry.isAlbum() || neighbourEntry.isAlbum();
+        if (atLeastOneEntryIsAlbum) {
+            swapSortValues(connection, movedEntry.getId(), sort + 1, neighbourEntry.getId(), sort);
+        } else {
+            swapSortAndLastModifiedValues(
+                connection,
+                movedEntry.getId(),
+                sort + 1,
+                neighbourEntry.getLastModified(),
+                neighbourEntry.getId(),
+                sort,
+                movedEntry.getLastModified());
+        }
     }
 
     private void swapSortValues(Connection connection, int entryId, int newIndex, int neighbourEntryId, int newIndexOfNeighbourEntry) {
@@ -616,6 +628,35 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, newIndexOfNeighbourEntry);
             statement.setInt(2, neighbourEntryId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new OldAlbumException(String.format("Failed to update sort value of neighbouring entry %d", neighbourEntryId), e);
+        }
+    }
+
+    private void swapSortAndLastModifiedValues(
+        Connection connection,
+        int entryId,
+        int newIndex,
+        Date newLastModified,
+        int neighbourEntryId,
+        int newIndexOfNeighbourEntry,
+        Date newLastModifiedOfNeighbourEntry)
+    {
+        String sql = "update albumentries set sort=?, lastmodified=? where albumentry_id=?";
+        try(var statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, newIndex);
+            statement.setTimestamp(2, Timestamp.from(newLastModified.toInstant()));
+            statement.setInt(3, entryId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new OldAlbumException(String.format("Failed to update sort value of moved entry %d", entryId), e);
+        }
+
+        try(var statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, newIndexOfNeighbourEntry);
+            statement.setTimestamp(2, Timestamp.from(newLastModifiedOfNeighbourEntry.toInstant()));
+            statement.setInt(3, neighbourEntryId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new OldAlbumException(String.format("Failed to update sort value of neighbouring entry %d", neighbourEntryId), e);
