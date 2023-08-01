@@ -17,6 +17,7 @@ package no.priv.bang.oldalbum.backend;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -285,8 +286,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public String dumpDatabaseSql(String username, boolean isLoggedn) {
-        var sqldumper = new ResultSetSqlDumper();
         var outputStream = new ByteArrayOutputStream();
+        dumpDatabaseSqlToOutputStream(isLoggedn, outputStream);
+
+        return outputStream.toString(StandardCharsets.UTF_8);
+    }
+
+    void dumpDatabaseSqlToOutputStream(boolean isLoggedn, OutputStream outputStream) {
+        var sqldumper = new ResultSetSqlDumper();
         String sql = "select * from albumentries where (not require_login or (require_login and require_login=?)) order by albumentry_id";
         try (Connection connection = datasource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -301,11 +308,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (IOException e) {
             logger.error("Failed to write the dumped liquibase changelist for the albumentries", e);
         }
-
-        return outputStream.toString(StandardCharsets.UTF_8);
     }
 
-    private void addSqlToAdjustThePrimaryKeyGeneratorAfterImport(ByteArrayOutputStream outputStream, Connection connection) throws SQLException, IOException {
+    private void addSqlToAdjustThePrimaryKeyGeneratorAfterImport(OutputStream outputStream, Connection connection) throws SQLException, IOException {
         try (Statement statement = connection.createStatement()) {
             try (ResultSet results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
                 while(results.next()) {

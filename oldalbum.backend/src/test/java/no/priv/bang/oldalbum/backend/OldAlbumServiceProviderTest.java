@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1033,6 +1034,19 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
 
         provider.dumpDatabaseSql(null, false);
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testDumpDatabaseSqlToOutputStreamWithIOError() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        var outputstream = mock(OutputStream.class);
+        doThrow(IOException.class).when(outputstream).close();
+
+        provider.dumpDatabaseSqlToOutputStream(false, outputstream);
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
