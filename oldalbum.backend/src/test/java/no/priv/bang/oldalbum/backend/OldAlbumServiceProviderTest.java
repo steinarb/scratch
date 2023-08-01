@@ -703,22 +703,22 @@ class OldAlbumServiceProviderTest {
         assertEquals(originalCLastModifiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate not to be swapped when moving up over an album");
 
         // Verify that moving down over an image swaps the lastModifiedTime timestamp
-        var b = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
-        var originalBLastModfiedDate = b.getLastModified();
+        var a = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        var originalALastModfiedDate = a.getLastModified();
         c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
         originalCLastModifiedDate = c.getLastModified();
-        allroutes = provider.moveEntryDown(b);
-        var bAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
-        assertEquals(originalCLastModifiedDate, bAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+        allroutes = provider.moveEntryDown(a);
+        var aAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, aAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
         var cAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
-        assertEquals(originalBLastModfiedDate, cAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+        assertEquals(originalALastModfiedDate, cAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
 
         // Verify that moving down over an album keeps the lastModifiedTime timestamp
-        b = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
-        originalBLastModfiedDate = b.getLastModified();
-        allroutes = provider.moveEntryDown(b);
-        bAfterMoveDown = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/b")).findFirst().get();
-        assertEquals(originalBLastModfiedDate, bAfterMoveDown.getLastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
+        a = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        originalALastModfiedDate = a.getLastModified();
+        allroutes = provider.moveEntryDown(a);
+        aAfterMoveDown = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
+        assertEquals(originalALastModfiedDate, aAfterMoveDown.getLastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
     }
 
     @Test
