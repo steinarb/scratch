@@ -1020,6 +1020,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDumpDatabaseSqlWithSqlError() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var statement = mock(PreparedStatement.class);
+        when(statement.executeQuery()).thenThrow(SQLException.class);
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        var datasource = mock(DataSource.class);
+        when(datasource.getConnection()).thenReturn(connection);
+        provider.setDataSource(datasource);
+
+        provider.dumpDatabaseSql(null, false);
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
     void testBatchAddPictures() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var database = createEmptyBase("emptyoldalbum3");
