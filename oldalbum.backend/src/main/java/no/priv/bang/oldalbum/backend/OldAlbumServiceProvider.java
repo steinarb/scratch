@@ -636,15 +636,15 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     private void swapSortAndLastModifiedValues(
         Connection connection,
         int entryId,
-        int newIndex,
+        int newSort,
         Date newLastModified,
         int neighbourEntryId,
-        int newIndexOfNeighbourEntry,
+        int newSortOfNeighbourEntry,
         Date newLastModifiedOfNeighbourEntry)
     {
         String sql = "update albumentries set sort=?, lastmodified=? where albumentry_id=?";
         try(var statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, newIndex);
+            statement.setInt(1, newSort);
             statement.setTimestamp(2, Timestamp.from(newLastModified.toInstant()));
             statement.setInt(3, entryId);
             statement.executeUpdate();
@@ -653,7 +653,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
 
         try(var statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, newIndexOfNeighbourEntry);
+            statement.setInt(1, newSortOfNeighbourEntry);
             statement.setTimestamp(2, Timestamp.from(newLastModifiedOfNeighbourEntry.toInstant()));
             statement.setInt(3, neighbourEntryId);
             statement.executeUpdate();
