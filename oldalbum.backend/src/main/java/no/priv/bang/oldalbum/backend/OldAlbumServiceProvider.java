@@ -277,7 +277,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     .ifPresent(nextEntry -> swapSortAndModifiedTimes(connection, movedEntry, nextEntry));
             }
         } catch (Exception e) {
-            logger.error(String.format("Failed to move album entry with id \"%d\"", entryId), e);
+            logger.error("Failed to move album entry with id \"{}\"", entryId, e);
         }
 
         return fetchAllRoutes(null, true); // All edits are logged in
@@ -358,7 +358,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
         Optional<AlbumEntry> nextEntryId = Optional.empty();
-        String findPreviousEntrySql = "select albumentry_id from albumentries where sort=? and parent=?";
+        String findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
         try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort + 1);
             statement.setInt(2, movedEntry.getParent());
