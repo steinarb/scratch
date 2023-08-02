@@ -16,7 +16,6 @@
 package no.priv.bang.oldalbum.services.bean;
 
 import java.util.Date;
-
 import no.priv.bang.beans.immutable.Immutable;
 
 public class ImageMetadata extends Immutable { // NOSONAR Immutable handles added fields
@@ -25,6 +24,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
     private Date lastModified;
     private String contentType;
     private int contentLength;
+    public String comment;
 
     private ImageMetadata() {}
 
@@ -44,6 +44,10 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         return contentLength;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
     public static ImageMetadataBuilder with() {
         return new ImageMetadataBuilder();
     }
@@ -53,6 +57,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         private Date lastModified;
         private String contentType;
         private int contentLength;
+        private String comment;
 
         private ImageMetadataBuilder() {}
 
@@ -62,6 +67,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
             imageMetadata.lastModified = this.lastModified;
             imageMetadata.contentType = this.contentType;
             imageMetadata.contentLength = this.contentLength;
+            imageMetadata.comment = this.comment;
             return imageMetadata;
         }
 
@@ -82,6 +88,11 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
 
         public ImageMetadataBuilder contentLength(int contentLength) {
             this.contentLength = contentLength;
+            return this;
+        }
+
+        public ImageMetadataBuilder comment(String comment) {
+            this.comment = comment;
             return this;
         }
     }
