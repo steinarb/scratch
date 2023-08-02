@@ -58,7 +58,6 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mockrunner.mock.jdbc.MockConnection;
-
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -1062,12 +1061,13 @@ class OldAlbumServiceProviderTest {
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
 
-        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         assertEquals(200, metadata.getStatus());
         assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
         assertEquals("image/jpeg", metadata.getContentType());
         assertThat(metadata.getContentLength()).isPositive();
+        assertThat(metadata.getComment()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
     }
 
     @Test
@@ -1094,7 +1094,7 @@ class OldAlbumServiceProviderTest {
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         assertNull(metadata);
         assertThat(logservice.getLogmessages()).isNotEmpty();
-        assertThat(logservice.getLogmessages().get(0)).contains("Error when reading metadata");
+        assertThat(logservice.getLogmessages().get(0)).contains("Error when reading image metadata");
     }
 
     @Test
@@ -1230,9 +1230,10 @@ class OldAlbumServiceProviderTest {
         var connectionFactory = mock(HttpConnectionFactory.class);
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
-        when(connection.getInputStream())
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_index.html"));
+        var connectionStubbing = when(connection.getInputStream());
+        for (int i=0; i<114; ++i) { // Need >113 streams, doesn't matter what they actually are except for 0 and 113
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        }
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
@@ -1283,9 +1284,10 @@ class OldAlbumServiceProviderTest {
         var connectionFactory = mock(HttpConnectionFactory.class);
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
-        when(connection.getInputStream())
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        var connectionStubbing = when(connection.getInputStream());
+        for (int i=0; i<114; ++i) { // Need >113 streams, doesn't matter what they actually are except for 0 and 113
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        }
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
