@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
@@ -29,16 +30,19 @@ class ImageMetadataTest {
         Date lastModified = new Date();
         String contentType = "image/jpeg";
         int contentLength = 128186;
+        var comment = "This is a comment";
         ImageMetadata bean = ImageMetadata.with()
             .status(status)
             .lastModified(lastModified)
             .contentType(contentType)
             .contentLength(contentLength)
+            .comment(comment)
             .build();
         assertEquals(status, bean.getStatus());
         assertEquals(lastModified, bean.getLastModified());
         assertEquals(contentType, bean.getContentType());
         assertEquals(contentLength, bean.getContentLength());
+        assertThat(bean.getComment()).isEqualTo(comment);
     }
 
     @Test

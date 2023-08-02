@@ -45,14 +45,19 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.ImageIO;
+import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
 import org.jsoup.Jsoup;
@@ -63,6 +68,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
+import org.w3c.dom.NodeList;
 
 import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
 import no.priv.bang.oldalbum.services.OldAlbumException;
@@ -536,13 +542,31 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     public ImageMetadata readMetadata(String imageUrl) {
         if (imageUrl != null && !imageUrl.isEmpty()) {
             try {
-                HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
+                String comment = null;
+                var connection = getConnectionFactory().connect(imageUrl);
                 connection.setRequestMethod("GET");
+                try(var input = ImageIO.createImageInputStream(connection.getInputStream())) {
+                    var readers = ImageIO.getImageReaders(input);
+                    if (readers.hasNext()) {
+                        var reader = readers.next();
+                        reader.setInput(input, true);
+                        var metadata = reader.getImageMetadata(0);
+                        comment = StreamSupport.stream(iterable(metadata.getAsTree("javax_imageio_1.0").getChildNodes()).spliterator(), false)
+                            .filter(n -> "Text".equals(n.getNodeName()))
+                            .findFirst()
+                            .flatMap(n -> StreamSupport.stream(iterable(n.getChildNodes()).spliterator(), false).findFirst())
+                            .map(n -> n.getAttribute("value")).orElse(null);
+                    }
+                } catch (IOException e) {
+                    logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
+                }
+
                 return ImageMetadata.with()
                     .status(connection.getResponseCode())
                     .lastModified(new Date(connection.getHeaderFieldDate("Last-Modified", 0)))
                     .contentType(connection.getContentType())
                     .contentLength(getAndParseContentLengthHeader(connection))
+                    .comment(comment)
                     .build();
             } catch (IOException e) {
                 logger.warn(String.format("Error when reading metadata for %s",  imageUrl), e);
@@ -551,6 +575,24 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return null;
     }
 
+    public static Iterable<IIOMetadataNode> iterable(final NodeList nodeList) {
+        return () -> new Iterator<IIOMetadataNode>() {
+
+                private int index = 0;
+
+                @Override
+                public boolean hasNext() {
+                    return index < nodeList.getLength();
+                }
+
+                @Override
+                public IIOMetadataNode next() {
+                    if (!hasNext())
+                        throw new NoSuchElementException();
+                    return (IIOMetadataNode) nodeList.item(index++);
+                }
+            };
+    }
     @Override
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         Document document = loadAndParseIndexHtml(request);
@@ -637,6 +679,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var lastModified = findLastModifiedDate(metadata, importYear);
         var contenttype = metadata != null ? metadata.getContentType() : null;
         var contentlength = metadata != null ? metadata.getContentLength() : 0;
+        var description = metadata != null ? metadata.getComment() : null;
         return AlbumEntry.with()
             .album(false)
             .parent(parent.getId())
@@ -647,6 +690,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .lastModified(lastModified)
             .contentType(contenttype)
             .contentLength(contentlength)
+            .description(description)
             .requireLogin(parent.isRequireLogin())
             .sort(sort)
             .build();
