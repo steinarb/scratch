@@ -47,6 +47,7 @@
 
     <properties>
         <open-iconic.version>1.1.1</open-iconic.version>
+        <twelvemonkeys.version>3.9.4</twelvemonkeys.version>
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
             **/OldAlbumProductionDatabase.java,
@@ -124,6 +125,13 @@
                 <groupId>no.priv.bang.authservice</groupId>
                 <artifactId>authservice-bom</artifactId>
                 <version>${authservice.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.bom</groupId>
+                <artifactId>bom</artifactId>
+                <version>${twelvemonkeys.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
