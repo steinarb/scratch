@@ -421,7 +421,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    private File downloadImageUrlToTempFile(AlbumEntry albumEntry) {
+    File downloadImageUrlToTempFile(AlbumEntry albumEntry) {
         var imageUrl = albumEntry.getImageUrl();
         if (imageUrl == null || imageUrl.isEmpty()) {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d, imageUrl is missing", albumEntry.getId()));
@@ -430,8 +430,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var fileName = findFileNamePartOfUrl(imageUrl);
         var tempfile = tempDir.resolve(fileName).toFile();
-        try {
-            var outputStream = new FileOutputStream(tempfile);
+        try (var outputStream = new FileOutputStream(tempfile)){
             HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
             connection.setRequestMethod("GET");
             try(var inputStream = connection.getInputStream()) {

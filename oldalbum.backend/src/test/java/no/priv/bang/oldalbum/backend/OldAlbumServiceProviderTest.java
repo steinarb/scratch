@@ -891,14 +891,71 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testDownloadAlbumEntryOnExistingImage() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
         var downloadFile = provider.downloadAlbumEntry(9);
         assertNotNull(downloadFile);
+    }
+
+    @Test
+    void testFindAlbumEntryFromIdWithNoMatchFound() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var results = mock(ResultSet.class);
+        var statement = mock(PreparedStatement.class);
+        when(statement.executeQuery()).thenReturn(results);
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        var dataSource = mock(DataSource.class);
+        when(dataSource.getConnection()).thenReturn(connection);
+        provider.setDataSource(dataSource);
+        provider.activate(Collections.emptyMap());
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.findAlbumEntryFromId(9));
+        assertThat(e.getMessage()).startsWith("Unable to find album entry matching id").endsWith("in database");
+    }
+
+    @Test
+    void testFindAlbumEntryFromIdWithDatabaseError() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var dataSource = mock(DataSource.class);
+        when(dataSource.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(dataSource);
+        provider.activate(Collections.emptyMap());
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.findAlbumEntryFromId(9));
+        assertThat(e.getMessage()).startsWith("Unable to load album entry matching id").endsWith("from database");
+    }
+
+    @Test
+    void testdownloadImageUrlToTempFileWithNullImageUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
+    }
+
+    @Test
+    void testdownloadImageUrlToTempFileWithEmptyImageUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().imageUrl("").build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
+    }
+
+    @Test
+    void testdownloadImageUrlToTempFileWithWrongImageUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").contains("from url");
     }
 
     @Test
