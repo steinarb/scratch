@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.backend;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -391,6 +392,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             }
         }
+        return null;
+    }
+
+    @Override
+    public File downloadAlbumEntry(int albumEntryId) {
+        // TODO Auto-generated method stub
         return null;
     }
 

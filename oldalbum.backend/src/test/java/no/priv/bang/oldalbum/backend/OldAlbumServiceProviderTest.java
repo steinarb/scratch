@@ -890,6 +890,18 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDownloadAlbumEntryOnExistingImage() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+
+        var downloadFile = provider.downloadAlbumEntry(9);
+        assertNotNull(downloadFile);
+    }
+
+    @Test
     void testReadImageMetadata() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
