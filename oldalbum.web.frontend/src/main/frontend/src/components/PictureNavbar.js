@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import Locale from './Locale';
 import EditModeButton from './EditModeButton';
 import CopyLinkButton from './CopyLinkButton';
+import DownloadButton from './DownloadButton';
 import LoginLogoutButton from './LoginLogoutButton';
 
 export default function PictureNavbar(props) {
@@ -28,6 +29,7 @@ export default function PictureNavbar(props) {
                     <div className="navbar-nav">
                         <Locale className="nav-item" />
                         <CopyLinkButton className="nav-item" />
+                        <DownloadButton className="nav-item" item={item} />
                         <EditModeButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>
                     </div>
