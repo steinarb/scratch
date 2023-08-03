@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,19 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.ImageRequest;
@@ -33,12 +42,36 @@ public class ImageResource {
     @Inject
     OldAlbumService oldalbum;
 
+    private Logger logger;
+
+    @Inject
+    public void setLogservice(LogService logservice) {
+        logger = logservice.getLogger(ImageResource.class);
+    }
+
     @POST
     @Path("metadata")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public ImageMetadata getMetadata(ImageRequest imageRequest) {
         return oldalbum.readMetadata(imageRequest.getUrl());
+    }
+
+    @GET
+    @Path("download/{albumEntryId}")
+    public Response downloadAlbumEntry(@PathParam("albumEntryId") int albumEntryId) {
+        try {
+            var file = oldalbum.downloadAlbumEntry(albumEntryId);
+            return Response.ok(file)
+                .header("Content-Disposition", "attachment; filename=" + file.getName())
+                .build();
+        } catch (OldAlbumException e) {
+            logger.error("Failed to download album entry with id {}", albumEntryId, e);
+            return Response.status(Status.NOT_FOUND)
+                .entity("FILE NOT FOUND! See log for details!")
+                .type(MediaType.TEXT_PLAIN_TYPE)
+                .build();
+        }
     }
 
 }

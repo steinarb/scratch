@@ -16,12 +16,15 @@
 package no.priv.bang.oldalbum.backend;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -392,6 +395,57 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
         }
         return null;
+    }
+
+    @Override
+    public File downloadAlbumEntry(int albumEntryId) {
+        var albumEntry = findAlbumEntryFromId(albumEntryId);
+        return downloadImageUrlToTempFile(albumEntry);
+    }
+
+    AlbumEntry findAlbumEntryFromId(int albumEntryId) {
+        String sql = "select * from albumentries where albumentry_id=?";
+        try (Connection connection = datasource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, albumEntryId);
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        return unpackAlbumEntry(results);
+                    }
+
+                    throw new OldAlbumException(String.format("Unable to find album entry matching id=%d in database", albumEntryId));
+                }
+            }
+        } catch (SQLException e) {
+            throw new OldAlbumException(String.format("Unable to load album entry matching id=%d from database", albumEntryId), e);
+        }
+    }
+
+    File downloadImageUrlToTempFile(AlbumEntry albumEntry) {
+        var imageUrl = albumEntry.getImageUrl();
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d, imageUrl is missing", albumEntry.getId()));
+        }
+
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
+        var fileName = findFileNamePartOfUrl(imageUrl);
+        var tempfile = tempDir.resolve(fileName).toFile();
+        try (var outputStream = new FileOutputStream(tempfile)){
+            HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
+            connection.setRequestMethod("GET");
+            try(var inputStream = connection.getInputStream()) {
+                inputStream.transferTo(outputStream);
+            }
+
+            return tempfile;
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
+        }
+    }
+
+    String findFileNamePartOfUrl(String imageUrl) {
+        var urlComponents = imageUrl.split("/");
+        return urlComponents[urlComponents.length - 1];
     }
 
     public ImageMetadata readMetadata(String imageUrl) {

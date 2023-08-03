@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.services;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,6 +46,8 @@ public interface OldAlbumService {
     List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry);
 
     String dumpDatabaseSql(String username, boolean requireLogin);
+
+    File downloadAlbumEntry(int albumEntryId);
 
     ImageMetadata readMetadata(String imageUrl);
 

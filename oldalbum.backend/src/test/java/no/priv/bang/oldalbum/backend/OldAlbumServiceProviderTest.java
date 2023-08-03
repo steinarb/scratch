@@ -50,6 +50,9 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import com.mockrunner.mock.jdbc.MockConnection;
+import com.mockrunner.mock.jdbc.MockDataSource;
+
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -887,6 +890,70 @@ class OldAlbumServiceProviderTest {
 
         AlbumEntry entry = provider.getEntry(connection, 0);
         assertNull(entry);
+    }
+
+    @Test
+    void testDownloadAlbumEntryOnExistingImage() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+
+        var downloadFile = provider.downloadAlbumEntry(9);
+        assertNotNull(downloadFile);
+    }
+
+    @Test
+    void testFindAlbumEntryFromIdWithNoMatchFound() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var dataSource = new MockDataSource();
+        dataSource.setupConnection(new MockConnection());
+        provider.setLogService(logservice);
+        provider.setDataSource(dataSource);
+        provider.activate(Collections.emptyMap());
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.findAlbumEntryFromId(9));
+        assertThat(e.getMessage()).startsWith("Unable to find album entry matching id").endsWith("in database");
+    }
+
+    @Test
+    void testFindAlbumEntryFromIdWithDatabaseError() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var dataSource = mock(DataSource.class);
+        when(dataSource.getConnection()).thenThrow(SQLException.class);
+        provider.setLogService(logservice);
+        provider.setDataSource(dataSource);
+        provider.activate(Collections.emptyMap());
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.findAlbumEntryFromId(9));
+        assertThat(e.getMessage()).startsWith("Unable to load album entry matching id").endsWith("from database");
+    }
+
+    @Test
+    void testDownloadImageUrlToTempFileWithNullImageUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
+    }
+
+    @Test
+    void testDownloadImageUrlToTempFileWithEmptyImageUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().imageUrl("").build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
+    }
+
+    @Test
+    void testDownloadImageUrlToTempFileWithWrongImageUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").contains("from url");
     }
 
     @Test

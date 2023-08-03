@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -61,6 +62,9 @@ class OldAlbumServiceTest {
         assertEquals(0, updatedRoutesOnEntryMovedDown.size());
         String dumpedSql = service.dumpDatabaseSql(null, false);
         assertNull(dumpedSql);
+        int albumEntryId = 3;
+        File fileToDownload = service.downloadAlbumEntry(albumEntryId);
+        assertNull(fileToDownload);
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         ImageMetadata metadata = service.readMetadata(imageUrl);
         assertNull(metadata);
