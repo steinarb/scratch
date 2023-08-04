@@ -9,7 +9,7 @@ export default function DownloadButton(props) {
     return (
         <a
             className={className}
-            href={item.imageUrl}
+            href={'/oldalbum/api/image/download/' + item.id.toString()}
             download={filename}
             target="_blank"
             rel="noopener noreferrer"
