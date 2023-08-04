@@ -384,6 +384,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return nextEntryId;
     }
 
+    // TODO unify with findAlbumEntryFromId()
     AlbumEntry getEntry(Connection connection, int id) throws SQLException {
         String sql = "select * from albumentries where albumentry_id=?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -403,6 +404,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return downloadImageUrlToTempFile(albumEntry);
     }
 
+    // TODO unify with getEntry()
     AlbumEntry findAlbumEntryFromId(int albumEntryId) {
         String sql = "select * from albumentries where albumentry_id=?";
         try (Connection connection = datasource.getConnection()) {
