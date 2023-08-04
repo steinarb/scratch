@@ -50,6 +50,9 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import com.mockrunner.mock.jdbc.MockConnection;
+import com.mockrunner.mock.jdbc.MockDataSource;
+
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -905,14 +908,9 @@ class OldAlbumServiceProviderTest {
     void testFindAlbumEntryFromIdWithNoMatchFound() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
+        var dataSource = new MockDataSource();
+        dataSource.setupConnection(new MockConnection());
         provider.setLogService(logservice);
-        var results = mock(ResultSet.class);
-        var statement = mock(PreparedStatement.class);
-        when(statement.executeQuery()).thenReturn(results);
-        var connection = mock(Connection.class);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
-        var dataSource = mock(DataSource.class);
-        when(dataSource.getConnection()).thenReturn(connection);
         provider.setDataSource(dataSource);
         provider.activate(Collections.emptyMap());
 
@@ -935,7 +933,7 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testdownloadImageUrlToTempFileWithNullImageUrl() {
+    void testDownloadImageUrlToTempFileWithNullImageUrl() {
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().build();
         var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
@@ -943,7 +941,7 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testdownloadImageUrlToTempFileWithEmptyImageUrl() {
+    void testDownloadImageUrlToTempFileWithEmptyImageUrl() {
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().imageUrl("").build();
         var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
@@ -951,7 +949,7 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testdownloadImageUrlToTempFileWithWrongImageUrl() {
+    void testDownloadImageUrlToTempFileWithWrongImageUrl() {
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
         var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
