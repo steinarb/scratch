@@ -989,6 +989,15 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDownloadImageAndSetMetadata() {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+    }
+
+    @Test
     void testDownloadImageUrlToTempFileWithWrongImageUrl() {
         var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
