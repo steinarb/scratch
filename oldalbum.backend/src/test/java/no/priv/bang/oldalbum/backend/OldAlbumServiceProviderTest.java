@@ -922,9 +922,9 @@ class OldAlbumServiceProviderTest {
     void testFindAlbumEntryFromIdWithDatabaseError() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
-        provider.setLogService(logservice);
         var dataSource = mock(DataSource.class);
         when(dataSource.getConnection()).thenThrow(SQLException.class);
+        provider.setLogService(logservice);
         provider.setDataSource(dataSource);
         provider.activate(Collections.emptyMap());
 

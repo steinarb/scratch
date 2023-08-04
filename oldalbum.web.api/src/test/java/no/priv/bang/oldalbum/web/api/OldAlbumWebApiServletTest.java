@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.web.api;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static javax.ws.rs.core.MediaType.*;
@@ -41,9 +42,13 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
+
+import org.assertj.core.util.Files;
 import org.glassfish.jersey.server.ServerProperties;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.osgi.service.log.LogService;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -53,6 +58,7 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletOutputStream;
 
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
@@ -239,6 +245,46 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
         AlbumEntry updatedAlbum = routes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertThat(albumToMove.getSort()).isLessThan(updatedAlbum.getSort());
+    }
+
+    @Test
+    void testDownloadImage() throws Exception {
+        int albumEntryId = 9;
+        var tempfile = Files.newTemporaryFile();
+        var backend = mock(OldAlbumService.class);
+        when(backend.downloadAlbumEntry(anyInt())).thenReturn(tempfile);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, logservice, useradmin);
+        var request = buildGetUrl("/image/download/" + albumEntryId);
+        var response = new MockHttpServletResponse();
+
+        servlet.service(request, response);
+
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, response.getContentType());
+        var argumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(backend).downloadAlbumEntry(argumentCaptor.capture());
+        assertEquals(albumEntryId, argumentCaptor.getValue());
+    }
+
+    @Test
+    void testDownloadImageWhenExceptionIsThrown() throws Exception {
+        int albumEntryId = 9;
+        var backend = mock(OldAlbumService.class);
+        when(backend.downloadAlbumEntry(anyInt())).thenThrow(OldAlbumException.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, logservice, useradmin);
+        var request = buildGetUrl("/image/download/" + albumEntryId);
+        var response = new MockHttpServletResponse();
+
+        var originalNumberOfLogmessages = logservice.getLogmessages().size();
+        servlet.service(request, response);
+
+        assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+        assertEquals(MediaType.TEXT_PLAIN, response.getContentType());
+        assertThat(logservice.getLogmessages()).hasSizeGreaterThan(originalNumberOfLogmessages);
     }
 
     @Test
