@@ -9,13 +9,13 @@ export default function DownloadButton(props) {
 
     return (
         <a
-            className={className}
+            className={className + ' alert alert-primary'}
             href={basename + '/api/image/download/' + item.id.toString()}
             download={filename}
             target="_blank"
             rel="noopener noreferrer"
         >
-            <button>{text.downloadpicture}</button>
+            {text.downloadpicture}
         </a>
     );
 }
