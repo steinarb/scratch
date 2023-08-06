@@ -916,6 +916,18 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDownloadAlbumEntryWithEntryNotFoundInDatabase() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadAlbumEntry(999));
+        assertThat(e.getMessage()).startsWith("Unable to find album entry matching id=");;
+    }
+
+    @Test
     void testDownloadAlbumEntryOnExistingImage() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
