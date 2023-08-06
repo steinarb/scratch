@@ -51,7 +51,6 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mockrunner.mock.jdbc.MockConnection;
-import com.mockrunner.mock.jdbc.MockDataSource;
 
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
@@ -756,6 +755,16 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testAdjustSortValuesAfterEntryIsRemoved() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.adjustSortValuesAfterEntryIsRemoved(connection, 0, 0));
+        assertThat(e.getMessage()).startsWith("Failed to adjust sort values after removing album item in album with id=");
+    }
+
+    @Test
     void testSwapSortValuesFailOnFirst() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
@@ -833,15 +842,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testFindNumberOfEntriesInAlbumWithSqlExceptionThrown() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.findNumberOfEntriesInAlbum(connection, 0));
+        assertThat(e.getMessage()).startsWith("Failed to find number of entries in album with id=");
+    }
+
+    @Test
     void testFindNumberOfEntriesInAlbumEmptyResultSet() throws Exception {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
-        Connection connection = mock(Connection.class);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        ResultSet results = mock(ResultSet.class);
-        when(statement.executeQuery()).thenReturn(results);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        var connection = new MockConnection();
 
         int entryCount = provider.findNumberOfEntriesInAlbum(connection, 0);
         assertEquals(0, entryCount);
@@ -882,14 +899,20 @@ class OldAlbumServiceProviderTest {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
         provider.setLogService(logservice);
-        Connection connection = mock(Connection.class);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        ResultSet results = mock(ResultSet.class);
-        when(statement.executeQuery()).thenReturn(results);
-        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        var connection = new MockConnection();
 
-        AlbumEntry entry = provider.getEntry(connection, 0);
-        assertNull(entry);
+        var entry = provider.getEntry(connection, 0);
+        assertThat(entry).isEmpty();
+    }
+
+    @Test
+    void testGetEntryWithSqlExceptionThrown() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.getEntry(connection, 0));
+        assertThat(e.getMessage()).startsWith("Unable to load album entry matching id=");
     }
 
     @Test
@@ -902,34 +925,6 @@ class OldAlbumServiceProviderTest {
 
         var downloadFile = provider.downloadAlbumEntry(9);
         assertNotNull(downloadFile);
-    }
-
-    @Test
-    void testFindAlbumEntryFromIdWithNoMatchFound() throws Exception {
-        var provider = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var dataSource = new MockDataSource();
-        dataSource.setupConnection(new MockConnection());
-        provider.setLogService(logservice);
-        provider.setDataSource(dataSource);
-        provider.activate(Collections.emptyMap());
-
-        var e = assertThrows(OldAlbumException.class, () -> provider.findAlbumEntryFromId(9));
-        assertThat(e.getMessage()).startsWith("Unable to find album entry matching id").endsWith("in database");
-    }
-
-    @Test
-    void testFindAlbumEntryFromIdWithDatabaseError() throws Exception {
-        var provider = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var dataSource = mock(DataSource.class);
-        when(dataSource.getConnection()).thenThrow(SQLException.class);
-        provider.setLogService(logservice);
-        provider.setDataSource(dataSource);
-        provider.activate(Collections.emptyMap());
-
-        var e = assertThrows(OldAlbumException.class, () -> provider.findAlbumEntryFromId(9));
-        assertThat(e.getMessage()).startsWith("Unable to load album entry matching id").endsWith("from database");
     }
 
     @Test

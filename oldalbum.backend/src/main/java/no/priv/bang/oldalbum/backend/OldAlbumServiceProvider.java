@@ -327,19 +327,21 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) throws SQLException {
-        AlbumEntry entryBeforeUpdate = getEntry(connection, modifiedEntry.getId());
-        int sort = modifiedEntry.getSort();
-        int originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.getParent() : 0;
-        if (modifiedEntry.getParent() != originalParent) {
-            int originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.getSort() : 0;
-            adjustSortValuesAfterEntryIsRemoved(connection, originalParent, originalSort);
-            int destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.getParent());
-            sort = destinationChildCount + 1;
-        }
-        return sort;
+        int originalSortvalue = modifiedEntry.getSort();
+        return getEntry(connection, modifiedEntry.getId()).map(entryBeforeUpdate -> {
+                int originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.getParent() : 0;
+                if (modifiedEntry.getParent() == originalParent) {
+                    return originalSortvalue;
+                }
+
+                int originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.getSort() : 0;
+                adjustSortValuesAfterEntryIsRemoved(connection, originalParent, originalSort);
+                int destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.getParent());
+                return destinationChildCount + 1;
+            }).orElse(originalSortvalue);
     }
 
-    int findNumberOfEntriesInAlbum(Connection connection, int parentid) throws SQLException {
+    int findNumberOfEntriesInAlbum(Connection connection, int parentid) {
         int numberOfEntriesInAlbum = 0;
         String findPreviousEntrySql = "select count(albumentry_id) from albumentries where parent=?";
         try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
@@ -349,6 +351,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     numberOfEntriesInAlbum = result.getInt(1);
                 }
             }
+        } catch (SQLException e) {
+            var message = String.format("Failed to find number of entries in album with id=%d", parentid);
+            throw new OldAlbumException(message, e);
         }
         return numberOfEntriesInAlbum;
     }
@@ -384,43 +389,27 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return nextEntryId;
     }
 
-    // TODO unify with findAlbumEntryFromId()
-    AlbumEntry getEntry(Connection connection, int id) throws SQLException {
+    Optional<AlbumEntry> getEntry(Connection connection, int id) {
         String sql = "select * from albumentries where albumentry_id=?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try(ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    return unpackAlbumEntry(result);
+                    return Optional.of(unpackAlbumEntry(result));
                 }
             }
+        } catch (SQLException e) {
+            throw new OldAlbumException(String.format("Unable to load album entry matching id=%d from database", id), e);
         }
-        return null;
+
+        return Optional.empty();
     }
 
     @Override
     public File downloadAlbumEntry(int albumEntryId) {
-        var albumEntry = findAlbumEntryFromId(albumEntryId);
+        var albumEntry = getEntry(albumEntryId)
+            .orElseThrow(() -> new OldAlbumException(String.format("Unable to find album entry matching id=%d in database", albumEntryId)));
         return downloadImageUrlToTempFile(albumEntry);
-    }
-
-    // TODO unify with getEntry()
-    AlbumEntry findAlbumEntryFromId(int albumEntryId) {
-        String sql = "select * from albumentries where albumentry_id=?";
-        try (Connection connection = datasource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, albumEntryId);
-                try (ResultSet results = statement.executeQuery()) {
-                    while (results.next()) {
-                        return unpackAlbumEntry(results);
-                    }
-
-                    throw new OldAlbumException(String.format("Unable to find album entry matching id=%d in database", albumEntryId));
-                }
-            }
-        } catch (SQLException e) {
-            throw new OldAlbumException(String.format("Unable to load album entry matching id=%d from database", albumEntryId), e);
-        }
     }
 
     File downloadImageUrlToTempFile(AlbumEntry albumEntry) {
@@ -639,7 +628,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     Optional<AlbumEntry> getEntry(int id)  {
         try (var connection = datasource.getConnection()) {
-            return Optional.of(getEntry(connection, id));
+            return getEntry(connection, id);
         } catch (SQLException e) {
             logger.warn("Failed to find parent album for batch add of pictures", e);
             return Optional.empty();
@@ -654,12 +643,15 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return lastmodified;
     }
 
-    private void adjustSortValuesAfterEntryIsRemoved(Connection connection, int parentOfRemovedEntry, int sortOfRemovedEntry) throws SQLException {
+    void adjustSortValuesAfterEntryIsRemoved(Connection connection, int parentOfRemovedEntry, int sortOfRemovedEntry) {
         String updateSortSql = "update albumentries set sort=sort-1 where parent=? and sort > ?";
         try(PreparedStatement updateSortStatement = connection.prepareStatement(updateSortSql)) {
             updateSortStatement.setInt(1, parentOfRemovedEntry);
             updateSortStatement.setInt(2, sortOfRemovedEntry);
             updateSortStatement.executeUpdate();
+        } catch (SQLException e) {
+            var message = String.format("Failed to adjust sort values after removing album item in album with id=%d", parentOfRemovedEntry);
+            throw new OldAlbumException(message, e);
         }
     }
 
