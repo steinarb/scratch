@@ -326,7 +326,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) throws SQLException {
+    int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) {
         int originalSortvalue = modifiedEntry.getSort();
         return getEntry(connection, modifiedEntry.getId()).map(entryBeforeUpdate -> {
                 int originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.getParent() : 0;
