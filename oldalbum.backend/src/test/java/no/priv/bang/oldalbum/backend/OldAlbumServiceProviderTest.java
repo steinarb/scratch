@@ -807,8 +807,9 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenThrow(SQLException.class);
+        var date = new Date();
 
-        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortAndLastModifiedValues(connection, 0, 0, new Date(), 0, 0, null));
+        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortAndLastModifiedValues(connection, 0, 0, date, 0, 0, null));
         assertThat(e.getMessage()).startsWith("Failed to update sort value of moved entry");
     }
 
@@ -823,8 +824,10 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeUpdate()).thenReturn(1).thenThrow(SQLException.class);
+        var date1 = new Date();
+        var date2 = new Date();
 
-        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortAndLastModifiedValues(connection, 0, 0, new Date(), 0, 0, new Date()));
+        var e = assertThrows(OldAlbumException.class, () -> provider.swapSortAndLastModifiedValues(connection, 0, 0, date1, 0, 0, date2));
         assertThat(e.getMessage()).startsWith("Failed to update sort value of neighbouring entry");
     }
 
