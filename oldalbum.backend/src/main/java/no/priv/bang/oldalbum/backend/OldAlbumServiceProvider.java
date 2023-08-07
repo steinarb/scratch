@@ -319,7 +319,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 while(results.next()) {
                     int lastIdInDump = results.getInt(1);
                     try(var writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-                        writer.write(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d;\n", lastIdInDump + 1));
+                        writer.write(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d;%n", lastIdInDump + 1));
                     }
                 }
             }
