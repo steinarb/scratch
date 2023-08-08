@@ -6,6 +6,7 @@ export default function DownloadButton(props) {
     const basename = useSelector(state => state.router.basename);
     const text = useSelector(state => state.displayTexts);
     const filename = item.imageUrl.split('/').at(-1);
+    const buttonLabel = item.album ? text.downloadalbum : text.downloadpicture;
 
     return (
         <a
@@ -15,7 +16,7 @@ export default function DownloadButton(props) {
             target="_blank"
             rel="noopener noreferrer"
         >
-            {text.downloadpicture}
+            {buttonLabel}
         </a>
     );
 }

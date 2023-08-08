@@ -17,6 +17,8 @@ package no.priv.bang.oldalbum.backend;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -37,6 +40,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -45,6 +49,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import javax.sql.DataSource;
 
 import org.jsoup.Jsoup;
@@ -407,18 +414,101 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public File downloadAlbumEntry(int albumEntryId) {
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var albumEntry = getEntry(albumEntryId)
             .orElseThrow(() -> new OldAlbumException(String.format("Unable to find album entry matching id=%d in database", albumEntryId)));
-        return downloadImageUrlToTempFile(albumEntry);
+        if (albumEntry.isAlbum()) {
+            return downloardAlbumContentToStagingDirectoryAndCreateZipFile(albumEntry, tempDir);
+        } else {
+            return downloadImageUrlToTempFile(albumEntry, tempDir);
+        }
     }
 
-    File downloadImageUrlToTempFile(AlbumEntry albumEntry) {
+    private File downloardAlbumContentToStagingDirectoryAndCreateZipFile(AlbumEntry albumEntry, Path tempDir) {
+        var stagingDirectory = createAlbumZipFileStagingDirectory(albumEntry, tempDir);
+        copyAlbumContentsToStagingDirectory(albumEntry, stagingDirectory);
+        return createZipFileFromStagingDirectory(stagingDirectory);
+    }
+
+    File createZipFileFromStagingDirectory(Path stagingDirectory) {
+        var zipFileName = stagingDirectory.toString() + ".zip";
+        var zipFile = new File(zipFileName);
+        try(var zipOut = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            try(var files = Files.walk(stagingDirectory)) {
+                files
+                    .map(Path::toFile)
+                    .filter(File::isFile)
+                    .forEach(f -> addFileEntryToZipArchive(zipFileName, zipOut, f));
+            }
+        } catch (FileNotFoundException e) {
+            throw new OldAlbumException(String.format("Unable to create zip file for downloaded album: %s", zipFileName), e);
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Did not find files to include in zip file for downloaded album: %s", zipFileName), e);
+        }
+
+        return zipFile;
+    }
+
+    void addFileEntryToZipArchive(String zipFileName, ZipOutputStream zipArchive, File fileToAdd) {
+        try {
+            zipArchive.putNextEntry(new ZipEntry(fileToAdd.getName()));
+            try (var fis = new FileInputStream(fileToAdd)) {
+                byte[] bytes = new byte[1024];
+                int length;
+                while ((length = fis.read(bytes)) >= 0) {
+                    zipArchive.write(bytes, 0, length);
+                }
+            }
+            zipArchive.closeEntry();
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Unable to add item to zip file for downloaded album: %s", zipFileName), e);
+        }
+    }
+
+    Path createAlbumZipFileStagingDirectory(AlbumEntry albumEntry, Path tempDir) {
+        var path = Path.of(albumEntry.getPath());
+        var albumDirectoryName = path.getName(path.getNameCount()-1);
+        try {
+            var stagingDirectory = tempDir.resolve(albumDirectoryName);
+            deleteDirectoryAndContentsIfItExists(stagingDirectory);
+            return Files.createDirectory(stagingDirectory);
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Failed to create staging directory for album \"%s\"", albumDirectoryName), e);
+        }
+    }
+
+    boolean deleteDirectoryAndContentsIfItExists(Path albumDirectoryName) {
+        if (albumDirectoryName.toFile().exists()) {
+            deleteDirectoryAndContents(albumDirectoryName);
+            return true;
+        }
+
+        return false;
+    }
+
+    void deleteDirectoryAndContents(Path albumDirectoryName) {
+        try (var files = Files.walk(albumDirectoryName)){
+            files
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Failed to delete existing staging directory for album \"%s\"", albumDirectoryName), e);
+        }
+    }
+
+    private void copyAlbumContentsToStagingDirectory(AlbumEntry albumEntry, Path stagingDirectory) {
+        for (var child : getChildren(albumEntry.getId())) {
+            downloadImageUrlToTempFile(child, stagingDirectory);
+        }
+    }
+
+    File downloadImageUrlToTempFile(AlbumEntry albumEntry, Path tempDir) {
         var imageUrl = albumEntry.getImageUrl();
         if (imageUrl == null || imageUrl.isEmpty()) {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d, imageUrl is missing", albumEntry.getId()));
         }
 
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var fileName = findFileNamePartOfUrl(imageUrl);
         var tempfile = tempDir.resolve(fileName).toFile();
         try (var outputStream = new FileOutputStream(tempfile)){

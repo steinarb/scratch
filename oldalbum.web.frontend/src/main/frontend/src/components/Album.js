@@ -9,6 +9,7 @@ import Locale from './Locale';
 import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
+import DownloadButton from './DownloadButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
 import AddPictureButton from './AddPictureButton';
@@ -70,6 +71,7 @@ export default function Album(props) {
                     <div className="navbar-nav">
                         <Locale className="nav-item" />
                         <CopyLinkButton className="nav-item" />
+                        <DownloadButton className="nav-item" item={item} />
                         <EditModeButton className="nav-item" />
                         <LoginLogoutButton className="nav-item" item={item}/>
                     </div>

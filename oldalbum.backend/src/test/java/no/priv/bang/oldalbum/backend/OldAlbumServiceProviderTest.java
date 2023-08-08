@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,6 +41,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import java.util.zip.ZipOutputStream;
 
 import javax.sql.DataSource;
 
@@ -943,27 +945,91 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDownloadAlbumEntryOnExistingAlbum() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+
+        var downloadAlbum = provider.downloadAlbumEntry(4);
+        assertNotNull(downloadAlbum);
+    }
+
+    @Test
     void testDownloadImageUrlToTempFileWithNullImageUrl() {
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().build();
-        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
     }
 
     @Test
     void testDownloadImageUrlToTempFileWithEmptyImageUrl() {
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().imageUrl("").build();
-        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
     }
 
     @Test
     void testDownloadImageUrlToTempFileWithWrongImageUrl() {
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
-        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry));
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").contains("from url");
+    }
+
+    @Test
+    void testCreateZipFileFromStagingDirectoryWhenUnableToCreateZipFile() {
+        var provider = new OldAlbumServiceProvider();
+        var notADirectory = Path.of("/notadirectory/notastagingdirectory");
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.createZipFileFromStagingDirectory(notADirectory));
+        assertThat(e.getMessage()).startsWith("Unable to create zip file for downloaded album");
+    }
+
+    @Test
+    void testCreateZipFileFromStagingDirectoryWhenNotFindingFiles() {
+        var provider = new OldAlbumServiceProvider();
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
+        var notfoundDirectory = tempDir.resolve("notfound");
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.createZipFileFromStagingDirectory(notfoundDirectory));
+        assertThat(e.getMessage()).startsWith("Did not find files to include in zip file for downloaded album");
+    }
+
+    @Test
+    void testAddFileEntryToZipArchiveWhenAddingNonExistingFile() {
+        var provider = new OldAlbumServiceProvider();
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
+        var notfoundFile = tempDir.resolve("notfound").toFile();
+        var zipOut = mock(ZipOutputStream.class);
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.addFileEntryToZipArchive(null, zipOut, notfoundFile));
+        assertThat(e.getMessage()).startsWith("Unable to add item to zip file for downloaded album");
+    }
+
+    @Test
+    void testCreateAlbumZipFileStagingDirectoryWithNonExistingTempDir() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().path("/moto/vfr96").build();
+        var tempDir = Path.of("/notfound");
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.createAlbumZipFileStagingDirectory(albumEntry, tempDir));
+        assertThat(e.getMessage()).startsWith("Failed to create staging directory for album");
+    }
+
+    @Test
+    void testDeleteDirectoryAndContentsOnNonExistingDirectory() {
+        var provider = new OldAlbumServiceProvider();
+        var notADirectory = Path.of("/notadirectory/notastagingdirectory");
+
+        var e = assertThrows(OldAlbumException.class, () -> provider.deleteDirectoryAndContents(notADirectory));
+        assertThat(e.getMessage()).startsWith("Failed to delete existing staging directory for album ");
     }
 
     @Test
