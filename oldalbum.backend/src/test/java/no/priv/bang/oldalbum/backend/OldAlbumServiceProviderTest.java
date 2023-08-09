@@ -48,6 +48,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.ImageIO;
 import javax.sql.DataSource;
 
 import org.jsoup.nodes.Element;
@@ -989,12 +990,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testDownloadImageAndSetMetadata() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+    void testDownloadImageAndSetMetadata() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
+
+        // Modify date of picture in the database
+        int pictureId = 19;
+        var pictureDate = new Date(834259770000L); // Date 1996-06-08 (instead of 1996-10-04, which is the date in the picture=
+        provider.updateEntry(AlbumEntry.with(provider.getEntry(pictureId).get()).lastModified(pictureDate).build());
+
+        // Download the image to tmpdir
+        var pictureFile = provider.downloadAlbumEntry(pictureId);
+        var image = ImageIO.read(pictureFile);
+
+        assertNull(image);
     }
 
     @Test
