@@ -59,6 +59,10 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mockrunner.mock.jdbc.MockConnection;
+import com.twelvemonkeys.imageio.metadata.CompoundDirectory;
+import com.twelvemonkeys.imageio.metadata.exif.EXIFReader;
+import com.twelvemonkeys.imageio.metadata.jpeg.JPEG;
+import com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil;
 
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
@@ -1004,9 +1008,13 @@ class OldAlbumServiceProviderTest {
 
         // Download the image to tmpdir
         var pictureFile = provider.downloadAlbumEntry(pictureId);
-        var image = ImageIO.read(pictureFile);
-
-        assertNull(image);
+        try(var input = ImageIO.createImageInputStream(pictureFile)) {
+            var exifSegment = JPEGSegmentUtil.readSegments(input, JPEG.APP1, "Exif");
+            var exifData = exifSegment.get(0).data();
+            exifData.read(); // Skip 0-pad for Exif in JFIF
+            var exif = (CompoundDirectory) new EXIFReader().read(ImageIO.createImageInputStream(exifData));
+            assertNull(exif);
+        }
     }
 
     @Test
