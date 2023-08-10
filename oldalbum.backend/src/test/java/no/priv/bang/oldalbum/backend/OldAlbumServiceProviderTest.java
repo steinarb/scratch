@@ -1009,11 +1009,9 @@ class OldAlbumServiceProviderTest {
         // Download the image to tmpdir
         var pictureFile = provider.downloadAlbumEntry(pictureId);
         try(var input = ImageIO.createImageInputStream(pictureFile)) {
-            var exifSegment = JPEGSegmentUtil.readSegments(input, JPEG.APP1, "Exif");
+            var exifSegment = JPEGSegmentUtil.readSegments(input, JPEGSegmentUtil.ALL_SEGMENTS);
             var exifData = exifSegment.get(0).data();
-            exifData.read(); // Skip 0-pad for Exif in JFIF
-            var exif = (CompoundDirectory) new EXIFReader().read(ImageIO.createImageInputStream(exifData));
-            assertNull(exif);
+            assertNull(exifData);
         }
     }
 
