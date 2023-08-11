@@ -49,6 +49,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.imageio.metadata.IIOMetadata;
 import javax.sql.DataSource;
 
 import org.jsoup.nodes.Element;
@@ -59,6 +60,7 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mockrunner.mock.jdbc.MockConnection;
+import com.twelvemonkeys.imageio.AbstractMetadata;
 import com.twelvemonkeys.imageio.metadata.CompoundDirectory;
 import com.twelvemonkeys.imageio.metadata.exif.EXIFReader;
 import com.twelvemonkeys.imageio.metadata.jpeg.JPEG;
@@ -1009,9 +1011,12 @@ class OldAlbumServiceProviderTest {
         // Download the image to tmpdir
         var pictureFile = provider.downloadAlbumEntry(pictureId);
         try(var input = ImageIO.createImageInputStream(pictureFile)) {
-            var exifSegment = JPEGSegmentUtil.readSegments(input, JPEGSegmentUtil.ALL_SEGMENTS);
-            var exifData = exifSegment.get(0).data();
-            assertNull(exifData);
+            var readers = ImageIO.getImageReaders(input);
+            var reader = readers.next();
+            reader.setInput(input, true);
+            IIOMetadata metadata = reader.getImageMetadata(0);
+            var tree = metadata.getAsTree("javax_imageio_1.0");
+            assertNull(tree);
         }
     }
 
