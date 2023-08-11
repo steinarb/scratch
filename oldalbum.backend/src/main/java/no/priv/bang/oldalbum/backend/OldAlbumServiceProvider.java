@@ -452,7 +452,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void addFileEntryToZipArchive(String zipFileName, ZipOutputStream zipArchive, File fileToAdd) {
         try {
-            zipArchive.putNextEntry(new ZipEntry(fileToAdd.getName()));
+            var entry = new ZipEntry(fileToAdd.getName());
+            entry.setLastModifiedTime(FileTime.fromMillis(fileToAdd.lastModified())) ;
+            zipArchive.putNextEntry(entry);
             try (var fis = new FileInputStream(fileToAdd)) {
                 byte[] bytes = new byte[1024];
                 int length;

@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -41,6 +43,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.sql.DataSource;
@@ -947,15 +951,22 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testDownloadAlbumEntryOnExistingAlbum() {
+    void testDownloadAlbumEntryOnExistingAlbum() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
+        var albumentry = provider.getEntry(4).get();
+        var albumpictures = provider.getChildren(albumentry.getId());
 
-        var downloadAlbum = provider.downloadAlbumEntry(4);
+        var downloadAlbum = provider.downloadAlbumEntry(albumentry.getId());
         assertNotNull(downloadAlbum);
+
+        // Check that zip members last modified time have been set to albumEntry values
+        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).getImageUrl());
+        var zipentry = findZipEntryFor(downloadAlbum, picturefilename);
+        assertEquals(albumpictures.get(0).getLastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
     }
 
     @Test
@@ -1638,6 +1649,22 @@ class OldAlbumServiceProviderTest {
 
     private Date parseDate(String iso8601date) {
         return Date.from(Instant.parse(iso8601date));
+    }
+
+    private ZipEntry findZipEntryFor(File downloadAlbum, String picturefilename) throws Exception {
+
+        try (var zipfile = new ZipInputStream(new FileInputStream(downloadAlbum))) {
+            var zipEntry = zipfile.getNextEntry();
+            while(zipEntry != null) {
+                if (picturefilename.equals(zipEntry.getName())) {
+                    return zipEntry;
+                }
+
+                zipEntry = zipfile.getNextEntry();
+            }
+        }
+
+        return null;
     }
 
 }
