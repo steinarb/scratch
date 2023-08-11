@@ -15,7 +15,7 @@
  */
 package no.priv.bang.oldalbum.web.api.resources;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.*;
 
 import java.util.Date;
 
@@ -61,6 +61,7 @@ public class ImageResource {
 
     @GET
     @Path("download/{albumEntryId}")
+    @Produces(APPLICATION_OCTET_STREAM)
     public Response downloadAlbumEntry(@PathParam("albumEntryId") int albumEntryId) {
         try {
             var file = oldalbum.downloadAlbumEntry(albumEntryId);
