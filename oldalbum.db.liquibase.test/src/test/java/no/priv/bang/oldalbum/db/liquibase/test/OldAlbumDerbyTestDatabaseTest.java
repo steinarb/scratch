@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.db.liquibase.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -71,15 +72,39 @@ class OldAlbumDerbyTestDatabaseTest {
         assertEquals(1, logservice.getLogmessages().size());
     }
 
+    @Test
+    void testUpdateSchemaAndAddMoreDataWithLiquibaseException() throws Exception {
+        var connectionThrowsExceptionOnMetadata = mock(Connection.class);
+        when (connectionThrowsExceptionOnMetadata.getMetaData()).thenThrow(SQLException.class);
+        var datasource = spy(createDataSource("oldalbum1"));
+        when(datasource.getConnection())
+            .thenCallRealMethod()
+            .thenCallRealMethod()
+            .thenReturn(connectionThrowsExceptionOnMetadata);
+        var logservice = new MockLogService();
+        var hook = new OldAlbumDerbyTestDatabase();
+        hook.setLogService(logservice);
+        hook.activate();
+
+        hook.prepare(datasource);
+
+        // Since no exceptions are thrown this will log error both on
+        // updating the schema and when inserting additional data
+        var logmessages = logservice.getLogmessages();
+        assertEquals(2, logmessages.size());
+        assertThat(logmessages.get(0)).startsWith("[ERROR] Error updating schema of oldalbum derby test database");
+        assertThat(logmessages.get(1)).startsWith("[ERROR] Error populating oldalbum derby test database with additional dummy data after schema update");
+    }
+
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
         try(var connection = datasource.getConnection()) {
             String sql = "select * from albumentries";
             try(Statement statement = connection.createStatement()) {
                 try(ResultSet results = statement.executeQuery(sql)) {
                     while (results.next()) {
-                    	var id = results.getInt("albumentry_id");
-                    	var localpath = results.getString("localpath");
-                    	System.out.println("id: " + id + "  path:" + localpath);
+                        var id = results.getInt("albumentry_id");
+                        var localpath = results.getString("localpath");
+                        System.out.println("id: " + id + "  path:" + localpath);
                     }
                 }
             }
