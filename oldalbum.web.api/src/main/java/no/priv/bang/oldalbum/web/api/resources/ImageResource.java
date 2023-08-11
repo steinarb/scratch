@@ -17,6 +17,8 @@ package no.priv.bang.oldalbum.web.api.resources;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -64,6 +66,7 @@ public class ImageResource {
             var file = oldalbum.downloadAlbumEntry(albumEntryId);
             return Response.ok(file)
                 .header("Content-Disposition", "attachment; filename=" + file.getName())
+                .header("Last-Modified", new Date(file.lastModified()))
                 .build();
         } catch (OldAlbumException e) {
             logger.error("Failed to download album entry with id {}", albumEntryId, e);

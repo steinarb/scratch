@@ -939,9 +939,11 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
+        var entry = provider.getEntry(9).get();
 
-        var downloadFile = provider.downloadAlbumEntry(9);
+        var downloadFile = provider.downloadAlbumEntry(entry.getId());
         assertNotNull(downloadFile);
+        assertEquals(entry.getLastModified(), new Date(downloadFile.lastModified()));
     }
 
     @Test

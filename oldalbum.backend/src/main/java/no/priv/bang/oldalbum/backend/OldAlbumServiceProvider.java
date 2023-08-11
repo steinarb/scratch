@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -518,6 +519,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 inputStream.transferTo(outputStream);
             }
 
+            Files.setLastModifiedTime(tempfile.toPath(), FileTime.from(albumEntry.getLastModified().toInstant()));
             return tempfile;
         } catch (IOException e) {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
