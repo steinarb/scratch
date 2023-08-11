@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2023 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -52,6 +53,22 @@ class OldAlbumSchemeTest {
         hook.prepare(datasource);
         addAlbumEntries(datasource);
         assertAlbumEntries(datasource);
+    }
+
+    @Test
+    void testPrepareWhenSQLExceptionIsThrown() throws Exception {
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
+        when(environment.getEnv(anyString())).thenReturn(sqlUrl);
+        var datasource = spy(createDataSource("oldalbum1"));
+        when(datasource.getConnection()).thenCallRealMethod().thenThrow(SQLException.class);
+        var logservice = new MockLogService();
+        var hook = new OldAlbumScheme();
+        hook.setLogService(logservice);
+        hook.activate();
+
+        var e = assertThrows(OldAlbumException.class, () -> hook.prepare(datasource));
+        assertThat(e.getMessage()).startsWith("Error updating schema for oldalbum database initialized from URL");
     }
 
     @Test
