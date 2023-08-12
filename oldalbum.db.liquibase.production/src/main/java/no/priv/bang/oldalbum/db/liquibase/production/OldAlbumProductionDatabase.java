@@ -96,7 +96,7 @@ public class OldAlbumProductionDatabase implements PreHook {
             OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.updateSchema(connect);
         } catch (LiquibaseException e) {
-            logger.error("Error updating schema of oldalbum production test database", e);
+            logger.error("Error updating schema of oldalbum production database", e);
         }
     }
 

@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.db.liquibase.production;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -68,6 +69,27 @@ class OldAlbumProductionDatabaseTest {
         hook.setLogService(logservice);
         hook.insertInitialData(datasource);
         assertEquals(1, logservice.getLogmessages().size());
+    }
+
+    @Test
+    void testUpdateSchemaWithLiquibaseExceptionThrown() throws Exception {
+        var connectionThrowsExceptionOnMetadata = mock(Connection.class);
+        when (connectionThrowsExceptionOnMetadata.getMetaData()).thenThrow(SQLException.class);
+        var datasource = spy(createDataSource("oldalbum2"));
+        when(datasource.getConnection())
+            .thenCallRealMethod()
+            .thenCallRealMethod()
+            .thenReturn(connectionThrowsExceptionOnMetadata);
+        var logservice = new MockLogService();
+        var hook = new OldAlbumProductionDatabase();
+        hook.setLogService(logservice);
+        hook.activate();
+
+        hook.prepare(datasource);
+
+        var logmessages = logservice.getLogmessages();
+        assertEquals(1, logmessages.size());
+        assertThat(logmessages.get(0)).startsWith("[ERROR] Error updating schema of oldalbum production database");
     }
 
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
