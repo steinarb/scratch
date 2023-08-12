@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1034,6 +1035,16 @@ class OldAlbumServiceProviderTest {
 
         var e = assertThrows(OldAlbumException.class, () -> provider.createAlbumZipFileStagingDirectory(albumEntry, tempDir));
         assertThat(e.getMessage()).startsWith("Failed to create staging directory for album");
+    }
+
+    @Test
+    void testDeleteDirectoryAndContentsIfItExists() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
+        var dirToDelete = tempDir.resolve("directorytodelete");
+        Files.createDirectories(dirToDelete);
+
+        assertTrue(provider.deleteDirectoryAndContentsIfItExists(dirToDelete));
     }
 
     @Test
