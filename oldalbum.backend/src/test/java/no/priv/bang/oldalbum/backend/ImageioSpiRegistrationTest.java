@@ -1,6 +1,8 @@
 package no.priv.bang.oldalbum.backend;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,14 +63,14 @@ class ImageioSpiRegistrationTest {
 
     @Test
     void testImageInputStreamRegistration() {
-        var inputstreamsBeforeAdd = getListFromIterator(IIORegistry.lookupProviders(ImageInputStreamSpi.class));
-        assertThat(inputstreamsBeforeAdd).isNotEmpty();
+        var instanceBeforeAdd = IIORegistry.getDefaultInstance().getServiceProviderByClass(BufferedFileImageInputStreamSpi.class);
+        assertNull(instanceBeforeAdd);
 
         var component = new ImageioSpiRegistration();
         component.registerImageInputStreamSpi(inputStreamSpi);
 
-        var inputStreamsAfterAdd = getListFromIterator(IIORegistry.lookupProviders(ImageInputStreamSpi.class));
-        assertThat(inputStreamsAfterAdd).hasSizeGreaterThan(inputstreamsBeforeAdd.size());
+        var instanceAfterAdd = IIORegistry.getDefaultInstance().getServiceProviderByClass(BufferedFileImageInputStreamSpi.class);
+        assertEquals(inputStreamSpi, instanceAfterAdd);
     }
 
     public static <T> List<T> getListFromIterator(Iterator<T> iterator) {
