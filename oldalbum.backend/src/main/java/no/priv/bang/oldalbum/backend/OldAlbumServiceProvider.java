@@ -549,13 +549,18 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     var readers = ImageIO.getImageReaders(input);
                     if (readers.hasNext()) {
                         var reader = readers.next();
-                        reader.setInput(input, true);
-                        var metadata = reader.getImageMetadata(0);
-                        comment = StreamSupport.stream(iterable(metadata.getAsTree("javax_imageio_1.0").getChildNodes()).spliterator(), false)
-                            .filter(n -> "Text".equals(n.getNodeName()))
-                            .findFirst()
-                            .flatMap(n -> StreamSupport.stream(iterable(n.getChildNodes()).spliterator(), false).findFirst())
-                            .map(n -> n.getAttribute("value")).orElse(null);
+                        try {
+                            logger.info("reader class: {}", reader.getClass().getCanonicalName());
+                            reader.setInput(input, true);
+                            var metadata = reader.getImageMetadata(0);
+                            comment = StreamSupport.stream(iterable(metadata.getAsTree("javax_imageio_1.0").getChildNodes()).spliterator(), false)
+                                .filter(n -> "Text".equals(n.getNodeName()))
+                                .findFirst()
+                                .flatMap(n -> StreamSupport.stream(iterable(n.getChildNodes()).spliterator(), false).findFirst())
+                                .map(n -> n.getAttribute("value")).orElse(null);
+                        } finally {
+                            reader.dispose();
+                        }
                     }
                 } catch (IOException e) {
                     logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
