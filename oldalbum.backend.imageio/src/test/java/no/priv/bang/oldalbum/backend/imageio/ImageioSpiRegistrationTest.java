@@ -1,4 +1,4 @@
-package no.priv.bang.oldalbum.backend;
+package no.priv.bang.oldalbum.backend.imageio;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,8 +10,6 @@ import java.util.stream.StreamSupport;
 
 import javax.imageio.ImageIO;
 import javax.imageio.spi.IIORegistry;
-import javax.imageio.spi.ImageInputStreamSpi;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -31,10 +29,8 @@ class ImageioSpiRegistrationTest {
         IIORegistry.getDefaultInstance().deregisterServiceProvider(jpegReaderSpi);
         jpegWriterSpi = IIORegistry.getDefaultInstance().getServiceProviderByClass(JPEGImageWriterSpi.class);
         IIORegistry.getDefaultInstance().deregisterServiceProvider(jpegWriterSpi);
-        var inputstreamsBeforeRemove = getListFromIterator(IIORegistry.lookupProviders(ImageInputStreamSpi.class));
         inputStreamSpi = IIORegistry.getDefaultInstance().getServiceProviderByClass(BufferedFileImageInputStreamSpi.class);
         IIORegistry.getDefaultInstance().deregisterServiceProvider(inputStreamSpi);
-        var inputstreamsAfterRemove = getListFromIterator(IIORegistry.lookupProviders(ImageInputStreamSpi.class));
     }
 
     @Test
