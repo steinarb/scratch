@@ -19,51 +19,46 @@
         <artifactId>oldalbum</artifactId>
         <version>1.9.16-SNAPSHOT</version>
     </parent>
-    <artifactId>oldalbum.backend</artifactId>
+    <artifactId>oldalbum.backend.imageio</artifactId>
 
-    <name>Oldalbum OSGi service implementations</name>
+    <name>Imageio service registration</name>
 
     <properties>
-        <karaf-feature-name>oldalbum-backend</karaf-feature-name>
+        <karaf-feature-name>oldalbum-backend-imageio</karaf-feature-name>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>no.priv.bang.oldalbum</groupId>
-            <artifactId>oldalbum.services</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.twelvemonkeys.common</groupId>
+            <artifactId>common-image</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
+            <groupId>com.twelvemonkeys.common</groupId>
+            <artifactId>common-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.beans</groupId>
-            <artifactId>beans.immutable</artifactId>
-            <scope>provided</scope>
+            <groupId>com.twelvemonkeys.common</groupId>
+            <artifactId>common-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.jdbc</groupId>
-            <artifactId>jdbc.sqldumper</artifactId>
-            <scope>provided</scope>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.jdbc</groupId>
-            <artifactId>jdbc.sqldumper</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-metadata</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.oldalbum</groupId>
-            <artifactId>oldalbum.db.liquibase</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-psd</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.oldalbum</groupId>
-            <artifactId>oldalbum.db.liquibase.test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-tiff</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -86,31 +81,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-derby</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-config</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner-jdbc</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.core</artifactId>
             <scope>provided</scope>
@@ -120,27 +90,6 @@
             <artifactId>org.osgi.service.component.annotations</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>service-mocks</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.jdbc</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -148,6 +97,14 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Require-Capability>
+                            osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)",
+                            osgi.serviceloader; filter:="(osgi.serviceloader=javax.imageio.spi.ImageReaderSpi)"; cardinality:=multiple,
+                        </Require-Capability>
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
