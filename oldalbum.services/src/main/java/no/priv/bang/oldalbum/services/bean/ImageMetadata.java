@@ -24,7 +24,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
     private Date lastModified;
     private String contentType;
     private int contentLength;
-    public String title;
+    private String title;
     private String description;
 
     private ImageMetadata() {}
