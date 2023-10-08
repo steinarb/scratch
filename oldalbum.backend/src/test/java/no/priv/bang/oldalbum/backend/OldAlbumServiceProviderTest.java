@@ -1067,6 +1067,7 @@ class OldAlbumServiceProviderTest {
         assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
         assertEquals("image/jpeg", metadata.getContentType());
         assertThat(metadata.getContentLength()).isPositive();
+        assertThat(metadata.getTitle()).isNullOrEmpty();
         assertThat(metadata.getDescription()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
     }
 
