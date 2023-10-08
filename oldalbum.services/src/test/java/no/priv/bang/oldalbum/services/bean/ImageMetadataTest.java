@@ -30,18 +30,21 @@ class ImageMetadataTest {
         Date lastModified = new Date();
         String contentType = "image/jpeg";
         int contentLength = 128186;
+        var title = "A fine picture";
         var description = "This is a description";
         ImageMetadata bean = ImageMetadata.with()
             .status(status)
             .lastModified(lastModified)
             .contentType(contentType)
             .contentLength(contentLength)
+            .title(title)
             .description(description)
             .build();
         assertEquals(status, bean.getStatus());
         assertEquals(lastModified, bean.getLastModified());
         assertEquals(contentType, bean.getContentType());
         assertEquals(contentLength, bean.getContentLength());
+        assertThat(bean.getTitle()).isEqualTo(title);
         assertThat(bean.getDescription()).isEqualTo(description);
     }
 
@@ -52,6 +55,8 @@ class ImageMetadataTest {
         assertNull(bean.getLastModified());
         assertNull(bean.getContentType());
         assertEquals(0, bean.getContentLength());
+        assertNull(bean.getTitle());
+        assertNull(bean.getDescription());
     }
 
 }
