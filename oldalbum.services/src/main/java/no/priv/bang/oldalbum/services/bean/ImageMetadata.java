@@ -24,6 +24,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
     private Date lastModified;
     private String contentType;
     private int contentLength;
+    private String title;
     private String description;
 
     private ImageMetadata() {}
@@ -44,6 +45,10 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         return contentLength;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -57,6 +62,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         private Date lastModified;
         private String contentType;
         private int contentLength;
+        private String title;
         private String description;
 
         private ImageMetadataBuilder() {}
@@ -67,6 +73,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
             imageMetadata.lastModified = this.lastModified;
             imageMetadata.contentType = this.contentType;
             imageMetadata.contentLength = this.contentLength;
+            imageMetadata.title = this.title;
             imageMetadata.description = this.description;
             return imageMetadata;
         }
@@ -88,6 +95,11 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
 
         public ImageMetadataBuilder contentLength(int contentLength) {
             this.contentLength = contentLength;
+            return this;
+        }
+
+        public ImageMetadataBuilder title(String title) {
+            this.title = title;
             return this;
         }
 
