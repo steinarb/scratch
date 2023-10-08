@@ -571,7 +571,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     .lastModified(new Date(connection.getHeaderFieldDate("Last-Modified", 0)))
                     .contentType(connection.getContentType())
                     .contentLength(getAndParseContentLengthHeader(connection))
-                    .comment(comment)
+                    .description(comment)
                     .build();
             } catch (IOException e) {
                 logger.warn(String.format("Error when reading metadata for %s",  imageUrl), e);
@@ -684,7 +684,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var lastModified = findLastModifiedDate(metadata, importYear);
         var contenttype = metadata != null ? metadata.getContentType() : null;
         var contentlength = metadata != null ? metadata.getContentLength() : 0;
-        var description = metadata != null ? metadata.getComment() : null;
+        var description = metadata != null ? metadata.getDescription() : null;
         return AlbumEntry.with()
             .album(false)
             .parent(parent.getId())
