@@ -54,6 +54,10 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-metadata</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase</artifactId>
             <version>${project.version}</version>
