@@ -579,11 +579,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 .contentLength(getAndParseContentLengthHeader(connection))
                 .build();
         } catch (IOException e) {
-            throw new RuntimeException(String.format("Error when reading metadata for %s",  imageUrl), e);
+            logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
         }
+
+        return null;
     }
 
-    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection) {
+    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection) throws IOException {
         try(var input = ImageIO.createImageInputStream(connection.getInputStream())) {
             metadataBuilder.lastModified(new Date(connection.getLastModified()));
             var readers = ImageIO.getImageReaders(input);
@@ -604,8 +606,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             } catch (EOFException e) {
                 logger.info("No EXIF segment in JPEG {}", imageUrl);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Error when reading image metadata for %s",  imageUrl), e);
         }
     }
 
