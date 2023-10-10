@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.backend;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +37,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -52,11 +55,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
@@ -70,16 +75,30 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 import org.w3c.dom.NodeList;
 
+import com.twelvemonkeys.imageio.metadata.CompoundDirectory;
+import com.twelvemonkeys.imageio.metadata.Entry;
+import com.twelvemonkeys.imageio.metadata.jpeg.JPEG;
+import com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegment;
+import com.twelvemonkeys.imageio.metadata.tiff.IFD;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
+import static com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil.*;
+
 import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata.ImageMetadataBuilder;
 import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 @Component(immediate = true, property= { "defaultlocale=nb_NO" })
 public class OldAlbumServiceProvider implements OldAlbumService {
+
+    static final int EXIF_DATETIME = 306;
+    static final int EXIF_DESCRIPTION = 0x010e;
+    static final int EXIF_EXIF = 34665;
+    static final int EXIF_USER_COMMENT = 37510;
 
     private static final String DISPLAY_TEXT_RESOURCES = "i18n.Texts";
     private Logger logger;
@@ -541,43 +560,103 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     public ImageMetadata readMetadata(String imageUrl) {
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            try {
-                String comment = null;
-                var connection = getConnectionFactory().connect(imageUrl);
-                connection.setRequestMethod("GET");
-                try(var input = ImageIO.createImageInputStream(connection.getInputStream())) {
-                    var readers = ImageIO.getImageReaders(input);
-                    if (readers.hasNext()) {
-                        var reader = readers.next();
-                        try {
-                            logger.info("reader class: {}", reader.getClass().getCanonicalName());
-                            reader.setInput(input, true);
-                            var metadata = reader.getImageMetadata(0);
-                            comment = StreamSupport.stream(iterable(metadata.getAsTree("javax_imageio_1.0").getChildNodes()).spliterator(), false)
-                                .filter(n -> "Text".equals(n.getNodeName()))
-                                .findFirst()
-                                .flatMap(n -> StreamSupport.stream(iterable(n.getChildNodes()).spliterator(), false).findFirst())
-                                .map(n -> n.getAttribute("value")).orElse(null);
-                        } finally {
-                            reader.dispose();
-                        }
-                    }
-                } catch (IOException e) {
-                    logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
-                }
+            return fetchImageWithHttpAndReadImageMetadata(imageUrl);
+        }
 
-                return ImageMetadata.with()
-                    .status(connection.getResponseCode())
-                    .lastModified(new Date(connection.getHeaderFieldDate("Last-Modified", 0)))
-                    .contentType(connection.getContentType())
-                    .contentLength(getAndParseContentLengthHeader(connection))
-                    .description(comment)
-                    .build();
-            } catch (IOException e) {
-                logger.warn(String.format("Error when reading metadata for %s",  imageUrl), e);
+        return null;
+    }
+
+    private ImageMetadata fetchImageWithHttpAndReadImageMetadata(String imageUrl) {
+        try {
+            final var metadataBuilder = ImageMetadata.with();
+            var connection = getConnectionFactory().connect(imageUrl);
+            connection.setRequestMethod("GET");
+            readAndParseImageMetadata(imageUrl, metadataBuilder, connection);
+
+            return metadataBuilder
+                .status(connection.getResponseCode())
+                .contentType(connection.getContentType())
+                .contentLength(getAndParseContentLengthHeader(connection))
+                .build();
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("Error when reading metadata for %s",  imageUrl), e);
+        }
+    }
+
+    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection) {
+        try(var input = ImageIO.createImageInputStream(connection.getInputStream())) {
+            metadataBuilder.lastModified(new Date(connection.getLastModified()));
+            var readers = ImageIO.getImageReaders(input);
+            if (readers.hasNext()) {
+                var reader = readers.next();
+                try {
+                    logger.info("reader class: {}", reader.getClass().getCanonicalName());
+                    reader.setInput(input, true);
+                    var metadata = reader.getImageMetadata(0);
+                    metadataBuilder.description(findJfifComment(metadata));
+                } finally {
+                    reader.dispose();
+                }
+            }
+            try {
+                var exifSegment = readSegments(input, JPEG.APP1, "Exif");
+                readExifImageMetadata(imageUrl, metadataBuilder, exifSegment);
+            } catch (EOFException e) {
+                logger.info("No EXIF segment in JPEG {}", imageUrl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("Error when reading image metadata for %s",  imageUrl), e);
+        }
+    }
+
+    void readExifImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, List<JPEGSegment> exifSegment) throws IOException {
+        exifSegment.stream().map(s -> s.data()).findFirst().ifPresent(exifData -> {
+                try {
+                    exifData.read();
+                    var exif = (CompoundDirectory) new TIFFReader().read(ImageIO.createImageInputStream(exifData));
+                    extractMetadataFromExifTags(metadataBuilder, exif, imageUrl);
+                } catch (IOException e) {
+                    throw new RuntimeException(String.format("Error reading EXIF data of %s",  imageUrl), e);
+                }
+            });
+    }
+
+    private void extractMetadataFromExifTags(final ImageMetadataBuilder metadataBuilder, CompoundDirectory exif, String imageUrl) {
+        for (var entry : exif) {
+            if (entry.getIdentifier().equals(EXIF_DATETIME)) {
+                extractExifDatetime(metadataBuilder, entry, imageUrl);
+            } else if (entry.getIdentifier().equals(EXIF_DESCRIPTION)) {
+                metadataBuilder.title(entry.getValueAsString());
+            } else if (entry.getIdentifier().equals(EXIF_EXIF)) {
+                var nestedExif = (IFD) entry.getValue();
+                for (var nestedEntry : nestedExif) {
+                    if (nestedEntry.getIdentifier().equals(EXIF_USER_COMMENT)) {
+                        var userCommentRaw = (byte[]) nestedEntry.getValue();
+                        var splitUserComment = splitUserCommentInEncodingAndComment(userCommentRaw);
+                        metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_8));
+                    }
+                }
             }
         }
-        return null;
+    }
+
+    void extractExifDatetime(final ImageMetadataBuilder metadataBuilder, Entry entry, String imageUrl) {
+        try {
+            var exifDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+            exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
+            var datetime = exifDateTimeFormat.parse(entry.getValueAsString());
+            metadataBuilder.lastModified(datetime);
+        } catch (ParseException e) {
+            throw new RuntimeException(String.format("Error parsing EXIF 306/DateTime entry of %s",  imageUrl), e);
+        }
+    }
+
+    private String findJfifComment(IIOMetadata metadata) {
+        return StreamSupport.stream(iterable(metadata.getAsTree("javax_imageio_1.0").getChildNodes()).spliterator(), false)
+            .filter(n -> "Text".equals(n.getNodeName()))
+            .findFirst()
+            .flatMap(n -> StreamSupport.stream(iterable(n.getChildNodes()).spliterator(), false).findFirst())
+            .map(n -> n.getAttribute("value")).orElse(null);
     }
 
     public static Iterable<IIOMetadataNode> iterable(final NodeList nodeList) {
@@ -913,6 +992,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void setConnectionFactory(HttpConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+    }
+
+    List<byte[]> splitUserCommentInEncodingAndComment(byte[] userCommentRaw) {
+        var encoding = Arrays.copyOf(userCommentRaw, 8);
+        var comment = Arrays.copyOfRange(userCommentRaw, 8, userCommentRaw.length);
+        return Arrays.asList(encoding, comment);
     }
 
     Map<String, String> transformResourceBundleToMap(Locale locale) {
