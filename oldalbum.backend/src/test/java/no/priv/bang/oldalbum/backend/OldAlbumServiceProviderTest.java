@@ -22,10 +22,13 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -58,6 +61,9 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mockrunner.mock.jdbc.MockConnection;
+import com.twelvemonkeys.imageio.metadata.Entry;
+import com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegment;
+
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -1072,6 +1078,73 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadJpegWithExifMetadata() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "jpeg/acirc1_with_exif_datetime.jpg";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime.jpg");
+        assertNotNull(imageMetadata);
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
+        assertThat(imageMetadata.getTitle()).isNullOrEmpty();
+        assertThat(imageMetadata.getDescription()).startsWith("My VFR 750F");
+    }
+
+    @Test
+    void testReadJpegWithDescriptionInExifMetadata() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "jpeg/acirc1_with_exif_datetime_and_image_description.jpg";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description.jpg");
+        assertNotNull(imageMetadata);
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
+        assertThat(imageMetadata.getTitle()).startsWith("VFR at Arctic Circle");
+        assertThat(imageMetadata.getDescription()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
+    }
+
+    @Test
+    void testReadJpegWithDescriptionAndUserCommentInExifMetadata() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "jpeg/acirc1_with_exif_datetime_and_image_description_and_user_comment.jpg";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description_and_user_comment.jpg");
+        assertNotNull(imageMetadata);
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
+        assertThat(imageMetadata.getTitle()).startsWith("VFR at Arctic Circle");
+        assertThat(imageMetadata.getDescription()).startsWith("Honda VFR750F in Rana");
+    }
+
+    @Test
+    void testReadMetadataOnNonImageFile() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "logback.xml";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/logback.xml");
+        assertNotNull(imageMetadata);
+        assertNull(imageMetadata.getTitle());
+        assertNull(imageMetadata.getDescription());
+    }
+
+    @Test
     void testReadImageMetadataImageNotFound() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
@@ -1080,7 +1153,6 @@ class OldAlbumServiceProviderTest {
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         assertEquals(404, metadata.getStatus());
-        assertEquals(Date.from(Instant.EPOCH), metadata.getLastModified());
         assertEquals("text/html", metadata.getContentType());
         assertThat(metadata.getContentLength()).isPositive();
     }
@@ -1092,8 +1164,8 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
 
         String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
-        ImageMetadata metadata = provider.readMetadata(imageUrl);
-        assertNull(metadata);
+        var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
+        assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Error when reading image metadata");
     }
@@ -1116,6 +1188,33 @@ class OldAlbumServiceProviderTest {
 
         ImageMetadata metadata = provider.readMetadata("");
         assertNull(metadata);
+    }
+
+    @Test
+    void testReadExifImageMetadataWithIOException() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var imageUrl = "http://localhost/image.jpg";
+        var builder = ImageMetadata.with();
+        var jpegSegment = mock(JPEGSegment.class);
+        var exifData = mock(InputStream.class);
+        when(exifData.read()).thenThrow(IOException.class);
+        when(jpegSegment.data()).thenReturn(exifData);
+        var exifSegment = Collections.singletonList(jpegSegment);
+
+        var e = assertThrows(RuntimeException.class, () -> provider.readExifImageMetadata(imageUrl, builder, exifSegment));
+        assertThat(e.getMessage()).startsWith("Error reading EXIF data of");
+    }
+
+    @Test
+    void testExtractExifDatetimeWithParseException() {
+        var provider = new OldAlbumServiceProvider();
+        var builder = ImageMetadata.with();
+        var entry = mock(Entry.class);
+        when(entry.getValueAsString()).thenReturn("not a parsable date");
+        var imageUrl = "http://localhost/image.jpg";
+
+        var e = assertThrows(RuntimeException.class, () -> provider.extractExifDatetime(builder, entry, imageUrl));
+        assertThat(e.getMessage()).startsWith("Error parsing EXIF 306/DateTime entry of");
     }
 
     @Test
@@ -1232,8 +1331,13 @@ class OldAlbumServiceProviderTest {
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
         var connectionStubbing = when(connection.getInputStream());
-        for (int i=0; i<114; ++i) { // Need >113 streams, doesn't matter what they actually are except for 0 and 113
-            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        }
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
@@ -1286,8 +1390,13 @@ class OldAlbumServiceProviderTest {
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
         var connectionStubbing = when(connection.getInputStream());
-        for (int i=0; i<114; ++i) { // Need >113 streams, doesn't matter what they actually are except for 0 and 113
-            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        }
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
@@ -1679,6 +1788,22 @@ class OldAlbumServiceProviderTest {
         }
 
         return null;
+    }
+
+    HttpConnectionFactory mockHttpConnectionReturningClasspathResource(String classpathResource, long lastModifiedTime) throws IOException {
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var inputstream = getClass().getClassLoader().getResourceAsStream(classpathResource);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getLastModified()).thenReturn(lastModifiedTime);
+        when(connection.getInputStream()).thenReturn(inputstream);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        return connectionFactory;
+    }
+
+    long findLastModifiedTimeOfClasspathResource(String classpathResource) throws IOException, URISyntaxException {
+        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(classpathResource).toURI()), BasicFileAttributes.class);
+        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
+        return lastModifiedTime;
     }
 
 }
