@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -571,7 +572,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             final var metadataBuilder = ImageMetadata.with();
             var connection = getConnectionFactory().connect(imageUrl);
             connection.setRequestMethod("GET");
-            readAndParseImageMetadata(imageUrl, metadataBuilder, connection);
+            try {
+                readAndParseImageMetadata(imageUrl, metadataBuilder, connection);
+            } catch (IOException e) {
+                logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
+            }
 
             return metadataBuilder
                 .status(connection.getResponseCode())
@@ -579,10 +584,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 .contentLength(getAndParseContentLengthHeader(connection))
                 .build();
         } catch (IOException e) {
-            logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
+            throw new OldAlbumException(String.format("HTTP Connection error when reading metadata for %s", imageUrl), e);
         }
-
-        return null;
     }
 
     private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection) throws IOException {

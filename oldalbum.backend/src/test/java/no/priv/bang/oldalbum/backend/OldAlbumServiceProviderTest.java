@@ -1080,7 +1080,6 @@ class OldAlbumServiceProviderTest {
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
         ImageMetadata metadata = provider.readMetadata(imageUrl);
         assertEquals(404, metadata.getStatus());
-        assertEquals(Date.from(Instant.EPOCH), metadata.getLastModified());
         assertEquals("text/html", metadata.getContentType());
         assertThat(metadata.getContentLength()).isPositive();
     }
@@ -1092,8 +1091,8 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
 
         String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
-        ImageMetadata metadata = provider.readMetadata(imageUrl);
-        assertNull(metadata);
+        var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
+        assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Error when reading image metadata");
     }
