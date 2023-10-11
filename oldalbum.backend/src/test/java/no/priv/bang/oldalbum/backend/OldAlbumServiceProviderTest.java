@@ -1119,6 +1119,29 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadJpegWithDescriptionAndUserCommentInExifMetadata() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var imageFileName = "jpeg/acirc1_with_exif_datetime_and_image_description_and_user_comment.jpg";
+        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(imageFileName).toURI()), BasicFileAttributes.class);
+        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
+        var inputstream = getClass().getClassLoader().getResourceAsStream(imageFileName);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getLastModified()).thenReturn(lastModifiedTime);
+        when(connection.getInputStream()).thenReturn(inputstream);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description_and_user_comment.jpg");
+        assertNotNull(imageMetadata);
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
+        assertThat(imageMetadata.getTitle()).startsWith("VFR at Arctic Circle");
+        assertThat(imageMetadata.getDescription()).startsWith("Honda VFR750F in Rana");
+    }
+
+    @Test
     void testReadImageMetadataImageNotFound() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
