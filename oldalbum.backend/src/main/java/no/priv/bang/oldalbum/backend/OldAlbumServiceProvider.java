@@ -570,11 +570,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             final var metadataBuilder = ImageMetadata.with();
             var connection = getConnectionFactory().connect(imageUrl);
             connection.setRequestMethod("GET");
-            try {
-                readAndParseImageMetadata(imageUrl, metadataBuilder, connection);
-            } catch (IOException e) {
-                logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
-            }
+            readAndParseImageMetadata(imageUrl, metadataBuilder, connection);
 
             return metadataBuilder
                 .status(connection.getResponseCode())
@@ -586,7 +582,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection) throws IOException {
+    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection) {
         try(var input = ImageIO.createImageInputStream(connection.getInputStream())) {
             metadataBuilder.lastModified(new Date(connection.getLastModified()));
             var readers = ImageIO.getImageReaders(input);
@@ -603,10 +599,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
             var exifSegment = readSegments(input, JPEG.APP1, "Exif");
             readExifImageMetadata(imageUrl, metadataBuilder, exifSegment);
+        } catch (IOException e) {
+            logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
         }
     }
 
-    void readExifImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, List<JPEGSegment> exifSegment) throws IOException {
+    void readExifImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, List<JPEGSegment> exifSegment) {
         exifSegment.stream().map(s -> s.data()).findFirst().ifPresent(exifData -> {
                 try {
                     exifData.read();
