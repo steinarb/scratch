@@ -1096,6 +1096,29 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadJpegWithDescriptionInExifMetadata() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var imageFileName = "jpeg/acirc1_with_exif_datetime_and_image_description.jpg";
+        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(imageFileName).toURI()), BasicFileAttributes.class);
+        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
+        var inputstream = getClass().getClassLoader().getResourceAsStream(imageFileName);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getLastModified()).thenReturn(lastModifiedTime);
+        when(connection.getInputStream()).thenReturn(inputstream);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description.jpg");
+        assertNotNull(imageMetadata);
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
+        assertThat(imageMetadata.getTitle()).startsWith("VFR at Arctic Circle");
+        assertThat(imageMetadata.getDescription()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
+    }
+
+    @Test
     void testReadImageMetadataImageNotFound() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
@@ -1311,13 +1334,12 @@ class OldAlbumServiceProviderTest {
         var connectionStubbing = when(connection.getInputStream());
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
-            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1_with_exif_datetime.jpg"));
         }
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
-            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1_with_exif_datetime.jpg"));
         }
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 

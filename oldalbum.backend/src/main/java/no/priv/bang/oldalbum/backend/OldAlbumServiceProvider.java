@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -619,7 +618,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     var exif = (CompoundDirectory) new TIFFReader().read(ImageIO.createImageInputStream(exifData));
                     extractMetadataFromExifTags(metadataBuilder, exif, imageUrl);
                 } catch (IOException e) {
-                    throw new RuntimeException(String.format("Error reading EXIF data of %s",  imageUrl), e);
+                    throw new OldAlbumException(String.format("Error reading EXIF data of %s",  imageUrl), e);
                 }
             });
     }
@@ -650,7 +649,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             var datetime = exifDateTimeFormat.parse(entry.getValueAsString());
             metadataBuilder.lastModified(datetime);
         } catch (ParseException e) {
-            throw new RuntimeException(String.format("Error parsing EXIF 306/DateTime entry of %s",  imageUrl), e);
+            throw new OldAlbumException(String.format("Error parsing EXIF 306/DateTime entry of %s",  imageUrl), e);
         }
     }
 
