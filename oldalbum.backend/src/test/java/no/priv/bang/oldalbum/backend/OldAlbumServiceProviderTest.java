@@ -1301,8 +1301,13 @@ class OldAlbumServiceProviderTest {
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
         var connectionStubbing = when(connection.getInputStream());
-        for (int i=0; i<114; ++i) { // Need >113 streams, doesn't matter what they actually are except for 0 and 113
-            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        }
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
@@ -1357,11 +1362,11 @@ class OldAlbumServiceProviderTest {
         var connectionStubbing = when(connection.getInputStream());
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
-            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1_with_exif_datetime.jpg"));
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
-            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1_with_exif_datetime.jpg"));
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
