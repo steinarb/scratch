@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
@@ -59,6 +60,9 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mockrunner.mock.jdbc.MockConnection;
+import com.twelvemonkeys.imageio.metadata.Entry;
+import com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegment;
+
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -1185,6 +1189,33 @@ class OldAlbumServiceProviderTest {
 
         ImageMetadata metadata = provider.readMetadata("");
         assertNull(metadata);
+    }
+
+    @Test
+    void testReadExifImageMetadataWithIOException() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var imageUrl = "http://localhost/image.jpg";
+        var builder = ImageMetadata.with();
+        var jpegSegment = mock(JPEGSegment.class);
+        var exifData = mock(InputStream.class);
+        when(exifData.read()).thenThrow(IOException.class);
+        when(jpegSegment.data()).thenReturn(exifData);
+        var exifSegment = Collections.singletonList(jpegSegment);
+
+        var e = assertThrows(RuntimeException.class, () -> provider.readExifImageMetadata(imageUrl, builder, exifSegment));
+        assertThat(e.getMessage()).startsWith("Error reading EXIF data of");
+    }
+
+    @Test
+    void testExtractExifDatetimeWithParseException() {
+        var provider = new OldAlbumServiceProvider();
+        var builder = ImageMetadata.with();
+        var entry = mock(Entry.class);
+        when(entry.getValueAsString()).thenReturn("not a parsable date");
+        var imageUrl = "http://localhost/image.jpg";
+
+        var e = assertThrows(RuntimeException.class, () -> provider.extractExifDatetime(builder, entry, imageUrl));
+        assertThat(e.getMessage()).startsWith("Error parsing EXIF 306/DateTime entry of");
     }
 
     @Test
