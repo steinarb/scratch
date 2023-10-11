@@ -58,6 +58,21 @@
             <artifactId>imageio-metadata</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-psd</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-tiff</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase</artifactId>
             <version>${project.version}</version>

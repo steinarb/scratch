@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1069,6 +1070,29 @@ class OldAlbumServiceProviderTest {
         assertThat(metadata.getContentLength()).isPositive();
         assertThat(metadata.getTitle()).isNullOrEmpty();
         assertThat(metadata.getDescription()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
+    }
+
+    @Test
+    void testReadJpegWithExifMetadata() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var imageFileName = "jpeg/acirc1_with_exif_datetime.jpg";
+        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(imageFileName).toURI()), BasicFileAttributes.class);
+        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
+        var inputstream = getClass().getClassLoader().getResourceAsStream(imageFileName);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getLastModified()).thenReturn(lastModifiedTime);
+        when(connection.getInputStream()).thenReturn(inputstream);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime.jpg");
+        assertNotNull(imageMetadata);
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
+        assertThat(imageMetadata.getTitle()).isNullOrEmpty();
+        assertThat(imageMetadata.getDescription()).startsWith("My VFR 750F");
     }
 
     @Test
