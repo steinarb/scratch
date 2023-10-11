@@ -16,7 +16,6 @@
 package no.priv.bang.oldalbum.backend;
 
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -602,12 +601,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     reader.dispose();
                 }
             }
-            try {
-                var exifSegment = readSegments(input, JPEG.APP1, "Exif");
-                readExifImageMetadata(imageUrl, metadataBuilder, exifSegment);
-            } catch (EOFException e) {
-                logger.info("No EXIF segment in JPEG {}", imageUrl);
-            }
+            var exifSegment = readSegments(input, JPEG.APP1, "Exif");
+            readExifImageMetadata(imageUrl, metadataBuilder, exifSegment);
         }
     }
 
