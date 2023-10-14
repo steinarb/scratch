@@ -10,7 +10,7 @@ const initialState = '';
 const albumentryContentTypeReducer = createReducer(initialState, {
     [FILL_MODIFY_PICTURE_FORM]: (state, action) => action.payload.contentType,
     [FILL_ADD_PICTURE_FORM]: (state, action) => action.payload.contentType,
-    [IMAGE_METADATA_RECEIVE]: (state, action) => action.payload.contentType,
+    [IMAGE_METADATA_RECEIVE]: (state, action) => action.payload.contentType || '',
     [CLEAR_PICTURE_FORM]: () => initialState,
 });
 
