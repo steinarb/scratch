@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,6 +52,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.IIOImage;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
 import org.jsoup.nodes.Element;
@@ -943,17 +947,27 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testDownloadAlbumEntryOnExistingImage() {
+    void testDownloadAlbumEntryOnExistingImage() throws Exception {
+        var replacementTitle = "Replacement title";
+        var replacementDescription = "Replacement description";
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        var entry = provider.getEntry(9).get();
+        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
+        var modifiedEntry = AlbumEntry.with(provider.getEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
+        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
 
         var downloadFile = provider.downloadAlbumEntry(entry.getId());
         assertNotNull(downloadFile);
-        assertEquals(entry.getLastModified(), new Date(downloadFile.lastModified()));
+        var downloadFileModifiedDate = new Date(downloadFile.lastModified());
+        assertEquals(entry.getLastModified(), downloadFileModifiedDate);
+        var dummyConnection = mock(HttpURLConnection.class);
+        var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
+        assertThat(metadata.getTitle()).startsWith(replacementTitle);
+        assertThat(metadata.getDescription()).startsWith(replacementDescription);
+        assertEquals(metadata.getLastModified(), downloadFileModifiedDate);
     }
 
     @Test
@@ -973,6 +987,43 @@ class OldAlbumServiceProviderTest {
         var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).getImageUrl());
         var zipentry = findZipEntryFor(downloadAlbum, picturefilename);
         assertEquals(albumpictures.get(0).getLastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+    }
+
+    @Test
+    void testDownloadAlbumEntryOnImageThatIsATextFile() throws Exception {
+        var replacementTitle = "Replacement title";
+        var replacementDescription = "Replacement description";
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
+        var modifiedEntry = AlbumEntry.with(provider.getEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
+        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
+
+        var downloadFile = provider.downloadAlbumEntry(entry.getId());
+        assertNotNull(downloadFile);
+        var downloadFileModifiedDate = new Date(downloadFile.lastModified());
+        assertEquals(entry.getLastModified(), downloadFileModifiedDate);
+        var dummyConnection = mock(HttpURLConnection.class);
+        var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
+        assertThat(metadata.getTitle()).startsWith(replacementTitle);
+        assertThat(metadata.getDescription()).startsWith(replacementDescription);
+        assertEquals(metadata.getLastModified(), downloadFileModifiedDate);
+    }
+
+    @Test
+    void testDownloadImageUrlToTempFileOnNonImageFile() throws Exception {
+        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
+        var provider = new OldAlbumServiceProvider();
+        var imageFileName = "logback.xml";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+        var albumEntry = AlbumEntry.with().imageUrl("http://localhost/logback.xml").title("Title").description("description").build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
+        assertThat(e.getMessage()).startsWith("Album entry matching id").endsWith(" not recognizable as an image. Download failed");
     }
 
     @Test
@@ -1000,6 +1051,42 @@ class OldAlbumServiceProviderTest {
         var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
         var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").contains("from url");
+    }
+
+    @Test
+    void testWriteImageWithModifiedMetadataToTempFile() {
+        var nonexistingFile = Paths.get("nosuchdirectory", "nosuchfile.jpg").toFile();
+        var albumEntry = AlbumEntry.with().title("Some title").lastModified(new Date()).build();
+        var metadataAsTree = new IIOMetadataNode("root");
+        var metadata = mock(IIOMetadata.class);
+        when(metadata.getAsTree(anyString())).thenReturn(metadataAsTree);
+        var image = mock(IIOImage.class);
+        when(image.getMetadata()).thenReturn(metadata);
+        var provider = new OldAlbumServiceProvider();
+        var e = assertThrows(
+            OldAlbumException.class,
+            () -> provider.writeImageWithModifiedMetadataToTempFile(nonexistingFile, albumEntry, image, null));
+        assertThat(e.getMessage()).startsWith("Unable to save local copy of album entry");
+    }
+
+    @Test
+    void testFindMarkerSequenceAndCreateIfNotFoundWithEmptyNodeList() {
+        var provider = new OldAlbumServiceProvider();
+        var root = new IIOMetadataNode("root");
+        assertEquals(0, root.getChildNodes().getLength());
+        var markerNode = provider.findMarkerSequenceAndCreateIfNotFound(root);
+        assertEquals(1, root.getChildNodes().getLength());
+        assertThat(markerNode.getNodeName()).startsWith("markerSequence");
+    }
+
+    @Test
+    void testsetJfifCommentFromAlbumEntryDescriptionAndCreateCommentIfNotFound() {
+        var provider = new OldAlbumServiceProvider();
+        var entry = AlbumEntry.with().description("some description").build();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        provider.setJfifCommentFromAlbumEntryDescription(markerSequence, entry);
+        var comList = markerSequence.getElementsByTagName("com");
+        assertEquals(1, comList.getLength());
     }
 
     @Test
@@ -1151,10 +1238,8 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
 
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
-        ImageMetadata metadata = provider.readMetadata(imageUrl);
-        assertEquals(404, metadata.getStatus());
-        assertEquals("text/html", metadata.getContentType());
-        assertThat(metadata.getContentLength()).isPositive();
+        var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
+        assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
     }
 
     @Test
@@ -1166,8 +1251,6 @@ class OldAlbumServiceProviderTest {
         String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
         var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
         assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
-        assertThat(logservice.getLogmessages()).isNotEmpty();
-        assertThat(logservice.getLogmessages().get(0)).contains("Error when reading image metadata");
     }
 
     @Test
