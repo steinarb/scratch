@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -43,6 +44,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
@@ -59,9 +61,12 @@ import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.sql.DataSource;
 
 import org.jsoup.Jsoup;
@@ -72,6 +77,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.twelvemonkeys.imageio.metadata.CompoundDirectory;
@@ -79,7 +85,12 @@ import com.twelvemonkeys.imageio.metadata.Entry;
 import com.twelvemonkeys.imageio.metadata.jpeg.JPEG;
 import com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegment;
 import com.twelvemonkeys.imageio.metadata.tiff.IFD;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFF;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFFEntry;
 import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
+import com.twelvemonkeys.imageio.metadata.tiff.TIFFWriter;
+import com.twelvemonkeys.imageio.util.ImageTypeSpecifiers;
+
 import static com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil.*;
 
 import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
@@ -538,17 +549,88 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
         var fileName = findFileNamePartOfUrl(imageUrl);
         var tempfile = tempDir.resolve(fileName).toFile();
-        try (var outputStream = new FileOutputStream(tempfile)){
+        IIOImage image = null;
+        ImageWriter writer = null;
+        try {
             HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
             connection.setRequestMethod("GET");
-            try(var inputStream = connection.getInputStream()) {
-                inputStream.transferTo(outputStream);
+            try(var inputStream = ImageIO.createImageInputStream(connection.getInputStream())) {
+                var readers = ImageIO.getImageReaders(inputStream);
+                if (readers.hasNext()) {
+                    var reader = readers.next();
+                    writer = ImageIO.getImageWriter(reader);
+                    reader.setInput(inputStream);
+                    image = reader.readAll(0, null);
+                }
             }
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
+        }
 
+        var metadata = image.getMetadata();
+        var metadataAsTree = (IIOMetadataNode) metadata.getAsTree("javax_imageio_jpeg_image_1.0");
+        var markerSequence = findMarkerSequenceAndCreateIfNotFound(metadataAsTree);
+        setJfifCommentFromAlbumEntryDescription(markerSequence, albumEntry);
+        writeDateTitleAndDescriptionToExifDataStructure(markerSequence, albumEntry);
+        return writeImageWithModifiedMetadataToTempFile(tempfile, albumEntry, image, writer, metadataAsTree);
+    }
+
+    File writeImageWithModifiedMetadataToTempFile(File tempfile, AlbumEntry albumEntry, IIOImage image, ImageWriter writer, IIOMetadataNode metadataAsTree) {
+        try (var outputStream = ImageIO.createImageOutputStream(new FileOutputStream(tempfile))){
+            writer.setOutput(outputStream);
+            var param = writer.getDefaultWriteParam();
+            var modifiedMetadata = writer.getDefaultImageMetadata(ImageTypeSpecifiers.createFromRenderedImage(image.getRenderedImage()), param);
+            modifiedMetadata.setFromTree("javax_imageio_jpeg_image_1.0", metadataAsTree);
+            image.setMetadata(modifiedMetadata);
+            writer.write(image);
             Files.setLastModifiedTime(tempfile.toPath(), FileTime.from(albumEntry.getLastModified().toInstant()));
             return tempfile;
         } catch (IOException e) {
-            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
+            throw new OldAlbumException(String.format("Unable to save local copy of album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
+        }
+    }
+
+    void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) {
+        Collection<Entry> entries = new ArrayList<>();
+        entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formatLastModifiedTimeAsExifDateString(albumEntry)));
+        try (var bytes = new ByteArrayOutputStream()) {
+            bytes.write("Exif".getBytes(StandardCharsets.US_ASCII));
+            bytes.write(new byte[2]);
+            try(var imageOutputStream = new MemoryCacheImageOutputStream(bytes)) {
+                new TIFFWriter().write(entries, imageOutputStream);
+            }
+
+            IIOMetadataNode exif = new IIOMetadataNode("unknown");
+            exif.setAttribute("MarkerTag", String.valueOf(0xE1)); // APP1 or "225"
+            exif.setUserObject(bytes.toByteArray());
+            markerSequence.appendChild(exif);
+        } catch (IOException e) {
+            throw new OldAlbumException(String.format("Failed to create EXIF structure when saving local copy of album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
+        }
+    }
+
+    String formatLastModifiedTimeAsExifDateString(AlbumEntry albumEntry) {
+        var exifDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+        exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
+        var datetime = exifDateTimeFormat.format(albumEntry.getLastModified());
+        return datetime;
+    }
+
+    IIOMetadataNode findMarkerSequenceAndCreateIfNotFound(IIOMetadataNode metadataAsTree) {
+        var markerSequence = (IIOMetadataNode) metadataAsTree.getElementsByTagName("markerSequence").item(0);
+        if (markerSequence == null) {
+            markerSequence = new IIOMetadataNode("markerSequence");
+            metadataAsTree.appendChild(markerSequence);
+        }
+
+        return markerSequence;
+    }
+
+    void setJfifCommentFromAlbumEntryDescription(IIOMetadataNode markerSequence, AlbumEntry albumEntry) {
+        var comList = markerSequence.getElementsByTagName("com");
+        if (comList.getLength() > 0) {
+            var com = (IIOMetadataNode) comList.item(0);
+            com.setAttribute("comment", albumEntry.getDescription());
         }
     }
 
@@ -565,12 +647,23 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return null;
     }
 
+    ImageMetadata readMetadataOfLocalFile(File downloadFile, HttpURLConnection dummyConnection) throws FileNotFoundException, IOException {
+        final var metadataBuilder = ImageMetadata.with();
+        try(var input = new FileInputStream(downloadFile)) {
+            readAndParseImageMetadata(downloadFile.getName(), metadataBuilder, dummyConnection, input);
+        }
+
+        return metadataBuilder.build();
+    }
+
     private ImageMetadata fetchImageWithHttpAndReadImageMetadata(String imageUrl) {
         try {
             final var metadataBuilder = ImageMetadata.with();
             var connection = getConnectionFactory().connect(imageUrl);
             connection.setRequestMethod("GET");
-            readAndParseImageMetadata(imageUrl, metadataBuilder, connection);
+            try(var input = connection.getInputStream()) {
+                readAndParseImageMetadata(imageUrl, metadataBuilder, connection, input);
+            }
 
             return metadataBuilder
                 .status(connection.getResponseCode())
@@ -582,8 +675,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection) {
-        try(var input = ImageIO.createImageInputStream(connection.getInputStream())) {
+    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection, InputStream inputStream) {
+        try(var input = ImageIO.createImageInputStream(inputStream)) {
             metadataBuilder.lastModified(new Date(connection.getLastModified()));
             var readers = ImageIO.getImageReaders(input);
             if (readers.hasNext()) {
@@ -647,11 +740,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private String findJfifComment(IIOMetadata metadata) {
-        return StreamSupport.stream(iterable(metadata.getAsTree("javax_imageio_1.0").getChildNodes()).spliterator(), false)
+        var metadataAsTree = metadata.getAsTree("javax_imageio_1.0");
+        return findJfifCommentNode(metadataAsTree)
+            .map(n -> n.getAttribute("value")).orElse(null);
+    }
+
+    Optional<IIOMetadataNode> findJfifCommentNode(Node metadataAsTree) {
+        return StreamSupport.stream(iterable(metadataAsTree.getChildNodes()).spliterator(), false)
             .filter(n -> "Text".equals(n.getNodeName()))
             .findFirst()
-            .flatMap(n -> StreamSupport.stream(iterable(n.getChildNodes()).spliterator(), false).findFirst())
-            .map(n -> n.getAttribute("value")).orElse(null);
+            .flatMap(n -> StreamSupport.stream(iterable(n.getChildNodes()).spliterator(), false).findFirst());
     }
 
     public static Iterable<IIOMetadataNode> iterable(final NodeList nodeList) {

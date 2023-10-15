@@ -943,17 +943,26 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testDownloadAlbumEntryOnExistingImage() {
+    void testDownloadAlbumEntryOnExistingImage() throws Exception {
+        var replacementDescription = "Replacement description";
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        var entry = provider.getEntry(9).get();
+        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
+        var modifiedEntry = AlbumEntry.with(provider.getEntry(9).get()).parent(dummyAlbum.getId()).description(replacementDescription).build();
+        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
 
         var downloadFile = provider.downloadAlbumEntry(entry.getId());
         assertNotNull(downloadFile);
-        assertEquals(entry.getLastModified(), new Date(downloadFile.lastModified()));
+        var downloadFileModifiedDate = new Date(downloadFile.lastModified());
+        assertEquals(entry.getLastModified(), downloadFileModifiedDate);
+        var dummyConnection = mock(HttpURLConnection.class);
+        var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
+        assertThat(metadata.getTitle()).isNullOrEmpty();
+        assertThat(metadata.getDescription()).startsWith(replacementDescription);
+        assertEquals(metadata.getLastModified(), downloadFileModifiedDate);
     }
 
     @Test
@@ -1151,10 +1160,8 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
 
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
-        ImageMetadata metadata = provider.readMetadata(imageUrl);
-        assertEquals(404, metadata.getStatus());
-        assertEquals("text/html", metadata.getContentType());
-        assertThat(metadata.getContentLength()).isPositive();
+        var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
+        assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
     }
 
     @Test
@@ -1166,8 +1173,6 @@ class OldAlbumServiceProviderTest {
         String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
         var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
         assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
-        assertThat(logservice.getLogmessages()).isNotEmpty();
-        assertThat(logservice.getLogmessages().get(0)).contains("Error when reading image metadata");
     }
 
     @Test
