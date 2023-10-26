@@ -593,6 +593,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) {
         Collection<Entry> entries = new ArrayList<>();
         entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formatLastModifiedTimeAsExifDateString(albumEntry)));
+        entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.getTitle()));
         try (var bytes = new ByteArrayOutputStream()) {
             bytes.write("Exif".getBytes(StandardCharsets.US_ASCII));
             bytes.write(new byte[2]);
