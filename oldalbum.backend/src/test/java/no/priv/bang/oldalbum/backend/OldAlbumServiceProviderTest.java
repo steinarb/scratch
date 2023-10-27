@@ -51,6 +51,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
 import org.jsoup.nodes.Element;
@@ -1010,6 +1011,16 @@ class OldAlbumServiceProviderTest {
         var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
         var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").contains("from url");
+    }
+
+    @Test
+    void testFindMarkerSequenceAndCreateIfNotFoundWithEmptyNodeList() {
+        var provider = new OldAlbumServiceProvider();
+        var root = new IIOMetadataNode("root");
+        assertEquals(0, root.getChildNodes().getLength());
+        var markerNode = provider.findMarkerSequenceAndCreateIfNotFound(root);
+        assertEquals(1, root.getChildNodes().getLength());
+        assertThat(markerNode.getNodeName()).startsWith("markerSequence");
     }
 
     @Test
