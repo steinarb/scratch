@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,6 +52,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.imageio.IIOImage;
+import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
@@ -1011,6 +1014,22 @@ class OldAlbumServiceProviderTest {
         var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
         var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").contains("from url");
+    }
+
+    @Test
+    void testWriteImageWithModifiedMetadataToTempFile() {
+        var nonexistingFile = Paths.get("nosuchdirectory", "nosuchfile.jpg").toFile();
+        var albumEntry = AlbumEntry.with().title("Some title").lastModified(new Date()).build();
+        var metadataAsTree = new IIOMetadataNode("root");
+        var metadata = mock(IIOMetadata.class);
+        when(metadata.getAsTree(anyString())).thenReturn(metadataAsTree);
+        var image = mock(IIOImage.class);
+        when(image.getMetadata()).thenReturn(metadata);
+        var provider = new OldAlbumServiceProvider();
+        var e = assertThrows(
+            OldAlbumException.class,
+            () -> provider.writeImageWithModifiedMetadataToTempFile(nonexistingFile, albumEntry, image, null));
+        assertThat(e.getMessage()).startsWith("Unable to save local copy of album entry");
     }
 
     @Test
