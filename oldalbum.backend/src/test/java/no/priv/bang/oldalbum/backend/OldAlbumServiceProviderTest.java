@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -1081,15 +1082,9 @@ class OldAlbumServiceProviderTest {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
-        var connectionFactory = mock(HttpConnectionFactory.class);
         var imageFileName = "jpeg/acirc1_with_exif_datetime.jpg";
-        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(imageFileName).toURI()), BasicFileAttributes.class);
-        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
-        var inputstream = getClass().getClassLoader().getResourceAsStream(imageFileName);
-        var connection = mock(HttpURLConnection.class);
-        when(connection.getLastModified()).thenReturn(lastModifiedTime);
-        when(connection.getInputStream()).thenReturn(inputstream);
-        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
         provider.setConnectionFactory(connectionFactory);
 
         var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime.jpg");
@@ -1104,15 +1099,9 @@ class OldAlbumServiceProviderTest {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
-        var connectionFactory = mock(HttpConnectionFactory.class);
         var imageFileName = "jpeg/acirc1_with_exif_datetime_and_image_description.jpg";
-        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(imageFileName).toURI()), BasicFileAttributes.class);
-        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
-        var inputstream = getClass().getClassLoader().getResourceAsStream(imageFileName);
-        var connection = mock(HttpURLConnection.class);
-        when(connection.getLastModified()).thenReturn(lastModifiedTime);
-        when(connection.getInputStream()).thenReturn(inputstream);
-        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
         provider.setConnectionFactory(connectionFactory);
 
         var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description.jpg");
@@ -1127,15 +1116,9 @@ class OldAlbumServiceProviderTest {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
-        var connectionFactory = mock(HttpConnectionFactory.class);
         var imageFileName = "jpeg/acirc1_with_exif_datetime_and_image_description_and_user_comment.jpg";
-        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(imageFileName).toURI()), BasicFileAttributes.class);
-        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
-        var inputstream = getClass().getClassLoader().getResourceAsStream(imageFileName);
-        var connection = mock(HttpURLConnection.class);
-        when(connection.getLastModified()).thenReturn(lastModifiedTime);
-        when(connection.getInputStream()).thenReturn(inputstream);
-        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
         provider.setConnectionFactory(connectionFactory);
 
         var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description_and_user_comment.jpg");
@@ -1789,6 +1772,22 @@ class OldAlbumServiceProviderTest {
         }
 
         return null;
+    }
+
+    HttpConnectionFactory mockHttpConnectionReturningClasspathResource(String classpathResource, long lastModifiedTime) throws IOException {
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var inputstream = getClass().getClassLoader().getResourceAsStream(classpathResource);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getLastModified()).thenReturn(lastModifiedTime);
+        when(connection.getInputStream()).thenReturn(inputstream);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        return connectionFactory;
+    }
+
+    long findLastModifiedTimeOfClasspathResource(String classpathResource) throws IOException, URISyntaxException {
+        var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(classpathResource).toURI()), BasicFileAttributes.class);
+        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
+        return lastModifiedTime;
     }
 
 }
