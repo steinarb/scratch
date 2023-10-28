@@ -561,6 +561,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     writer = ImageIO.getImageWriter(reader);
                     reader.setInput(inputStream);
                     image = reader.readAll(0, null);
+                } else {
+                    throw new OldAlbumException(String.format("Album entry matching id=%d with url=\"%s\" not recognizable as an image. Download failed", albumEntry.getId(), albumEntry.getImageUrl()));
                 }
             }
         } catch (IOException e) {
