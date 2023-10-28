@@ -1080,6 +1080,16 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testsetJfifCommentFromAlbumEntryDescriptionAndCreateCommentIfNotFound() {
+        var provider = new OldAlbumServiceProvider();
+        var entry = AlbumEntry.with().description("some description").build();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        provider.setJfifCommentFromAlbumEntryDescription(markerSequence, entry);
+        var comList = markerSequence.getElementsByTagName("com");
+        assertEquals(1, comList.getLength());
+    }
+
+    @Test
     void testCreateZipFileFromStagingDirectoryWhenUnableToCreateZipFile() {
         var provider = new OldAlbumServiceProvider();
         var notADirectory = Path.of("/notadirectory/notastagingdirectory");

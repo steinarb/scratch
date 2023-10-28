@@ -633,6 +633,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         if (comList.getLength() > 0) {
             var com = (IIOMetadataNode) comList.item(0);
             com.setAttribute("comment", albumEntry.getDescription());
+        } else {
+            var com = new IIOMetadataNode("com");
+            com.setAttribute("comment", albumEntry.getDescription());
+            markerSequence.appendChild(com);
         }
     }
 
