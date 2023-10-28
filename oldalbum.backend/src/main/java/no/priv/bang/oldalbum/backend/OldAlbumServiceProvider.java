@@ -64,6 +64,7 @@ import java.util.zip.ZipOutputStream;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOInvalidTreeException;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
@@ -567,30 +568,31 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
         }
 
-        var metadata = image.getMetadata();
-        var metadataAsTree = (IIOMetadataNode) metadata.getAsTree("javax_imageio_jpeg_image_1.0");
-        var markerSequence = findMarkerSequenceAndCreateIfNotFound(metadataAsTree);
-        setJfifCommentFromAlbumEntryDescription(markerSequence, albumEntry);
-        writeDateTitleAndDescriptionToExifDataStructure(markerSequence, albumEntry);
-        return writeImageWithModifiedMetadataToTempFile(tempfile, albumEntry, image, writer, metadataAsTree);
+        return writeImageWithModifiedMetadataToTempFile(tempfile, albumEntry, image, writer);
     }
 
-    File writeImageWithModifiedMetadataToTempFile(File tempfile, AlbumEntry albumEntry, IIOImage image, ImageWriter writer, IIOMetadataNode metadataAsTree) {
-        try (var outputStream = ImageIO.createImageOutputStream(new FileOutputStream(tempfile))){
-            writer.setOutput(outputStream);
-            var param = writer.getDefaultWriteParam();
-            var modifiedMetadata = writer.getDefaultImageMetadata(ImageTypeSpecifiers.createFromRenderedImage(image.getRenderedImage()), param);
-            modifiedMetadata.setFromTree("javax_imageio_jpeg_image_1.0", metadataAsTree);
-            image.setMetadata(modifiedMetadata);
-            writer.write(image);
-            Files.setLastModifiedTime(tempfile.toPath(), FileTime.from(albumEntry.getLastModified().toInstant()));
-            return tempfile;
+    File writeImageWithModifiedMetadataToTempFile(File tempfile, AlbumEntry albumEntry, IIOImage image, ImageWriter writer) {
+        var metadataAsTree = (IIOMetadataNode) image.getMetadata().getAsTree("javax_imageio_jpeg_image_1.0");
+        var markerSequence = findMarkerSequenceAndCreateIfNotFound(metadataAsTree);
+        setJfifCommentFromAlbumEntryDescription(markerSequence, albumEntry);
+        try {
+            writeDateTitleAndDescriptionToExifDataStructure(markerSequence, albumEntry);
+            try (var outputStream = ImageIO.createImageOutputStream(new FileOutputStream(tempfile))){
+                writer.setOutput(outputStream);
+                var param = writer.getDefaultWriteParam();
+                var modifiedMetadata = writer.getDefaultImageMetadata(ImageTypeSpecifiers.createFromRenderedImage(image.getRenderedImage()), param);
+                modifiedMetadata.setFromTree("javax_imageio_jpeg_image_1.0", metadataAsTree);
+                image.setMetadata(modifiedMetadata);
+                writer.write(image);
+                Files.setLastModifiedTime(tempfile.toPath(), FileTime.from(albumEntry.getLastModified().toInstant()));
+                return tempfile;
+            }
         } catch (IOException e) {
             throw new OldAlbumException(String.format("Unable to save local copy of album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
         }
     }
 
-    void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) {
+    void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) throws IOException {
         Collection<Entry> entries = new ArrayList<>();
         entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formatLastModifiedTimeAsExifDateString(albumEntry)));
         entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.getTitle()));
@@ -605,8 +607,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             exif.setAttribute("MarkerTag", String.valueOf(0xE1)); // APP1 or "225"
             exif.setUserObject(bytes.toByteArray());
             markerSequence.appendChild(exif);
-        } catch (IOException e) {
-            throw new OldAlbumException(String.format("Failed to create EXIF structure when saving local copy of album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
         }
     }
 
