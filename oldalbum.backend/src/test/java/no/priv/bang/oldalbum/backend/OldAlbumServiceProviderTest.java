@@ -1129,6 +1129,22 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadMetadataOnNonImageFile() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "logback.xml";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/logback.xml");
+        assertNotNull(imageMetadata);
+        assertNull(imageMetadata.getTitle());
+        assertNull(imageMetadata.getDescription());
+    }
+
+    @Test
     void testReadImageMetadataImageNotFound() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
