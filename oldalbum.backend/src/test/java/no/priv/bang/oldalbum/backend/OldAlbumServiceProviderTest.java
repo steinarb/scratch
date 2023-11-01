@@ -78,6 +78,7 @@ import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
+import no.priv.bang.oldalbum.backend.imageio.ImageioSpiRegistration;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 import no.priv.bang.oldalbum.services.OldAlbumException;
@@ -952,8 +953,10 @@ class OldAlbumServiceProviderTest {
         var replacementDescription = "Replacement description";
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
+        var imageIOService = new ImageioSpiRegistration();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
+        provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
         var modifiedEntry = AlbumEntry.with(provider.getEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
@@ -974,8 +977,10 @@ class OldAlbumServiceProviderTest {
     void testDownloadAlbumEntryOnExistingAlbum() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
+        var imageIOService = new ImageioSpiRegistration();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
+        provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var albumentry = provider.getEntry(4).get();
         var albumpictures = provider.getChildren(albumentry.getId());
@@ -995,8 +1000,10 @@ class OldAlbumServiceProviderTest {
         var replacementDescription = "Replacement description";
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
+        var imageIOService = new ImageioSpiRegistration();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
+        provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
         var modifiedEntry = AlbumEntry.with(provider.getEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
