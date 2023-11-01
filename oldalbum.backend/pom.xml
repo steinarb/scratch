@@ -58,6 +58,12 @@
             <artifactId>imageio-metadata</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.oldalbum</groupId>
+            <artifactId>oldalbum.backend.imageio</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-psd</artifactId>
             <scope>test</scope>

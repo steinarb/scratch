@@ -94,6 +94,7 @@ import com.twelvemonkeys.imageio.util.ImageTypeSpecifiers;
 import static com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil.*;
 
 import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
+import no.priv.bang.oldalbum.services.ImageIOService;
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
@@ -113,6 +114,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     private static final String DISPLAY_TEXT_RESOURCES = "i18n.Texts";
     private Logger logger;
     private DataSource datasource;
+    private ImageIOService imageIOService;
     private HttpConnectionFactory connectionFactory;
     private Locale defaultLocale;
 
@@ -124,6 +126,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Reference(target = "(osgi.jndi.service.name=jdbc/oldalbum)")
     public void setDataSource(DataSource datasource) {
         this.datasource = datasource;
+    }
+
+    @Reference
+    public void setImageIOService(ImageIOService service) {
+        this.imageIOService = service;
     }
 
     @Activate
@@ -558,7 +565,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 var readers = ImageIO.getImageReaders(inputStream);
                 if (readers.hasNext()) {
                     var reader = readers.next();
-                    writer = ImageIO.getImageWriter(reader);
+                    writer = imageIOService.getImageWriter(reader);
                     reader.setInput(inputStream);
                     image = reader.readAll(0, null);
                 } else {

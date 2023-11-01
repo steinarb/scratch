@@ -48,7 +48,7 @@
 
     <properties>
         <open-iconic.version>1.1.1</open-iconic.version>
-        <twelvemonkeys.version>3.10.0</twelvemonkeys.version>
+        <twelvemonkeys.version>3.11.0-SNAPSHOT</twelvemonkeys.version>
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
             **/OldAlbumProductionDatabase.java,
