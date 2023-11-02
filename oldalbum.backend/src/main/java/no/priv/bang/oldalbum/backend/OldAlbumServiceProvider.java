@@ -82,6 +82,7 @@ import org.w3c.dom.NodeList;
 
 import com.twelvemonkeys.imageio.metadata.CompoundDirectory;
 import com.twelvemonkeys.imageio.metadata.Entry;
+import com.twelvemonkeys.imageio.metadata.exif.EXIF;
 import com.twelvemonkeys.imageio.metadata.jpeg.JPEG;
 import com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegment;
 import com.twelvemonkeys.imageio.metadata.tiff.IFD;
@@ -602,7 +603,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) throws IOException {
         Collection<Entry> entries = new ArrayList<>();
-        entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formatLastModifiedTimeAsExifDateString(albumEntry)));
+        var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
+        entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formattedDateTime));
+        entries.add(new TIFFEntry(EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime));
         entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.getTitle()));
         try (var bytes = new ByteArrayOutputStream()) {
             bytes.write("Exif".getBytes(StandardCharsets.US_ASCII));
