@@ -107,6 +107,7 @@ import no.priv.bang.oldalbum.services.bean.LocaleBean;
 @Component(immediate = true, property= { "defaultlocale=nb_NO" })
 public class OldAlbumServiceProvider implements OldAlbumService {
 
+    static final byte[] EXIF_ASCII_ENCODING = Arrays.copyOf("ASCII".getBytes(StandardCharsets.UTF_8), 8);
     static final int EXIF_DATETIME = 306;
     static final int EXIF_DESCRIPTION = 0x010e;
     static final int EXIF_EXIF = 34665;
@@ -607,6 +608,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formattedDateTime));
         entries.add(new TIFFEntry(EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime));
         entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.getTitle()));
+        if (albumEntry.getDescription() != null) {
+            entries.add(new TIFFEntry(EXIF.TAG_USER_COMMENT, formatExifUserComment(albumEntry.getDescription())));
+        }
+
         try (var bytes = new ByteArrayOutputStream()) {
             bytes.write("Exif".getBytes(StandardCharsets.US_ASCII));
             bytes.write(new byte[2]);
@@ -626,6 +631,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
         var datetime = exifDateTimeFormat.format(albumEntry.getLastModified());
         return datetime;
+    }
+
+    public byte[] formatExifUserComment(String userComment) {
+        var userCommentInUtf8 = userComment.getBytes(StandardCharsets.UTF_8);
+        var userCommentWithTag = new byte[EXIF_ASCII_ENCODING.length + userCommentInUtf8.length];
+        System.arraycopy(EXIF_ASCII_ENCODING, 0, userCommentWithTag, 0, EXIF_ASCII_ENCODING.length);
+        System.arraycopy(userCommentInUtf8, 0, userCommentWithTag, EXIF_ASCII_ENCODING.length, userCommentInUtf8.length);
+        return userCommentWithTag;
     }
 
     IIOMetadataNode findMarkerSequenceAndCreateIfNotFound(IIOMetadataNode metadataAsTree) {
