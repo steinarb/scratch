@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -1087,13 +1088,27 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testsetJfifCommentFromAlbumEntryDescriptionAndCreateCommentIfNotFound() {
+    void testSetJfifCommentFromAlbumEntryDescriptionAndCreateCommentIfNotFound() {
         var provider = new OldAlbumServiceProvider();
         var entry = AlbumEntry.with().description("some description").build();
         var markerSequence = new IIOMetadataNode("markerSequence");
         provider.setJfifCommentFromAlbumEntryDescription(markerSequence, entry);
         var comList = markerSequence.getElementsByTagName("com");
         assertEquals(1, comList.getLength());
+    }
+
+    @Test
+    void testFormatExifUserComment() {
+        var provider = new OldAlbumServiceProvider();
+        var originalUserComment = "This is a user comment";
+
+        var exifUserComment = provider.formatExifUserComment(originalUserComment);
+
+        var splitUserComment = provider.splitUserCommentInEncodingAndComment(exifUserComment);
+        assertThat(splitUserComment).hasSize(2);
+        assertThat(splitUserComment.get(0)).isEqualTo(OldAlbumServiceProvider.EXIF_ASCII_ENCODING);
+        var decodedComment = new String(splitUserComment.get(1), StandardCharsets.UTF_8);
+        assertEquals(originalUserComment, decodedComment);
     }
 
     @Test
