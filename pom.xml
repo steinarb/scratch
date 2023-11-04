@@ -37,10 +37,10 @@
         <mockrunner.version>2.0.7</mockrunner.version>
         <mockito.version>5.4.0</mockito.version>
         <assertj.version>3.24.2</assertj.version>
-        <pax.jdbc.version>1.5.5</pax.jdbc.version>
+        <pax.jdbc.version>1.5.6</pax.jdbc.version>
         <liquibase-feature.version>4.23.0</liquibase-feature.version>
         <jsoup.version>1.16.1</jsoup.version>
-        <derby.version>10.14.2.0</derby.version>
+        <derby.version>10.14.2.0</derby.version> <!-- version used by pax-jdbc 1.5.6 -->
         <postgresql.version>42.6.0</postgresql.version>
         <jersey-feature.version>1.9.6</jersey-feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
