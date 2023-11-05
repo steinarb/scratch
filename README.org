@@ -44,6 +44,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2023-11-05 Sun 15:03> |  1.9.17 | Use jersey 2.41, jackson 2.15.3, pax-jdbc 1.5.6, junit jupiter 5.10.0, mockito 5.7.0, and mockrunner 2.0.7     |
 | <2023-10-31 Tue 21:45> |  1.9.16 | Add download of images and albums, EXIF metadata support on import and download                                |
 | <2023-07-30 Sun 14:50> |  1.9.15 | Use jersey 2.40 and jackson 2.15.2                                                                             |
 | <2023-07-14 Fri 14:46> |  1.9.14 | Mistaken unneccessary release for Java 17                                                                      |
