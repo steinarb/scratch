@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.oldalbum</groupId>
         <artifactId>oldalbum</artifactId>
-        <version>1.9.17</version>
+        <version>1.9.18-SNAPSHOT</version>
     </parent>
     <artifactId>karaf</artifactId>
 
