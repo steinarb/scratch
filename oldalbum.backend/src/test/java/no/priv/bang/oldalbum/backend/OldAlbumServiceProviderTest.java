@@ -68,7 +68,6 @@ import org.osgi.service.jdbc.DataSourceFactory;
 import com.mockrunner.mock.jdbc.MockConnection;
 import com.twelvemonkeys.imageio.metadata.Entry;
 import com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegment;
-
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -1095,6 +1094,77 @@ class OldAlbumServiceProviderTest {
         provider.setJfifCommentFromAlbumEntryDescription(markerSequence, entry);
         var comList = markerSequence.getElementsByTagName("com");
         assertEquals(1, comList.getLength());
+    }
+
+    @Test
+    void testWriteDateTitleAndDescriptionToExifDataStructure() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        var lastModified = new Date();
+        var title = "A title";
+        var description = "A descrption";
+        var entry = AlbumEntry.with().lastModified(lastModified).title(title).description(description).build();
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        var unknown = markerSequence.getElementsByTagName("unknown");
+        assertEquals(1, unknown.getLength());
+        var exifNode = (IIOMetadataNode) unknown.item(0);
+        var userObject = (byte[]) exifNode.getUserObject();
+        assertThat(userObject).hasSize(136);
+    }
+
+    @Test
+    void testWriteDateTitleAndDescriptionToExifDataStructureWithNulLastModifiedDate() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        var title = "A title";
+        var description = "A descrption";
+        var entry = AlbumEntry.with().title(title).description(description).build();
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        var unknown = markerSequence.getElementsByTagName("unknown");
+        assertEquals(1, unknown.getLength());
+        var exifNode = (IIOMetadataNode) unknown.item(0);
+        var userObject = (byte[]) exifNode.getUserObject();
+        assertThat(userObject).hasSize(72);
+    }
+
+    @Test
+    void testWriteDateTitleAndDescriptionToExifDataStructureWithNullTitle() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        var lastModified = new Date();
+        var description = "A descrption";
+        var entry = AlbumEntry.with().lastModified(lastModified).description(description).build();
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        var unknown = markerSequence.getElementsByTagName("unknown");
+        assertEquals(1, unknown.getLength());
+        var exifNode = (IIOMetadataNode) unknown.item(0);
+        var userObject = (byte[]) exifNode.getUserObject();
+        assertThat(userObject).hasSize(116);
+    }
+
+    @Test
+    void testWriteDateTitleAndDescriptionToExifDataStructureWithNullDescription() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        var lastModified = new Date();
+        var title = "A title";
+        var entry = AlbumEntry.with().lastModified(lastModified).title(title).build();
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        var unknown = markerSequence.getElementsByTagName("unknown");
+        assertEquals(1, unknown.getLength());
+        var exifNode = (IIOMetadataNode) unknown.item(0);
+        var userObject = (byte[]) exifNode.getUserObject();
+        assertThat(userObject).hasSize(104);
+    }
+
+    @Test
+    void testWriteDateTitleAndDescriptionToExifDataStructureWithAllMetadataNull() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        var entry = AlbumEntry.with().build();
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        var unknown = markerSequence.getElementsByTagName("unknown");
+        assertEquals(0, unknown.getLength());
     }
 
     @Test

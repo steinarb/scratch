@@ -605,12 +605,22 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) throws IOException {
         Collection<Entry> entries = new ArrayList<>();
-        var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
-        entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formattedDateTime));
-        entries.add(new TIFFEntry(EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime));
-        entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.getTitle()));
-        if (albumEntry.getDescription() != null) {
+        if (albumEntry.getLastModified() != null) {
+            var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
+            entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formattedDateTime));
+            entries.add(new TIFFEntry(EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime));
+        }
+
+        if (!StringUtil.isEmpty(albumEntry.getTitle())) {
+            entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.getTitle()));
+        }
+
+        if (!StringUtil.isEmpty(albumEntry.getDescription())) {
             entries.add(new TIFFEntry(EXIF.TAG_USER_COMMENT, formatExifUserComment(albumEntry.getDescription())));
+        }
+
+        if (entries.isEmpty()) {
+            return;
         }
 
         try (var bytes = new ByteArrayOutputStream()) {
