@@ -91,6 +91,7 @@ import com.twelvemonkeys.imageio.metadata.tiff.TIFFEntry;
 import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
 import com.twelvemonkeys.imageio.metadata.tiff.TIFFWriter;
 import com.twelvemonkeys.imageio.util.ImageTypeSpecifiers;
+import com.twelvemonkeys.lang.StringUtil;
 
 import static com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil.*;
 
@@ -652,6 +653,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     void setJfifCommentFromAlbumEntryDescription(IIOMetadataNode markerSequence, AlbumEntry albumEntry) {
+        if (StringUtil.isEmpty(albumEntry.getDescription())) {
+            return;
+        }
+
         var comList = markerSequence.getElementsByTagName("com");
         if (comList.getLength() > 0) {
             var com = (IIOMetadataNode) comList.item(0);
