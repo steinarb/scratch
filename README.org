@@ -109,6 +109,7 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
        feature:repo-add mvn:no.priv.bang.oldalbum/karaf/LATEST/xml/features
        feature:install oldalbum-with-derby
      #+END_EXAMPLE
+  3. Visit http://localhost:8181/oldalbum in a web browser
 
 *** Installation with production database
  Procedure:
