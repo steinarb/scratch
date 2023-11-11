@@ -12,6 +12,9 @@ Kjør følgende i karaf console:
   feature:repo-add mvn:no.priv.bang.handlereg/karaf/LATEST/xml/features
   feature:install handlereg-with-derby
 #+END_EXAMPLE
+
+Åpne følgende URL i en nettleser: http://localhost:8181/handlereg
+
 ** Konfigurering av PostgreSQL-database
 
 Kjør følgende i karaf console:
