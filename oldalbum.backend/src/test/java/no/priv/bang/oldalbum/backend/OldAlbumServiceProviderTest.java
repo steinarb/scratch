@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,7 +30,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,10 +51,6 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.imageio.IIOImage;
-import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
@@ -962,15 +958,18 @@ class OldAlbumServiceProviderTest {
         var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
         var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
 
-        var downloadFile = provider.downloadAlbumEntry(entry.getId());
-        assertNotNull(downloadFile);
-        var downloadFileModifiedDate = new Date(downloadFile.lastModified());
-        assertEquals(entry.getLastModified(), downloadFileModifiedDate);
+        var streamingOutput = provider.downloadAlbumEntry(entry.getId());
+        assertNotNull(streamingOutput);
+        var downloadFile = Files.createTempFile("image", "jpg").toFile();
+        try(var outputStream = new FileOutputStream(downloadFile)) {
+            streamingOutput.write(outputStream);
+        }
+
         var dummyConnection = mock(HttpURLConnection.class);
         var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
         assertThat(metadata.getTitle()).startsWith(replacementTitle);
         assertThat(metadata.getDescription()).startsWith(replacementDescription);
-        assertEquals(metadata.getLastModified(), downloadFileModifiedDate);
+        assertEquals(entry.getLastModified(), metadata.getLastModified());
     }
 
     @Test
@@ -985,17 +984,24 @@ class OldAlbumServiceProviderTest {
         var albumentry = provider.getAlbumEntry(4).get();
         var albumpictures = provider.getChildren(albumentry.getId());
 
-        var downloadAlbum = provider.downloadAlbumEntry(albumentry.getId());
-        assertNotNull(downloadAlbum);
+        var streamingOutput = provider.downloadAlbumEntry(albumentry.getId());
+        assertNotNull(streamingOutput);
+
+        // Stream the album into a zip file
+        var downloadAlbum = Files.createTempFile("album", "zip");
+        try(var outputStream = new FileOutputStream(downloadAlbum.toFile())) {
+            streamingOutput.write(outputStream);
+        }
 
         // Check that zip members last modified time have been set to albumEntry values
         var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).getImageUrl());
-        var zipentry = findZipEntryFor(downloadAlbum, picturefilename);
+        var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
         assertEquals(albumpictures.get(0).getLastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
     }
 
     @Test
     void testDownloadAlbumEntryOnImageThatIsATextFile() throws Exception {
+        // TODO endre testen til det tittelen sier at den skal være
         var replacementTitle = "Replacement title";
         var replacementDescription = "Replacement description";
         var provider = new OldAlbumServiceProvider();
@@ -1009,71 +1015,48 @@ class OldAlbumServiceProviderTest {
         var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
         var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
 
-        var downloadFile = provider.downloadAlbumEntry(entry.getId());
-        assertNotNull(downloadFile);
-        var downloadFileModifiedDate = new Date(downloadFile.lastModified());
-        assertEquals(entry.getLastModified(), downloadFileModifiedDate);
-        var dummyConnection = mock(HttpURLConnection.class);
-        var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
-        assertThat(metadata.getTitle()).startsWith(replacementTitle);
-        assertThat(metadata.getDescription()).startsWith(replacementDescription);
-        assertEquals(metadata.getLastModified(), downloadFileModifiedDate);
+        var streamingOutput = provider.downloadAlbumEntry(entry.getId());
+        assertNotNull(streamingOutput);
+        var downloadFile = Files.createTempFile("image", "jpg").toFile();
+        try(var outputStream = new FileOutputStream(downloadFile)) {
+            streamingOutput.write(outputStream);
+        }
     }
 
     @Test
     void testDownloadImageUrlToTempFileOnNonImageFile() throws Exception {
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
         var imageFileName = "logback.xml";
         var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
         var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
         provider.setConnectionFactory(connectionFactory);
         var albumEntry = AlbumEntry.with().imageUrl("http://localhost/logback.xml").title("Title").description("description").build();
-        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry));
         assertThat(e.getMessage()).startsWith("Album entry matching id").endsWith(" not recognizable as an image. Download failed");
     }
 
     @Test
     void testDownloadImageUrlToTempFileWithNullImageUrl() {
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().build();
-        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
     }
 
     @Test
     void testDownloadImageUrlToTempFileWithEmptyImageUrl() {
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().imageUrl("").build();
-        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").endsWith("imageUrl is missing");
     }
 
     @Test
     void testDownloadImageUrlToTempFileWithWrongImageUrl() {
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         var provider = new OldAlbumServiceProvider();
         var albumEntry = AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
-        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlToTempFile(albumEntry, tempDir));
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry));
         assertThat(e.getMessage()).startsWith("Unable to download album entry matching id").contains("from url");
-    }
-
-    @Test
-    void testWriteImageWithModifiedMetadataToTempFile() {
-        var nonexistingFile = Paths.get("nosuchdirectory", "nosuchfile.jpg").toFile();
-        var albumEntry = AlbumEntry.with().title("Some title").lastModified(new Date()).build();
-        var metadataAsTree = new IIOMetadataNode("root");
-        var metadata = mock(IIOMetadata.class);
-        when(metadata.getAsTree(anyString())).thenReturn(metadataAsTree);
-        var image = mock(IIOImage.class);
-        when(image.getMetadata()).thenReturn(metadata);
-        var provider = new OldAlbumServiceProvider();
-        var e = assertThrows(
-            OldAlbumException.class,
-            () -> provider.writeImageWithModifiedMetadataToTempFile(nonexistingFile, albumEntry, image, null));
-        assertThat(e.getMessage()).startsWith("Unable to save local copy of album entry");
     }
 
     @Test
@@ -1179,65 +1162,6 @@ class OldAlbumServiceProviderTest {
         assertThat(splitUserComment.get(0)).isEqualTo(OldAlbumServiceProvider.EXIF_ASCII_ENCODING);
         var decodedComment = new String(splitUserComment.get(1), StandardCharsets.UTF_8);
         assertEquals(originalUserComment, decodedComment);
-    }
-
-    @Test
-    void testCreateZipFileFromStagingDirectoryWhenUnableToCreateZipFile() {
-        var provider = new OldAlbumServiceProvider();
-        var notADirectory = Path.of("/notadirectory/notastagingdirectory");
-
-        var e = assertThrows(OldAlbumException.class, () -> provider.createZipFileFromStagingDirectory(notADirectory));
-        assertThat(e.getMessage()).startsWith("Unable to create zip file for downloaded album");
-    }
-
-    @Test
-    void testCreateZipFileFromStagingDirectoryWhenNotFindingFiles() {
-        var provider = new OldAlbumServiceProvider();
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
-        var notfoundDirectory = tempDir.resolve("notfound");
-
-        var e = assertThrows(OldAlbumException.class, () -> provider.createZipFileFromStagingDirectory(notfoundDirectory));
-        assertThat(e.getMessage()).startsWith("Did not find files to include in zip file for downloaded album");
-    }
-
-    @Test
-    void testAddFileEntryToZipArchiveWhenAddingNonExistingFile() {
-        var provider = new OldAlbumServiceProvider();
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
-        var notfoundFile = tempDir.resolve("notfound").toFile();
-        var zipOut = mock(ZipOutputStream.class);
-
-        var e = assertThrows(OldAlbumException.class, () -> provider.addFileEntryToZipArchive(null, zipOut, notfoundFile));
-        assertThat(e.getMessage()).startsWith("Unable to add item to zip file for downloaded album");
-    }
-
-    @Test
-    void testCreateAlbumZipFileStagingDirectoryWithNonExistingTempDir() {
-        var provider = new OldAlbumServiceProvider();
-        var albumEntry = AlbumEntry.with().path("/moto/vfr96").build();
-        var tempDir = Path.of("/notfound");
-
-        var e = assertThrows(OldAlbumException.class, () -> provider.createAlbumZipFileStagingDirectory(albumEntry, tempDir));
-        assertThat(e.getMessage()).startsWith("Failed to create staging directory for album");
-    }
-
-    @Test
-    void testDeleteDirectoryAndContentsIfItExists() throws Exception {
-        var provider = new OldAlbumServiceProvider();
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
-        var dirToDelete = tempDir.resolve("directorytodelete");
-        Files.createDirectories(dirToDelete);
-
-        assertTrue(provider.deleteDirectoryAndContentsIfItExists(dirToDelete));
-    }
-
-    @Test
-    void testDeleteDirectoryAndContentsOnNonExistingDirectory() {
-        var provider = new OldAlbumServiceProvider();
-        var notADirectory = Path.of("/notadirectory/notastagingdirectory");
-
-        var e = assertThrows(OldAlbumException.class, () -> provider.deleteDirectoryAndContents(notADirectory));
-        assertThat(e.getMessage()).startsWith("Failed to delete existing staging directory for album ");
     }
 
     @Test

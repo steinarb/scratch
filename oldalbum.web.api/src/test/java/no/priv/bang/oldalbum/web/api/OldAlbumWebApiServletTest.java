@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -36,15 +37,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
 
-import org.assertj.core.util.Files;
 import org.glassfish.jersey.server.ServerProperties;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -250,9 +253,20 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testDownloadImage() throws Exception {
         int albumEntryId = 9;
-        var tempfile = Files.newTemporaryFile();
+        var imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        var lastModifiedDate = new Date();
+        var entry = AlbumEntry.with().id(albumEntryId).album(false).path("/moto/places/grava1").imageUrl(imageUrl).lastModified(lastModifiedDate).build();
+        var streamingOutput = new StreamingOutput() {
+
+                @Override
+                public void write(OutputStream output) throws IOException, WebApplicationException {
+                    var inputStream = getClass().getClassLoader().getResourceAsStream("allroutes.json");
+                    inputStream.transferTo(output);
+                }
+            };
         var backend = mock(OldAlbumService.class);
-        when(backend.downloadAlbumEntry(anyInt())).thenReturn(tempfile);
+        when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.of(entry));
+        when(backend.downloadAlbumEntry(anyInt())).thenReturn(streamingOutput);
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, logservice, useradmin);

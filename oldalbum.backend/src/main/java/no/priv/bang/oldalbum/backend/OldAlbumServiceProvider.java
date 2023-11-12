@@ -19,7 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,8 +26,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
@@ -45,7 +42,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -68,6 +64,8 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.sql.DataSource;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -469,108 +467,51 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
-    public File downloadAlbumEntry(int albumEntryId) {
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
+    public StreamingOutput downloadAlbumEntry(int albumEntryId) {
         var albumEntry = getAlbumEntry(albumEntryId)
             .orElseThrow(() -> new OldAlbumException(String.format("Unable to find album entry matching id=%d in database", albumEntryId)));
         if (albumEntry.isAlbum()) {
-            return downloardAlbumContentToStagingDirectoryAndCreateZipFile(albumEntry, tempDir);
+            return createStreamingZipFileForAlbumContent(albumEntry);
         } else {
-            return downloadImageUrlToTempFile(albumEntry, tempDir);
+            return downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry);
         }
     }
 
-    private File downloardAlbumContentToStagingDirectoryAndCreateZipFile(AlbumEntry albumEntry, Path tempDir) {
-        var stagingDirectory = createAlbumZipFileStagingDirectory(albumEntry, tempDir);
-        copyAlbumContentsToStagingDirectory(albumEntry, stagingDirectory);
-        return createZipFileFromStagingDirectory(stagingDirectory);
-    }
+    StreamingOutput createStreamingZipFileForAlbumContent(AlbumEntry albumEntry) {
+        return new StreamingOutput() {
 
-    File createZipFileFromStagingDirectory(Path stagingDirectory) {
-        var zipFileName = stagingDirectory.toString() + ".zip";
-        var zipFile = new File(zipFileName);
-        try(var zipOut = new ZipOutputStream(new FileOutputStream(zipFile))) {
-            try(var files = Files.walk(stagingDirectory)) {
-                files
-                    .map(Path::toFile)
-                    .filter(File::isFile)
-                    .forEach(f -> addFileEntryToZipArchive(zipFileName, zipOut, f));
-            }
-        } catch (FileNotFoundException e) {
-            throw new OldAlbumException(String.format("Unable to create zip file for downloaded album: %s", zipFileName), e);
-        } catch (IOException e) {
-            throw new OldAlbumException(String.format("Did not find files to include in zip file for downloaded album: %s", zipFileName), e);
-        }
-
-        return zipFile;
-    }
-
-    void addFileEntryToZipArchive(String zipFileName, ZipOutputStream zipArchive, File fileToAdd) {
-        try {
-            var entry = new ZipEntry(fileToAdd.getName());
-            entry.setLastModifiedTime(FileTime.fromMillis(fileToAdd.lastModified())) ;
-            zipArchive.putNextEntry(entry);
-            try (var fis = new FileInputStream(fileToAdd)) {
-                byte[] bytes = new byte[1024];
-                int length;
-                while ((length = fis.read(bytes)) >= 0) {
-                    zipArchive.write(bytes, 0, length);
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                try(var zipOut = new ZipOutputStream(output)) {
+                    for (var child : getChildren(albumEntry.getId())) {
+                        var imageAndWriter = downloadAndReadImageAndCreateWriter(child);
+                        writeImageWithModifiedMetadataToZipArchive(zipOut, child, imageAndWriter);
+                    }
                 }
             }
-            zipArchive.closeEntry();
-        } catch (IOException e) {
-            throw new OldAlbumException(String.format("Unable to add item to zip file for downloaded album: %s", zipFileName), e);
-        }
+        };
     }
 
-    Path createAlbumZipFileStagingDirectory(AlbumEntry albumEntry, Path tempDir) {
-        var path = Path.of(albumEntry.getPath());
-        var albumDirectoryName = path.getName(path.getNameCount()-1);
-        try {
-            var stagingDirectory = tempDir.resolve(albumDirectoryName);
-            deleteDirectoryAndContentsIfItExists(stagingDirectory);
-            return Files.createDirectory(stagingDirectory);
-        } catch (IOException e) {
-            throw new OldAlbumException(String.format("Failed to create staging directory for album \"%s\"", albumDirectoryName), e);
-        }
+    private void writeImageWithModifiedMetadataToZipArchive(ZipOutputStream zipArchive, AlbumEntry albumEntry, ImageAndWriter imageAndWriter) throws IOException {
+        var filename = findFileNamePartOfUrl(albumEntry.getImageUrl());
+        var entry = new ZipEntry(filename);
+        entry.setLastModifiedTime(FileTime.fromMillis(albumEntry.getLastModified().getTime()));
+        zipArchive.putNextEntry(entry);
+        writeImageWithModifiedMetadataToOutputStream(zipArchive, imageAndWriter.writer(), imageAndWriter.image(), albumEntry);
     }
 
-    boolean deleteDirectoryAndContentsIfItExists(Path albumDirectoryName) {
-        if (albumDirectoryName.toFile().exists()) {
-            deleteDirectoryAndContents(albumDirectoryName);
-            return true;
-        }
-
-        return false;
+    StreamingOutput downloadImageUrlAndStreamImageWithModifiedMetadata(AlbumEntry albumEntry) {
+        var imageAndWriter = downloadAndReadImageAndCreateWriter(albumEntry);
+        return writeImageWithModifiedMetadataToTempFile(albumEntry, imageAndWriter.image(), imageAndWriter.writer());
     }
 
-    void deleteDirectoryAndContents(Path albumDirectoryName) {
-        try (var files = Files.walk(albumDirectoryName)){
-            files
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-        } catch (IOException e) {
-            throw new OldAlbumException(String.format("Failed to delete existing staging directory for album \"%s\"", albumDirectoryName), e);
-        }
-    }
-
-    private void copyAlbumContentsToStagingDirectory(AlbumEntry albumEntry, Path stagingDirectory) {
-        for (var child : getChildren(albumEntry.getId())) {
-            downloadImageUrlToTempFile(child, stagingDirectory);
-        }
-    }
-
-    File downloadImageUrlToTempFile(AlbumEntry albumEntry, Path tempDir) {
+    ImageAndWriter downloadAndReadImageAndCreateWriter(AlbumEntry albumEntry) {
         var imageUrl = albumEntry.getImageUrl();
         if (imageUrl == null || imageUrl.isEmpty()) {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d, imageUrl is missing", albumEntry.getId()));
         }
 
-        var fileName = findFileNamePartOfUrl(imageUrl);
-        var tempfile = tempDir.resolve(fileName).toFile();
-        IIOImage image = null;
-        ImageWriter writer = null;
+        ImageAndWriter imageAndWriter = null;
         try {
             HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
             connection.setRequestMethod("GET");
@@ -578,9 +519,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 var readers = ImageIO.getImageReaders(inputStream);
                 if (readers.hasNext()) {
                     var reader = readers.next();
-                    writer = imageIOService.getImageWriter(reader);
+                    var writer = imageIOService.getImageWriter(reader);
                     reader.setInput(inputStream);
-                    image = reader.readAll(0, null);
+                    var image = reader.readAll(0, null);
+                    imageAndWriter = new ImageAndWriter(image, writer);
                 } else {
                     throw new OldAlbumException(String.format("Album entry matching id=%d with url=\"%s\" not recognizable as an image. Download failed", albumEntry.getId(), albumEntry.getImageUrl()));
                 }
@@ -588,28 +530,32 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (IOException e) {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
         }
-
-        return writeImageWithModifiedMetadataToTempFile(tempfile, albumEntry, image, writer);
+        return imageAndWriter;
     }
 
-    File writeImageWithModifiedMetadataToTempFile(File tempfile, AlbumEntry albumEntry, IIOImage image, ImageWriter writer) {
+    StreamingOutput writeImageWithModifiedMetadataToTempFile(AlbumEntry albumEntry, IIOImage image, ImageWriter writer) {
+        return new StreamingOutput() {
+
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                writeImageWithModifiedMetadataToOutputStream(output, writer, image, albumEntry);
+            }
+        };
+    }
+
+    void writeImageWithModifiedMetadataToOutputStream(OutputStream output, ImageWriter writer, IIOImage image, AlbumEntry albumEntry) throws IOException {
         var metadataAsTree = (IIOMetadataNode) image.getMetadata().getAsTree("javax_imageio_jpeg_image_1.0");
         var markerSequence = findMarkerSequenceAndCreateIfNotFound(metadataAsTree);
         setJfifCommentFromAlbumEntryDescription(markerSequence, albumEntry);
-        try {
-            writeDateTitleAndDescriptionToExifDataStructure(markerSequence, albumEntry);
-            try (var outputStream = ImageIO.createImageOutputStream(new FileOutputStream(tempfile))){
-                writer.setOutput(outputStream);
-                var param = writer.getDefaultWriteParam();
-                var modifiedMetadata = writer.getDefaultImageMetadata(ImageTypeSpecifiers.createFromRenderedImage(image.getRenderedImage()), param);
-                modifiedMetadata.setFromTree("javax_imageio_jpeg_image_1.0", metadataAsTree);
-                image.setMetadata(modifiedMetadata);
-                writer.write(image);
-                Files.setLastModifiedTime(tempfile.toPath(), FileTime.from(albumEntry.getLastModified().toInstant()));
-                return tempfile;
-            }
-        } catch (IOException e) {
-            throw new OldAlbumException(String.format("Unable to save local copy of album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
+        writeDateTitleAndDescriptionToExifDataStructure(markerSequence, albumEntry);
+
+        try (var outputStream = ImageIO.createImageOutputStream(output)){
+            writer.setOutput(outputStream);
+            var param = writer.getDefaultWriteParam();
+            var modifiedMetadata = writer.getDefaultImageMetadata(ImageTypeSpecifiers.createFromRenderedImage(image.getRenderedImage()), param);
+            modifiedMetadata.setFromTree("javax_imageio_jpeg_image_1.0", metadataAsTree);
+            image.setMetadata(modifiedMetadata);
+            writer.write(image);
         }
     }
 

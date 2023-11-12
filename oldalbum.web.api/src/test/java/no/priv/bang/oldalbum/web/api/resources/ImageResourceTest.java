@@ -19,16 +19,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.junit.jupiter.api.Test;
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.ImageRequest;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -57,16 +59,17 @@ class ImageResourceTest {
 
     @Test
     void testDownloadAlbumEntry() {
+        int albumEntryId = 9;
         var imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
-        var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
-        var fileName = findFileNamePartOfUrl(imageUrl);
-        var tempfile = tempDir.resolve(fileName).toFile();
+        var lastModifiedDate = new Date();
+        var entry = AlbumEntry.with().id(albumEntryId).album(false).path("/moto/places/grava1").imageUrl(imageUrl).lastModified(lastModifiedDate).build();
+        var streamingOutput = mock(StreamingOutput.class);
         var backend = mock(OldAlbumService.class);
-        when(backend.downloadAlbumEntry(anyInt())).thenReturn(tempfile);
+        when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.of(entry));
+        when(backend.downloadAlbumEntry(anyInt())).thenReturn(streamingOutput);
         ImageResource resource = new ImageResource();
         resource.oldalbum = backend;
 
-        int albumEntryId = 9;
         Response response = resource.downloadAlbumEntry(albumEntryId);
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
     }
@@ -87,9 +90,20 @@ class ImageResourceTest {
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
-    private String findFileNamePartOfUrl(String imageUrl) {
-        var urlComponents = imageUrl.split("/");
-        return urlComponents[urlComponents.length - 1];
+    @Test
+    void testFindFilenameFromAlbumEntryPathWhenEntryIsAlbum() {
+        var entry = AlbumEntry.with().album(true).path("/moto/places").build();
+        var resource = new ImageResource();
+        var filename = resource.findFilenameFromAlbumEntryPath(entry);
+        assertEquals("places.zip", filename);
+    }
+
+    @Test
+    void testFindFilenameFromAlbumEntryPathWhenEntryIsImage() {
+        var entry = AlbumEntry.with().album(false).path("/moto/places/grava1").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg").build();
+        var resource = new ImageResource();
+        var filename = resource.findFilenameFromAlbumEntryPath(entry);
+        assertEquals("grava1.jpg", filename);
     }
 
 }
