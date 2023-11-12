@@ -200,6 +200,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
+    public Optional<AlbumEntry> getAlbumEntry(int albumEntryId)  {
+        try (var connection = datasource.getConnection()) {
+            return getEntry(connection, albumEntryId);
+        } catch (SQLException e) {
+            logger.warn("Failed to find parent album for batch add of pictures", e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public AlbumEntry getAlbumEntryFromPath(String path) {
         String sql = "select * from albumentries where localpath=?";
         try (Connection connection = datasource.getConnection()) {
@@ -461,7 +471,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public File downloadAlbumEntry(int albumEntryId) {
         var tempDir = Path.of(System.getProperty("java.io.tmpdir"));
-        var albumEntry = getEntry(albumEntryId)
+        var albumEntry = getAlbumEntry(albumEntryId)
             .orElseThrow(() -> new OldAlbumException(String.format("Unable to find album entry matching id=%d in database", albumEntryId)));
         if (albumEntry.isAlbum()) {
             return downloardAlbumContentToStagingDirectoryAndCreateZipFile(albumEntry, tempDir);
@@ -817,7 +827,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         Document document = loadAndParseIndexHtml(request);
-        getEntry(request.getParent()).ifPresent(parent -> {
+        getAlbumEntry(request.getParent()).ifPresent(parent -> {
                 int sort = findHighestSortValueInParentAlbum(request.getParent());
                 var links = document.select("a");
                 for (var link: links) {
@@ -983,15 +993,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.getBatchAddUrl()), e);
         }
         return document;
-    }
-
-    Optional<AlbumEntry> getEntry(int id)  {
-        try (var connection = datasource.getConnection()) {
-            return getEntry(connection, id);
-        } catch (SQLException e) {
-            logger.warn("Failed to find parent album for batch add of pictures", e);
-            return Optional.empty();
-        }
     }
 
     private Timestamp getLastModifiedTimestamp(AlbumEntry albumentry) {

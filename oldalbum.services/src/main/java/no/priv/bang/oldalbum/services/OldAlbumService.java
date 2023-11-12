@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
@@ -30,6 +31,8 @@ public interface OldAlbumService {
     List<AlbumEntry> fetchAllRoutes(String username, boolean isLoggedIn);
 
     List<String> getPaths(boolean isLoggedIn);
+
+    Optional<AlbumEntry> getAlbumEntry(int albumEntryId);
 
     AlbumEntry getAlbumEntryFromPath(String path);
 

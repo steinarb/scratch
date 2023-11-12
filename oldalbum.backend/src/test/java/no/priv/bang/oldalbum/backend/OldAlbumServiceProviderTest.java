@@ -959,7 +959,7 @@ class OldAlbumServiceProviderTest {
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
-        var modifiedEntry = AlbumEntry.with(provider.getEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
+        var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
         var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
 
         var downloadFile = provider.downloadAlbumEntry(entry.getId());
@@ -982,7 +982,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
-        var albumentry = provider.getEntry(4).get();
+        var albumentry = provider.getAlbumEntry(4).get();
         var albumpictures = provider.getChildren(albumentry.getId());
 
         var downloadAlbum = provider.downloadAlbumEntry(albumentry.getId());
@@ -1006,7 +1006,7 @@ class OldAlbumServiceProviderTest {
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
-        var modifiedEntry = AlbumEntry.with(provider.getEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
+        var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
         var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
 
         var downloadFile = provider.downloadAlbumEntry(entry.getId());
@@ -1668,7 +1668,7 @@ class OldAlbumServiceProviderTest {
         when(database.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(database);
         assertThat(logservice.getLogmessages()).isEmpty();
-        assertThat(provider.getEntry(1)).isEmpty();
+        assertThat(provider.getAlbumEntry(1)).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 

@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +41,9 @@ class OldAlbumServiceTest {
         assertEquals(0, routes.size());
         List<String> paths = service.getPaths(false);
         assertEquals(0, paths.size());
+        int albumEntryId = 42;
+        Optional<AlbumEntry> albumentry = service.getAlbumEntry(albumEntryId);
+        assertTrue(albumentry.isEmpty());
         String path = "/moto/grava";
         AlbumEntry entry = service.getAlbumEntryFromPath(path);
         assertNull(entry);
@@ -62,7 +66,6 @@ class OldAlbumServiceTest {
         assertEquals(0, updatedRoutesOnEntryMovedDown.size());
         String dumpedSql = service.dumpDatabaseSql(null, false);
         assertNull(dumpedSql);
-        int albumEntryId = 3;
         File fileToDownload = service.downloadAlbumEntry(albumEntryId);
         assertNull(fileToDownload);
         String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
