@@ -18,6 +18,7 @@ package no.priv.bang.oldalbum.web.api.resources;
 import static javax.ws.rs.core.MediaType.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -35,6 +36,7 @@ import org.osgi.service.log.Logger;
 
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.ImageRequest;
 
@@ -64,10 +66,13 @@ public class ImageResource {
     @Produces(APPLICATION_OCTET_STREAM)
     public Response downloadAlbumEntry(@PathParam("albumEntryId") int albumEntryId) {
         try {
-            var file = oldalbum.downloadAlbumEntry(albumEntryId);
-            return Response.ok(file)
-                .header("Content-Disposition", "attachment; filename=" + file.getName())
-                .header("Last-Modified", new Date(file.lastModified()))
+            AlbumEntry entry = oldalbum.getAlbumEntry(albumEntryId).orElseThrow(() -> new OldAlbumException(String.format("Couldn't find album entry from id=%d", albumEntryId)));
+            Date lastModified = Optional.ofNullable(entry.getLastModified()).orElse(new Date());
+            String filename = findFilenameFromAlbumEntryPath(entry);
+            var streamingOutput = oldalbum.downloadAlbumEntry(albumEntryId);
+            return Response.ok(streamingOutput)
+                .header("Content-Disposition", "attachment; filename=" + filename)
+                .header("Last-Modified", lastModified)
                 .build();
         } catch (OldAlbumException e) {
             logger.error("Failed to download album entry with id {}", albumEntryId, e);
@@ -76,6 +81,19 @@ public class ImageResource {
                 .type(MediaType.TEXT_PLAIN_TYPE)
                 .build();
         }
+    }
+
+    String findFilenameFromAlbumEntryPath(AlbumEntry entry) {
+        if (entry.isAlbum()) {
+            return findFileNamePartOfUrl(entry.getPath()) + ".zip";
+        }
+
+        return findFileNamePartOfUrl(entry.getImageUrl());
+    }
+
+    String findFileNamePartOfUrl(String imageUrl) {
+        var urlComponents = imageUrl.split("/");
+        return urlComponents[urlComponents.length - 1];
     }
 
 }

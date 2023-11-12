@@ -15,11 +15,12 @@
  */
 package no.priv.bang.oldalbum.services;
 
-import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.ws.rs.core.StreamingOutput;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
@@ -50,7 +51,7 @@ public interface OldAlbumService {
 
     String dumpDatabaseSql(String username, boolean requireLogin);
 
-    File downloadAlbumEntry(int albumEntryId);
+    StreamingOutput downloadAlbumEntry(int albumEntryId);
 
     ImageMetadata readMetadata(String imageUrl);
 
