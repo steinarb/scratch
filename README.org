@@ -19,6 +19,12 @@ The images are served up in a bootstrap styled, responsive layout, and should ap
 
  And this is the webapp, called "oldalbum", because it is more a way to display existing old albums than yet another album application
 
+** Titles, dates and sorting
+
+For a logged in user, it is possible to add titles, descriptions and dates of images, or change the ones that were set during import.
+
+If JPEG image is downloaded or if an album is downloaded as a zip file, the images will have the metadata set in their EXIF tags.
+
 ** Status
 
 [[https://github.com/steinarb/oldalbum/actions/workflows/oldalbum-maven-ci-build.yml][file:https://github.com/steinarb/oldalbum/actions/workflows/oldalbum-maven-ci-build.yml/badge.svg]]
