@@ -20,6 +20,10 @@ export function formatMetadata(item) {
     return lastmodified + imageType + imagesize;
 }
 
+export function formatLastModifiedDate(item) {
+    return item.lastModified ? new Date(item.lastModified).toISOString().split('T')[0] : '';
+}
+
 export function viewSize() {
     const sizer = document.getElementById('sizer') || {};
     const divs = Array.prototype.slice.call(sizer.querySelectorAll('div'));
