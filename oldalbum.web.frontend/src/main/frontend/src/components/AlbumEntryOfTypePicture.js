@@ -18,9 +18,9 @@ function AlbumEntryOfTypePicture(props) {
             <LeftButton item={entry} />
             <NavLink className=' btn btn-primary btn-block left-align-cell' to={entry.path}>
                 <div className="container">
-                    <div className="row">{title}</div>
+                    <div className="row justify-content-center">{title}</div>
                     <ThumbnailImg entry={entry} />
-                    <div className="row text-nowrap">{lastModifiedDate}</div>
+                    <div className="row text-nowrap justify-content-center">{lastModifiedDate}</div>
                 </div>
             </NavLink>
             <RightButton item={entry} />
