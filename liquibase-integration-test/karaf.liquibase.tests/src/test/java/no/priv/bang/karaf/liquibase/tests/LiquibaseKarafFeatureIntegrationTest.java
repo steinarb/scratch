@@ -32,6 +32,8 @@ import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.*;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
 @RunWith(PaxExam.class)
@@ -40,16 +42,22 @@ public class LiquibaseKarafFeatureIntegrationTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
-        final MavenArtifactUrlReference sampleappFeatureRepo = maven()
-            .groupId("no.priv.bang.karaf")
-            .artifactId("karaf.liquibase.sample.datasource.receiver")
-            .version("LATEST")
-            .type("xml")
-            .classifier("features");
-        Option[] options = new Option[] {
-            features(sampleappFeatureRepo)
-        };
-        return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
+        try {
+            final MavenArtifactUrlReference sampleappFeatureRepo = maven()
+                .groupId("no.priv.bang.karaf")
+                .artifactId("karaf.liquibase.sample.datasource.receiver")
+                .version("LATEST")
+                .type("xml")
+                .classifier("features");
+            Option[] options = new Option[] {
+                features(sampleappFeatureRepo),
+                replaceConfigurationFile("etc/org.ops4j.pax.logging.cfg", new File(getClass().getClassLoader().getResource("etc/org.ops4j.pax.logging.cfg").toURI())),
+                doNotModifyLogConfiguration()
+            };
+            return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
