@@ -5,7 +5,7 @@ export default function ThumbnailImg(props) {
 
     if (entry.thumbnailUrl) {
         return (
-            <img className="img-thumbnail" src={entry.thumbnailUrl} />
+            <img className="keep-aspect-img-thumbnail" src={entry.thumbnailUrl} />
         );
     }
 
