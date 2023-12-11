@@ -21,7 +21,7 @@
         <config name="org.ops4j.datasource-sample">
             osgi.jdbc.driver.name=derby
             dataSourceName=jdbc/sample
-            url=jdbc:derby:memory:sample;create=true
+            url=jdbc:derby:sample;create=true
             ops4j.preHook=sampledb
         </config>
         <capability>
