@@ -1,4 +1,5 @@
 import React from 'react';
+import DataTransferDownload from './bootstrap/DataTransferDownload';
 import { useSelector } from 'react-redux';
 
 export default function DownloadButton(props) {
@@ -17,6 +18,8 @@ export default function DownloadButton(props) {
             target="_blank"
             rel="noopener noreferrer"
         >
+            <DataTransferDownload/>
+            &nbsp;
             {buttonLabel}
         </a>
     );
