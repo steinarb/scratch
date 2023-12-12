@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2023-12-12 Tue 19:36> |  1.9.20 | Use liquibase 4.24.0, move dowload buttons out of navbar dropdowns                                             |
 | <2023-11-15 Wed 16:37> |  1.9.19 | Use JAX-RS streaming when downloading images and zip files, fix NPEs from missing metadata                     |
 | <2023-11-07 Tue 23:11> |  1.9.18 | Make EXIF metadata replacment in downloads work (using TwelveMonkeys 3.10.1)                                   |
 | <2023-11-05 Sun 15:03> |  1.9.17 | Use jersey 2.41, jackson 2.15.3, pax-jdbc 1.5.6, junit jupiter 5.10.0, mockito 5.7.0, and mockrunner 2.0.7     |
