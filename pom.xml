@@ -41,7 +41,7 @@
         <liquibase-feature.version>4.24.0</liquibase-feature.version>
         <jsoup.version>1.17.1</jsoup.version>
         <derby.version>10.14.2.0</derby.version> <!-- version used by pax-jdbc 1.5.6 -->
-        <postgresql.version>42.6.0</postgresql.version>
+        <postgresql.version>42.7.1</postgresql.version>
         <jersey-feature.version>1.9.7</jersey-feature.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
