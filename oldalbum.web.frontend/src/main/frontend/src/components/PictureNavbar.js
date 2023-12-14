@@ -24,15 +24,15 @@ export default function PictureNavbar(props) {
                 <h1>{title}</h1>
                 <div className="d-flex flex-row">
                     <DownloadButton className="float-right" item={item} />
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                        <div className="navbar-nav">
-                            <Locale className="nav-item" />
-                            <CopyLinkButton className="nav-item" />
-                            <EditModeButton className="nav-item" />
-                            <LoginLogoutButton className="nav-item" item={item}/>
+                    <div className="dropdown">
+                        <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <Locale className="dropdown-item" />
+                            <CopyLinkButton className="dropdown-item" />
+                            <EditModeButton className="dropdown-item" />
+                            <LoginLogoutButton className="dropdown-item" item={item}/>
                         </div>
                     </div>
                 </div>

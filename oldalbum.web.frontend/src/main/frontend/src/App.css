@@ -10,6 +10,10 @@
 
 .table-fixed { table-layout: fixed }
 
+.dropdown-menu {
+    min-width: 300px;
+}
+
 .transaction-table-col {
     max-width: 0;
 }
