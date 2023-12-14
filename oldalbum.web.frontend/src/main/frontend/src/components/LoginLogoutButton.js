@@ -17,12 +17,12 @@ export default function LoginLogoutButton(props) {
     }
 
     if (loggedIn) {
-        return (<span className="{props.styleName} alert alert-primary" role="alert">
+        return (<span className="{props.styleName} alert" role="alert">
                     {text.loggedinas} {username} <span className="alert-link" onClick={() => dispatch(LOGOUT_REQUEST())}>{text.logout}</span>
                 </span>);
     }
 
     const returnpath = item.path || '/';
     const loginpath = '/login?' + stringify({ returnpath });
-    return(<span className="alert alert-primary" role="alert">{text.notloggedin} <NavLink className="alert-link" to={loginpath}>{text.login}</NavLink></span>);
+    return(<span className="alert" role="alert">{text.notloggedin} <NavLink className="alert-link" to={loginpath}>{text.login}</NavLink></span>);
 }

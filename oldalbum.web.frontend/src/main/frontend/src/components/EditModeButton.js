@@ -18,15 +18,15 @@ export default function EditModeButton() {
 
     if (editMode) {
         return (
-            <span className="{props.styleName} alert alert-primary" role="alert">
-                <span className="alert-link" onClick={() => dispatch(TOGGLE_EDIT_MODE_OFF())}>{text.switcheditmodeoff}</span>
-            </span>
+            <div className="{props.styleName} alert" role="alert">
+                <span onClick={() => dispatch(TOGGLE_EDIT_MODE_OFF())}>{text.switcheditmodeoff}</span>
+            </div>
         );
     }
 
     return(
-        <span className="alert alert-primary" role="alert">
-            <span className="alert-link" onClick={() => dispatch(TOGGLE_EDIT_MODE_ON())}>{text.switcheditmodeon}</span>
-        </span>
+        <div className="alert" role="alert">
+            <span onClick={() => dispatch(TOGGLE_EDIT_MODE_ON())}>{text.switcheditmodeon}</span>
+        </div>
     );
 }

@@ -14,7 +14,7 @@ export default function CopyLinkButton(props) {
     const displayedAlert = alert ? '- ' + alert : '';
 
     return (
-        <span onClick={onCopyUrl} className={(props.className || '') + ' alert alert-primary'} role="alert"><LinkIntact/> {text.copylink} {displayedAlert}</span>
+        <span onClick={onCopyUrl} className={(props.className || '') + ' alert'} role="alert"><LinkIntact/> {text.copylink} {displayedAlert}</span>
     );
 }
 
