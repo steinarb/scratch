@@ -10,6 +10,11 @@
 
 .table-fixed { table-layout: fixed }
 
+.navbar-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .dropdown-menu {
     min-width: 300px;
 }
