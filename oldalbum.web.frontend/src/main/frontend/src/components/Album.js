@@ -52,7 +52,7 @@ export default function Album(props) {
                 <title>{title}</title>
                 <meta name="description" content={item.description}/>
             </Helmet>
-            <nav className="navbar navbar-light bg-light">
+            <nav className="navbar sticky-top navbar-light bg-light">
                 { parent && (
                     <NavLink to={parent + '#' + anchor}>
                         <div className="container">
