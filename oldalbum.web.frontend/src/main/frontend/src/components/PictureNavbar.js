@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import Locale from './Locale';
 import EditModeButton from './EditModeButton';
@@ -8,6 +9,7 @@ import LoginLogoutButton from './LoginLogoutButton';
 
 export default function PictureNavbar(props) {
     const { className, item, parent, title } = props;
+    const text = useSelector(state => state.displayTexts);
     const anchor = 'entry' + item.id.toString();
 
     return (
@@ -17,7 +19,7 @@ export default function PictureNavbar(props) {
                     <div className="container">
                         <div className="column">
                             <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-                            <div className="row">Up</div>
+                            <div className="row">{text.up}</div>
                         </div>
                     </div>
                 </NavLink>
