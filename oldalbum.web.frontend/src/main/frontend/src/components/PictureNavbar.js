@@ -24,9 +24,9 @@ export default function PictureNavbar(props) {
                     </div>
                 </NavLink>
                 <h1>{title}</h1>
-                <div className="d-flex flex-row">
+                <div className="btn-group float-right">
                     <DownloadButton className="float-right" item={item} />
-                    <div className="dropdown">
+                    <div className="float-right dropdown">
                         <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span className="navbar-toggler-icon"></span>
                         </button>
