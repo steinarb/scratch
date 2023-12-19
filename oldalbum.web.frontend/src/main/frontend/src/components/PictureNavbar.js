@@ -15,7 +15,7 @@ export default function PictureNavbar(props) {
     return (
         <div className={className}>
             <nav className="navbar navbar-light bg-light">
-                <NavLink to={parent + '#' + anchor}>
+                <NavLink className="nav-link" to={parent + '#' + anchor}>
                     <div className="container">
                         <div className="column">
                             <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
@@ -23,10 +23,10 @@ export default function PictureNavbar(props) {
                         </div>
                     </div>
                 </NavLink>
-                <h1>{title}</h1>
+                <h1 className="navbar-text">{title}</h1>
                 <div className="d-flex flex-row">
-                    <DownloadButton className="float-right" item={item} />
-                    <div className="dropdown">
+                    <DownloadButton className="nav-link float-right" item={item} />
+                    <div className="navbar-nav dropdown">
                         <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span className="navbar-toggler-icon"></span>
                         </button>
