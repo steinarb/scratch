@@ -3,6 +3,7 @@ import { LOCATION_CHANGE } from 'redux-first-history';
 import { parse } from 'qs';
 import {
     CLEAR_ALERT,
+    CLEAR_SELECTION,
     FILL_MODIFY_ALBUM_FORM,
     FILL_ADD_ALBUM_FORM,
     FILL_MODIFY_PICTURE_FORM,
@@ -15,6 +16,7 @@ function* locationChange(action) {
     const pathname = findPathname(location, basename);
 
     yield put(CLEAR_ALERT());
+    yield put(CLEAR_SELECTION());
 
     if (pathname === '/modifyalbum') {
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });

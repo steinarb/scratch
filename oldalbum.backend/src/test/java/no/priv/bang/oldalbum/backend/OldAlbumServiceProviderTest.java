@@ -230,6 +230,21 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testFindSelectedentriesWhenDatabaseConnectionFails( ) throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate(Collections.emptyMap());
+
+        assertThat(logservice.getLogmessages()).isEmpty(); // Verify empty before calling method under test
+        provider.findSelectedentries(Collections.emptyList());
+        assertThat(logservice.getLogmessages()).isNotEmpty(); // Verify that an error has been logged
+    }
+
+    @Test
     void testUpdateEntry() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
@@ -985,6 +1000,34 @@ class OldAlbumServiceProviderTest {
         var albumpictures = provider.getChildren(albumentry.getId());
 
         var streamingOutput = provider.downloadAlbumEntry(albumentry.getId());
+        assertNotNull(streamingOutput);
+
+        // Stream the album into a zip file
+        var downloadAlbum = Files.createTempFile("album", "zip");
+        try(var outputStream = new FileOutputStream(downloadAlbum.toFile())) {
+            streamingOutput.write(outputStream);
+        }
+
+        // Check that zip members last modified time have been set to albumEntry values
+        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).getImageUrl());
+        var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
+        assertEquals(albumpictures.get(0).getLastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+    }
+
+    @Test
+    void testDownloadAlbumEntrySelection() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var imageIOService = new ImageioSpiRegistration();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.setImageIOService(imageIOService);
+        provider.activate(Collections.emptyMap());
+        var albumentry = provider.getAlbumEntry(4).get();
+        var albumpictures = provider.getChildren(albumentry.getId());
+        var selectedentryIds = albumpictures.stream().map(e -> e.getId()).toList();
+
+        var streamingOutput = provider.downloadAlbumEntrySelection(selectedentryIds);
         assertNotNull(streamingOutput);
 
         // Stream the album into a zip file
