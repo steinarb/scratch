@@ -7,7 +7,7 @@ export default function Locale(props) {
     const locale = useSelector(state => state.locale);
     const availableLocales = useSelector(state => state.availableLocales);
     const dispatch = useDispatch();
-    const completeClassName = (className || '') + ' form-control';
+    const completeClassName = (className || '') + ' bg-light form-control';
 
     return (
         <select className={completeClassName} onChange={e => dispatch(SELECT_LOCALE(e.target.value))} value={locale}>
