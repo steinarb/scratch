@@ -5,6 +5,7 @@ import LeftButton from './LeftButton';
 import RightButton from './RightButton';
 import UpDownButton from './UpDownButton';
 import ThumbnailImg from './ThumbnailImg';
+import PictureCheckbox from './PictureCheckbox';
 
 
 function AlbumEntryOfTypePicture(props) {
@@ -17,7 +18,7 @@ function AlbumEntryOfTypePicture(props) {
         <div id={anchor} className={className + ' col-sm-12 col-md-4 col-lg-3 col-XL-2 album-entry btn btn-light mx-1 my-1'}>
             <LeftButton item={entry} />
             <div className="column">
-                <input type="checkbox" className="picture-checkbox left-align-cell" />
+                <PictureCheckbox className="left-align-cell" entry={entry} />
                 <NavLink className=' btn btn-light btn-block left-align-cell' to={entry.path}>
                     <ThumbnailImg entry={entry} />
                     <div className="mx-1 container">
