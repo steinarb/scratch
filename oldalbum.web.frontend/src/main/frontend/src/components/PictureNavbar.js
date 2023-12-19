@@ -15,18 +15,24 @@ export default function PictureNavbar(props) {
     return (
         <div className={className}>
             <nav className="navbar navbar-light bg-light">
-                <NavLink to={parent + '#' + anchor}>
-                    <div className="container">
-                        <div className="column">
-                            <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-                            <div className="row">{text.up}</div>
-                        </div>
-                    </div>
-                </NavLink>
-                <h1>{title}</h1>
-                <div className="d-flex flex-row">
-                    <DownloadButton className="float-right" item={item} />
-                    <div className="dropdown">
+                <ul className="navbar-nav mr-auto">
+                    <li className="nav-item">
+                        <NavLink to={parent + '#' + anchor}>
+                            <div className="container">
+                                <div className="column">
+                                    <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
+                                    <div className="row">{text.up}</div>
+                                </div>
+                            </div>
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <h1>{title}</h1>
+                    </li>
+                    <li className="nav-item">
+                        <DownloadButton className="float-right" item={item} />
+                    </li>
+                    <li className="nav-item dropdown">
                         <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span className="navbar-toggler-icon"></span>
                         </button>
@@ -36,8 +42,8 @@ export default function PictureNavbar(props) {
                             <EditModeButton className="dropdown-item" />
                             <LoginLogoutButton className="dropdown-item" item={item}/>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                </ul>
             </nav>
         </div>
     );
