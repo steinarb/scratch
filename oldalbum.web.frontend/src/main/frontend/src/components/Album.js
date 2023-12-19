@@ -63,15 +63,15 @@ export default function Album(props) {
                         </div>
                     </NavLink>
                 ) }
-                <h1 className="navbar-text">{title}</h1>
+                <h1>{title}</h1>
                 <div className="d-flex flex-row">
-                    <DownloadButton className="nav-link float-right" item={item} />
+                    <DownloadButton item={item} />
+                    <Locale className="form-inline" />
                     <div className="navbar-nav dropdown">
                         <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span className="navbar-toggler-icon"></span>
                         </button>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <Locale className="dropdown-item" />
                             <CopyLinkButton className="dropdown-item" />
                             <EditModeButton className="dropdown-item" />
                             <LoginLogoutButton className="dropdown-item" item={item}/>
