@@ -53,6 +53,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -245,6 +246,26 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             logger.error(String.format("Failed to get list of children for id \"%d\"", parent), e);
         }
         return children;
+    }
+
+    List<AlbumEntry> findSelectedentries(List<Integer> selectedentryIds) {
+        List<AlbumEntry> selectedentries = new ArrayList<>();
+        var selectedentryIdGroup = selectedentryIds.stream().map(i -> i.toString()).collect(Collectors.joining(","));
+        var sql = String.format("select * from albumentries where albumentry_id in (%s)", selectedentryIdGroup);
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.createStatement()) {
+                try(var results = statement.executeQuery(sql)) {
+                    while(results.next()) {
+                        var entry = unpackAlbumEntry(results);
+                        selectedentries.add(entry);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(String.format("Failed to get selection of albumentries for ids \"%s\"", selectedentryIdGroup), e);
+        }
+
+        return selectedentries;
     }
 
     @Override
@@ -475,6 +496,22 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } else {
             return downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry);
         }
+    }
+
+    public StreamingOutput downloadAlbumEntrySelection(List<Integer> selectedentryIds) {
+        List<AlbumEntry> selectedentries = findSelectedentries(selectedentryIds);
+        return new StreamingOutput() {
+
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                try(var zipOut = new ZipOutputStream(output)) {
+                    for (var selectedEntry : selectedentries) {
+                        var imageAndWriter = downloadAndReadImageAndCreateWriter(selectedEntry);
+                        writeImageWithModifiedMetadataToZipArchive(zipOut, selectedEntry, imageAndWriter);
+                    }
+                }
+            }
+        };
     }
 
     StreamingOutput createStreamingZipFileForAlbumContent(AlbumEntry albumEntry) {

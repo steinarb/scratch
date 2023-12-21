@@ -1000,6 +1000,34 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDownloadAlbumEntrySelection() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var imageIOService = new ImageioSpiRegistration();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.setImageIOService(imageIOService);
+        provider.activate(Collections.emptyMap());
+        var albumentry = provider.getAlbumEntry(4).get();
+        var albumpictures = provider.getChildren(albumentry.getId());
+        var selectedentries = albumpictures.stream().map(e -> e.getId()).toList();
+
+        var streamingOutput = provider.downloadAlbumEntrySelection(selectedentries);
+        assertNotNull(streamingOutput);
+
+        // Stream the album into a zip file
+        var downloadAlbum = Files.createTempFile("album", "zip");
+        try(var outputStream = new FileOutputStream(downloadAlbum.toFile())) {
+            streamingOutput.write(outputStream);
+        }
+
+        // Check that zip members last modified time have been set to albumEntry values
+        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).getImageUrl());
+        var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
+        assertEquals(albumpictures.get(0).getLastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+    }
+
+    @Test
     void testDownloadAlbumEntryOnImageThatIsATextFile() throws Exception {
         // TODO endre testen til det tittelen sier at den skal være
         var replacementTitle = "Replacement title";
