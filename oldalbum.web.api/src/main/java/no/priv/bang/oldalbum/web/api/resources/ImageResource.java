@@ -28,6 +28,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -84,10 +85,13 @@ public class ImageResource {
         }
     }
 
-    public Response downloadAlbumEntrySelection(int albumId, List<Integer> selectedentryIds) {
+    @GET
+    @Path("downloadselection/{albumId}")
+    @Produces(APPLICATION_OCTET_STREAM)
+    public Response downloadAlbumEntrySelection(@PathParam("albumId") int albumId, @QueryParam("id") List<Integer> selectedentryIds) {
         try {
             AlbumEntry album = oldalbum.getAlbumEntry(albumId).orElseThrow(() -> new OldAlbumException(String.format("Couldn't find album rom id=%d", albumId)));
-            Date lastModified = Optional.ofNullable(album.getLastModified()).orElse(new Date());
+            Date lastModified = new Date();
             String filename = findFilenameFromAlbumEntryPath(album);
             var streamingOutput = oldalbum.downloadAlbumEntrySelection(selectedentryIds);
             return Response.ok(streamingOutput)

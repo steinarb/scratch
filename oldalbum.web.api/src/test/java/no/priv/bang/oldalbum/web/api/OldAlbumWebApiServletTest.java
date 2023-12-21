@@ -302,6 +302,38 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     }
 
     @Test
+    void testDownloadSelectedImages() throws Exception {
+        int albumId = 4;
+        var album = AlbumEntry.with().id(albumId).parent(2).album(true).path("/moto/vfr96/").title("My VFR750F in 1996").description("In may 1996, I bought a 1995 VFR750F, registered in october 1995, with 3400km on the clock when I bought it. This picture archive, contains pictures from my first (but hopefully not last) season, on a VFR.").build();
+        var streamingOutput = new StreamingOutput() {
+
+                @Override
+                public void write(OutputStream output) throws IOException, WebApplicationException {
+                    var inputStream = getClass().getClassLoader().getResourceAsStream("allroutes.json");
+                    inputStream.transferTo(output);
+                }
+            };
+        var backend = mock(OldAlbumService.class);
+        when(backend.getAlbumEntry(albumId)).thenReturn(Optional.of(album));
+        when(backend.downloadAlbumEntrySelection(anyList())).thenReturn(streamingOutput);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, logservice, useradmin);
+        var request = buildGetUrl("/image/downloadselection/" + albumId);
+        request.setQueryString("id=9&id=10&id=12");
+        var response = new MockHttpServletResponse();
+
+        servlet.service(request, response);
+
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, response.getContentType());
+        @SuppressWarnings("unchecked")
+            ArgumentCaptor<List<Integer>> argumentCaptor = ArgumentCaptor.forClass((List.class));
+        verify(backend).downloadAlbumEntrySelection(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue()).hasSize(3);
+    }
+
+    @Test
     void testGetMetadata() throws Exception {
         MockLogService logservice = new MockLogService();
         OldAlbumService backendService = mock(OldAlbumService.class);
