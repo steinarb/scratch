@@ -14,10 +14,6 @@ export default function DownloadButton(props) {
     const href = selectedentries.length ?
           basename + '/api/image/downloadselection/' + item.id.toString() + '?' + stringify({ id: selectedentries }, { indices: false}):
           basename + '/api/image/download/' + item.id.toString();
-    console.log('selectedentries');
-    console.log(selectedentries);
-    console.log('href');
-    console.log(href);
 
     return (
         <a
