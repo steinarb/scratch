@@ -128,4 +128,22 @@ class ImageResourceTest {
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
     }
 
+    @Test
+    void testDownloadAlbumEntrySelectionWhenParentAlbumFound() {
+        var backend = mock(OldAlbumService.class);
+        when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.empty());
+        var logservice = new MockLogService();
+        ImageResource resource = new ImageResource();
+        resource.oldalbum = backend;
+        resource.setLogservice(logservice);
+
+        int albumId = 4;
+        int albumEntryId = 9;
+        var selectedentryIds = Collections.singletonList(albumEntryId);
+        assertThat(logservice.getLogmessages()).isEmpty();
+        Response response = resource.downloadAlbumEntrySelection(albumId, selectedentryIds);
+        assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
 }
