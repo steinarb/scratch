@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import alert from './alertReducer';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
-import selected from './selectedReducer';
+import selectedentries from './selectedentriesReducer';
 import childentries from './childentriesReducer';
 import previousentry from './previousentryReducer';
 import nextentry from './nextentryReducer';
@@ -41,7 +41,7 @@ export default (routerReducer) => combineReducers({
     alert,
     allroutes,
     albumentries,
-    selected,
+    selectedentries,
     childentries,
     previousentry,
     nextentry,

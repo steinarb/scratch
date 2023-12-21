@@ -4,12 +4,12 @@ import {
     UNSELECT_PICTURE_ALBUMENTRY,
 } from '../reduxactions';
 
-const selectedReducer = createReducer([], {
+const selectedentriesReducer = createReducer([], {
     [SELECT_PICTURE_ALBUMENTRY]: (state, action) => addIfNotPresent(state, action.payload),
     [UNSELECT_PICTURE_ALBUMENTRY]: (state, action) => removeIfPresent(state, action.payload),
 });
 
-export default selectedReducer;
+export default selectedentriesReducer;
 
 function addIfNotPresent(state, entry) {
     if (!state.includes(entry)) {
