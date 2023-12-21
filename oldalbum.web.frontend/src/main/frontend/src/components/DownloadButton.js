@@ -12,7 +12,7 @@ export default function DownloadButton(props) {
     const buttonLabel = item.album ? selectedentries.length ? text.downloadselection : text.downloadalbum : text.downloadpicture;
     const basename = routerBasename == '/' ? '' : routerBasename;
     const href = selectedentries.length ?
-          basename + '/api/image/downloadselection/' + item.id.toString() + '?' + stringify({ id: selectedentries }):
+          basename + '/api/image/downloadselection/' + item.id.toString() + '?' + stringify({ id: selectedentries }, { indices: false}):
           basename + '/api/image/download/' + item.id.toString();
     console.log('selectedentries');
     console.log(selectedentries);
