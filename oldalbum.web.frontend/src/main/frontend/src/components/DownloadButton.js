@@ -1,6 +1,7 @@
 import React from 'react';
 import DataTransferDownload from './bootstrap/DataTransferDownload';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { CLEAR_SELECTION } from '../reduxactions';
 import { stringify } from 'qs';
 
 export default function DownloadButton(props) {
@@ -8,6 +9,7 @@ export default function DownloadButton(props) {
     const routerBasename = useSelector(state => state.router.basename);
     const selectedentries = useSelector(state => state.selectedentries.map(e => e.id));
     const text = useSelector(state => state.displayTexts);
+    const dispatch = useDispatch();
     const filename = item.album ? item.path.split('/').at(-2) + '.zip' : item.imageUrl.split('/').at(-1);
     const buttonLabel = item.album ? selectedentries.length ? text.downloadselection : text.downloadalbum : text.downloadpicture;
     const basename = routerBasename == '/' ? '' : routerBasename;
@@ -22,6 +24,7 @@ export default function DownloadButton(props) {
             download={filename}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => dispatch(CLEAR_SELECTION())}
         >
             <DataTransferDownload/>
             &nbsp;
