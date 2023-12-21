@@ -4,6 +4,7 @@ import allroutes from './allroutesSaga';
 import albumSaga from './albumSaga';
 import modifyAlbumSaga from './modifyAlbumSaga';
 import addAlbumSaga from './addAlbumSaga';
+import selectionSaga from './selectionSaga';
 import pictureSaga from './pictureSaga';
 import batchAddPicturesSaga from './batchAddPicturesSaga';
 import sortAlbumentriesByDateSaga from './sortAlbumentriesByDateSaga';
@@ -31,6 +32,7 @@ export default function* rootSaga() {
         fork(batchAddPicturesSaga),
         fork(sortAlbumentriesByDateSaga),
         fork(pictureSaga),
+        fork(selectionSaga),
         fork(modifyPicture),
         fork(addPicture),
         fork(imageMetadata),

@@ -1,7 +1,7 @@
 import React from 'react';
 import DataTransferDownload from './bootstrap/DataTransferDownload';
 import { useSelector, useDispatch } from 'react-redux';
-import { CLEAR_SELECTION } from '../reduxactions';
+import { START_SELECTION_DOWNLOAD } from '../reduxactions';
 import { stringify } from 'qs';
 
 export default function DownloadButton(props) {
@@ -24,7 +24,7 @@ export default function DownloadButton(props) {
             download={filename}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => dispatch(CLEAR_SELECTION())}
+            onClick={() => dispatch(START_SELECTION_DOWNLOAD())}
         >
             <DataTransferDownload/>
             &nbsp;
