@@ -1010,9 +1010,9 @@ class OldAlbumServiceProviderTest {
         provider.activate(Collections.emptyMap());
         var albumentry = provider.getAlbumEntry(4).get();
         var albumpictures = provider.getChildren(albumentry.getId());
-        var selectedentries = albumpictures.stream().map(e -> e.getId()).toList();
+        var selectedentryIds = albumpictures.stream().map(e -> e.getId()).toList();
 
-        var streamingOutput = provider.downloadAlbumEntrySelection(selectedentries);
+        var streamingOutput = provider.downloadAlbumEntrySelection(selectedentryIds);
         assertNotNull(streamingOutput);
 
         // Stream the album into a zip file

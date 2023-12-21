@@ -498,6 +498,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
+    @Override
     public StreamingOutput downloadAlbumEntrySelection(List<Integer> selectedentryIds) {
         List<AlbumEntry> selectedentries = findSelectedentries(selectedentryIds);
         return new StreamingOutput() {

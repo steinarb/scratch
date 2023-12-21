@@ -53,6 +53,8 @@ public interface OldAlbumService {
 
     StreamingOutput downloadAlbumEntry(int albumEntryId);
 
+    public StreamingOutput downloadAlbumEntrySelection(List<Integer> selectedentryIds);
+
     ImageMetadata readMetadata(String imageUrl);
 
     List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest batchAddPicturesRequest);
