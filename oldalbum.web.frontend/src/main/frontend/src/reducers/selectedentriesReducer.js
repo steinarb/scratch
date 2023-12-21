@@ -12,15 +12,17 @@ const selectedentriesReducer = createReducer([], {
 export default selectedentriesReducer;
 
 function addIfNotPresent(state, entry) {
-    if (!state.includes(entry)) {
-        state.push(entry);
+    if (state.findIndex(e => e.id === entry.id) < 0) {
+        const nextState = [ ...state ];
+        nextState.push(entry);
+        return nextState;
     }
 
     return state;
 }
 
 function removeIfPresent(state, entry) {
-    const index = state.indexOf(entry);
+    const index = state.findIndex(e => e.id === entry.id);
     if (index > -1) {
         return state.toSpliced(index, 1);
     }
