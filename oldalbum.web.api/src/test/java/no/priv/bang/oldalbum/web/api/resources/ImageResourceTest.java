@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 
@@ -104,6 +105,27 @@ class ImageResourceTest {
         var resource = new ImageResource();
         var filename = resource.findFilenameFromAlbumEntryPath(entry);
         assertEquals("grava1.jpg", filename);
+    }
+
+    @Test
+    void testDownloadAlbumEntrySelection() {
+        int albumId = 4;
+        var album = AlbumEntry.with().id(albumId).parent(2).album(true).path("/moto/vfr96/").title("My VFR750F in 1996").description("In may 1996, I bought a 1995 VFR750F, registered in october 1995, with 3400km on the clock when I bought it. This picture archive, contains pictures from my first (but hopefully not last) season, on a VFR.").build();
+        int albumEntryId = 9;
+        var imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        var lastModifiedDate = new Date();
+        var entry = AlbumEntry.with().id(albumEntryId).album(false).path("/moto/places/grava1").imageUrl(imageUrl).lastModified(lastModifiedDate).build();
+        var selectedentryIds = Collections.singletonList(albumEntryId);
+        var streamingOutput = mock(StreamingOutput.class);
+        var backend = mock(OldAlbumService.class);
+        when(backend.getAlbumEntry(albumId)).thenReturn(Optional.of(album));
+        when(backend.getAlbumEntry(albumEntryId)).thenReturn(Optional.of(entry));
+        when(backend.downloadAlbumEntry(anyInt())).thenReturn(streamingOutput);
+        ImageResource resource = new ImageResource();
+        resource.oldalbum = backend;
+
+        Response response = resource.downloadAlbumEntrySelection(albumId, selectedentryIds);
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
     }
 
 }
