@@ -21,7 +21,7 @@ export default function DeleteButton(props) {
     }
 
     return(<button
-               className={(props.className || '') + ' btn btn-primary'}
+               className={(props.className || '') + ' btn btn-light'}
                type="button"
                onClick={() => onDelete(item, parentpath)}>
                {text.delete}</button>);

@@ -21,7 +21,7 @@ export default function Unauthorized() {
     return (
         <div>
             <nav className="navbar navbar-light bg-light">
-                <NavLink className="btn btn-primary left-align-cell" to="/"><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Go home!</NavLink>
+                <NavLink className="btn btn-light left-align-cell" to="/"><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Go home!</NavLink>
                 <h1>{text.unauthorized}</h1>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -42,7 +42,7 @@ export default function Unauthorized() {
                         <div className="col-5"/>
                         <div className="col-7">
                             <button
-                                className="btn btn-primary"
+                                className="btn btn-light"
                                 onClick={() => dispatch(LOGOUT_REQUEST())}>
                                 {text.logout}</button>
                         </div>

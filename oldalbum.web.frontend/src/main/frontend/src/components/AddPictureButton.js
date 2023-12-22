@@ -15,5 +15,5 @@ export default function AddPictureButton(props) {
         return null;
     }
 
-    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={addpicture} >{text.addpicture}</NavLink>);
+    return(<NavLink className={(props.className || '') + ' btn btn-light'} to={addpicture} >{text.addpicture}</NavLink>);
 }

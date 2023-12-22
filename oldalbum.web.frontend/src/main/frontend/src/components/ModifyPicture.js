@@ -157,12 +157,12 @@ export default function ModifyPicture() {
                     </div>
                     <div>
                         <button
-                            className="btn btn-primary ml-1"
+                            className="btn btn-light ml-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED())}>
                             {text.update}</button>
                         <button
-                            className="btn btn-primary ml-1"
+                            className="btn btn-light ml-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED())}>
                             {text.cancel}</button>

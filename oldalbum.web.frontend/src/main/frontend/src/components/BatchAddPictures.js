@@ -43,7 +43,7 @@ export default function BatchAddPictures(props) {
                             onChange={e => dispatch(IMPORT_YEAR_FIELD_CHANGED(e.target.value))}/>
                     </div>
                     <button
-                        className="btn btn-primary col-4"
+                        className="btn btn-light col-4"
                         type="button"
                         onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl, importYear }))}>
                         {text.batchaddpictures}

@@ -15,7 +15,7 @@ export default function SortByDateButton(props) {
 
     return(
         <button
-            className={(props.className || '') + ' btn btn-primary'}
+            className={(props.className || '') + ' btn btn-light'}
             type="button"
             onClick={() => dispatch(SORT_ALBUM_ENTRIES_BY_DATE_REQUEST(item))}>
             {text.sortbydate}</button>

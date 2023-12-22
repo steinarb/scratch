@@ -17,5 +17,5 @@ export default function ModifyButton(props) {
     const { id } = item;
     const modifyitem = webcontext + (item.album ? '/modifyalbum' : '/modifypicture') + '?' + stringify({ id });
 
-    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={modifyitem} >{text.modify}</NavLink>);
+    return(<NavLink className={(props.className || '') + ' btn btn-light'} to={modifyitem} >{text.modify}</NavLink>);
 }

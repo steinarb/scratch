@@ -46,11 +46,11 @@ export default function Login() {
                     </div>
                     <div className="btn-group row right-align-cell">
                         <input
-                            className="btn btn-primary mx-2"
+                            className="btn btn-light mx-2"
                             type="submit"
                             value={text.login}
                             onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
-                        <NavLink className="btn btn-primary mx-2" to={returnpath}>{text.cancel}</NavLink>
+                        <NavLink className="btn btn-light mx-2" to={returnpath}>{text.cancel}</NavLink>
                     </div>
                 </form>
                 { errormessage && <div className="alert alert-warning">{errormessage}</div> }

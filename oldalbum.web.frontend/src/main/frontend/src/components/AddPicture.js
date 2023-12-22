@@ -151,12 +151,12 @@ export default function AddPicture() {
                     </div>
                     <div>
                         <button
-                            className="btn btn-primary ml-1"
+                            className="btn btn-light ml-1"
                             type="button"
                             onClick={() => dispatch(ADD_PICTURE_UPDATE_BUTTON_CLICKED())}>
                             {text.add}</button>
                         <button
-                            className="btn btn-primary ml-1"
+                            className="btn btn-light ml-1"
                             type="button"
                             onClick={() => dispatch(ADD_PICTURE_CANCEL_BUTTON_CLICKED())}>
                             {text.cancel}</button>

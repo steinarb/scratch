@@ -15,5 +15,5 @@ export default function AddAlbumButton(props) {
         return null;
     }
 
-    return(<NavLink className={(props.className || '') + ' btn btn-primary'} to={addalbum} >{text.addalbum}</NavLink>);
+    return(<NavLink className={(props.className || '') + ' btn btn-light'} to={addalbum} >{text.addalbum}</NavLink>);
 }
