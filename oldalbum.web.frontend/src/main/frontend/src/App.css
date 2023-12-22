@@ -52,6 +52,14 @@
     justify-content: center;
 }
 
+.picture-checkbox {
+    opacity: 0;
+}
+.picture-checkbox:hover,
+.picture-checkbox:checked {
+    opacity: 1;
+}
+
 .download-button {
     white-space: nowrap;
 }
