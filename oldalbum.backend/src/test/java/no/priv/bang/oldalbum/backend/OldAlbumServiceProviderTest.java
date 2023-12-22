@@ -230,6 +230,21 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testFindSelectedentriesWhenDatabaseConnectionFails( ) throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate(Collections.emptyMap());
+
+        assertThat(logservice.getLogmessages()).isEmpty(); // Verify empty before calling method under test
+        provider.findSelectedentries(Collections.emptyList());
+        assertThat(logservice.getLogmessages()).isNotEmpty(); // Verify that an error has been logged
+    }
+
+    @Test
     void testUpdateEntry() {
         OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
         MockLogService logservice = new MockLogService();
