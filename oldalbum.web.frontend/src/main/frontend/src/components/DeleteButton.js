@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { push } from 'redux-first-history';
-import { DELETE_ITEM_REQUEST } from '../reduxactions';
+import { DELETE_ALBUMENTRY_REQUEST } from '../reduxactions';
 
 export default function DeleteButton(props) {
     const { item } = props;
@@ -11,7 +11,7 @@ export default function DeleteButton(props) {
     const children = useSelector(state => state.childentries[item.id] || []);
     const dispatch = useDispatch();
     const onDelete = (item, parentpath) => {
-        dispatch(DELETE_ITEM_REQUEST(item));
+        dispatch(DELETE_ALBUMENTRY_REQUEST(item));
         dispatch(push(parentpath));
     };
 
