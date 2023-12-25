@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
 import Locale from './Locale';
+import AlbumGroupByYearButton from './AlbumGroupByYearButton';
 import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
@@ -26,9 +27,11 @@ export default function Album(props) {
     const text = useSelector(state => state.displayTexts);
     const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
     const children = useSelector(state => state.childentries[item.id] || []);
+    const childrenGroupedByYear = useSelector(state => state.childentriesByYear[item.id] || {});
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const hash = useSelector(state => state.router.location.hash);
+    const albumGroupByYear = useSelector(state => !!state.albumGroupByYear[item.id]);
     const showEditControls = useSelector(state => state.showEditControls);
     const sortingStatus = useSelector(state => state.sortingStatus);
     const targetId = hash.substr(1);
@@ -73,6 +76,7 @@ export default function Album(props) {
                         </button>
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                             <CopyLinkButton className="dropdown-item" />
+                            <AlbumGroupByYearButton className="dropdown-item" album={item} />
                             <EditModeButton className="dropdown-item" />
                             <LoginLogoutButton className="dropdown-item" item={item}/>
                         </div>
@@ -93,7 +97,34 @@ export default function Album(props) {
             </div>
             { showEditControls && sortingStatus && <div className="alert alert-primary" role="alert">{sortingStatus}</div> }
             { item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
-            <div className="row" {...swipeHandlers}>
+            { renderChildren(children, childrenGroupedByYear, albumGroupByYear, swipeHandlers) }
+        </div>
+    );
+}
+
+function renderChildren(children, childrenGroupedByYear, albumGroupByYear, swipeHandlers) {
+    if (albumGroupByYear) {
+        return (
+            <div className="column" {...swipeHandlers}>
+                { Object.entries(childrenGroupedByYear).map(renderYear) }
+            </div>
+        );
+    }
+
+    return (
+        <div className="row" {...swipeHandlers}>
+            { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }
+        </div>
+    );
+}
+
+function renderYear(entry) {
+    const [ year, children ] = entry;
+    const key = 'yearId' + year.toString();
+    return (
+        <div className="column" key={key}>
+            <div className="row"><h2 className="pl-5 pt-5">{year}</h2></div>
+            <div className="row">
                 { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }
             </div>
         </div>

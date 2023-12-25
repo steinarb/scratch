@@ -22,6 +22,7 @@ import displayTextsSaga from './displayTextsSaga';
 import location from './locationSaga';
 import showEditControlsSaga from './showEditControlsSaga';
 import editModeSaga from './editModeSaga';
+import albumGroupByYearSaga from './albumGroupByYearSaga';
 
 export default function* rootSaga() {
     yield all([
@@ -47,5 +48,6 @@ export default function* rootSaga() {
         fork(location),
         fork(showEditControlsSaga),
         fork(editModeSaga),
+        fork(albumGroupByYearSaga),
     ]);
 }

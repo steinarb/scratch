@@ -4,9 +4,11 @@ import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
 import selectedentries from './selectedentriesReducer';
 import childentries from './childentriesReducer';
+import childentriesByYear from './childentriesByYearReducer';
 import previousentry from './previousentryReducer';
 import nextentry from './nextentryReducer';
 import albumentryid from './albumentryidReducer';
+import albumGroupByYear from './albumGroupByYearReducer';
 import albumentryParent from './albumentryParentReducer';
 import albumentryPath from './albumentryPathReducer';
 import albumentryBasename from './albumentryBasenameReducer';
@@ -43,8 +45,10 @@ export default (routerReducer) => combineReducers({
     albumentries,
     selectedentries,
     childentries,
+    childentriesByYear,
     previousentry,
     nextentry,
+    albumGroupByYear,
     albumentryid,
     albumentryParent,
     albumentryPath,
