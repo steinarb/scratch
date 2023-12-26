@@ -9,6 +9,7 @@ import previousentry from './previousentryReducer';
 import nextentry from './nextentryReducer';
 import albumentryid from './albumentryidReducer';
 import albumGroupByYear from './albumGroupByYearReducer';
+import albumShowYears from './albumShowYearsReducer.js';
 import albumentryParent from './albumentryParentReducer';
 import albumentryPath from './albumentryPathReducer';
 import albumentryBasename from './albumentryBasenameReducer';
@@ -49,6 +50,7 @@ export default (routerReducer) => combineReducers({
     previousentry,
     nextentry,
     albumGroupByYear,
+    albumShowYears,
     albumentryid,
     albumentryParent,
     albumentryPath,

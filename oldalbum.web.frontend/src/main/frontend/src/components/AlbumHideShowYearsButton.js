@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+    SET_ALBUM_SHOW_YEARS,
+    SET_ALBUM_HIDE_YEARS,
+} from '../reduxactions';
 
 export default function AlbumHideShowYearsButton(props) {
     const { album } = props;
@@ -7,7 +11,8 @@ export default function AlbumHideShowYearsButton(props) {
     const text = useSelector(state => state.displayTexts);
     const albumGroupByYear = useSelector(state => !!state.albumGroupByYear[id]);
     const ariaControls = useSelector(state => id in state.childentriesByYear ? Object.keys(state.childentriesByYear[id]).map(k => 'collapse' + k.toString()).join(' ') : []);
-    const [ expanded, setExpanded ] = useState(true);
+    const expanded = useSelector(state => id in state.albumShowYears ? state.albumShowYears[id] : true);
+    const dispatch = useDispatch();
     const labelText = expanded ? text.hideAllYears : text.showAllYears;
 
     if (!albumGroupByYear) {
@@ -22,7 +27,7 @@ export default function AlbumHideShowYearsButton(props) {
             data-target=".multi-collapse"
             aria-expanded="false"
             aria-controls={ariaControls}
-            onClick={() => setExpanded(!expanded)}
+            onClick={() => dispatch(expanded ? SET_ALBUM_HIDE_YEARS(id) : SET_ALBUM_SHOW_YEARS(id))}
         >
             {labelText}
         </button>
