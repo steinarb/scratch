@@ -14,14 +14,14 @@ export default function AlbumGroupByYearButton(props) {
 
     if (albumGroupByYear) {
         return (
-            <div className="{props.styleName} alert" role="alert">
+            <div className={props.className}>
                 <span onClick={() => dispatch(UNSET_ALBUM_GROUP_BY_YEAR(id))}>{text.albumdontgroupbyyear}</span>
             </div>
         );
     }
 
     return(
-        <div className="alert" role="alert">
+        <div className={props.className}>
             <span onClick={() => dispatch(SET_ALBUM_GROUP_BY_YEAR(id))}>{text.albumgroupbyyear}</span>
         </div>
     );
