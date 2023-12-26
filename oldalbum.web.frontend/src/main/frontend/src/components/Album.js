@@ -7,6 +7,7 @@ import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
 import Locale from './Locale';
 import AlbumGroupByYearButton from './AlbumGroupByYearButton';
+import AlbumHideShowYearsButton from './AlbumHideShowYearsButton';
 import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
@@ -77,6 +78,7 @@ export default function Album(props) {
                         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                             <CopyLinkButton className="dropdown-item" />
                             <AlbumGroupByYearButton className="dropdown-item" album={item} />
+                            <AlbumHideShowYearsButton className="dropdown-item" album={item} />
                             <EditModeButton className="dropdown-item" />
                             <LoginLogoutButton className="dropdown-item" item={item}/>
                         </div>
@@ -127,7 +129,7 @@ function renderYear(entry) {
     return (
         <div className="column" key={key}>
             <div className="row"><a className="pl-5 btn" data-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a></div>
-            <div className="row collapse show pb-5" id={collapseId}>
+            <div className="row collapse multi-collapse show pb-5" id={collapseId}>
                 { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }
             </div>
         </div>
