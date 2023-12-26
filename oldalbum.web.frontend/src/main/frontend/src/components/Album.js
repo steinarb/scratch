@@ -123,11 +123,11 @@ function renderYear(entry) {
     const key = 'yearId' + year.toString();
     const collapseId = 'collapse' + year.toString();
     const collapseRef = '#' + collapseId;
-    const expanded = false;
+    const expanded = true;
     return (
         <div className="column" key={key}>
             <div className="row"><a className="pl-5 btn" data-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a></div>
-            <div className="row collapse pb-5" id={collapseId}>
+            <div className="row collapse show pb-5" id={collapseId}>
                 { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }
             </div>
         </div>
