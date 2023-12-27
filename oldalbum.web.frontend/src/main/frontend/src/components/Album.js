@@ -127,8 +127,11 @@ function renderYear(entry) {
     const collapseRef = '#' + collapseId;
     const expanded = true;
     return (
-        <div className="column" key={key}>
-            <div className="row"><a className="pl-5 btn" data-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a></div>
+        <div id={year} className="column" key={key}>
+            <div className="row">
+                <a className="pl-5 btn" data-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a>
+                <a className="album-yearlink" href={'#' + year.toString()}><h2>#</h2></a>
+            </div>
             <div className="row collapse multi-collapse show pb-5" id={collapseId}>
                 { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }
             </div>
