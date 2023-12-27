@@ -32,7 +32,7 @@ export default function Album(props) {
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const hash = useSelector(state => state.router.location.hash);
-    const albumGroupByYear = useSelector(state => !!state.albumGroupByYear[item.id]);
+    const albumGroupByYear = useSelector(state => state.albumGroupByYear[item.id] === undefined ? true : state.albumGroupByYear[item.id]);
     const showEditControls = useSelector(state => state.showEditControls);
     const sortingStatus = useSelector(state => state.sortingStatus);
     const targetId = hash.substr(1);

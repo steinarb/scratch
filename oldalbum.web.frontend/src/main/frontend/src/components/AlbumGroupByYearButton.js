@@ -9,7 +9,7 @@ export default function AlbumGroupByYearButton(props) {
     const { album } = props;
     const { id } = album;
     const text = useSelector(state => state.displayTexts);
-    const albumGroupByYear = useSelector(state => !!state.albumGroupByYear[id]);
+    const albumGroupByYear = useSelector(state => state.albumGroupByYear[id] === undefined ? true : state.albumGroupByYear[id]);
     const dispatch = useDispatch();
 
     if (albumGroupByYear) {
