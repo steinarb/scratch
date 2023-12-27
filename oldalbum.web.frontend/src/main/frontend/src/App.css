@@ -60,6 +60,13 @@
     opacity: 1;
 }
 
+.album-yearlink {
+    opacity: 0;
+}
+.album-yearlink:hover {
+    opacity: 1;
+}
+
 .download-button {
     white-space: nowrap;
 }
