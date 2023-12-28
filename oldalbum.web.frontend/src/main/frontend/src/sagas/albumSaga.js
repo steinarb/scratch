@@ -34,6 +34,7 @@ function* saveAddedAlbum() {
         album: true,
         title: state.albumentryTitle,
         description: state.albumentryDescription,
+        lastModified: state.albumentryLastModified || null,
         requireLogin: state.albumentryRequireLogin,
         sort: state.albumentrySort,
     }));
