@@ -52,6 +52,7 @@ class OldAlbumLiquibaseTest {
         try(var connection = datasource.getConnection()) {
             assertAlbumEntries(connection);
             assertAlbumEntriesDontHaveRequireLoginFlag(connection);
+            assertAlbumEntriesDontHaveGroupByYearFlag(connection);
         }
         try(var connection = datasource.getConnection()) {
             oldAlbumLiquibase.updateSchema(connection);
@@ -59,6 +60,7 @@ class OldAlbumLiquibaseTest {
         try(var connection = datasource.getConnection()) {
             assertAlbumEntries(connection);
             assertAlbumEntriesHasRequireLoginFlag(connection);
+            assertAlbumEntriesHasGroupByYearFlag(connection);
         }
     }
 
@@ -123,6 +125,11 @@ class OldAlbumLiquibaseTest {
         assertAlbumEntryDoesntHaveRequireLoginFlag(connection, 2);
     }
 
+    private void assertAlbumEntriesDontHaveGroupByYearFlag(Connection connection) throws Exception {
+        assertAlbumEntryDoesntHaveGroupByYearFlag(connection, 1);
+        assertAlbumEntryDoesntHaveGroupByYearFlag(connection, 2);
+    }
+
     private void assertAlbumEntryDoesntHaveRequireLoginFlag(Connection connection, int id) throws Exception {
         String sql = "select * from albumentries where albumentry_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -137,9 +144,28 @@ class OldAlbumLiquibaseTest {
         }
     }
 
+    private void assertAlbumEntryDoesntHaveGroupByYearFlag(Connection connection, int id) throws Exception {
+        String sql = "select * from albumentries where albumentry_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    assertThrows(SQLException.class, () -> result.getBoolean("group_by_year"));
+                } else {
+                    fail(String.format("Didn't find albumentry with id=d", id));
+                }
+            }
+        }
+    }
+
     private void assertAlbumEntriesHasRequireLoginFlag(Connection connection) throws Exception {
         assertAlbumEntryHasRequireLoginFlag(connection, 1, false);
         assertAlbumEntryHasRequireLoginFlag(connection, 2, false);
+    }
+
+    private void assertAlbumEntriesHasGroupByYearFlag(Connection connection) throws Exception {
+        assertAlbumEntryHasGroupByYearFlag(connection, 1, false);
+        assertAlbumEntryHasGroupByYearFlag(connection, 2, false);
     }
 
     private void assertAlbumEntryHasRequireLoginFlag(Connection connection, int id, boolean requireLogin) throws Exception {
@@ -149,6 +175,20 @@ class OldAlbumLiquibaseTest {
             try(ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
                     assertEquals(requireLogin, result.getBoolean("require_login"));
+                } else {
+                    fail(String.format("Didn't find albumentry with id=d", id));
+                }
+            }
+        }
+    }
+
+    private void assertAlbumEntryHasGroupByYearFlag(Connection connection, int id, boolean requireLogin) throws Exception {
+        String sql = "select * from albumentries where albumentry_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try(ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    assertEquals(requireLogin, result.getBoolean("group_by_year"));
                 } else {
                     fail(String.format("Didn't find albumentry with id=d", id));
                 }

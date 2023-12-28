@@ -9,6 +9,7 @@ import {
     ADD_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE,
     ADD_ALBUM_CLEAR_LASTMODIFIED_FIELD,
     ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
+    ADD_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED,
     ADD_ALBUM_UPDATE_BUTTON_CLICKED,
     ADD_ALBUM_CANCEL_BUTTON_CLICKED,
 } from '../reduxactions';
@@ -21,6 +22,7 @@ export default function AddAlbum() {
     const description = useSelector(state => state.albumentryDescription);
     const lastModified = useSelector(state => state.albumentryLastModified);
     const requireLogin = useSelector(state => state.albumentryRequireLogin);
+    const groupByYear = useSelector(state => !!state.albumentryGroupByYear);
     const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
     const dispatch = useDispatch();
     const [ queryParams ] = useSearchParams();
@@ -122,6 +124,15 @@ export default function AddAlbum() {
                             checked={requireLogin}
                             onChange={e => dispatch(ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
+                    </div>
+                    <div className="form-group row">
+                        <input
+                            id="require-login"
+                            className="form-check col-1"
+                            type="checkbox"
+                            checked={groupByYear}
+                            onChange={e => dispatch(ADD_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED(e.target.checked))} />
+                        <label htmlFor="require-login" className="form-check-label col-11">{text.albumGroupByYear}</label>
                     </div>
                     <div>
                         <button

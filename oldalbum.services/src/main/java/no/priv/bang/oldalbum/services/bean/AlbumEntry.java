@@ -35,6 +35,7 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
     private int contentLength;
     private int childcount;
     private boolean requireLogin;
+    private Boolean groupByYear;
 
     private AlbumEntry() {}
 
@@ -94,13 +95,17 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
         return requireLogin;
     }
 
+    public Boolean getGroupByYear() {
+        return groupByYear;
+    }
+
     @Override
     public String toString() {
         return "AlbumEntry [id=" + id + ", parent=" + parent + ", path=" + path + ", album=" + album + ", title="
             + title + ", description=" + description + ", imageUrl=" + imageUrl + ", thumbnailUrl=" + thumbnailUrl
             + ", sort=" + sort + ", lastModified=" + lastModified + ", contentType=" + contentType
             + ", contentLength=" + contentLength + ", childcount=" + childcount + ", requireLogin=" + requireLogin
-            + "]";
+            + ", groupByYear=" + groupByYear + "]";
     }
 
     public static AlbumEntryBuilder with() {
@@ -122,6 +127,7 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
         builder.contentType = albumEntry.contentType;
         builder.contentLength = albumEntry.contentLength;
         builder.requireLogin = albumEntry.requireLogin;
+        builder.groupByYear = albumEntry.groupByYear;
         builder.childcount = albumEntry.childcount;
         return builder;
     }
@@ -141,6 +147,7 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
         private int contentLength;
         private int childcount;
         private boolean requireLogin;
+        private Boolean groupByYear;
 
         private AlbumEntryBuilder() {}
 
@@ -159,6 +166,7 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
             albumEntry.contentType = this.contentType;
             albumEntry.contentLength = this.contentLength;
             albumEntry.requireLogin = this.requireLogin;
+            albumEntry.groupByYear = this.groupByYear;
             albumEntry.childcount = this.childcount;
             return albumEntry;
         }
@@ -230,6 +238,11 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
 
         public AlbumEntryBuilder requireLogin(boolean requirelogin) {
             this.requireLogin = requirelogin;
+            return this;
+        }
+
+        public AlbumEntryBuilder groupByYear(Boolean groupByYear) {
+            this.groupByYear = groupByYear;
             return this;
         }
     }

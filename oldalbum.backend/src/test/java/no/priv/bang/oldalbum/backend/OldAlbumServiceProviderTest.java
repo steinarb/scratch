@@ -371,6 +371,7 @@ class OldAlbumServiceProviderTest {
             .description("A new album for new pictures")
             .sort(2)
             .requireLogin(true)
+            .groupByYear(true)
             .build();
         List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
@@ -381,6 +382,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
         assertEquals(albumToAdd.isRequireLogin(), addedAlbum.isRequireLogin());
+        assertEquals(albumToAdd.getGroupByYear(), addedAlbum.getGroupByYear());
     }
 
     @Test
@@ -418,6 +420,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(pictureToAdd.getContentType(), addedPicture.getContentType());
         assertEquals(pictureToAdd.getContentLength(), addedPicture.getContentLength());
         assertEquals(pictureToAdd.isRequireLogin(), pictureToAdd.isRequireLogin());
+        assertNull(addedPicture.getGroupByYear());
     }
 
     @Test

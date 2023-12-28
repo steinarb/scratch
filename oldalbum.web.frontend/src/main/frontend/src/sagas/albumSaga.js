@@ -22,6 +22,7 @@ function* saveModifiedAlbum() {
         description: state.albumentryDescription,
         lastModified: state.albumentryLastModified || null,
         requireLogin: state.albumentryRequireLogin,
+        groupByYear: state.albumentryGroupByYear,
         sort: state.albumentrySort,
     }));
     yield put(SAVE_MODIFIED_ALBUM_REQUEST(album));
@@ -36,6 +37,7 @@ function* saveAddedAlbum() {
         description: state.albumentryDescription,
         lastModified: state.albumentryLastModified || null,
         requireLogin: state.albumentryRequireLogin,
+        groupByYear: state.albumentryGroupByYear,
         sort: state.albumentrySort,
     }));
     yield put(SAVE_ADDED_ALBUM_REQUEST(album));
