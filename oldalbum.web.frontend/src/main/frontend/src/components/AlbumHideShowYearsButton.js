@@ -5,7 +5,7 @@ export default function AlbumHideShowYearsButton(props) {
     const { album } = props;
     const { id } = album;
     const text = useSelector(state => state.displayTexts);
-    const albumGroupByYear = useSelector(state => !!state.albumGroupByYear[id]);
+    const albumGroupByYear = useSelector(state => state.albumGroupByYear[id] === undefined ? true : state.albumGroupByYear[id]);
     const ariaControls = useSelector(state => id in state.childentriesByYear ? Object.keys(state.childentriesByYear[id]).map(k => 'collapse' + k.toString()).join(' ') : []);
     const [ expanded, setExpanded ] = useState(true);
     const labelText = expanded ? text.hideAllYears : text.showAllYears;
