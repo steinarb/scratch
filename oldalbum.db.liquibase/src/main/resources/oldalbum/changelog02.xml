@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <!-- Copyright 2022 Steinar Bang                                                     -->
+    <!-- Copyright 2022-2023 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -20,6 +20,16 @@
 
         <addColumn tableName="albumentries">
             <column name="require_login" type="boolean" defaultValueBoolean="false" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="sb" id="oldalbum-1.0.0-albumentries-add-groupbyyear-flag">
+        <preConditions onFail="CONTINUE" >
+            <tableExists tableName="albumentries" />
+        </preConditions>
+
+        <addColumn tableName="albumentries">
+            <column name="group_by_year" type="boolean" />
         </addColumn>
     </changeSet>
 

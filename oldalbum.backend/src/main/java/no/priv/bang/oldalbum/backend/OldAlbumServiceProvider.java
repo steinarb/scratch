@@ -34,6 +34,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -149,7 +150,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         List<AlbumEntry> allroutes = new ArrayList<>();
 
         List<AlbumEntry> albums = new ArrayList<>();
-        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true and (not a.require_login or (a.require_login and a.require_login=?)) group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort, a.lastmodified, a.contenttype, a.contentlength, a.require_login order by a.localpath";
+        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true and (not a.require_login or (a.require_login and a.require_login=?)) group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort, a.lastmodified, a.contenttype, a.contentlength, a.require_login, a.group_by_year order by a.localpath";
         try (Connection connection = datasource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isLoggedIn);
@@ -271,7 +272,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
         int id = modifiedEntry.getId();
-        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=? where albumentry_id=?";
+        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=?, group_by_year=? where albumentry_id=?";
         try(Connection connection = datasource.getConnection()) {
             int sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -284,7 +285,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setTimestamp(7, getLastModifiedTimestamp(modifiedEntry));
                 statement.setInt(8, sort);
                 statement.setBoolean(9, modifiedEntry.isRequireLogin());
-                statement.setInt(10, id);
+                if (modifiedEntry.getGroupByYear() == null) {
+                    statement.setNull(10, Types.BOOLEAN);
+                } else {
+                    statement.setBoolean(10, modifiedEntry.getGroupByYear());
+                }
+                statement.setInt(11, id);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -295,7 +301,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, require_login) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String path = addedEntry.getPath();
         try(Connection connection = datasource.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -311,6 +317,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setString(10, addedEntry.getContentType());
                 statement.setInt(11, addedEntry.getContentLength());
                 statement.setBoolean(12, addedEntry.isRequireLogin());
+                if (addedEntry.getGroupByYear() == null) {
+                    statement.setNull(13, Types.BOOLEAN);
+                } else {
+                    statement.setBoolean(13, addedEntry.getGroupByYear());
+                }
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -1081,13 +1092,23 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .contentType(results.getString("contenttype"))
             .contentLength(results.getInt("contentlength"))
             .requireLogin(results.getBoolean("require_login"))
+            .groupByYear(getNullableBoolean(results, "group_by_year"))
             .childcount(findChildCount(results))
             .build();
     }
 
+    private Boolean getNullableBoolean(ResultSet results, String columnName) throws SQLException {
+        var result = results.getBoolean(columnName);
+        if (results.wasNull()) {
+            return null;
+        }
+
+        return result;
+    }
+
     private int findChildCount(ResultSet results) throws SQLException {
         int columncount = results.getMetaData().getColumnCount();
-        return columncount > 13 ? results.getInt(14) : 0;
+        return columncount > 14 ? results.getInt(15) : 0;
     }
 
     private Date timestampToDate(Timestamp lastmodifiedTimestamp) {

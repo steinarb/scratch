@@ -40,6 +40,7 @@ class AlbumEntryTest {
         String contenttype = "image/jpeg";
         int contentlength = 128186;
         boolean requirelogin = true;
+        boolean groupByYear = true;
         AlbumEntry bean = AlbumEntry.with()
             .id(id)
             .parent(parent)
@@ -54,6 +55,7 @@ class AlbumEntryTest {
             .contentType(contenttype)
             .contentLength(contentlength)
             .requireLogin(requirelogin)
+            .groupByYear(groupByYear)
             .childcount(childcount)
             .build();
         assertEquals(id, bean.getId());
@@ -70,6 +72,7 @@ class AlbumEntryTest {
         assertEquals(contenttype, bean.getContentType());
         assertEquals(contentlength, bean.getContentLength());
         assertEquals(requirelogin, bean.isRequireLogin());
+        assertEquals(groupByYear, bean.getGroupByYear());
         assertThat(bean.toString()).startsWith("AlbumEntry [id=");
     }
 
@@ -89,6 +92,7 @@ class AlbumEntryTest {
         assertNull(bean.getContentType());
         assertEquals(0, bean.getContentLength());
         assertFalse(bean.isRequireLogin());
+        assertNull(bean.getGroupByYear());
     }
 
     @Test
@@ -107,6 +111,7 @@ class AlbumEntryTest {
             .contentType("image/jpeg")
             .contentLength(128186)
             .requireLogin(true)
+            .groupByYear(true)
             .childcount(4)
             .build();
         var bean = AlbumEntry.with(originalBean).build();
@@ -124,6 +129,7 @@ class AlbumEntryTest {
         assertEquals(originalBean.getContentType(), bean.getContentType());
         assertEquals(originalBean.getContentLength(), bean.getContentLength());
         assertEquals(originalBean.isRequireLogin(), bean.isRequireLogin());
+        assertEquals(originalBean.getGroupByYear(), bean.getGroupByYear());
     }
 
 }
