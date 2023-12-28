@@ -42,7 +42,7 @@ function findChildrenThumbnails(entry, children, childitems) {
     const indirectChildren = children
           .filter(c => c.album)
           .sort((a,b) => a.sort - b.sort)
-          .map(c => childitems[c.id].slice().sort((a,b) => a.sort - b.sort).find(t => t.thumbnailUrl || c.imageUrl))
+          .map(c => childitems[c.id] && childitems[c.id].slice().sort((a,b) => a.sort - b.sort).find(t => t.thumbnailUrl || c.imageUrl))
           .map(c => ( { ...c, path: entry.path } ));
     return indirectChildren;
 }
