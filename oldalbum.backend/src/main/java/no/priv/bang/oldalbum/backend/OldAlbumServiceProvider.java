@@ -981,7 +981,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private Timestamp getLastModifiedTimestamp(AlbumEntry albumentry) {
         Timestamp lastmodified = null;
-        if (!albumentry.isAlbum() && albumentry.getLastModified() != null) {
+        if (albumentry.getLastModified() != null) {
             lastmodified = Timestamp.from(Instant.ofEpochMilli(albumentry.getLastModified().getTime()));
         }
         return lastmodified;

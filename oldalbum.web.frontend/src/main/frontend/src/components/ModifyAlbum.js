@@ -6,6 +6,9 @@ import {
     MODIFY_ALBUM_BASENAME_FIELD_CHANGED,
     MODIFY_ALBUM_TITLE_FIELD_CHANGED,
     MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED,
+    MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED,
+    MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE,
+    MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD,
     MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
     MODIFY_ALBUM_UPDATE_BUTTON_CLICKED,
     MODIFY_ALBUM_CANCEL_BUTTON_CLICKED,
@@ -18,10 +21,12 @@ export default function ModifyAlbum() {
     const basename = useSelector(state => state.albumentryBasename);
     const title = useSelector(state => state.albumentryTitle);
     const description = useSelector(state => state.albumentryDescription);
+    const lastModified = useSelector(state => state.albumentryLastModified);
     const requireLogin = useSelector(state => state.albumentryRequireLogin);
     const albums = useSelector(state => state.allroutes.filter(r => r.album).filter(r => r.id !== state.albumentryid) || []);
     const uplocation = useSelector(state => (state.albumentries[state.albumentryid] || {}).path || '/');
     const dispatch = useDispatch();
+    const lastmodified = lastModified ? lastModified.split('T')[0] : '';
 
     return(
         <div>
@@ -88,6 +93,36 @@ export default function ModifyAlbum() {
                                 type="text"
                                 value={description}
                                 onChange={e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label htmlFor="lastmodified" className="col-form-label col-5">{text.lastmodified}</label>
+                        <div className="col-7">
+                            <input
+                                id="lastmodified"
+                                className="form-control"
+                                type="date"
+                                value={lastmodified}
+                                onChange={e => dispatch(MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <div className="col-5" />
+                        <div className="col-7">
+                            <button
+                                className="btn btn-light ml-1"
+                                type="button"
+                                onClick={() => dispatch(MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE())}
+                            >
+                                {text.setTodaysDate}
+                            </button>
+                            <button
+                                className="btn btn-light ml-1"
+                                type="button"
+                                onClick={() => dispatch(MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD())}
+                            >
+                                {text.clearDate}
+                            </button>
                         </div>
                     </div>
                     <div className="form-group row">
