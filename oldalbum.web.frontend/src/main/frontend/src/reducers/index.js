@@ -38,6 +38,7 @@ import editMode from './editModeReducer';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
 import originalRequestUri from './originalRequestUriReducer';
+import dateOfLastChildOfAlbum from './dateOfLastChildOfAlbumReducer';
 
 export default (routerReducer) => combineReducers({
     router: routerReducer,
@@ -80,4 +81,5 @@ export default (routerReducer) => combineReducers({
     canModifyAlbum,
     canLogin,
     originalRequestUri,
+    dateOfLastChildOfAlbum,
 });
