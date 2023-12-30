@@ -250,7 +250,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     List<AlbumEntry> findSelectedentries(List<Integer> selectedentryIds) {
         List<AlbumEntry> selectedentries = new ArrayList<>();
-        var selectedentryIdGroup = selectedentryIds.stream().map(i -> i.toString()).collect(Collectors.joining(","));
+        var selectedentryIdGroup = selectedentryIds.stream().map(Object::toString).collect(Collectors.joining(","));
         var sql = String.format("select * from albumentries where albumentry_id in (%s)", selectedentryIdGroup);
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.createStatement()) {
