@@ -645,8 +645,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     String formatLastModifiedTimeAsExifDateString(AlbumEntry albumEntry) {
         var exifDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
         exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
-        var datetime = exifDateTimeFormat.format(albumEntry.getLastModified());
-        return datetime;
+        return exifDateTimeFormat.format(albumEntry.getLastModified());
     }
 
     public byte[] formatExifUserComment(String userComment) {
