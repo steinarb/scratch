@@ -18,7 +18,6 @@ package no.priv.bang.oldalbum.backend;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -695,7 +694,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return null;
     }
 
-    ImageMetadata readMetadataOfLocalFile(File downloadFile, HttpURLConnection dummyConnection) throws FileNotFoundException, IOException {
+    ImageMetadata readMetadataOfLocalFile(File downloadFile, HttpURLConnection dummyConnection) throws IOException {
         final var metadataBuilder = ImageMetadata.with();
         try(var input = new FileInputStream(downloadFile)) {
             readAndParseImageMetadata(downloadFile.getName(), metadataBuilder, dummyConnection, input);
