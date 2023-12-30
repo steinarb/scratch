@@ -1098,7 +1098,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     private Boolean getNullableBoolean(ResultSet results, String columnName) throws SQLException {
         var result = results.getBoolean(columnName);
         if (results.wasNull()) {
-            return null;
+            return null; // NOSONAR this is intentional because null here means not set in the database
         }
 
         return result;
