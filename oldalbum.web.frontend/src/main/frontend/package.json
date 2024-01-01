@@ -14,7 +14,7 @@
         "react-router": "^6.21.1",
         "react-router-dom": "^6.3.0",
         "react-swipeable": "^7.0.1",
-        "redux-first-history": "^5.1.1",
+        "redux-first-history": "^5.2.0",
         "redux-saga": "^1.2.1",
         "terser": "^5.14.2"
     },
