@@ -13,6 +13,7 @@ export default function Login() {
     const [ password, setPassword ] = useState('');
     const [searchParams] = useSearchParams();
     const returnpath = searchParams.get('returnpath') || '/';
+    const loginButtonTitle = text.login || '';
 
     if (loggedIn) {
         if (originalRequestUri) {
@@ -48,7 +49,7 @@ export default function Login() {
                         <input
                             className="btn btn-light mx-2"
                             type="submit"
-                            value={text.login}
+                            value={loginButtonTitle}
                             onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
                         <NavLink className="btn btn-light mx-2" to={returnpath}>{text.cancel}</NavLink>
                     </div>
