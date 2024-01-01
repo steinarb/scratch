@@ -5,9 +5,10 @@ import {
 } from '../reduxactions';
 const initialState = '';
 
-const batchAddUrlReducer = createReducer(initialState, {
-    [BATCH_ADD_URL_FIELD_CHANGED]: (state, action) => action.payload,
-    [CLEAR_BATCH_ADD_URL_FIELD]: () => initialState,
+const batchAddUrlReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(BATCH_ADD_URL_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(CLEAR_BATCH_ADD_URL_FIELD, () => initialState);
 });
 
 export default batchAddUrlReducer;

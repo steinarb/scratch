@@ -8,12 +8,13 @@ import {
 } from '../reduxactions';
 const initialState = '';
 
-const albumentryThumbnailUrlReducer = createReducer(initialState, {
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => action.payload.thumbnailUrl,
-    [FILL_ADD_PICTURE_FORM]: (state, action) => action.payload.thumbnailUrl,
-    [MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED]: (state, action) => action.payload,
-    [ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED]: (state, action) => action.payload,
-    [CLEAR_PICTURE_FORM]: () => initialState,
+const albumentryThumbnailUrlReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => action.payload.thumbnailUrl)
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => action.payload.thumbnailUrl)
+        .addCase(MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
 
 export default albumentryThumbnailUrlReducer;

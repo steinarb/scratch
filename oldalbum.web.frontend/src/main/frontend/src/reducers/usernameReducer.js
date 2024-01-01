@@ -6,10 +6,11 @@ import {
 } from '../reduxactions';
 const initialState = null;
 
-const usernameReducer = createReducer(initialState, {
-    [LOGIN_RECEIVE]: (state, action) => action.payload.username,
-    [LOGIN_CHECK_RECEIVE]: (state, action) => action.payload.username,
-    [LOGOUT_RECEIVE]: (state, action) => action.payload.username,
+const usernameReducer = createReducer(initialState, (builder) => {
+    builder
+        .addCase(LOGIN_RECEIVE, (state, action) => action.payload.username)
+        .addCase(LOGIN_CHECK_RECEIVE, (state, action) => action.payload.username)
+        .addCase(LOGOUT_RECEIVE, (state, action) => action.payload.username);
 });
 
 export default usernameReducer;

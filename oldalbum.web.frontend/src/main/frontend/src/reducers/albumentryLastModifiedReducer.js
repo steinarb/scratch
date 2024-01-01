@@ -17,21 +17,22 @@ import {
 } from '../reduxactions';
 const initialState = '';
 
-const albumentryLastModifiedReducer = createReducer(initialState, {
-    [FILL_MODIFY_ALBUM_FORM]: (state, action) => action.payload.lastModified ? new Date(action.payload.lastModified).toISOString() : initialState,
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => new Date(action.payload.lastModified).toISOString(),
-    [FILL_ADD_PICTURE_FORM]: (state, action) => action.payload.lastModified,
-    [IMAGE_METADATA_RECEIVE]: (state, action) => new Date(action.payload.lastModified).toISOString(),
-    [MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED]: (state, action) =>  action.payload + 'T' + state.split('T')[1],
-    [MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE]: () => new Date().toISOString(),
-    [MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD]: () => initialState,
-    [MODIFY_PICTURE_LASTMODIFIED_FIELD_CHANGED]: (state, action) =>  action.payload + 'T' + state.split('T')[1],
-    [ADD_ALBUM_LASTMODIFIED_FIELD_CHANGED]: (state, action) =>  action.payload + 'T' + state.split('T')[1],
-    [ADD_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE]: () => new Date().toISOString(),
-    [ADD_ALBUM_CLEAR_LASTMODIFIED_FIELD]: () => initialState,
-    [ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED]: (state, action) =>  action.payload + 'T' + state.split('T')[1],
-    [CLEAR_ALBUM_FORM]: () => initialState,
-    [CLEAR_PICTURE_FORM]: () => initialState,
+const albumentryLastModifiedReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_ALBUM_FORM, (state, action) => action.payload.lastModified ? new Date(action.payload.lastModified).toISOString() : initialState)
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => new Date(action.payload.lastModified).toISOString())
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => action.payload.lastModified)
+        .addCase(IMAGE_METADATA_RECEIVE, (state, action) => new Date(action.payload.lastModified).toISOString())
+        .addCase(MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED, (state, action) =>  action.payload + 'T' + state.split('T')[1])
+        .addCase(MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE, () => new Date().toISOString())
+        .addCase(MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD, () => initialState)
+        .addCase(MODIFY_PICTURE_LASTMODIFIED_FIELD_CHANGED, (state, action) =>  action.payload + 'T' + state.split('T')[1])
+        .addCase(ADD_ALBUM_LASTMODIFIED_FIELD_CHANGED, (state, action) =>  action.payload + 'T' + state.split('T')[1])
+        .addCase(ADD_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE, () => new Date().toISOString())
+        .addCase(ADD_ALBUM_CLEAR_LASTMODIFIED_FIELD, () => initialState)
+        .addCase(ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED, (state, action) =>  action.payload + 'T' + state.split('T')[1])
+        .addCase(CLEAR_ALBUM_FORM, () => initialState)
+        .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
 
 export default albumentryLastModifiedReducer;

@@ -4,9 +4,10 @@ import {
     CLEAR_ALERT,
 } from '../reduxactions';
 
-const alertReducer = createReducer('', {
-    [SET_ALERT]: (state, action) => action.payload,
-    [CLEAR_ALERT]: () => '',
+const alertReducer = createReducer('', (builder) => {
+    builder
+        .addCase(SET_ALERT, (state, action) => action.payload)
+        . addCase(CLEAR_ALERT, () => '');
 });
 
 export default alertReducer;
