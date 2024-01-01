@@ -7,8 +7,10 @@ export default function DeleteButton(props) {
     const { item } = props;
     const text = useSelector(state => state.displayTexts);
     const showEditControls = useSelector(state => state.showEditControls);
-    const parentpath = useSelector(state => (state.albumentries[item.parent] || {}).path || '');
-    const children = useSelector(state => state.childentries[item.id] || []);
+    const parent = useSelector(state => state.albumentries[item.parent]);
+    const childentries = useSelector(state => state.childentries[item.id]);
+    const parentpath = (parent || {}).path || '';
+    const children = childentries || [];
     const dispatch = useDispatch();
     const onDelete = (item, parentpath) => {
         dispatch(DELETE_ALBUMENTRY_REQUEST(item));
