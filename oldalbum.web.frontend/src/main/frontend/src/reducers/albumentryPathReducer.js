@@ -15,19 +15,20 @@ import {
 } from '../reduxactions';
 const initialState = '';
 
-const albumentryPathReducer = createReducer(initialState, {
-    [FILL_MODIFY_ALBUM_FORM]: (state, action) => action.payload.path,
-    [FILL_ADD_ALBUM_FORM]: (state, action) => action.payload.path || state,
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => action.payload.path,
-    [FILL_ADD_PICTURE_FORM]: (state, action) => action.payload.path,
-    [MODIFY_ALBUM_PARENT_SELECTED]: (state, action) => replaceParentPath(state, action.payload, true),
-    [MODIFY_PICTURE_PARENT_SELECTED]: (state, action) => replaceParentPath(state, action.payload, false),
-    [MODIFY_ALBUM_BASENAME_FIELD_CHANGED]: (state, action) => replaceLastElementInPathWithBasename(state, action.payload, true),
-    [ADD_ALBUM_BASENAME_FIELD_CHANGED]: (state, action) => replaceLastElementInPathWithBasename(state, action.payload, true),
-    [MODIFY_PICTURE_BASENAME_FIELD_CHANGED]: (state, action) => replaceLastElementInPathWithBasename(state, action.payload, false),
-    [ADD_PICTURE_BASENAME_FIELD_CHANGED]: (state, action) => replaceLastElementInPathWithBasename(state, action.payload, false),
-    [CLEAR_ALBUM_FORM]: () => initialState,
-    [CLEAR_PICTURE_FORM]: () => initialState,
+const albumentryPathReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_ALBUM_FORM, (state, action) => action.payload.path)
+        .addCase(FILL_ADD_ALBUM_FORM, (state, action) => action.payload.path || state)
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => action.payload.path)
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => action.payload.path)
+        .addCase(MODIFY_ALBUM_PARENT_SELECTED, (state, action) => replaceParentPath(state, action.payload, true))
+        .addCase(MODIFY_PICTURE_PARENT_SELECTED, (state, action) => replaceParentPath(state, action.payload, false))
+        .addCase(MODIFY_ALBUM_BASENAME_FIELD_CHANGED, (state, action) => replaceLastElementInPathWithBasename(state, action.payload, true))
+        .addCase(ADD_ALBUM_BASENAME_FIELD_CHANGED, (state, action) => replaceLastElementInPathWithBasename(state, action.payload, true))
+        .addCase(MODIFY_PICTURE_BASENAME_FIELD_CHANGED, (state, action) => replaceLastElementInPathWithBasename(state, action.payload, false))
+        .addCase(ADD_PICTURE_BASENAME_FIELD_CHANGED, (state, action) => replaceLastElementInPathWithBasename(state, action.payload, false))
+        .addCase(CLEAR_ALBUM_FORM, () => initialState)
+        .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
 
 export default albumentryPathReducer;

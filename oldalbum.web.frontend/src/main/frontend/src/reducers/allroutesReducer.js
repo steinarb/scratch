@@ -14,19 +14,20 @@ import {
     MOVE_ALBUMENTRY_RIGHT_RECEIVE,
 } from '../reduxactions';
 
-const allroutesReducer = createReducer([], {
-    [ALLROUTES_RECEIVE]: (state, action) => action.payload,
-    [SAVE_MODIFIED_ALBUM_RECEIVE]: (state, action) => action.payload,
-    [SAVE_ADDED_ALBUM_RECEIVE]: (state, action) => action.payload,
-    [SAVE_MODIFIED_PICTURE_RECEIVE]: (state, action) => action.payload,
-    [SAVE_ADDED_PICTURE_RECEIVE]: (state, action) => action.payload,
-    [BATCH_ADD_PICTURES_FROM_URL_RECEIVE]: (state, action) => action.payload,
-    [SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE]: (state, action) => action.payload,
-    [DELETE_ALBUMENTRY_RECEIVE]: (state, action) => action.payload,
-    [MOVE_ALBUMENTRY_UP_RECEIVE]: (state, action) => action.payload,
-    [MOVE_ALBUMENTRY_LEFT_RECEIVE]: (state, action) => action.payload,
-    [MOVE_ALBUMENTRY_DOWN_RECEIVE]: (state, action) => action.payload,
-    [MOVE_ALBUMENTRY_RIGHT_RECEIVE]: (state, action) => action.payload,
+const allroutesReducer = createReducer([], builder => {
+    builder
+        .addCase(ALLROUTES_RECEIVE, (state, action) => action.payload)
+        .addCase(SAVE_MODIFIED_ALBUM_RECEIVE, (state, action) => action.payload)
+        .addCase(SAVE_ADDED_ALBUM_RECEIVE, (state, action) => action.payload)
+        .addCase(SAVE_MODIFIED_PICTURE_RECEIVE, (state, action) => action.payload)
+        .addCase(SAVE_ADDED_PICTURE_RECEIVE, (state, action) => action.payload)
+        .addCase(BATCH_ADD_PICTURES_FROM_URL_RECEIVE, (state, action) => action.payload)
+        .addCase(SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE, (state, action) => action.payload)
+        .addCase(DELETE_ALBUMENTRY_RECEIVE, (state, action) => action.payload)
+        .addCase(MOVE_ALBUMENTRY_UP_RECEIVE, (state, action) => action.payload)
+        .addCase(MOVE_ALBUMENTRY_LEFT_RECEIVE, (state, action) => action.payload)
+        .addCase(MOVE_ALBUMENTRY_DOWN_RECEIVE, (state, action) => action.payload)
+        .addCase(MOVE_ALBUMENTRY_RIGHT_RECEIVE, (state, action) => action.payload);
 });
 
 export default allroutesReducer;

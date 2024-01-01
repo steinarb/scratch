@@ -7,11 +7,12 @@ import {
 } from '../reduxactions';
 const initialState = '';
 
-const albumentryContentTypeReducer = createReducer(initialState, {
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => action.payload.contentType,
-    [FILL_ADD_PICTURE_FORM]: (state, action) => action.payload.contentType,
-    [IMAGE_METADATA_RECEIVE]: (state, action) => action.payload.contentType || '',
-    [CLEAR_PICTURE_FORM]: () => initialState,
+const albumentryContentTypeReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => action.payload.contentType)
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => action.payload.contentType)
+        .addCase(IMAGE_METADATA_RECEIVE, (state, action) => action.payload.contentType || '')
+        .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
 
 export default albumentryContentTypeReducer;

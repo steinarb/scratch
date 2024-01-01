@@ -5,10 +5,11 @@ import {
     CLEAR_SELECTION,
 } from '../reduxactions';
 
-const selectedentriesReducer = createReducer([], {
-    [SELECT_PICTURE_ALBUMENTRY]: (state, action) => addIfNotPresent(state, action.payload),
-    [UNSELECT_PICTURE_ALBUMENTRY]: (state, action) => removeIfPresent(state, action.payload),
-    [CLEAR_SELECTION]: () => [],
+const selectedentriesReducer = createReducer([], (builder) => {
+    builder
+        .addCase(SELECT_PICTURE_ALBUMENTRY, (state, action) => addIfNotPresent(state, action.payload))
+        .addCase(UNSELECT_PICTURE_ALBUMENTRY, (state, action) => removeIfPresent(state, action.payload))
+        .addCase(CLEAR_SELECTION, () => []); 
 });
 
 export default selectedentriesReducer;
