@@ -4,9 +4,10 @@ import {
     HIDE_EDIT_CONTROLS,
 } from '../reduxactions';
 
-const showEditControlsReducer = createReducer(false, {
-    [SHOW_EDIT_CONTROLS]: () => true,
-    [HIDE_EDIT_CONTROLS]: () => false,
+const showEditControlsReducer = createReducer(false, (builder) => {
+    builder
+        .addCase(SHOW_EDIT_CONTROLS, () => true)
+        .addCase(HIDE_EDIT_CONTROLS, () => false);
 });
 
 export default showEditControlsReducer;

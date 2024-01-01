@@ -13,17 +13,18 @@ import {
 } from '../reduxactions';
 const initialState = false;
 
-const albumentryRequireLoginReducer = createReducer(initialState, {
-    [FILL_MODIFY_ALBUM_FORM]: (state, action) => action.payload.requireLogin,
-    [FILL_ADD_ALBUM_FORM]: (state, action) => action.payload.requireLogin,
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => action.payload.requireLogin,
-    [FILL_ADD_PICTURE_FORM]: (state, action) => action.payload.requireLogin,
-    [MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED]: (state, action) => action.payload,
-    [ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED]: (state, action) => action.payload,
-    [MODIFY_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED]: (state, action) => action.payload,
-    [ADD_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED]: (state, action) => action.payload,
-    [CLEAR_ALBUM_FORM]: () => initialState,
-    [CLEAR_PICTURE_FORM]: () => initialState,
+const albumentryRequireLoginReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_ALBUM_FORM, (state, action) => action.payload.requireLogin)
+        .addCase(FILL_ADD_ALBUM_FORM, (state, action) => action.payload.requireLogin)
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => action.payload.requireLogin)
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => action.payload.requireLogin)
+        .addCase(MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(MODIFY_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(ADD_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(CLEAR_ALBUM_FORM, () => initialState)
+        .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
 
 export default albumentryRequireLoginReducer;

@@ -3,8 +3,9 @@ import {
     LOGIN_CHECK_RECEIVE,
 } from '../reduxactions';
 
-const haveReceivedInitialLoginStatusReducer = createReducer(false, {
-    [LOGIN_CHECK_RECEIVE]: () => true,
+const haveReceivedInitialLoginStatusReducer = createReducer(false, builder => {
+    builder
+        .addCase(LOGIN_CHECK_RECEIVE, () => true);
 });
 
 export default haveReceivedInitialLoginStatusReducer;

@@ -7,9 +7,10 @@ import {
 
 const currentEditMode = (Cookies.get('editMode') || '').toLowerCase() === 'true';
 
-const editModeReducer = createReducer(currentEditMode, {
-    [TOGGLE_EDIT_MODE_ON]: () => true,
-    [TOGGLE_EDIT_MODE_OFF]: () => false,
+const editModeReducer = createReducer(currentEditMode, builder => {
+    builder
+        .addCase(TOGGLE_EDIT_MODE_ON, () => true)
+        .addCase(TOGGLE_EDIT_MODE_OFF, () => false);
 });
 
 export default editModeReducer;

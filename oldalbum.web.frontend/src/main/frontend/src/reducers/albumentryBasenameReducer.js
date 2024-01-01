@@ -13,17 +13,18 @@ import {
 } from '../reduxactions';
 const initialState = '';
 
-const albumentryBasenameReducer = createReducer(initialState, {
-    [FILL_MODIFY_ALBUM_FORM]: (state, action) => finnSisteLeddIPath(action, true),
-    [FILL_ADD_ALBUM_FORM]: (state, action) => finnSisteLeddIPath(action, true),
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => finnSisteLeddIPath(action, false),
-    [FILL_ADD_PICTURE_FORM]: (state, action) => finnSisteLeddIPath(action, false),
-    [MODIFY_ALBUM_BASENAME_FIELD_CHANGED]: (state, action) => action.payload,
-    [ADD_ALBUM_BASENAME_FIELD_CHANGED]: (state, action) => action.payload,
-    [MODIFY_PICTURE_BASENAME_FIELD_CHANGED]: (state, action) => action.payload,
-    [ADD_PICTURE_BASENAME_FIELD_CHANGED]: (state, action) => action.payload,
-    [CLEAR_ALBUM_FORM]: () => initialState,
-    [CLEAR_PICTURE_FORM]: () => initialState,
+const albumentryBasenameReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_ALBUM_FORM, (state, action) => finnSisteLeddIPath(action, true))
+        .addCase(FILL_ADD_ALBUM_FORM, (state, action) => finnSisteLeddIPath(action, true))
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => finnSisteLeddIPath(action, false))
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => finnSisteLeddIPath(action, false))
+        .addCase(MODIFY_ALBUM_BASENAME_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(ADD_ALBUM_BASENAME_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(MODIFY_PICTURE_BASENAME_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(ADD_PICTURE_BASENAME_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(CLEAR_ALBUM_FORM, () => initialState)
+        .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
 
 export default albumentryBasenameReducer;

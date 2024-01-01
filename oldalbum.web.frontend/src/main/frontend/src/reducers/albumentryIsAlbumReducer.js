@@ -9,13 +9,14 @@ import {
 } from '../reduxactions';
 const initialState = false;
 
-const albumentryIsAlbumReducer = createReducer(initialState, {
-    [FILL_MODIFY_ALBUM_FORM]: (state, action) => true,
-    [FILL_ADD_ALBUM_FORM]: (state, action) => true,
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => false,
-    [FILL_ADD_PICTURE_FORM]: (state, action) => false,
-    [CLEAR_ALBUM_FORM]: (state, action) => initialState,
-    [CLEAR_PICTURE_FORM]: (state, action) => initialState,
+const albumentryIsAlbumReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_ALBUM_FORM, (state, action) => true)
+        .addCase(FILL_ADD_ALBUM_FORM, (state, action) => true)
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => false)
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => false)
+        .addCase(CLEAR_ALBUM_FORM, (state, action) => initialState)
+        .addCase(CLEAR_PICTURE_FORM, (state, action) => initialState);
 });
 
 export default albumentryIsAlbumReducer;

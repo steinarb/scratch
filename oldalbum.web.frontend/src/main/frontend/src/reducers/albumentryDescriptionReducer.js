@@ -14,18 +14,19 @@ import {
 } from '../reduxactions';
 const initialState = '';
 
-const albumentryDescriptionReducer = createReducer(initialState, {
-    [FILL_MODIFY_ALBUM_FORM]: (state, action) => action.payload.description,
-    [FILL_ADD_ALBUM_FORM]: (state, action) => action.payload.description,
-    [FILL_MODIFY_PICTURE_FORM]: (state, action) => action.payload.description,
-    [FILL_ADD_PICTURE_FORM]: (state, action) => action.payload.description,
-    [IMAGE_METADATA_RECEIVE]: (state, action) => action.payload.description || '',
-    [MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED]: (state, action) => action.payload,
-    [ADD_ALBUM_DESCRIPTION_FIELD_CHANGED]: (state, action) => action.payload,
-    [MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED]: (state, action) => action.payload,
-    [ADD_PICTURE_DESCRIPTION_FIELD_CHANGED]: (state, action) => action.payload,
-    [CLEAR_ALBUM_FORM]: () => initialState,
-    [CLEAR_PICTURE_FORM]: () => initialState,
+const albumentryDescriptionReducer = createReducer(initialState, builder => {
+    builder
+        .addCase(FILL_MODIFY_ALBUM_FORM, (state, action) => action.payload.description)
+        .addCase(FILL_ADD_ALBUM_FORM, (state, action) => action.payload.description)
+        .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => action.payload.description)
+        .addCase(FILL_ADD_PICTURE_FORM, (state, action) => action.payload.description)
+        .addCase(IMAGE_METADATA_RECEIVE, (state, action) => action.payload.description || '')
+        .addCase(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(ADD_ALBUM_DESCRIPTION_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(ADD_PICTURE_DESCRIPTION_FIELD_CHANGED, (state, action) => action.payload)
+        .addCase(CLEAR_ALBUM_FORM, () => initialState)
+        .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
 
 export default albumentryDescriptionReducer;

@@ -8,10 +8,11 @@ import {
 
 const initialGroupByAlbumSetting = JSON.parse(Cookies.get('albumGroupByYear') || '{}');
 
-const groupByYearReducer = createReducer(initialGroupByAlbumSetting, {
-    [ALLROUTES_RECEIVE]: (state, action) => saveGroupByYearInitialState(state, action.payload),
-    [SET_ALBUM_GROUP_BY_YEAR]: (state, action) => setAlbumGroupByYear(state, action.payload),
-    [UNSET_ALBUM_GROUP_BY_YEAR]: (state, action) => unsetAlbumGroupByYear(state, action.payload),
+const groupByYearReducer = createReducer(initialGroupByAlbumSetting, builder => {
+    builder
+        .addCase(ALLROUTES_RECEIVE, (state, action) => saveGroupByYearInitialState(state, action.payload))
+        .addCase(SET_ALBUM_GROUP_BY_YEAR, (state, action) => setAlbumGroupByYear(state, action.payload))
+        .addCase(UNSET_ALBUM_GROUP_BY_YEAR, (state, action) => unsetAlbumGroupByYear(state, action.payload));
 });
 
 function setAlbumGroupByYear(state, album) {
