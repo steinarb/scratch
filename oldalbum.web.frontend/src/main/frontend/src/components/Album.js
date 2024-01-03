@@ -27,8 +27,8 @@ export default function Album(props) {
     const { item } = props;
     const text = useSelector(state => state.displayTexts);
     const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
-    const children = useSelector(state => state.childentries[item.id] || []);
-    const childrenGroupedByYear = useSelector(state => state.childentriesByYear[item.id] || {});
+    const children = useSelector(state => state.childentries[item.id]);
+    const childrenGroupedByYear = useSelector(state => state.childentriesByYear[item.id]);
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const hash = useSelector(state => state.router.location.hash);
@@ -99,7 +99,7 @@ export default function Album(props) {
             </div>
             { showEditControls && sortingStatus && <div className="alert alert-primary" role="alert">{sortingStatus}</div> }
             { item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
-            { renderChildren(children, childrenGroupedByYear, albumGroupByYear, swipeHandlers) }
+            { renderChildren(children || [], childrenGroupedByYear || [], albumGroupByYear, swipeHandlers) }
         </div>
     );
 }
