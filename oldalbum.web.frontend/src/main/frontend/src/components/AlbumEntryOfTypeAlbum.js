@@ -18,7 +18,7 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const anchor = 'entry' + entry.id.toString();
 
     return (
-        <div id={anchor} className={className + widthInCols + ' album-entry-album btn btn-light mx-1 my-1'}>
+        <div id={anchor} className={className + widthInCols + ' album-entry-album btn btn-light mx-1 my-1 album-scroll-below-fixed-header'}>
             <LeftButton item={entry} />
             <div className="col-auto">
                 <NavLink className="btn btn-light p-2 text-left" to={entry.path}>Album: {title}</NavLink>

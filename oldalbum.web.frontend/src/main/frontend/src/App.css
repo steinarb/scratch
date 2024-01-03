@@ -52,6 +52,18 @@
     justify-content: center;
 }
 
+@media screen and (max-width: 1500px) {
+    .album-scroll-below-fixed-header {
+        scroll-margin-top: 15rem;
+    }
+}
+
+@media screen and not (max-width: 1500px) {
+    .album-scroll-below-fixed-header {
+        scroll-margin-top: 5rem;
+    }
+}
+
 .picture-checkbox {
     opacity: 0;
 }
