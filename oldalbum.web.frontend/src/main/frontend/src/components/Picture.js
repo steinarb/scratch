@@ -33,9 +33,12 @@ export default function Picture(props) {
             </Helmet>
             <PictureNavbar className="hide-on-landscape d-lg-none" item={item} parent={parent} title={title}/>
             <PictureNavbar className="d-none d-lg-block" item={item} parent={parent} title={title}/>
-            <div className="btn-toolbar d-lg-none hide-on-landscape" role="toolbar">
-                <Previous previous={previous} />
-                <Next className="ml-auto" next={next} />
+            <div className="d-lg-none hide-on-landscape">
+                <div className="d-flex flex-fill" role="toolbar">
+                    <Previous className="align-self-start" previous={previous} />
+                    <div className="col"/>
+                    <Next className="align-self-end" next={next} />
+                </div>
             </div>
             <div className="btn-group" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />

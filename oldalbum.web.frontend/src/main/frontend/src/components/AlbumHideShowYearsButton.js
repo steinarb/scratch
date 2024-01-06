@@ -19,8 +19,8 @@ export default function AlbumHideShowYearsButton(props) {
         <button
             className={props.className}
             type="button"
-            data-toggle="collapse"
-            data-target=".multi-collapse"
+            data-bs-toggle="collapse"
+            data-bs-target=".multi-collapse"
             aria-expanded="false"
             aria-controls={ariaControls}
             onClick={() => setExpanded(!expanded)}

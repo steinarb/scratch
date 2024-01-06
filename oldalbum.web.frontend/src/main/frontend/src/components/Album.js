@@ -56,49 +56,52 @@ export default function Album(props) {
                 <title>{title}</title>
                 <meta name="description" content={item.description}/>
             </Helmet>
-            <nav className="navbar sticky-top navbar-light bg-light">
-                { parent && (
-                    <NavLink className="nav-link" to={parent + '#' + anchor}>
-                        <div className="container">
-                            <div className="column">
-                                <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-                                <div className="row">{text.up}</div>
+            <div className="sticky-top">
+                <nav className="navbar navbar-light bg-light">
+                    { parent && (
+                        <NavLink className="nav-link" to={parent + '#' + anchor}>
+                            <div className="container">
+                                <div className="column">
+                                    <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
+                                    <div className="row">{text.up}</div>
+                                </div>
                             </div>
-                        </div>
-                    </NavLink>
-                ) }
-                <h1>{title}</h1>
-                <div className="d-flex flex-row">
-                    <DownloadButton item={item} />
-                    <Locale className="form-inline" />
-                    <div className="dropdown">
-                        <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-                        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <CopyLinkButton className="dropdown-item" />
-                            <AlbumGroupByYearButton className="dropdown-item" album={item} />
-                            <AlbumHideShowYearsButton key={'albumHideShowYears' + item.id.toString()} className="dropdown-item" album={item} />
-                            <EditModeButton className="dropdown-item" />
-                            <LoginLogoutButton className="dropdown-item" item={item}/>
+                        </NavLink>
+                    ) }
+                    <h1>{title}</h1>
+                    <div className="d-flex flex-row">
+                        <DownloadButton item={item} />
+                        <Locale className="form-inline" />
+                        <div className="dropdown">
+                            <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span className="navbar-toggler-icon"></span>
+                            </button>
+                            <ul className="dropdown-menu dropdown-menu-end">
+                                <li><CopyLinkButton className="dropdown-item" /></li>
+                                <li><AlbumGroupByYearButton className="dropdown-item" album={item} /></li>
+                                <li><AlbumHideShowYearsButton key={'albumHideShowYears' + item.id.toString()} className="dropdown-item" album={item} /></li>
+                                <li><EditModeButton className="dropdown-item" /></li>
+                                <li><LoginLogoutButton className="dropdown-item" item={item}/></li>
+                            </ul>
                         </div>
                     </div>
+                </nav>
+                <div className="btn-group" role="group" aria-label="Modify album">
+                    <ModifyButton className="mx-1 my-1" item={item} />
+                    <AddAlbumButton className="mx-1 my-1" item={item} />
+                    <AddPictureButton className="mx-1 my-1" item={item} />
+                    <DeleteButton className="mx-1 my-1" item={item} />
+                    <SortByDateButton className="mx-1 my-1" item={item} />
+                    <BatchAddPictures className="" item={item} />
                 </div>
-            </nav>
-            <div className="btn-toolbar" role="toolbar">
-                <Previous previous={previous} />
-                <Next className="ml-auto" next={next} />
+                <div className="d-flex flex-fill" role="toolbar">
+                    <Previous className="align-self-start" previous={previous} />
+                    <div className="col"/>
+                    <Next className="align-self-end" next={next} />
+                </div>
+                { showEditControls && sortingStatus && <div className="alert alert-primary" role="alert">{sortingStatus}</div> }
+                { item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             </div>
-            <div className="btn-group" role="group" aria-label="Modify album">
-                <ModifyButton className="mx-1 my-1" item={item} />
-                <AddAlbumButton className="mx-1 my-1" item={item} />
-                <AddPictureButton className="mx-1 my-1" item={item} />
-                <DeleteButton className="mx-1 my-1" item={item} />
-                <SortByDateButton className="mx-1 my-1" item={item} />
-                <BatchAddPictures className="" item={item} />
-            </div>
-            { showEditControls && sortingStatus && <div className="alert alert-primary" role="alert">{sortingStatus}</div> }
-            { item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             { renderChildren(children || [], childrenGroupedByYear || [], albumGroupByYear, swipeHandlers) }
         </div>
     );
@@ -128,9 +131,9 @@ function renderYear(entry) {
     const expanded = true;
     return (
         <div id={year} className="column album-scroll-below-fixed-header" key={key}>
-            <div className="row">
-                <a className="pl-5 btn" data-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a>
-                <a className="album-yearlink" href={'#' + year.toString()}><h2>#</h2></a>
+            <div className="row ps-5">
+                <a className="btn col-1" data-bs-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a>
+                <a className="album-yearlink col-1" href={'#' + year.toString()}><h2>#</h2></a>
             </div>
             <div className="row collapse multi-collapse show pb-5" id={collapseId}>
                 { children.slice().sort((a,b) => a.sort - b.sort).map(renderChild) }

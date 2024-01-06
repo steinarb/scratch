@@ -44,8 +44,8 @@ export default function ModifyAlbum() {
                 <h1>{text.modifyalbum}</h1>
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
-                <div className="container">
-                    <div className="form-group row">
+                <div className="container mt-2">
+                    <div className="form-group row mb-2">
                         <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
                         <div className="col-7">
                             <select
@@ -57,13 +57,13 @@ export default function ModifyAlbum() {
                             </select>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
                         <div className="col-7">
                             <input id="path" className="form-control" type="text" value={path} readOnly={true} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="basename" className="col-form-label col-5">{text.basefilename}</label>
                         <div className="col-7">
                             <input
@@ -75,7 +75,7 @@ export default function ModifyAlbum() {
                                 onChange={e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input
@@ -86,7 +86,7 @@ export default function ModifyAlbum() {
                                 onChange={e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
                             <input
@@ -97,7 +97,7 @@ export default function ModifyAlbum() {
                                 onChange={e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="lastmodified" className="col-form-label col-5">{text.lastmodified}</label>
                         <div className="col-7">
                             <input
@@ -108,18 +108,18 @@ export default function ModifyAlbum() {
                                 onChange={e => dispatch(MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5" />
                         <div className="col-7">
                             <button
-                                className="btn btn-light ml-1"
+                                className="btn btn-light me-1"
                                 type="button"
                                 onClick={() => dispatch(MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE())}
                             >
                                 {text.setTodaysDate}
                             </button>
                             <button
-                                className="btn btn-light ml-1"
+                                className="btn btn-light me-1"
                                 type="button"
                                 onClick={() => dispatch(MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD())}
                             >
@@ -127,7 +127,7 @@ export default function ModifyAlbum() {
                             </button>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <input
                             id="require-login"
                             className="form-check col-1"
@@ -136,7 +136,7 @@ export default function ModifyAlbum() {
                             onChange={e => dispatch(MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <input
                             id="require-login"
                             className="form-check col-1"
@@ -147,12 +147,12 @@ export default function ModifyAlbum() {
                     </div>
                     <div className="container">
                         <button
-                            className="btn btn-light ml-1"
+                            className="btn btn-light me-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED())}>
                             {text.update}</button>
                         <button
-                            className="btn btn-light ml-1"
+                            className="btn btn-light me-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED())}>
                             {text.cancel}</button>

@@ -10,8 +10,6 @@ export default function Next(props) {
     }
 
     return (
-        <div className={className + ' btn-group'}>
-            <NavLink className="btn" to={next.path}><ChevronRight/></NavLink>
-        </div>
+        <NavLink className={className + ' btn'} to={next.path}><ChevronRight/></NavLink>
     );
 }

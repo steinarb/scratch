@@ -10,8 +10,6 @@ export default function Previous(props) {
     }
 
     return (
-        <div className={className + ' btn-group'}>
-            <NavLink className="btn" to={previous.path}><ChevronLeft/></NavLink>
-        </div>
+        <NavLink className={className + ' btn'} to={previous.path}><ChevronLeft/></NavLink>
     );
 }

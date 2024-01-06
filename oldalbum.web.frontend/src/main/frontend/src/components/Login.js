@@ -33,19 +33,19 @@ export default function Login() {
             </header>
             <div className="container">
                 <form onSubmit={e => { e.preventDefault(); }}>
-                    <div className="form-group row">
-                        <label htmlFor="username" className="col-form-label col-3 mr-2">{text.username}:</label>
+                    <div className="form-group row mb-2">
+                        <label htmlFor="username" className="col-form-label col-3 me-2">{text.username}:</label>
                         <div className="col-8">
                             <input id="username" className="form-control" type="text" name="username" autoComplete="username" value={username} onChange={e => setUsername(e.target.value)} />
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <label htmlFor="password" className="col-form-label col-3 mr-2">{text.password}:</label>
+                    <div className="form-group row mb-2">
+                        <label htmlFor="password" className="col-form-label col-3 me-2">{text.password}:</label>
                         <div className="col-8">
                             <input id="password" className="form-control" type="password" name="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)}/>
                         </div>
                     </div>
-                    <div className="btn-group row right-align-cell">
+                    <div className="btn-group right-align-cell">
                         <input
                             className="btn btn-light mx-2"
                             type="submit"

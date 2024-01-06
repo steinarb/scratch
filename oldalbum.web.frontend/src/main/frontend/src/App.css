@@ -30,6 +30,7 @@
 
 .fullsize-img-thumbnail {
     height: 75px;
+    width: auto;
 }
 
 .keep-aspect-img-thumbnail {

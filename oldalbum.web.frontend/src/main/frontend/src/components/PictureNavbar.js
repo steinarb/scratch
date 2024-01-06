@@ -28,10 +28,10 @@ export default function PictureNavbar(props) {
                     <DownloadButton className="nav-link float-right" item={item} />
                     <Locale className="form-inline" />
                     <div className="dropdown">
-                        <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <span className="navbar-toggler-icon"></span>
                         </button>
-                        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        <div className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <CopyLinkButton className="dropdown-item" />
                             <EditModeButton className="dropdown-item" />
                             <LoginLogoutButton className="dropdown-item" item={item}/>

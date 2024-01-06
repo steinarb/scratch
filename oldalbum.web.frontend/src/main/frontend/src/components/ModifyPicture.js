@@ -47,10 +47,10 @@ export default function ModifyPicture() {
             </nav>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <img className="img-thumbnail fullsize-img-thumbnail" src={imageUrl} />
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
                         <div className="col-7">
                             <select
@@ -62,13 +62,13 @@ export default function ModifyPicture() {
                             </select>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
                         <div className="col-7">
-                            <input id="path" type="text" value={path} readOnly={true} />
+                            <input id="path" className="form-control" type="text" value={path} readOnly={true} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="basename" className="col-form-label col-5">{text.basefilename}</label>
                         <div className="col-7">
                             <input
@@ -79,7 +79,7 @@ export default function ModifyPicture() {
                                 onChange={e => dispatch(MODIFY_PICTURE_BASENAME_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input
@@ -90,7 +90,7 @@ export default function ModifyPicture() {
                                 onChange={e => dispatch(MODIFY_PICTURE_TITLE_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
                         <div className="col-7">
                             <input
@@ -101,7 +101,7 @@ export default function ModifyPicture() {
                                 onChange={e => dispatch(MODIFY_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="imageUrl" className="col-form-label col-5">{text.imageurl}</label>
                         <div className="col-7">
                             <input
@@ -112,7 +112,7 @@ export default function ModifyPicture() {
                                 onChange={e => dispatch(MODIFY_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="thumbnailUrl" className="col-form-label col-5">{text.thumbnailurl}</label>
                         <div className="col-7">
                             <input
@@ -123,19 +123,19 @@ export default function ModifyPicture() {
                                 onChange={e => dispatch(MODIFY_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="contentLength" className="col-form-label col-5">{text.contentlengthinbytes}</label>
                         <div className="col-7">
                             <input id="contentLength" readOnly className="form-control" type="text" value={contentLength}/>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="contentType" className="col-form-label col-5">{text.contenttype}</label>
                         <div className="col-7">
                             <input id="contentType" readOnly className="form-control" type="text" value={contentType}/>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="lastmodified" className="col-form-label col-5">{text.lastmodified}</label>
                         <div className="col-7">
                             <input
@@ -146,7 +146,7 @@ export default function ModifyPicture() {
                                 onChange={e => dispatch(MODIFY_PICTURE_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <input
                             id="require-login"
                             className="form-check col-1"
@@ -157,12 +157,12 @@ export default function ModifyPicture() {
                     </div>
                     <div>
                         <button
-                            className="btn btn-light ml-1"
+                            className="btn btn-light me-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED())}>
                             {text.update}</button>
                         <button
-                            className="btn btn-light ml-1"
+                            className="btn btn-light me-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED())}>
                             {text.cancel}</button>
