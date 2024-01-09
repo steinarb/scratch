@@ -3,8 +3,9 @@ import {
     FAVORITTER_MOTTA,
 } from '../actiontypes';
 
-const favoritterReducer = createReducer([], {
-    [FAVORITTER_MOTTA]: (state, action) => action.payload,
+const favoritterReducer = createReducer([], builder => {
+    builder
+        .addCase(FAVORITTER_MOTTA, (state, action) => action.payload);
 });
 
 export default favoritterReducer;

@@ -4,9 +4,10 @@ import {
     NYHANDLING_LAGRET,
 } from '../actiontypes';
 
-const viskvitteringReducer = createReducer(false, {
-    [VIS_KVITTERING]: (state, action) => action.payload,
-    [NYHANDLING_LAGRET]: () => true,
+const viskvitteringReducer = createReducer(false, builder => {
+    builder
+        .addCase(VIS_KVITTERING, (state, action) => action.payload)
+        .addCase(NYHANDLING_LAGRET, () => true);
 });
 
 export default viskvitteringReducer;

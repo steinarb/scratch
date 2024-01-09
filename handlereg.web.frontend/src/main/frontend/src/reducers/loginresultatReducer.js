@@ -5,10 +5,11 @@ import {
     LOGINTILSTAND_MOTTA,
 } from '../actiontypes';
 
-const loginresultatReducer = createReducer({}, {
-    [LOGIN_MOTTA]: (state, action) => action.payload,
-    [LOGOUT_MOTTA]: (state, action) => action.payload,
-    [LOGINTILSTAND_MOTTA]: (state, action) => action.payload,
+const loginresultatReducer = createReducer({}, builder => {
+    builder
+        .addCase(LOGIN_MOTTA, (state, action) => action.payload)
+        .addCase(LOGOUT_MOTTA, (state, action) => action.payload)
+        .addCase(LOGINTILSTAND_MOTTA, (state, action) => action.payload);
 });
 
 export default loginresultatReducer;

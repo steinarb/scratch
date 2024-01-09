@@ -10,13 +10,14 @@ import {
 
 const defaultState = '';
 
-const butikkReducer = createReducer(defaultState, {
-    [HANDLINGER_MOTTA]: (state, action) => finnSisteButikknavn(action.payload),
-    [VALGT_BUTIKK]: (state, action) => action.payload.butikknavn,
-    [HOME_BUTIKKNAVN_ENDRE]: (state, action) => action.payload,
-    [BUTIKKNAVN_ENDRE]: (state, action) => action.payload,
-    [NYBUTIKK_LAGRET]: () => (defaultState),
-    [BUTIKK_LAGRET]: () => (defaultState),
+const butikkReducer = createReducer(defaultState, builder => {
+    builder
+        .addCase(HANDLINGER_MOTTA, (state, action) => finnSisteButikknavn(action.payload))
+        .addCase(VALGT_BUTIKK, (state, action) => action.payload.butikknavn)
+        .addCase(HOME_BUTIKKNAVN_ENDRE, (state, action) => action.payload)
+        .addCase(BUTIKKNAVN_ENDRE, (state, action) => action.payload)
+        .addCase(NYBUTIKK_LAGRET, () => (defaultState))
+        .addCase(BUTIKK_LAGRET, () => (defaultState));
 });
 
 export default butikkReducer;

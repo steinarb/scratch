@@ -4,9 +4,10 @@ import {
     HANDLINGER_MOTTA,
 } from '../actiontypes';
 
-const storeIdReducer = createReducer(-1, {
-    [HOME_VELG_BUTIKK]: (state, action) => action.payload,
-    [HANDLINGER_MOTTA]: (state, action) => finnSisteButikk(action.payload),
+const storeIdReducer = createReducer(-1, builder => {
+    builder
+        .addCase(HOME_VELG_BUTIKK, (state, action) => action.payload)
+        .addCase(HANDLINGER_MOTTA, (state, action) => finnSisteButikk(action.payload));
 });
 
 export default storeIdReducer;

@@ -8,10 +8,11 @@ import {
 const defaultState = [];
 
 
-const butikkerReducer = createReducer(defaultState, {
-    [BUTIKKER_MOTTA]: (state, action) => action.payload,
-    [NYBUTIKK_LAGRET]: (state, action) => action.payload,
-    [BUTIKK_LAGRET]: (state, action) => action.payload,
+const butikkerReducer = createReducer(defaultState, builder => {
+    builder
+        .addCase(BUTIKKER_MOTTA, (state, action) => action.payload)
+        .addCase(NYBUTIKK_LAGRET, (state, action) => action.payload)
+        .addCase(BUTIKK_LAGRET, (state, action) => action.payload);
 });
 
 

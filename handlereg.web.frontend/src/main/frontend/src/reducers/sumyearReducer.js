@@ -3,8 +3,9 @@ import {
     SUMYEAR_MOTTA,
 } from '../actiontypes';
 
-const sumyearReducer = createReducer([], {
-    [SUMYEAR_MOTTA]: (state, action) => action.payload,
+const sumyearReducer = createReducer([], builder => {
+    builder
+        .addCase(SUMYEAR_MOTTA, (state, action) => action.payload);
 });
 
 export default sumyearReducer;

@@ -11,10 +11,11 @@ const defaultState = {
     gruppe: 2,
 };
 
-const butikkReducer = createReducer(defaultState, {
-    [VALGT_BUTIKK]: (state, action) => action.payload,
-    [NYBUTIKK_LAGRET]: () => ({ ...defaultState }),
-    [BUTIKK_LAGRET]: () => ({ ...defaultState }),
+const butikkReducer = createReducer(defaultState, builder => {
+    builder
+        .addCase(VALGT_BUTIKK, (state, action) => action.payload)
+        .addCase(NYBUTIKK_LAGRET, () => ({ ...defaultState }))
+        .addCase(BUTIKK_LAGRET, () => ({ ...defaultState }));
 });
 
 export default butikkReducer;

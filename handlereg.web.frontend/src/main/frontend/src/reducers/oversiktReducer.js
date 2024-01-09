@@ -8,9 +8,10 @@ const defaultState = {
     oversiktresultat: {},
 };
 
-const oversiktReducer = createReducer(defaultState, {
-    [OVERSIKT_MOTTA]: (state, action) => action.payload,
-    [NYHANDLING_LAGRET]: (state, action) => action.payload,
+const oversiktReducer = createReducer(defaultState, builder => {
+    builder
+        .addCase(OVERSIKT_MOTTA, (state, action) => action.payload)
+        .addCase(NYHANDLING_LAGRET, (state, action) => action.payload);
 });
 
 export default oversiktReducer;
