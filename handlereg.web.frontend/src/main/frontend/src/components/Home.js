@@ -60,13 +60,13 @@ export default function Home() {
                     </table>
                 </div>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="amount" className="col-form-label col-5">Nytt beløp</label>
                         <div className="col-7">
                             <input id="amount" className="form-control" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="jobtype" className="col-form-label col-5">Velg butikk</label>
                         <div className="col-7">
                             <input
@@ -81,7 +81,7 @@ export default function Home() {
                             </datalist>
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="date" className="col-form-label col-5">Dato</label>
                         <div className="col-7">
                             <input
@@ -93,7 +93,7 @@ export default function Home() {
                             />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5"/>
                         <div className="col-7">
                             <button className="btn btn-primary" disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId, belop, handletidspunkt, username }))}>Registrer handling</button>

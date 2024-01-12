@@ -26,13 +26,13 @@ export default function EndreButikk() {
                     <select size="10" value={valgtButikk} onChange={e => dispatch(VELG_BUTIKK(e.target.value))}>
                         { butikker.map((b, indeks) => <option key={'butikk_' + b.storeId.toString()} value={indeks}>{b.butikknavn}</option>) }
                     </select>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <label htmlFor="amount" className="col-form-label col-5">Butikknavn</label>
                         <div className="col-7">
                             <input id="amount" className="form-control" type="text" value={butikknavn} onChange={e => dispatch(BUTIKKNAVN_ENDRE(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row mb-2">
                         <div className="col-5"/>
                         <div className="col-7">
                             <button className="btn btn-primary" onClick={() => dispatch(BUTIKK_LAGRE(butikknavn))}>Lagre endret butikk</button>

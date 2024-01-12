@@ -27,7 +27,7 @@ export default function FavoritterLeggTil() {
                     { favoritter.map(f => <div key={'favoritt_' + f.favouriteid} className="btn btn-primary w-75 m-1 left-align-cell">{f.store.butikknavn}</div>) }
                 </div>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <select value={favorittbutikk} onChange={e => dispatch(VELG_FAVORITTBUTIKK(parseInt(e.target.value)))}>
+                    <select className="form-control mb-2" value={favorittbutikk} onChange={e => dispatch(VELG_FAVORITTBUTIKK(parseInt(e.target.value)))}>
                         <option key="butikk_-1" value="-1" />
                         { ledigeButikker.map(b => <option key={'butikk_' + b.storeId.toString()} value={b.storeId}>{b.butikknavn}</option>) }
                     </select>
