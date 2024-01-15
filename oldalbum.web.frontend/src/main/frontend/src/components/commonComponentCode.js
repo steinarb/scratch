@@ -3,20 +3,31 @@ export function pictureTitle(item) {
     return item.title || (item.path && item.path.replace(/\/$/, "").split(/\//).pop()) || '';
 }
 
-export function formatMetadata(item) {
-    const lastmodified = item.lastModified ? new Date(item.lastModified).toISOString().split('T')[0] + ' ' : '';
-    const imageType = item.contenttype === 'image/jpeg' ? 'JPEG ' : '';
+export function formatLastModified(item) {
+    return item.lastModified ? new Date(item.lastModified).toISOString().split('T')[0] + ' ' : '';
+}
+
+export function formatImageType(item)  {
+    return item.contenttype === 'image/jpeg' ? 'JPEG ' : '';
+}
+
+export function formatImageSize(item) {
     const contentlengthInt = parseInt(item.contentLength, 10);
-    let imagesize = '';
     if (contentlengthInt) {
         if (contentlengthInt / 1000000.0 > 1) {
-            imagesize = Math.round(contentlengthInt / 1000000.0).toString() + 'MB';
+            return Math.round(contentlengthInt / 1000000.0).toString() + 'MB';
         } else if (contentlengthInt / 1000.0 > 1) {
-            imagesize = Math.round(contentlengthInt / 1000.0).toString() + 'kB';
+            return Math.round(contentlengthInt / 1000.0).toString() + 'kB';
         } else {
-            imagesize = contentlengthInt.toString + 'B';
+            return contentlengthInt.toString + 'B';
         }
     }
+}
+
+export function formatMetadata(item) {
+    const lastmodified = formatLastModified(item);
+    const imageType = formatImageType(item);
+    let imagesize = formatImageSize(item);
     return lastmodified + imageType + imagesize;
 }
 
