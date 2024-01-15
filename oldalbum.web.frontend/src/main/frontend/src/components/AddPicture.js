@@ -26,7 +26,7 @@ export default function AddPicture() {
     const contentLength = useSelector(state => state.albumentryContentLength);
     const contentType = useSelector(state => state.albumentryContentType);
     const requireLogin = useSelector(state => state.albumentryRequireLogin);
-    const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
+    const albums = useSelector(state => state.allroutes).filter(r => r.album);
     const dispatch = useDispatch();
     const [ queryParams ] = useSearchParams();
     const parent = queryParams.get('parent');
