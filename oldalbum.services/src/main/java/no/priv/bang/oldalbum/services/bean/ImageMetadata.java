@@ -107,6 +107,10 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
             this.description = description;
             return this;
         }
+
+        public boolean descriptionIsNullOrEmpty() {
+            return description == null || description.isBlank();
+        }
     }
 
 }

@@ -54,6 +54,7 @@ import java.util.zip.ZipInputStream;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
+import org.apache.commons.io.IOUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
@@ -1522,6 +1523,70 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testBatchAddPicturesFromInstaloaderDump() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum4");
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate(Collections.emptyMap());
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        var connectionStubbing = when(connection.getInputStream());
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/instaloader_dump_directory_list_nginx_index.html"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Prepare empty database with an album to put pictures in
+        // First add root album
+        var rootAlbum = AlbumEntry.with()
+            .path("/")
+            .album(true)
+            .title("Old pictures")
+            .requireLogin(false)
+            .build();
+        provider.addEntry(rootAlbum);
+        var parentForBatchAddedPictures = AlbumEntry.with()
+            .parent(1)
+            .path("/daisy/")
+            .album(true)
+            .title("Kaninen Daisy")
+            .description("En liten svart og hvit løvehodekanin")
+            .sort(2)
+            .requireLogin(false)
+            .build();
+        var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
+        var parentId = entriesBeforeBatchAdd.get(1).getId();
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(parentId)
+            .batchAddUrl("https://www.bang.priv.no/tmpdownload/kaninen_daisy/")
+            .build();
+        var entriesAfterBatchAdd = provider.batchAddPictures(request);
+
+        // Check that pictures have been added
+        assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that sort is incremented during batch import
+        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        assertThat(lastSortValue).isGreaterThan(firstSortValue);
+
+        // Check that description of first imported image is content of description txt file
+        var firstImage = entriesAfterBatchAdd.stream().filter(ent -> ent.getParent() == parentId).findFirst().get();
+        var expectedDescription = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"), StandardCharsets.UTF_8);
+        assertEquals(expectedDescription, firstImage.getDescription());
+    }
+
+    @Test
     void testBatchAddPicturesWithThumbnails() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var database = createEmptyBase("emptyoldalbum3");
@@ -1860,6 +1925,16 @@ class OldAlbumServiceProviderTest {
         assertTrue(OldAlbumServiceProvider.hrefIsJpeg(instaloaderJpeg));
         assertFalse(OldAlbumServiceProvider.hrefIsJpeg(instaloaderParent));
         assertFalse(OldAlbumServiceProvider.hrefIsJpeg(instaloaderTxt));
+    }
+
+    @Test
+    void testConvertJpegUrlToTxtUrl() {
+        var instaloaderJpeg = "https://www.bang.priv.no/tmpdownload/kaninen_daisy/2013-07-22_07-48-41_UTC.jpg";
+        var instaloaderTxt = "https://www.bang.priv.no/tmpdownload/kaninen_daisy/2013-07-22_07-48-41_UTC.txt";
+        assertEquals(instaloaderTxt, OldAlbumServiceProvider.convertJpegUrlToTxtUrl(instaloaderJpeg));
+        var diasJpeg = "https://www.bang.priv.no/bilder/202349_001396/Export%20JPG%2016Base/R1-08031-0106.JPG";
+        var diasTxt = "https://www.bang.priv.no/bilder/202349_001396/Export%20JPG%2016Base/R1-08031-0106.txt";
+        assertEquals(diasTxt, OldAlbumServiceProvider.convertJpegUrlToTxtUrl(diasJpeg));
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {

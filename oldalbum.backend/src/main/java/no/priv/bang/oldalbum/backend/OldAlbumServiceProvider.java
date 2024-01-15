@@ -69,6 +69,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -713,6 +714,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 readAndParseImageMetadata(imageUrl, metadataBuilder, connection, input);
             }
 
+            ifDescriptionIsEmptyTryLookingForInstaloaderTxtDescriptionFile(imageUrl, metadataBuilder);
+
             return metadataBuilder
                 .status(connection.getResponseCode())
                 .contentType(connection.getContentType())
@@ -818,6 +821,25 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             };
     }
+
+    private void ifDescriptionIsEmptyTryLookingForInstaloaderTxtDescriptionFile(
+        String imageUrl,
+        ImageMetadataBuilder metadataBuilder)
+    {
+        if (metadataBuilder.descriptionIsNullOrEmpty()) {
+            var descriptionTxtUrl = convertJpegUrlToTxtUrl(imageUrl);
+            try {
+                var connection = getConnectionFactory().connect(descriptionTxtUrl);
+                connection.setRequestMethod("GET");
+                try(var input = connection.getInputStream()) {
+                    metadataBuilder.description(IOUtils.toString(input, StandardCharsets.UTF_8));
+                }
+            } catch (IOException e) {
+                logger.debug("Failed to load instaloader description file {}", descriptionTxtUrl);
+            }
+        }
+    }
+
     @Override
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         Document document = loadAndParseIndexHtml(request);
@@ -1122,6 +1144,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     static boolean hrefIsJpeg(String href) {
         var extension = FilenameUtils.getExtension(href).toLowerCase();
         return ("jpg".equals(extension));
+    }
+
+    public static String convertJpegUrlToTxtUrl(String jpegUrl) {
+        return FilenameUtils.removeExtension(jpegUrl) + ".txt";
     }
 
     private HttpConnectionFactory getConnectionFactory() {

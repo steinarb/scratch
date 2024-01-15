@@ -59,4 +59,14 @@ class ImageMetadataTest {
         assertNull(bean.getDescription());
     }
 
+    @Test
+    void testBuilderDescriptionIsNullOrEmpty() {
+        var emptyBuilder = ImageMetadata.with();
+        assertTrue(emptyBuilder.descriptionIsNullOrEmpty());
+        var builderWithEmptyDescription = ImageMetadata.with().description("");
+        assertTrue(builderWithEmptyDescription.descriptionIsNullOrEmpty());
+        var builderWithDescription = ImageMetadata.with().description("Some description");
+        assertFalse(builderWithDescription.descriptionIsNullOrEmpty());
+    }
+
 }
