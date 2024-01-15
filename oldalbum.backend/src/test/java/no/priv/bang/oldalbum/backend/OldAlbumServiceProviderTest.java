@@ -1848,6 +1848,20 @@ class OldAlbumServiceProviderTest {
         assertEquals("Hei", text4);
     }
 
+    @Test
+    void testHrefIsJpeg() {
+        var diasJpeg = "https://www.bang.priv.no/bilder/202349_001396/Export%20JPG%2016Base/R1-08031-0106.JPG";
+        var diasParent = "..";
+        var instaloaderJpeg = "https://www.bang.priv.no/tmpdownload/kaninen_daisy/2013-07-22_07-48-41_UTC.jpg";
+        var instaloaderParent = "https://www.bang.priv.no/tmpdownload/";
+        var instaloaderTxt = "https://www.bang.priv.no/tmpdownload/kaninen_daisy/2013-07-22_07-48-41_UTC.txt";
+        assertTrue(OldAlbumServiceProvider.hrefIsJpeg(diasJpeg));
+        assertFalse(OldAlbumServiceProvider.hrefIsJpeg(diasParent));
+        assertTrue(OldAlbumServiceProvider.hrefIsJpeg(instaloaderJpeg));
+        assertFalse(OldAlbumServiceProvider.hrefIsJpeg(instaloaderParent));
+        assertFalse(OldAlbumServiceProvider.hrefIsJpeg(instaloaderTxt));
+    }
+
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
         String sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
         try (Connection connection = ds.getConnection()) {

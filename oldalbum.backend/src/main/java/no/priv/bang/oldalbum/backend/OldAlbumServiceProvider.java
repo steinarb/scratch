@@ -68,6 +68,7 @@ import javax.sql.DataSource;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -824,7 +825,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 int sort = findHighestSortValueInParentAlbum(request.getParent());
                 var links = document.select("a");
                 for (var link: links) {
-                    if (!"../".equals(link.attr("href"))) {
+                    if (hrefIsJpeg(link.attr("href"))) {
                         ++sort;
                         var picture = createPictureFromUrl(link, parent, sort, request.getImportYear());
                         addEntry(picture);
@@ -1116,6 +1117,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     private int getAndParseContentLengthHeader(HttpURLConnection connection) {
         String contentLengthHeader = connection.getHeaderField("Content-Length");
         return contentLengthHeader != null ? Integer.parseInt(contentLengthHeader) : 0;
+    }
+
+    static boolean hrefIsJpeg(String href) {
+        var extension = FilenameUtils.getExtension(href).toLowerCase();
+        return ("jpg".equals(extension));
     }
 
     private HttpConnectionFactory getConnectionFactory() {
