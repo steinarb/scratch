@@ -1,6 +1,6 @@
 package no.priv.bang.oldalbum.services.bean;
 /*
- * Copyright 2022-2023 Steinar Bang
+ * Copyright 2022-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable ha
     private int parent;
     private String batchAddUrl;
     private Integer importYear;
+    public String defaultTitle;
 
     public int getParent() {
         return parent;
@@ -33,6 +34,10 @@ public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable ha
 
     public Integer getImportYear() {
         return this.importYear;
+    }
+
+    public String getDefaultTitle() {
+        return defaultTitle;
     }
 
     private BatchAddPicturesRequest() { }
@@ -48,12 +53,14 @@ public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable ha
         private int parent;
         private String batchAddUrl;
         private Integer importYear;
+        private String defaultTitle;
 
         public BatchAddPicturesRequest build() {
             BatchAddPicturesRequest bean = new BatchAddPicturesRequest();
             bean.parent = this.parent;
             bean.batchAddUrl = this.batchAddUrl;
             bean.importYear = this.importYear;
+            bean.defaultTitle = this.defaultTitle;
             return bean;
         }
 
@@ -69,6 +76,11 @@ public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable ha
 
         public Builder importYear(int importYear) {
             this.importYear = importYear;
+            return this;
+        }
+
+        public Builder defaultTitle(String defaultTitle) {
+            this.defaultTitle = defaultTitle;
             return this;
         }
 

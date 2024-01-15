@@ -1,6 +1,6 @@
 package no.priv.bang.oldalbum.services.bean;
 /*
- * Copyright 2022 Steinar Bang
+ * Copyright 2022-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,17 @@ class BatchAddPicturesRequestTest {
         int parent = 4;
         String batchAddUrl = "http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/";
         int importYear = 1967;
+        var defaultTitle = "Daisy";
         var bean = BatchAddPicturesRequest.with()
             .parent(parent)
             .batchAddUrl(batchAddUrl)
             .importYear(importYear)
+            .defaultTitle(defaultTitle)
             .build();
         assertEquals(parent, bean.getParent());
         assertEquals(batchAddUrl, bean.getBatchAddUrl());
         assertEquals(importYear, bean.getImportYear());
+        assertEquals(defaultTitle, bean.getDefaultTitle());
     }
 
     @Test
@@ -42,6 +45,7 @@ class BatchAddPicturesRequestTest {
         assertEquals(0, bean.getParent());
         assertNull(bean.getBatchAddUrl());
         assertNull(bean.getImportYear());
+        assertNull(bean.getDefaultTitle());
     }
 
 }

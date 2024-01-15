@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1566,6 +1566,74 @@ class OldAlbumServiceProviderTest {
         var parentId = entriesBeforeBatchAdd.get(1).getId();
 
         // Do the batch import
+        var defaultTitle = "Daisy";
+        var request = BatchAddPicturesRequest.with()
+            .parent(parentId)
+            .batchAddUrl("https://www.bang.priv.no/tmpdownload/kaninen_daisy/")
+            .defaultTitle(defaultTitle)
+            .build();
+        var entriesAfterBatchAdd = provider.batchAddPictures(request);
+
+        // Check that pictures have been added
+        assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that sort is incremented during batch import
+        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        assertThat(lastSortValue).isGreaterThan(firstSortValue);
+
+        // Check that description of first imported image is content of description txt file
+        // and check that the title starts with the default title of the batch import
+        var firstImage = entriesAfterBatchAdd.stream().filter(ent -> ent.getParent() == parentId).findFirst().get();
+        var expectedDescription = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"), StandardCharsets.UTF_8);
+        assertEquals(expectedDescription, firstImage.getDescription());
+        assertThat(firstImage.getTitle()).startsWith(defaultTitle);
+    }
+
+    @Test
+    void testBatchAddPicturesFromInstaloaderDumpNoDefaultTitle() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum4");
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate(Collections.emptyMap());
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        var connectionStubbing = when(connection.getInputStream());
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/instaloader_dump_directory_list_nginx_index.html"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Prepare empty database with an album to put pictures in
+        // First add root album
+        var rootAlbum = AlbumEntry.with()
+            .path("/")
+            .album(true)
+            .title("Old pictures")
+            .requireLogin(false)
+            .build();
+        provider.addEntry(rootAlbum);
+        var parentForBatchAddedPictures = AlbumEntry.with()
+            .parent(1)
+            .path("/daisy/")
+            .album(true)
+            .title("Kaninen Daisy")
+            .description("En liten svart og hvit løvehodekanin")
+            .sort(2)
+            .requireLogin(false)
+            .build();
+        var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
+        var parentId = entriesBeforeBatchAdd.get(1).getId();
+
+        // Do the batch import
         var request = BatchAddPicturesRequest.with()
             .parent(parentId)
             .batchAddUrl("https://www.bang.priv.no/tmpdownload/kaninen_daisy/")
@@ -1581,9 +1649,11 @@ class OldAlbumServiceProviderTest {
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that description of first imported image is content of description txt file
+        // and check that the title starts with the default title of the batch import
         var firstImage = entriesAfterBatchAdd.stream().filter(ent -> ent.getParent() == parentId).findFirst().get();
         var expectedDescription = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"), StandardCharsets.UTF_8);
         assertEquals(expectedDescription, firstImage.getDescription());
+        assertThat(firstImage.getTitle()).isNull();
     }
 
     @Test

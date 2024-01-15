@@ -24,6 +24,7 @@ import albumentryGroupByYear from './albumentryGroupByYearReducer';
 import albumentrySort from './albumentrySortReducer';
 import batchAddUrl from './batchAddUrlReducer';
 import batchAddImportYear from './batchAddImportYearReducer';
+import batchAddDefaultTitle from './batchAddDefaultTitleReducer';
 import locale from './localeReducer';
 import availableLocales from './availableLocalesReducer';
 import displayTexts from './displayTextsReducer';
@@ -67,6 +68,7 @@ export default (routerReducer) => combineReducers({
     albumentrySort,
     batchAddUrl,
     batchAddImportYear,
+    batchAddDefaultTitle,
     locale,
     availableLocales,
     displayTexts,

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     BATCH_ADD_URL_FIELD_CHANGED,
     IMPORT_YEAR_FIELD_CHANGED,
+    DEFAULT_TITLE_FIELD_CHANGED,
     BATCH_ADD_PICTURES_FROM_URL_REQUEST,
 } from '../reduxactions';
 
@@ -14,6 +15,7 @@ export default function BatchAddPictures(props) {
     const showEditControls = useSelector(state => state.showEditControls);
     const batchAddUrl = useSelector(state => state.batchAddUrl);
     const importYear = useSelector(state => state.batchAddImportYear);
+    const defaultTitle = useSelector(state => state.batchAddDefaultTitle);
     const dispatch = useDispatch();
 
     if (!showEditControls) {
@@ -42,10 +44,19 @@ export default function BatchAddPictures(props) {
                             value={importYear}
                             onChange={e => dispatch(IMPORT_YEAR_FIELD_CHANGED(e.target.value))}/>
                     </div>
+                    <label htmlFor="defaultTitle" className="col-form-label col-1">{text.title}</label>
+                    <div className="col-2">
+                        <input
+                            id="defaultTitle"
+                            className="form-control"
+                            type="text"
+                            value={defaultTitle}
+                            onChange={e => dispatch(DEFAULT_TITLE_FIELD_CHANGED(e.target.value))}/>
+                    </div>
                     <button
                         className="btn btn-light col-4"
                         type="button"
-                        onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl, importYear }))}>
+                        onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl, importYear, defaultTitle }))}>
                         {text.batchaddpictures}
                     </button>
                 </div>

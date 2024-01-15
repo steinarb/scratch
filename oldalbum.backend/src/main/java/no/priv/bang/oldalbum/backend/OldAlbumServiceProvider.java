@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -849,7 +849,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 for (var link: links) {
                     if (hrefIsJpeg(link.attr("href"))) {
                         ++sort;
-                        var picture = createPictureFromUrl(link, parent, sort, request.getImportYear());
+                        var picture = createPictureFromUrl(link, parent, sort, request.getImportYear(), request.getDefaultTitle());
                         addEntry(picture);
                     }
                 }
@@ -917,7 +917,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return bundle.getString(key);
     }
 
-    private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear) {
+    private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear, String defaultTitle) {
         String basename = findBasename(link);
         String path = Paths.get(parent.getPath(), basename).toString();
         String imageUrl = link.absUrl("href");
@@ -926,6 +926,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var lastModified = findLastModifiedDate(metadata, importYear);
         var contenttype = metadata != null ? metadata.getContentType() : null;
         var contentlength = metadata != null ? metadata.getContentLength() : 0;
+        var title = defaultTitle != null && !defaultTitle.isBlank() ? defaultTitle : metadata != null ? metadata.getTitle() : null;
         var description = metadata != null ? metadata.getDescription() : null;
         return AlbumEntry.with()
             .album(false)
@@ -937,6 +938,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .lastModified(lastModified)
             .contentType(contenttype)
             .contentLength(contentlength)
+            .title(title)
             .description(description)
             .requireLogin(parent.isRequireLogin())
             .sort(sort)
