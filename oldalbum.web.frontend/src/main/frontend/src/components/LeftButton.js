@@ -14,7 +14,7 @@ export default function LeftButton(props) {
     }
 
     return(
-        <div className={className + ' d-none d-md-flex'} onClick={() => dispatch(MOVE_ALBUMENTRY_LEFT_REQUEST(item))}>
+        <div className={className} onClick={() => dispatch(MOVE_ALBUMENTRY_LEFT_REQUEST(item))}>
             <ChevronLeft/>
         </div>
     );

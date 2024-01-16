@@ -15,7 +15,7 @@ export default function RightButton(props) {
     }
 
     return(
-        <div className={className + ' d-none d-md-flex'} onClick={() => dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item))}>
+        <div className={className} onClick={() => dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item))}>
             <ChevronRight/>
         </div>
     );
