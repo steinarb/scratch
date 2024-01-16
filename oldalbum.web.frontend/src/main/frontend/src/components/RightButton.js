@@ -15,10 +15,8 @@ export default function RightButton(props) {
     }
 
     return(
-        <div className={className + ' d-none d-md-flex btn-group-vertical'}>
-            <button type="button" onClick={() => dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item))}>
-                <ChevronRight/>
-            </button>
+        <div className={className + ' d-none d-md-flex'} onClick={() => dispatch(MOVE_ALBUMENTRY_RIGHT_REQUEST(item))}>
+            <ChevronRight/>
         </div>
     );
 }

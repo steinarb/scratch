@@ -12,11 +12,10 @@ export default function UpButton(props) {
     }
 
     return(
-        <button
+        <div
             className={props.className}
-            type="button"
             onClick={() => dispatch(MOVE_ALBUMENTRY_UP_REQUEST(item))}>
             <span className="oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
-        </button>
+        </div>
     );
 }
