@@ -15,9 +15,9 @@ function AlbumEntryOfTypePicture(props) {
     const anchor = 'entry' + entry.id.toString();
 
     return (
-        <div id={anchor} className={className + ' col-sm-12 col-md-4 col-lg-3 col-xxl-2 album-entry btn btn-light mx-1 my-1 album-scroll-below-fixed-header'}>
+        <div id={anchor} className={className + ' col-sm-12 col-md-4 col-lg-3 col-xxl-2 album-entry album-scroll-below-fixed-header'}>
             <LeftButton item={entry} />
-            <div className="column">
+            <div className="column w-100">
                 <PictureCheckbox className="left-align-cell" entry={entry} />
                 <NavLink className=' btn btn-light btn-block left-align-cell' to={entry.path}>
                     <ThumbnailImg entry={entry} />
