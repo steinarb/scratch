@@ -1,18 +1,25 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
     SELECT_PICTURE_ALBUMENTRY,
-    UNSELECT_PICTURE_ALBUMENTRY,
     CLEAR_SELECTION,
 } from '../reduxactions';
 
 const selectedentriesReducer = createReducer([], (builder) => {
     builder
-        .addCase(SELECT_PICTURE_ALBUMENTRY, (state, action) => addIfNotPresent(state, action.payload))
-        .addCase(UNSELECT_PICTURE_ALBUMENTRY, (state, action) => removeIfPresent(state, action.payload))
-        .addCase(CLEAR_SELECTION, () => []); 
+        .addCase(SELECT_PICTURE_ALBUMENTRY, (state, action) => selectOrUnselectAlbumEntry(state, action.payload))
+        .addCase(CLEAR_SELECTION, () => []);
 });
 
 export default selectedentriesReducer;
+
+function selectOrUnselectAlbumEntry(state, payload) {
+    const { entry, selected } = payload;
+    if (selected) {
+        return addIfNotPresent(state, entry);
+    } else {
+        return removeIfPresent(state, entry);
+    }
+}
 
 function addIfNotPresent(state, entry) {
     if (state.findIndex(e => e.id === entry.id) < 0) {
