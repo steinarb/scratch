@@ -9,6 +9,6 @@ export default function PictureCheckbox(props) {
     const completeClassName = className + ' picture-checkbox';
 
     return (
-        <input type="radio" className={completeClassName} checked={pictureIsSelected} onChange={e => e.target.checked ? dispatch(SELECT_PICTURE_ALBUMENTRY(entry)) : dispatch(UNSELECT_PICTURE_ALBUMENTRY(entry))}/>
+        <input type="checkbox" className={completeClassName} checked={pictureIsSelected} onChange={e => e.target.checked ? dispatch(SELECT_PICTURE_ALBUMENTRY(entry)) : dispatch(UNSELECT_PICTURE_ALBUMENTRY(entry))}/>
     );
 }
