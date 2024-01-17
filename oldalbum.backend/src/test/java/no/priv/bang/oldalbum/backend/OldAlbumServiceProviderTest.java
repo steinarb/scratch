@@ -92,15 +92,7 @@ class OldAlbumServiceProviderTest {
 
     @BeforeAll
     static void setupDataSource() throws Exception {
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
-        properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:oldalbum;create=true");
-        datasource = derbyDataSourceFactory.createDataSource(properties);
-        MockLogService logservice = new MockLogService();
-        OldAlbumDerbyTestDatabase preHook = new OldAlbumDerbyTestDatabase();
-        preHook.setLogService(logservice);
-        preHook.activate();
-        preHook.prepare(datasource);
+        datasource = createNewTestDatabase("oldalbum");
     }
 
     @Test
@@ -1593,7 +1585,7 @@ class OldAlbumServiceProviderTest {
     @Test
     void testBatchAddPicturesFromInstaloaderDumpNoDefaultTitle() throws Exception {
         var provider = new OldAlbumServiceProvider();
-        var database = createEmptyBase("emptyoldalbum4");
+        var database = createEmptyBase("emptyoldalbum5");
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(database);
@@ -2022,7 +2014,7 @@ class OldAlbumServiceProviderTest {
         return -1;
     }
 
-    private DataSource createEmptyBase(String dbname) throws Exception {
+    private static DataSource createEmptyBase(String dbname) throws Exception {
         DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
@@ -2036,6 +2028,16 @@ class OldAlbumServiceProviderTest {
             oldAlbumLiquibase.updateSchema(connection);
         }
         return emptyDatasource;
+    }
+
+    static DataSource createNewTestDatabase(String databasename) throws Exception, SQLException {
+        var database = createEmptyBase(databasename);
+        MockLogService logservice = new MockLogService();
+        OldAlbumDerbyTestDatabase preHook = new OldAlbumDerbyTestDatabase();
+        preHook.setLogService(logservice);
+        preHook.activate();
+        preHook.prepare(database);
+        return database;
     }
 
     private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {
