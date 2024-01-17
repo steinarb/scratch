@@ -16,6 +16,7 @@ import {
 
 export default function ModifyPicture() {
     const text = useSelector(state => state.displayTexts);
+    const albumentryid = useSelector(state => state.albumentryid);
     const parent = useSelector(state => state.albumentryParent);
     const path = useSelector(state => state.albumentryPath);
     const basename = useSelector(state => state.albumentryBasename);
@@ -27,9 +28,11 @@ export default function ModifyPicture() {
     const contentLength = useSelector(state => state.albumentryContentLength);
     const contentType = useSelector(state => state.albumentryContentType);
     const requireLogin = useSelector(state => state.albumentryRequireLogin);
-    const albums = useSelector(state => state.allroutes.filter(r => r.album).filter(r => r.id !== state.albumentryid) || []);
-    const uplocation = useSelector(state => (state.albumentries[state.albumentryid] || {}).path || '/');
+    const allroutes = useSelector(state => state.allroutes);
+    const albumentries = useSelector(state => state.albumentries);
     const dispatch = useDispatch();
+    const albums = allroutes.filter(r => r.album).filter(r => r.id !== albumentryid) || [];
+    const uplocation = (albumentries[albumentryid] || {}).path || '/';
     const lastmodified = lastModified ? lastModified.split('T')[0] : '';
 
     return(

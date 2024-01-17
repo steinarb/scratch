@@ -23,8 +23,9 @@ export default function AddAlbum() {
     const lastModified = useSelector(state => state.albumentryLastModified);
     const requireLogin = useSelector(state => state.albumentryRequireLogin);
     const groupByYear = useSelector(state => !!state.albumentryGroupByYear);
-    const albums = useSelector(state => state.allroutes.filter(r => r.album) || []);
+    const allroutes = useSelector(state => state.allroutes);
     const dispatch = useDispatch();
+    const albums = allroutes.filter(r => r.album);
     const [ queryParams ] = useSearchParams();
     const parent = queryParams.get('parent');
     const parentId = parseInt(parent, 10);

@@ -17,6 +17,7 @@ import {
 
 export default function ModifyAlbum() {
     const text = useSelector(state => state.displayTexts);
+    const albumentryid = useSelector(state => state.albumentryid);
     const parent = useSelector(state => state.albumentryParent);
     const path = useSelector(state => state.albumentryPath);
     const basename = useSelector(state => state.albumentryBasename);
@@ -25,9 +26,11 @@ export default function ModifyAlbum() {
     const lastModified = useSelector(state => state.albumentryLastModified);
     const requireLogin = useSelector(state => state.albumentryRequireLogin);
     const groupByYear = useSelector(state => !!state.albumentryGroupByYear);
-    const albums = useSelector(state => state.allroutes.filter(r => r.album).filter(r => r.id !== state.albumentryid) || []);
-    const uplocation = useSelector(state => (state.albumentries[state.albumentryid] || {}).path || '/');
+    const allroutes = useSelector(state => state.allroutes);
+    const albumentries = useSelector(state => state.albumentries);
     const dispatch = useDispatch();
+    const albums = allroutes.filter(r => r.album).filter(r => r.id !== albumentryid);
+    const uplocation = (albumentries[albumentryid] || {}).path || '/';
     const lastmodified = lastModified ? lastModified.split('T')[0] : '';
 
     return(
