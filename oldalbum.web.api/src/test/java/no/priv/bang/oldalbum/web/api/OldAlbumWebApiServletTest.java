@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -204,6 +204,23 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/deleteentry", pictureToDelete);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
+        assertEquals(0, routes.size());
+    }
+
+    @Test
+    void testDeleteSelection() throws Exception {
+        var selection = Arrays.asList(7);
+        var logservice = new MockLogService();
+        var backendService = mock(OldAlbumService.class);
+        var useradmin = mock(UserManagementService.class);
+        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var request = buildPostUrl("/deleteselection", selection);
+        var response = new MockHttpServletResponse();
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });

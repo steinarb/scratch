@@ -8,6 +8,7 @@ import {
     BATCH_ADD_PICTURES_FROM_URL_RECEIVE,
     SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE,
     DELETE_ALBUMENTRY_RECEIVE,
+    DELETE_SELECTION_RECEIVE,
     MOVE_ALBUMENTRY_UP_RECEIVE,
     MOVE_ALBUMENTRY_LEFT_RECEIVE,
     MOVE_ALBUMENTRY_DOWN_RECEIVE,
@@ -24,6 +25,7 @@ const dateOfLastChildOfAlbumReducer = createReducer({}, builder => {
         .addCase(BATCH_ADD_PICTURES_FROM_URL_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))
         .addCase(SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))
         .addCase(DELETE_ALBUMENTRY_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))
+        .addCase(DELETE_SELECTION_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))
         .addCase(MOVE_ALBUMENTRY_UP_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))
         .addCase(MOVE_ALBUMENTRY_LEFT_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))
         .addCase(MOVE_ALBUMENTRY_DOWN_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))

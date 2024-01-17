@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,6 +118,16 @@ class AlbumentryResourceTest {
         resource.oldalbum = oldalbum;
         List<AlbumEntry> allroutes = resource.deleteEntry(pictureToDelete);
         assertEquals(0, allroutes.size());
+    }
+
+    @Test
+    void testDeleteSelection() {
+        var selection = Arrays.asList(7);
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
+        resource.oldalbum = oldalbum;
+        List<AlbumEntry> allroutes = resource.deleteSelection(selection);
+        assertThat(allroutes).isEmpty();
     }
 
     @Test

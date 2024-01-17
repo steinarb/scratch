@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,5 +68,7 @@ public interface OldAlbumService {
     public Map<String, String> displayTexts(Locale locale);
 
     public String displayText(String key, String locale);
+
+    List<AlbumEntry> deleteSelectedEntries(List<Integer> selection);
 
 }

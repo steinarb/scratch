@@ -12,6 +12,7 @@ import modifyPicture from './modifyPictureSaga';
 import addPicture from './addPictureSaga';
 import imageMetadata from './imageMetadataSaga';
 import deleteSaga from './deleteSaga';
+import deleteSelectionSaga from './deleteSelectionSaga';
 import movealbumentry from './movealbumentrySaga';
 import login from './loginSaga';
 import logout from './logoutSaga';
@@ -39,6 +40,7 @@ export default function* rootSaga() {
         fork(addPicture),
         fork(imageMetadata),
         fork(deleteSaga),
+        fork(deleteSelectionSaga),
         fork(movealbumentry),
         fork(login),
         fork(logout),

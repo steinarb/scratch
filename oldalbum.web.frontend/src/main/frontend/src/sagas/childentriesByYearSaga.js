@@ -8,6 +8,7 @@ import {
     BATCH_ADD_PICTURES_FROM_URL_RECEIVE,
     SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE,
     DELETE_ALBUMENTRY_RECEIVE,
+    DELETE_SELECTION_RECEIVE,
     MOVE_ALBUMENTRY_UP_RECEIVE,
     MOVE_ALBUMENTRY_LEFT_RECEIVE,
     MOVE_ALBUMENTRY_DOWN_RECEIVE,
@@ -24,6 +25,7 @@ export default function* childentriesByYearSaga() {
     yield takeLatest(BATCH_ADD_PICTURES_FROM_URL_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
     yield takeLatest(SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
     yield takeLatest(DELETE_ALBUMENTRY_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
+    yield takeLatest(DELETE_SELECTION_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
     yield takeLatest(MOVE_ALBUMENTRY_UP_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
     yield takeLatest(MOVE_ALBUMENTRY_LEFT_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
     yield takeLatest(MOVE_ALBUMENTRY_DOWN_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);

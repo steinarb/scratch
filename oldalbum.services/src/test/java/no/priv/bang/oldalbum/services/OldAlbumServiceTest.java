@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -59,6 +60,9 @@ class OldAlbumServiceTest {
         AlbumEntry deletedEntry = AlbumEntry.with().build();
         List<AlbumEntry> updatedRoutesOnDelete = service.deleteEntry(deletedEntry);
         assertEquals(0, updatedRoutesOnDelete.size());
+        List<Integer> selection = Arrays.asList(7);
+        var updatedRoutesOnSelectionDelete = service.deleteSelectedEntries(selection);
+        assertEquals(0, updatedRoutesOnSelectionDelete.size());
         AlbumEntry movedEntry = AlbumEntry.with().build();
         List<AlbumEntry> updatedRoutesOnEntryMovedUp = service.moveEntryUp(movedEntry);
         assertEquals(0, updatedRoutesOnEntryMovedUp.size());

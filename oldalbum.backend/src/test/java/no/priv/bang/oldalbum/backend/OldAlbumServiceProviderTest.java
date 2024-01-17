@@ -39,6 +39,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -589,6 +590,22 @@ class OldAlbumServiceProviderTest {
         assertEquals(numberOfEntriesBeforeDelete, allroutes.size());
         assertEquals(3, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(1)).contains("Failed to delete album entry with id");
+    }
+
+    @Test
+    void testDeleteSelectedEntries() throws Exception {
+        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        var database = createNewTestDatabase("oldalbum1");
+        MockLogService logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate(Collections.emptyMap());
+        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
+        List<Integer> selection = Arrays.asList(7);
+        List<AlbumEntry> allroutes = provider.deleteSelectedEntries(selection);
+        assertThat(allroutes).hasSizeLessThan(numberOfEntriesBeforeDelete);
+        Optional<AlbumEntry> deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
+        assertFalse(deletedPicture.isPresent());
     }
 
     @Test

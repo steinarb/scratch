@@ -17,6 +17,7 @@ import AddAlbumButton from './AddAlbumButton';
 import AddPictureButton from './AddPictureButton';
 import DeleteButton from './DeleteButton';
 import SortByDateButton from './SortByDateButton';
+import DeleteSelectionButton from './DeleteSelectionButton';
 import BatchAddPictures from './BatchAddPictures';
 import Previous from './Previous';
 import Next from './Next';
@@ -92,6 +93,7 @@ export default function Album(props) {
                     <AddPictureButton className="mx-1 my-1" item={item} />
                     <DeleteButton className="mx-1 my-1" item={item} />
                     <SortByDateButton className="mx-1 my-1" item={item} />
+                    <DeleteSelectionButton className="mx-1 my-1" />
                     <BatchAddPictures className="" item={item} />
                 </div>
                 <div className="d-flex flex-fill" role="toolbar">

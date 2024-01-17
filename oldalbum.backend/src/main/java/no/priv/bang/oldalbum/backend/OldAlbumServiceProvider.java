@@ -333,8 +333,22 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> deleteEntry(AlbumEntry deletedEntry) {
-        String sql = "delete from albumentries where albumentry_id=?";
+        deleteSingleAlbumEntry(deletedEntry);
+        return fetchAllRoutes(null, true);
+    }
+
+    @Override
+    public List<AlbumEntry> deleteSelectedEntries(List<Integer> selection) {
+        for(var id : selection) {
+            getAlbumEntry(id).ifPresent(entry -> deleteSingleAlbumEntry(entry));
+        }
+
+        return fetchAllRoutes(null, true);
+    }
+
+    void deleteSingleAlbumEntry(AlbumEntry deletedEntry) {
         int id = deletedEntry.getId();
+        var sql = "delete from albumentries where albumentry_id=?";
         int parentOfDeleted = deletedEntry.getParent();
         int sortOfDeleted = deletedEntry.getSort();
         try(Connection connection = datasource.getConnection()) {
@@ -342,11 +356,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setInt(1, id);
                 statement.executeUpdate();
             }
+
             adjustSortValuesAfterEntryIsRemoved(connection, parentOfDeleted, sortOfDeleted);
         } catch (SQLException e) {
             logger.error(String.format("Failed to delete album entry with id \"%d\"", id), e);
         }
-        return fetchAllRoutes(null, true); // All edits are logged in
     }
 
     @Override
