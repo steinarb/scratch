@@ -4,7 +4,8 @@ import { NavLink } from 'react-router-dom';
 import { pictureTitle } from './commonComponentCode';
 import LeftButton from './LeftButton';
 import RightButton from './RightButton';
-import UpDownButton from './UpDownButton';
+import UpButton from './UpButton';
+import DownButton from './DownButton';
 import Thumbnail from './Thumbnail';
 
 export default function AlbumEntryOfTypeAlbum(props) {
@@ -18,16 +19,26 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const anchor = 'entry' + entry.id.toString();
 
     return (
-        <div id={anchor} className={className + widthInCols + ' album-entry-album btn btn-light mx-1 my-1 album-scroll-below-fixed-header'}>
-            <LeftButton item={entry} />
-            <div className="col-auto">
-                <NavLink className="btn btn-light p-2 text-left" to={entry.path}>Album: {title}</NavLink>
+        <div id={anchor} className={className + widthInCols + ' album-entry-album mx-1 my-1 album-scroll-below-fixed-header'}>
+            <div className="column w-100 btn btn-light">
                 <div className="d-none d-md-flex">
-                    { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
+                    <LeftButton item={entry} />
+                    <div className="flex-grow-1"/>
+                    <RightButton item={entry} />
+                </div>
+                <div className="d-flex d-md-none">
+                    <UpButton className="align-self-center m-auto" item={entry} />
+                </div>
+                <div className="row w-100">
+                    <NavLink className="btn btn-light p-2 text-left" to={entry.path}>Album: {title}</NavLink>
+                    <div className="d-none d-md-flex">
+                        { childrenWithThumbnails.map(c => <Thumbnail key={'entry_' + c.id} entry={c} />) }
+                    </div>
+                </div>
+                <div className="d-flex d-md-none">
+                    <DownButton className="align-self-center m-auto" item={entry} />
                 </div>
             </div>
-            <RightButton item={entry} />
-            <UpDownButton item={entry} />
         </div>
     );
 }
