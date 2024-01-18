@@ -25,7 +25,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -933,7 +932,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear, String defaultTitle) {
         String basename = findBasename(link);
-        String path = Paths.get(parent.getPath(), basename).toString();
+        String path = parent.getPath() + basename;
         String imageUrl = link.absUrl("href");
         String thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
