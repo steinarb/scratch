@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
 import Locale from './Locale';
+import AlbumSelectAllButton from './AlbumSelectAllButton';
 import AlbumGroupByYearButton from './AlbumGroupByYearButton';
 import AlbumHideShowYearsButton from './AlbumHideShowYearsButton';
 import EditModeButton from './EditModeButton';
@@ -79,6 +80,7 @@ export default function Album(props) {
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end">
                                 <li><CopyLinkButton className="dropdown-item" /></li>
+                                <li><AlbumSelectAllButton className="dropdown-item" album={item} /></li>
                                 <li><AlbumGroupByYearButton className="dropdown-item" album={item} /></li>
                                 <li><AlbumHideShowYearsButton key={'albumHideShowYears' + item.id.toString()} className="dropdown-item" album={item} /></li>
                                 <li><EditModeButton className="dropdown-item" /></li>

@@ -2,6 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     SELECT_PICTURE_ALBUMENTRY,
     UNSELECT_PICTURE_ALBUMENTRY,
+    SET_SELECTION_VALUE,
     CLEAR_SELECTION,
 } from '../reduxactions';
 
@@ -9,7 +10,8 @@ const selectedentriesReducer = createReducer([], (builder) => {
     builder
         .addCase(SELECT_PICTURE_ALBUMENTRY, (state, action) => addIfNotPresent(state, action.payload))
         .addCase(UNSELECT_PICTURE_ALBUMENTRY, (state, action) => removeIfPresent(state, action.payload))
-        .addCase(CLEAR_SELECTION, () => []); 
+        .addCase(SET_SELECTION_VALUE, (state, action) => action.payload)
+        .addCase(CLEAR_SELECTION, () => []);
 });
 
 export default selectedentriesReducer;
