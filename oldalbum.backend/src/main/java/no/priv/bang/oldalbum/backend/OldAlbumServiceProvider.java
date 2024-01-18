@@ -1158,7 +1158,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     static boolean hrefIsJpeg(String href) {
         var extension = FilenameUtils.getExtension(href).toLowerCase();
-        return ("jpg".equals(extension));
+        return "jpg".equals(extension) || "jpeg".equals(extension);
     }
 
     public static String convertJpegUrlToTxtUrl(String jpegUrl) {

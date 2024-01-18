@@ -2004,6 +2004,10 @@ class OldAlbumServiceProviderTest {
         assertTrue(OldAlbumServiceProvider.hrefIsJpeg(instaloaderJpeg));
         assertFalse(OldAlbumServiceProvider.hrefIsJpeg(instaloaderParent));
         assertFalse(OldAlbumServiceProvider.hrefIsJpeg(instaloaderTxt));
+        var extensionAllCapsJpeg = "https://www.bang.priv.no/bilder/202349_001396/Export%20JPG%2016Base/R1-08031-0106.JPEG";
+        assertTrue(OldAlbumServiceProvider.hrefIsJpeg(extensionAllCapsJpeg));
+        var extensionLowercaseJpeg = "https://www.bang.priv.no/bilder/202349_001396/Export%20JPG%2016Base/R1-08031-0106.jpeg";
+        assertTrue(OldAlbumServiceProvider.hrefIsJpeg(extensionLowercaseJpeg));
     }
 
     @Test
