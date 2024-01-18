@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2024-01-18 Thu 23:59> |  1.9.24 | Many layout fixes, better import of nginx directory listings into albums                                       |
 | <2024-01-04 Thu 13:00> |  1.9.23 | Improved UI layout, fixed bug button not appearing, fixed year of album consisting of albums                   |
 | <2023-12-27 Wed 16:30> |  1.9.22 | Layout improvements, select images for download, group albums on year                                          |
 | <2023-12-14 Thu 20:22> |  1.9.21 | Use shiro 1.13.0, make navbar dropdown and download buttons look and feel better                               |
