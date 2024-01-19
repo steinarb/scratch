@@ -122,12 +122,13 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
        cd oldalbum
        mvn install
      #+end_example
-  3. From the karaf console, give the following commands:
+  3. From the karaf console (i.e. the terminal window where you started karaf), give the following commands:
      #+BEGIN_EXAMPLE
        feature:repo-add mvn:no.priv.bang.oldalbum/karaf/LATEST/xml/features
        feature:install oldalbum-with-derby
      #+END_EXAMPLE
   4. Visit http://localhost:8181/oldalbum in a web browser
+  5. Open the menu from the button with three lines on top right and log in with username admin, password admin, this will give you access to edit facilities
 
 *** Installation with production database
  Procedure:
