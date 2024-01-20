@@ -10,7 +10,7 @@ export default function Kvittering() {
     }
 
     return (
-        <div className='alert alert-warning' role='alert'>
+        <div role='alert'>
             Handlebeløp {oversikt.lastTransactionAmount} brukt på {butikk.butikknavn} registrert!<br/>
             Totalt handlebeløp denne måneden {oversikt.sumThisMonth}, mot {oversikt.sumPreviousMonth} for hele forrige måned
         </div>

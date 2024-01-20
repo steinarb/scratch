@@ -8,14 +8,14 @@ export default function StatistikkSistehandel() {
 
     return (
         <div>
-            <nav className="navbar navbar-light bg-light">
+            <nav>
                 <StyledLinkLeft to="/handlereg/statistikk">Tilbake</StyledLinkLeft>
                 <h1>Siste handel gjort i butikk</h1>
-                <div className="col-sm-2"></div>
+                <div></div>
             </nav>
             <Container>
-                <div className="table-responsive table-sm table-striped">
-                    <table className="table">
+                <div>
+                    <table>
                         <thead>
                             <tr>
                                 <td>Butikk</td>

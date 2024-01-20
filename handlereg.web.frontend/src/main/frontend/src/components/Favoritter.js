@@ -6,10 +6,10 @@ import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 function Statistikk() {
     return (
         <div>
-            <nav className="navbar navbar-light bg-light">
+            <nav>
                 <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
                 <h1>Favoritter</h1>
-                <div className="col-sm-2"></div>
+                <div></div>
             </nav>
             <Container>
                 <StyledLinkRight to="/handlereg/favoritter/leggtil">Legg til favoritt</StyledLinkRight>

@@ -18,31 +18,31 @@ export default function Login() {
     }
 
     return (
-        <div className="Login">
+        <div>
             <header>
-                <div className="pb-2 mt-4 mb-2 border-bottom bg-light">
+                <div>
                     <h1>Handleregistrering login</h1>
                     <p id="messagebanner"></p>
                 </div>
             </header>
-            <div className="container">
+            <div>
                 <LoginMessage/>
                 <form onSubmit={e => { e.preventDefault(); }}>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="username" className="col-form-label col-3 mr-2">Username:</label>
-                        <div className="col-8">
-                            <input id="username" className="form-control" type="text" name="username" autoComplete="username" value={username} onChange={e => setUsername(e.target.value)} />
+                    <div>
+                        <label htmlFor="username">Username:</label>
+                        <div>
+                            <input id="username" type="text" name="username" autoComplete="username" value={username} onChange={e => setUsername(e.target.value)} />
                         </div>
                     </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="password" className="col-form-label col-3 mr-2">Password:</label>
-                        <div className="col-8">
-                            <input id="password" className="form-control" type="password" name="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)}/>
+                    <div>
+                        <label htmlFor="password">Password:</label>
+                        <div>
+                            <input id="password" type="password" name="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)}/>
                         </div>
                     </div>
-                    <div className="form-group row mb-2">
-                        <div className="offset-xs-3 col-xs-9">
-                            <input className="btn btn-primary" type="submit" value="Login" onClick={() => dispatch(LOGIN_HENT({ username, password: btoa(password) }))}/>
+                    <div>
+                        <div>
+                            <input type="submit" value="Login" onClick={() => dispatch(LOGIN_HENT({ username, password: btoa(password) }))}/>
                         </div>
                     </div>
                 </form>

@@ -31,21 +31,21 @@ export default function Home() {
 
     return (
         <div>
-            <nav className="navbar navbar-light bg-light">
-                <a className="btn btn-primary left-align-cell" href="../.."><span className="oi oi-chevron-left" title="chevron left" aria-hidden="true"></span>&nbsp;Gå hjem!</a>
+            <nav>
+                <a href="../.."><span title="chevron left" aria-hidden="true"></span>&nbsp;Gå hjem!</a>
                 <h1>Matregnskap</h1>
-                <StyledLinkRight className="col-sm-2" to="/handlereg/hurtigregistrering">Hurtig</StyledLinkRight>
+                <StyledLinkRight to="/handlereg/hurtigregistrering">Hurtig</StyledLinkRight>
             </nav>
             <Container>
                 <p>Hei {oversikt.fornavn}!</p>
                 <p>Dine 5 siste innkjøp, er:</p>
-                <div className="table-responsive table-sm table-striped">
-                    <table className="table">
+                <div>
+                    <table>
                         <thead>
                             <tr>
-                                <th className="transaction-table-col1">Dato</th>
-                                <th className="transaction-table-col2">Beløp</th>
-                                <th className="transaction-table-col-hide-overflow transaction-table-col3">Butikk</th>
+                                <th>Dato</th>
+                                <th>Beløp</th>
+                                <th>Butikk</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,22 +53,22 @@ export default function Home() {
                                             <tr key={handling.transactionId}>
                                                 <td>{new Date(handling.handletidspunkt).toISOString().split('T')[0]}</td>
                                                 <td>{handling.belop}</td>
-                                                <td className="transaction-table-col transaction-table-col-hide-overflow">{handling.butikk}</td>
+                                                <td>{handling.butikk}</td>
                                             </tr>
                                            )}
                         </tbody>
                     </table>
                 </div>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="amount" className="col-form-label col-5">Nytt beløp</label>
-                        <div className="col-7">
-                            <input id="amount" className="form-control" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
+                    <div>
+                        <label htmlFor="amount">Nytt beløp</label>
+                        <div>
+                            <input id="amount" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="jobtype" className="col-form-label col-5">Velg butikk</label>
-                        <div className="col-7">
+                    <div>
+                        <label htmlFor="jobtype">Velg butikk</label>
+                        <div>
                             <input
                                 list="butikker"
                                 id="valgt-butikk"
@@ -81,22 +81,22 @@ export default function Home() {
                             </datalist>
                         </div>
                     </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="date" className="col-form-label col-5">Dato</label>
-                        <div className="col-7">
+                    <div>
+                        <label htmlFor="date">Dato</label>
+                        <div>
                             <input
                                 id="date"
-                                className="form-control"
+
                                 type="date"
                                 value={handledato}
                                 onChange={e => dispatch(DATO_ENDRE(e.target.value))}
                             />
                         </div>
                     </div>
-                    <div className="form-group row mb-2">
-                        <div className="col-5"/>
-                        <div className="col-7">
-                            <button className="btn btn-primary" disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId, belop, handletidspunkt, username }))}>Registrer handling</button>
+                    <div>
+                        <div/>
+                        <div>
+                            <button disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId, belop, handletidspunkt, username }))}>Registrer handling</button>
                         </div>
                     </div>
                 </form>

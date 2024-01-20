@@ -8,7 +8,7 @@ export default function LoginMessage() {
     }
 
     return (
-        <div className='alert alert-warning' role='alert'>
+        <div role='alert'>
             {loginresultat.feilmelding}
         </div>
     );

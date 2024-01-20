@@ -2,7 +2,7 @@ import React from 'react';
 
 export function ContainerFluid (props) {
     return (
-        <div className="container-fluid">
+        <div>
             {props.children}
         </div>
     );

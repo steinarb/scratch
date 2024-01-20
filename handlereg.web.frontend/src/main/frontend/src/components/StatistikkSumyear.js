@@ -8,14 +8,14 @@ export default function StatistikkSumyear() {
 
     return (
         <div>
-            <nav className="navbar navbar-light bg-light">
+            <nav>
                 <StyledLinkLeft to="/handlereg/statistikk">Tilbake</StyledLinkLeft>
                 <h1>Handlesum pr år</h1>
-                <div className="col-sm-2"></div>
+                <div></div>
             </nav>
             <Container>
-                <div className="table-responsive table-sm table-striped">
-                    <table className="table">
+                <div>
+                    <table>
                         <thead>
                             <tr>
                                 <td>År</td>

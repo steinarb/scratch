@@ -13,23 +13,23 @@ export default function NyButikk() {
 
     return (
         <div>
-            <nav className="navbar navbar-light bg-light">
+            <nav>
                 <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
                 <h1>Ny butikk</h1>
-                <div className="col-sm-2"></div>
+                <div></div>
             </nav>
             <Container>
                 <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="amount" className="col-form-label col-5">Ny butikk</label>
-                        <div className="col-7">
-                            <input id="amount" className="form-control" type="text" value={butikknavn} onChange={e => dispatch(BUTIKKNAVN_ENDRE(e.target.value))} />
+                    <div>
+                        <label htmlFor="amount">Ny butikk</label>
+                        <div>
+                            <input id="amount" type="text" value={butikknavn} onChange={e => dispatch(BUTIKKNAVN_ENDRE(e.target.value))} />
                         </div>
                     </div>
-                    <div className="form-group row mb-2">
-                        <div className="col-5"/>
-                        <div className="col-7">
-                            <button className="btn btn-primary" onClick={() => dispatch(NYBUTIKK_REGISTRER(butikknavn))}>Legg til butikk</button>
+                    <div>
+                        <div/>
+                        <div>
+                            <button onClick={() => dispatch(NYBUTIKK_REGISTRER(butikknavn))}>Legg til butikk</button>
                         </div>
                     </div>
                 </form>
