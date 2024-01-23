@@ -8,7 +8,7 @@ export default function LoginMessage() {
     }
 
     return (
-        <div role='alert'>
+        <div role='alert' className="bg-yellow-100 border border-red-500 rounded py-5 px-5 my-5 mx-5">
             {loginresultat.feilmelding}
         </div>
     );

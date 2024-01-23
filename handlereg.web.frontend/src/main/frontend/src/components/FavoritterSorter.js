@@ -14,10 +14,10 @@ export default function FavoritterSorter() {
 
     return (
         <div>
-            <nav>
+            <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
                 <StyledLinkLeft to="/handlereg/favoritter">Tilbake</StyledLinkLeft>
-                <h1>Sorter favoritter</h1>
-                <div></div>
+                <h1 className="sm:text-1xl md:text-3xl font-bold">Sorter favoritter</h1>
+                <div>&nbsp;</div>
             </nav>
             <Container>
                 {
@@ -25,12 +25,12 @@ export default function FavoritterSorter() {
                         const forrige = array[indeks-1];
                         const neste = array[indeks+1];
                         return (
-                            <div key={'favoritt_' + f.favouriteid.toString()}>
-                                <button disabled={!forrige} onClick={() => dispatch(BYTT_FAVORITTER({ forste: f, andre: forrige}))}>
+                            <div className="flex flex-row" key={'favoritt_' + f.favouriteid.toString()}>
+                                <button className="mb-1 ms-2 me-1 ps-3 pe-3 pb-2 text-center block border border-blue-500 rounded bg-blue-500 hover:bg-blue-700 text-white" disabled={!forrige} onClick={() => dispatch(BYTT_FAVORITTER({ forste: f, andre: forrige}))}>
                                     <ChevronTop/>
                                 </button>
-                                <div>{f.store.butikknavn}</div>
-                                <button disabled={!neste} onClick={() => dispatch(BYTT_FAVORITTER({ forste: f, andre: neste }))}>
+                                <div className="w-full mb-1 ms-1 me-1 ps-2 pe-2 pb-2 text-center block border border-blue-500 rounded bg-blue-500 hover:bg-blue-700 text-white">{f.store.butikknavn}</div>
+                                <button className="mb-1 ms-1 me-2 ps-3 pe-3 pb-2 text-center block border border-blue-500 rounded bg-blue-500 hover:bg-blue-700 text-white" disabled={!neste} onClick={() => dispatch(BYTT_FAVORITTER({ forste: f, andre: neste }))}>
                                     <ChevronBottom/>
                                 </button>
                             </div>);

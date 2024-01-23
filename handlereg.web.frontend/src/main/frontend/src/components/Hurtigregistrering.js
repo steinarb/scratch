@@ -17,21 +17,19 @@ export default function Hurtigregistrering() {
 
     return (
         <div>
-            <nav>
+            <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
                 <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
-                <h1>Hurtigregistrering</h1>
-                <div></div>
+                <h1 className="sm:text-1xl md:text-3xl font-bold">Hurtigregistrering</h1>
+                <div>&nbsp;</div>
             </nav>
             <Container>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div>
-                        <label htmlFor="amount">Nytt beløp</label>
-                        <div>
-                            <input id="amount" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
-                        </div>
+                <form className="w-full max-w-lg mt-4 grid grid-flow-row auto-rows-max" onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="columns-2 mb-2">
+                        <label className="w-full ms-5 block uppercase text-gray-700 font-bold" htmlFor="amount">Nytt beløp</label>
+                        <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 focus:outline-none focus:bg-white" id="amount" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
                     </div>
                     <Kvittering/>
-                    { favoritter.map(f => <button key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId: f.store.storeId, belop, handletidspunkt, username }))}>{f.store.butikknavn}</button>) }
+                    { favoritter.map(f => <button className="flex w-80 mb-1 ms-2 me-2 ps-4 text-center block border border-blue-500 rounded py-2 bg-blue-500 hover:bg-blue-700 text-white" key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId: f.store.storeId, belop, handletidspunkt, username }))}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>
         </div>
