@@ -31,45 +31,44 @@ export default function Home() {
 
     return (
         <div>
-            <nav>
-                <a href="../.."><span title="chevron left" aria-hidden="true"></span>&nbsp;Gå hjem!</a>
-                <h1>Matregnskap</h1>
+            <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
+                <a className="text-center block border border-blue-500 rounded py-2 bg-blue-500 hover:bg-blue-700 text-white" href="../.."><span title="chevron left" aria-hidden="true"></span>&nbsp;Gå hjem!</a>
+                <h1 className="text-3xl font-bold">Matregnskap</h1>
                 <StyledLinkRight to="/handlereg/hurtigregistrering">Hurtig</StyledLinkRight>
             </nav>
             <Container>
                 <p>Hei {oversikt.fornavn}!</p>
                 <p>Dine 5 siste innkjøp, er:</p>
                 <div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Dato</th>
-                                <th>Beløp</th>
-                                <th>Butikk</th>
+                    <table className="table-auto border border-slate-400 w-full">
+                        <thead className="bg-slate-50">
+                            <tr className="py-4">
+                                <th className="border border-slate-300">Dato</th>
+                                <th className="border border-slate-300">Beløp</th>
+                                <th className="border border-slate-300">Butikk</th>
                             </tr>
                         </thead>
                         <tbody>
                             {handlinger.map((handling) =>
                                             <tr key={handling.transactionId}>
-                                                <td>{new Date(handling.handletidspunkt).toISOString().split('T')[0]}</td>
-                                                <td>{handling.belop}</td>
-                                                <td>{handling.butikk}</td>
+                                                <td className="border border-slate-300">{new Date(handling.handletidspunkt).toISOString().split('T')[0]}</td>
+                                                <td className="border border-slate-300">{handling.belop}</td>
+                                                <td className="border border-slate-300">{handling.butikk}</td>
                                             </tr>
                                            )}
                         </tbody>
                     </table>
                 </div>
-                <form onSubmit={ e => { e.preventDefault(); }}>
-                    <div>
-                        <label htmlFor="amount">Nytt beløp</label>
-                        <div>
-                            <input id="amount" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
-                        </div>
+                <form className="w-full max-w-lg mt-4 grid grid-flow-row auto-rows-max" onSubmit={ e => { e.preventDefault(); }}>
+                    <div className="columns-2 mb-2">
+                        <label className="w-full ms-5 block uppercase text-gray-700 font-bold" htmlFor="amount">Nytt beløp</label>
+                        <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 focus:outline-none focus:bg-white" id="amount" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
                     </div>
-                    <div>
-                        <label htmlFor="jobtype">Velg butikk</label>
-                        <div>
+                    <div className="columns-2 mb-2">
+                        <label className="w-full ms-5 block uppercase tracking-wide text-gray-700 font-bold" htmlFor="jobtype">Velg butikk</label>
+                        <div className="inline-block relative w-full">
                             <input
+                                className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                 list="butikker"
                                 id="valgt-butikk"
                                 name="valgt-butikk"
@@ -81,32 +80,30 @@ export default function Home() {
                             </datalist>
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="date">Dato</label>
+                    <div className="columns-2 mb-2">
+                        <label className="w-full ms-5 block uppercase tracking-wide text-gray-700 font-bold" htmlFor="date">Dato</label>
                         <div>
                             <input
+                                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                                 id="date"
-
                                 type="date"
                                 value={handledato}
                                 onChange={e => dispatch(DATO_ENDRE(e.target.value))}
                             />
                         </div>
                     </div>
-                    <div>
-                        <div/>
-                        <div>
-                            <button disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId, belop, handletidspunkt, username }))}>Registrer handling</button>
-                        </div>
+                    <div className="columns-2 mb-2">
+                        <div className="w-full">&nbsp;</div>
+                        <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId, belop, handletidspunkt, username }))}>Registrer handling</button>
                     </div>
                 </form>
                 <Kvittering/>
             </Container>
             <Container>
-                <StyledLinkRight to="/handlereg/statistikk">Statistikk</StyledLinkRight>
-                <StyledLinkRight to="/handlereg/nybutikk">Ny butikk</StyledLinkRight>
-                <StyledLinkRight to="/handlereg/endrebutikk">Endre butikk</StyledLinkRight>
-                <StyledLinkRight to="/handlereg/favoritter">Favoritter</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/statistikk">Statistikk</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/nybutikk">Ny butikk</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/endrebutikk">Endre butikk</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end" to="/handlereg/favoritter">Favoritter</StyledLinkRight>
             </Container>
         </div>
     );
