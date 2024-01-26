@@ -5,6 +5,7 @@ export const CLEAR_ALERT = createAction('CLEAR_ALERT');
 export const ALLROUTES_REQUEST = createAction('ALLROUTES_REQUEST');
 export const ALLROUTES_RECEIVE = createAction('ALLROUTES_RECEIVE');
 export const ALLROUTES_FAILURE = createAction('ALLROUTES_FAILURE');
+export const UPDATE_ALLROUTES = createAction('UPDATE_ALLROUTES');
 export const SET_CHILDENTRIES_BY_YEAR = createAction('SET_CHILDENTRIES_BY_YEAR');
 export const LOGIN_CHECK_REQUEST = createAction('LOGIN_CHECK_REQUEST');
 export const LOGIN_CHECK_RECEIVE = createAction('LOGIN_CHECK_RECEIVE');

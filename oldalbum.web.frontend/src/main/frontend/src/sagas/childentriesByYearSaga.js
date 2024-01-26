@@ -1,35 +1,13 @@
 import { takeLatest, select, put } from 'redux-saga/effects';
 import {
     ALLROUTES_RECEIVE,
-    SAVE_MODIFIED_ALBUM_RECEIVE,
-    SAVE_ADDED_ALBUM_RECEIVE,
-    SAVE_MODIFIED_PICTURE_RECEIVE,
-    SAVE_ADDED_PICTURE_RECEIVE,
-    BATCH_ADD_PICTURES_FROM_URL_RECEIVE,
-    SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE,
-    DELETE_ALBUMENTRY_RECEIVE,
-    DELETE_SELECTION_RECEIVE,
-    MOVE_ALBUMENTRY_UP_RECEIVE,
-    MOVE_ALBUMENTRY_LEFT_RECEIVE,
-    MOVE_ALBUMENTRY_DOWN_RECEIVE,
-    MOVE_ALBUMENTRY_RIGHT_RECEIVE,
+    UPDATE_ALLROUTES,
     SET_CHILDENTRIES_BY_YEAR,
 } from '../reduxactions';
 
 export default function* childentriesByYearSaga() {
     yield takeLatest(ALLROUTES_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(SAVE_MODIFIED_ALBUM_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(SAVE_ADDED_ALBUM_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(SAVE_MODIFIED_PICTURE_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(SAVE_ADDED_PICTURE_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(BATCH_ADD_PICTURES_FROM_URL_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(DELETE_ALBUMENTRY_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(DELETE_SELECTION_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(MOVE_ALBUMENTRY_UP_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(MOVE_ALBUMENTRY_LEFT_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(MOVE_ALBUMENTRY_DOWN_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
-    yield takeLatest(MOVE_ALBUMENTRY_RIGHT_RECEIVE, createMapFromIdToMapOfYearWithArrayOfChildren);
+    yield takeLatest(UPDATE_ALLROUTES, createMapFromIdToMapOfYearWithArrayOfChildren);
 }
 
 

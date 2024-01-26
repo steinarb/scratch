@@ -1,6 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { fork, all } from "redux-saga/effects";
 import allroutes from './allroutesSaga';
+import updateAllroutesSaga from './updateAllroutesSaga';
 import albumSaga from './albumSaga';
 import modifyAlbumSaga from './modifyAlbumSaga';
 import addAlbumSaga from './addAlbumSaga';
@@ -29,6 +30,7 @@ import childentriesByYearSaga from './childentriesByYearSaga';
 export default function* rootSaga() {
     yield all([
         fork(allroutes),
+        fork(updateAllroutesSaga),
         fork(albumSaga),
         fork(modifyAlbumSaga),
         fork(addAlbumSaga),
