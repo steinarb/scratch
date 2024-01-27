@@ -15,7 +15,9 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const title = pictureTitle(entry);
     const noOfThumbnails = title.length > 21 ? 3 : 2;
     const childrenWithThumbnails = findChildrenThumbnails(entry, children, childentries).slice(0, noOfThumbnails);
-    const widthInCols =  noOfThumbnails===2 ? ' col-sm-12 col-md-4 col-lg-3 col-xl-2' : ' col-sm-12 col-md-5 col-lg-4 col-xl-3';
+    const widthInCols =  noOfThumbnails===2 ?
+          ' col-sm-12 col-md-4 col-lg-3 col-xl-2' :
+          ' col-sm-12 col-md-5 col-lg-4 col-xl-3';
     const anchor = 'entry' + entry.id.toString();
 
     return (
