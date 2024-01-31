@@ -3,7 +3,7 @@ import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import { StyledLinkRight } from './bootstrap/StyledLinkRight';
 
-function Statistikk() {
+function Favoritter() {
     return (
         <div>
             <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
@@ -20,4 +20,4 @@ function Statistikk() {
     );
 }
 
-export default Statistikk;
+export default Favoritter;
