@@ -7,6 +7,7 @@ import CopyLinkButton from './CopyLinkButton';
 
 export default function NotFound() {
     const text = useSelector(state => state.displayTexts);
+    const titleText = text.notfoundTitle;
 
     return (
         <div>
@@ -19,7 +20,7 @@ export default function NotFound() {
                         </div>
                     </div>
                 </NavLink>
-                <h1>Not found!</h1>
+                <h1>{titleText}</h1>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
