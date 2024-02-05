@@ -5,7 +5,7 @@ import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
 
-export default function NotFound() {
+export default function LoadingOrNotFound() {
     const text = useSelector(state => state.displayTexts);
     const openGraphTitle = (document.head.querySelector('meta[property="og:title"]') || {}).content;
     const titleText = openGraphTitle || text.notfoundTitle;

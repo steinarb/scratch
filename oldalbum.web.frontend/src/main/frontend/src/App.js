@@ -11,7 +11,7 @@ import ModifyAlbum from './components/ModifyAlbum';
 import AddAlbum from './components/AddAlbum';
 import ModifyPicture from './components/ModifyPicture';
 import AddPicture from './components/AddPicture';
-import NotFound from './components/NotFound';
+import LoadingOrNotFound from './components/LoadingOrNotFound';
 
 export default function App(props) {
     const { history, basename } = props;
@@ -27,7 +27,7 @@ export default function App(props) {
                 <Route key="addalbum" path="/addalbum" element={<AddAlbum/>} />
                 <Route key="modifypicture" path="/modifypicture" element={<ModifyPicture/>} />
                 <Route key="addpicture" path="/addpicture" element={<AddPicture/>} />
-                <Route key="notfound" path="*" element={<NotFound/>} />
+                <Route key="loadingornotfound" path="*" element={<LoadingOrNotFound/>} />
             </Routes>
         </Router>
     );
