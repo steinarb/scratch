@@ -9,6 +9,7 @@ export default function LoadingOrNotFound() {
     const text = useSelector(state => state.displayTexts);
     const openGraphTitle = (document.head.querySelector('meta[property="og:title"]') || {}).content;
     const titleText = openGraphTitle || text.notfoundTitle;
+    const message = openGraphTitle ? text.pageIsLoading : text.resourcenotfound;
 
     return (
         <div>
@@ -33,7 +34,7 @@ export default function LoadingOrNotFound() {
                     </div>
                 </div>
             </nav>
-            <p>{text.resourcenotfound}</p>
+            <p>{message}</p>
         </div>
     );
 }
