@@ -7,7 +7,8 @@ import CopyLinkButton from './CopyLinkButton';
 
 export default function NotFound() {
     const text = useSelector(state => state.displayTexts);
-    const titleText = text.notfoundTitle;
+    const openGraphTitle = (document.head.querySelector('meta[property="og:title"]') || {}).content;
+    const titleText = openGraphTitle || text.notfoundTitle;
 
     return (
         <div>
