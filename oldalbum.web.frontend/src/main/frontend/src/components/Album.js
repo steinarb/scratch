@@ -135,8 +135,8 @@ function renderYear(entry) {
     const expanded = true;
     return (
         <div id={year} className="column album-scroll-below-fixed-header" key={key}>
-            <div className="row ps-5">
-                <a className="btn col-1" data-bs-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a>
+            <div className="d-flex ps-5">
+                <a className="btn" data-bs-toggle="collapse" href={collapseRef} aria-expanded={expanded} aria-controls={collapseId}><h2>{year}</h2></a>
                 <a className="album-yearlink col-1" href={'#' + year.toString()}><h2>#</h2></a>
             </div>
             <div className="row collapse multi-collapse show pb-5" id={collapseId}>
