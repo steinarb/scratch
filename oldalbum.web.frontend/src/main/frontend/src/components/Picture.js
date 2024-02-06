@@ -25,6 +25,8 @@ export default function Picture(props) {
         onSwipedRight: () => previous && dispatch(push(previous.path)),
     });
 
+    preloadImage(next);
+
     return (
         <div>
             <Helmet>
@@ -61,4 +63,13 @@ export default function Picture(props) {
             </div>
         </div>
     );
+}
+
+function preloadImage(entry) {
+    if (!entry || entry.album) {
+        return;
+    }
+
+    const img = new Image();
+    img.src = entry.imageUrl;
 }
