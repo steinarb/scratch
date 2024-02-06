@@ -30,6 +30,7 @@ export default function Picture(props) {
             <Helmet>
                 <title>{title}</title>
                 <meta name="description" content={description}/>
+                {preloadImageLink(next)}
             </Helmet>
             <PictureNavbar className="hide-on-landscape d-lg-none" item={item} parent={parent} title={title}/>
             <PictureNavbar className="d-none d-lg-block" item={item} parent={parent} title={title}/>
@@ -61,4 +62,12 @@ export default function Picture(props) {
             </div>
         </div>
     );
+}
+
+function preloadImageLink(entry) {
+    if (!entry || entry.album) {
+        return null;
+    }
+
+    return (<link rel="preload" href={entry.imageUrl} as="image"/>);
 }
