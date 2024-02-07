@@ -50,6 +50,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.glassfish.jersey.server.ServerProperties;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.osgi.service.log.LogService;
@@ -86,6 +87,11 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         allroutes = mapper.readValue(OldAlbumWebApiServletTest.class.getClassLoader().getResourceAsStream("allroutes.json"), new TypeReference<List<AlbumEntry>>() {});
     }
 
+    @BeforeEach
+    void beforeEachTest() {
+        removeWebSubjectFromThread();
+    }
+
     @Test
     void testCheckLogin() throws Exception {
         createSubjectAndBindItToThread();
@@ -115,6 +121,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildGetUrl("/allroutes");
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
@@ -132,6 +139,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildGetUrl("/dumproutessql");
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         assertEquals("application/sql", response.getContentType());
@@ -151,10 +159,47 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/modifyalbum", modifiedAlbum);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("admin", "admin");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
         assertThat(routes).isNotEmpty();
+    }
+
+    @Test
+    void testModifyalbumLoggedInAsUserWithoutOldalbumadmin() throws Exception {
+        AlbumEntry modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        HttpServletRequest request = buildPostUrl("/modifyalbum", modifiedAlbum);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("jad", "1ad");
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_FORBIDDEN, response.getStatus());
+    }
+
+    @Test
+    void testModifyalbumWhenNotLoggedIn() throws Exception {
+        AlbumEntry modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
+        MockLogService logservice = new MockLogService();
+        OldAlbumService backendService = mock(OldAlbumService.class);
+        when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
+        UserManagementService useradmin = mock(UserManagementService.class);
+        Role oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
+        OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        HttpServletRequest request = buildPostUrl("/modifyalbum", modifiedAlbum);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
     }
 
     @Test
@@ -169,6 +214,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/addalbum", albumToAdd);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("admin", "admin");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
@@ -187,6 +234,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/addpicture", pictureToAdd);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("admin", "admin");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
@@ -204,6 +253,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/deleteentry", pictureToDelete);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("admin", "admin");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
@@ -221,6 +272,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         var request = buildPostUrl("/deleteselection", selection);
         var response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("admin", "admin");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
@@ -240,6 +293,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/movealbumentryup", albumToMove);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("admin", "admin");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
@@ -260,6 +315,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         OldAlbumWebApiServlet servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
         HttpServletRequest request = buildPostUrl("/movealbumentrydown", albumToMove);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("admin", "admin");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         List<AlbumEntry> routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });

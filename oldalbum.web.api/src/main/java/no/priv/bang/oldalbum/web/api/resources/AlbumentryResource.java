@@ -25,12 +25,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
+
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 
 @Path("")
 @Produces(APPLICATION_JSON)
+@RequiresUser
+@RequiresRoles("oldalbumadmin")
 public class AlbumentryResource {
 
     @Inject
