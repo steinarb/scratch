@@ -26,6 +26,7 @@ import showEditControlsSaga from './showEditControlsSaga';
 import editModeSaga from './editModeSaga';
 import albumGroupByYearSaga from './albumGroupByYearSaga';
 import childentriesByYearSaga from './childentriesByYearSaga';
+import modifyFailedErrorSaga from './modifyFailedErrorSaga';
 
 export default function* rootSaga() {
     yield all([
@@ -55,5 +56,6 @@ export default function* rootSaga() {
         fork(editModeSaga),
         fork(albumGroupByYearSaga),
         fork(childentriesByYearSaga),
+        fork(modifyFailedErrorSaga),
     ]);
 }

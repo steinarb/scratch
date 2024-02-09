@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
     MODIFY_PICTURE_PARENT_SELECTED,
     MODIFY_PICTURE_BASENAME_FIELD_CHANGED,
@@ -48,6 +49,7 @@ export default function ModifyPicture() {
                 </NavLink>
                 <h1>{text.modifypicture}</h1>
             </nav>
+            <ModifyFailedErrorAlert/>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row mb-2">

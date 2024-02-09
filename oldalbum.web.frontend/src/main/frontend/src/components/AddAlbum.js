@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useSearchParams } from 'react-router-dom';
+import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
     ADD_ALBUM_BASENAME_FIELD_CHANGED,
     ADD_ALBUM_TITLE_FIELD_CHANGED,
@@ -46,6 +47,7 @@ export default function AddAlbum() {
                 </NavLink>
                 <h1>{text.addalbumto} &quot;{parentalbum.title}&quot;</h1>
             </nav>
+            <ModifyFailedErrorAlert/>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container mt-2">
                     <div className="form-group row mb-2">

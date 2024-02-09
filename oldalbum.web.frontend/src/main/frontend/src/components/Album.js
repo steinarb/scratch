@@ -24,6 +24,7 @@ import Previous from './Previous';
 import Next from './Next';
 import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
 import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
+import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 
 export default function Album(props) {
     const { item } = props;
@@ -103,6 +104,7 @@ export default function Album(props) {
                     <div className="col"/>
                     <Next className="align-self-end" next={next} />
                 </div>
+                <ModifyFailedErrorAlert/>
                 { showEditControls && sortingStatus && <div className="alert alert-primary" role="alert">{sortingStatus}</div> }
                 { item.description && <div className="alert alert-primary" role="alert">{item.description}</div> }
             </div>
