@@ -7,7 +7,7 @@ import {
 const alertReducer = createReducer('', (builder) => {
     builder
         .addCase(SET_ALERT, (state, action) => action.payload)
-        . addCase(CLEAR_ALERT, () => '');
+        .addCase(CLEAR_ALERT, () => '');
 });
 
 export default alertReducer;
