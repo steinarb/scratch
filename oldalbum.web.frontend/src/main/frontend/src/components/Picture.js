@@ -49,11 +49,11 @@ export default function Picture(props) {
                 <img className="img-fluid-landscape img-center d-lg-none hide-on-portrait" src={item.imageUrl} />
                 <div className="d-none d-lg-block">
                     <div className="row align-items-center d-flex justify-content-center">
-                        <div className="col-auto"><Previous previous={previous} /></div>
-                        <div className="col-auto">
+                        <div className="col-1"><Previous previous={previous} /></div>
+                        <div className="col-10">
                             <img className="img-fluid-portrait" src={item.imageUrl} />
                         </div>
-                        <div className="col-auto"><Next className="ml-auto" next={next} /></div>
+                        <div className="col-1"><Next className="ml-auto" next={next} /></div>
                     </div>
                 </div>
                 <PictureDescription className="hide-on-landscape d-lg-none" description={description}/>
