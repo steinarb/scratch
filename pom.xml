@@ -17,7 +17,7 @@
     <parent>
         <groupId>no.priv.bang.pom</groupId>
         <artifactId>bang-authservice-client-pom</artifactId>
-        <version>1.1.44</version>
+        <version>1.1.45</version>
     </parent>
     <groupId>no.priv.bang.oldalbum</groupId>
     <artifactId>oldalbum</artifactId>
@@ -49,7 +49,6 @@
     <properties>
         <open-iconic.version>1.1.1</open-iconic.version>
         <twelvemonkeys.version>3.10.1</twelvemonkeys.version>
-        <shiro.version>1.13.0</shiro.version>
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
             **/OldAlbumProductionDatabase.java,
