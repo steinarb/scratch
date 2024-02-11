@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2021-2023 Steinar Bang                                     -->
+<!-- Copyright 2021-2024 Steinar Bang                                     -->
 <!--                                                                      -->
 <!-- Licensed under the Apache License, Version 2.0 (the "License");      -->
 <!-- you may not use this file except in compliance with the License.     -->
@@ -43,6 +43,7 @@
         <derby.version>10.14.2.0</derby.version> <!-- version used by pax-jdbc 1.5.6 -->
         <postgresql.version>42.7.1</postgresql.version>
         <jersey-feature.version>1.9.7</jersey-feature.version>
+        <shiro.version>1.13.0</shiro.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
