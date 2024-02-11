@@ -133,6 +133,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-bom</artifactId>
+                <version>${shiro.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>com.twelvemonkeys.bom</groupId>
                 <artifactId>bom</artifactId>
                 <version>${twelvemonkeys.version}</version>
