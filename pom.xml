@@ -21,7 +21,7 @@
     </parent>
     <groupId>no.priv.bang.oldalbum</groupId>
     <artifactId>oldalbum</artifactId>
-    <version>1.9.25</version>
+    <version>1.9.26-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -247,7 +247,7 @@
     <scm>
         <url>https://github.com/steinarb/oldalbum</url>
         <connection>scm:git:https://github.com/steinarb/oldalbum.git</connection>
-        <tag>oldalbum-1.9.25</tag>
+        <tag>oldalbum-1.9.19</tag>
     </scm>
 
     <issueManagement>
