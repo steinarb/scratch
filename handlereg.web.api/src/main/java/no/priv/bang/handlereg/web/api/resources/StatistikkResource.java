@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019, 2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.handlereg.services.ButikkCount;
@@ -34,6 +36,8 @@ import no.priv.bang.handlereg.services.SumYearMonth;
 
 @Path("statistikk")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiresUser
+@RequiresRoles("handleregbruker")
 public class StatistikkResource {
 
     @Inject

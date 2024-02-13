@@ -11,6 +11,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
+
 import no.priv.bang.handlereg.services.Favoritt;
 import no.priv.bang.handlereg.services.Favorittpar;
 import no.priv.bang.handlereg.services.HandleregService;
@@ -18,6 +21,8 @@ import no.priv.bang.handlereg.services.NyFavoritt;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
+@RequiresUser
+@RequiresRoles("handleregbruker")
 public class FavorittResource {
 
     @Inject
