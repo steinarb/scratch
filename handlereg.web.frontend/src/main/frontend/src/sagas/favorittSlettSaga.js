@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function sendSlettFavoritt(favoritt) {
-    return axios.post('/handlereg/api/favoritt/slett', favoritt);
+    return axios.post('/api/favoritt/slett', favoritt);
 }
 
 function* slettFavoritt(action) {

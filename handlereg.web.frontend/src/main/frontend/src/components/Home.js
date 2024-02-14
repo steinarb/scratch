@@ -15,7 +15,7 @@ import Kvittering from './Kvittering';
 export default function Home() {
     const loginresultat = useSelector(state => state.loginresultat);
     if (!loginresultat.authorized) {
-        return <Navigate to="/handlereg/unauthorized" />;
+        return <Navigate to="/unauthorized" />;
     }
 
     const oversikt = useSelector(state => state.oversikt);
@@ -34,7 +34,7 @@ export default function Home() {
             <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
                 <a className="text-center block border border-blue-500 rounded py-2 bg-blue-500 hover:bg-blue-700 text-white" href="../.."><span title="chevron left" aria-hidden="true"></span>&nbsp;Gå hjem!</a>
                 <h1 className="text-3xl font-bold">Matregnskap</h1>
-                <StyledLinkRight to="/handlereg/hurtigregistrering">Hurtig</StyledLinkRight>
+                <StyledLinkRight to="/hurtigregistrering">Hurtig</StyledLinkRight>
             </nav>
             <Container>
                 <p>Hei {oversikt.fornavn}!</p>
@@ -100,10 +100,10 @@ export default function Home() {
                 <Kvittering/>
             </Container>
             <Container>
-                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/statistikk">Statistikk</StyledLinkRight>
-                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/nybutikk">Ny butikk</StyledLinkRight>
-                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/endrebutikk">Endre butikk</StyledLinkRight>
-                <StyledLinkRight className="flex justify-end" to="/handlereg/favoritter">Favoritter</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/statistikk">Statistikk</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/nybutikk">Ny butikk</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/endrebutikk">Endre butikk</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end" to="/favoritter">Favoritter</StyledLinkRight>
             </Container>
         </div>
     );

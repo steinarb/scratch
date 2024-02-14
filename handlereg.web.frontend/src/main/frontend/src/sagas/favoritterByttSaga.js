@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function sendByttFavoritter(favorittpar) {
-    return axios.post('/handlereg/api/favoritter/bytt', favorittpar);
+    return axios.post('/api/favoritter/bytt', favorittpar);
 }
 
 function* byttFavoritter(action) {

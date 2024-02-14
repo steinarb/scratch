@@ -9,7 +9,7 @@ export default function StatistikkSumbutikk() {
     return (
         <div>
             <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
-                <StyledLinkLeft to="/handlereg/statistikk">Tilbake</StyledLinkLeft>
+                <StyledLinkLeft to="/statistikk">Tilbake</StyledLinkLeft>
                 <h1 className="sm:text-1xl md:text-3xl font-bold">Total handlesum fordelt på butikk</h1>
                 <div>&nbsp;</div>
             </nav>

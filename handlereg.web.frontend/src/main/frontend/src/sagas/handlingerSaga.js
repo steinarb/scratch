@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function hentHandlinger(accountid) {
-    return axios.get('/handlereg/api/handlinger/' + accountid);
+    return axios.get('/api/handlinger/' + accountid);
 }
 
 function* mottaHandlinger(action) {

@@ -7,14 +7,14 @@ function Favoritter() {
     return (
         <div>
             <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
-                <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
+                <StyledLinkLeft to="/">Opp til matregnskap</StyledLinkLeft>
                 <h1 className="text-3xl font-bold">Favoritter</h1>
                 <div>&nbsp;</div>
             </nav>
             <Container>
-                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/favoritter/leggtil">Legg til favoritt</StyledLinkRight>
-                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/favoritter/slett">Slett favoritt</StyledLinkRight>
-                <StyledLinkRight className="flex justify-end mb-1" to="/handlereg/favoritter/sorter">Endre rekkefølge på favoritter</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/favoritter/leggtil">Legg til favoritt</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/favoritter/slett">Slett favoritt</StyledLinkRight>
+                <StyledLinkRight className="flex justify-end mb-1" to="/favoritter/sorter">Endre rekkefølge på favoritter</StyledLinkRight>
             </Container>
         </div>
     );

@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function hentHandlingerbutikk() {
-    return axios.get('/handlereg/api/statistikk/handlingerbutikk');
+    return axios.get('/api/statistikk/handlingerbutikk');
 }
 
 function* mottaHandlingerbutikk() {

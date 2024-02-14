@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function hentSumbutikk() {
-    return axios.get('/handlereg/api/statistikk/sumbutikk');
+    return axios.get('/api/statistikk/sumbutikk');
 }
 
 function* mottaSumbutikk() {

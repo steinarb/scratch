@@ -11,7 +11,7 @@ export default function Unauthorized() {
     const loginresultat = useSelector(state => state.loginresultat);
     const dispatch = useDispatch();
     if (!loginresultat.suksess) {
-        return <Navigate to="/handlereg/login" />;
+        return <Navigate to="/login" />;
     }
 
     return (

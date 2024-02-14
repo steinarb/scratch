@@ -9,7 +9,7 @@ import {
 } from '../actiontypes';
 
 function hentOversikt() {
-    return axios.get('/handlereg/api/oversikt');
+    return axios.get('/api/oversikt');
 }
 
 function* mottaOversikt() {

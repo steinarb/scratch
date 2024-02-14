@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function sendLogintilstand() {
-    return axios.get('/handlereg/api/logintilstand');
+    return axios.get('/api/logintilstand');
 }
 
 function* mottaLogintilstandResultat() {

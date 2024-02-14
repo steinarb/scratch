@@ -14,14 +14,15 @@ import {
 
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
-    const { pathname = '' } = location;
+    const basename = yield select(state => state.router.basename);
+    const pathname = findPathname(location, basename);
 
-    if (pathname === '/handlereg' || pathname === '/handlereg/') {
+    if (pathname === '' || pathname === '/') {
         yield put(OVERSIKT_HENT());
         yield put(BUTIKKER_HENT());
     }
 
-    if (pathname === '/handlereg/hurtigregistrering') {
+    if (pathname === '/hurtigregistrering') {
         yield put(OVERSIKT_HENT());
         yield put(BUTIKKER_HENT());
         yield put(VIS_KVITTERING(false));
@@ -31,44 +32,52 @@ function* locationChange(action) {
         }
     }
 
-    if (pathname === '/handlereg/endrebutikk') {
+    if (pathname === '/endrebutikk') {
         yield put(BUTIKKER_HENT());
     }
 
-    if (pathname === '/handlereg/statistikk/sumbutikk') {
+    if (pathname === '/statistikk/sumbutikk') {
         yield put(SUMBUTIKK_HENT());
     }
 
-    if (pathname === '/handlereg/statistikk/handlingerbutikk') {
+    if (pathname === '/statistikk/handlingerbutikk') {
         yield put(HANDLINGERBUTIKK_HENT());
     }
 
-    if (pathname === '/handlereg/statistikk/sistehandel') {
+    if (pathname === '/statistikk/sistehandel') {
         yield put(SISTEHANDEL_HENT());
     }
 
-    if (pathname === '/handlereg/statistikk/sumyear') {
+    if (pathname === '/statistikk/sumyear') {
         yield put(SUMYEAR_HENT());
     }
 
-    if (pathname === '/handlereg/statistikk/sumyearmonth') {
+    if (pathname === '/statistikk/sumyearmonth') {
         yield put(SUMYEARMONTH_HENT());
     }
 
-    if (pathname === '/handlereg/favoritter/leggtil') {
+    if (pathname === '/favoritter/leggtil') {
         yield put(OVERSIKT_HENT());
         yield put(BUTIKKER_HENT());
     }
 
-    if (pathname === '/handlereg/favoritter/slett') {
+    if (pathname === '/favoritter/slett') {
         yield put(OVERSIKT_HENT());
     }
 
-    if (pathname === '/handlereg/favoritter/sorter') {
+    if (pathname === '/favoritter/sorter') {
         yield put(OVERSIKT_HENT());
     }
 }
 
 export default function* locationSaga() {
     yield takeLatest(LOCATION_CHANGE, locationChange);
+}
+
+function findPathname(location, basename) {
+    if (basename === '/') {
+        return location.pathname;
+    }
+
+    return location.pathname.replace(new RegExp('^' + basename + '(.*)'), '$1');
 }

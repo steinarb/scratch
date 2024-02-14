@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function registrerNybutikk(butikk) {
-    return axios.post('/handlereg/api/nybutikk', butikk);
+    return axios.post('/api/nybutikk', butikk);
 }
 
 function* mottaNybutikk(action) {

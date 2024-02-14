@@ -21,27 +21,27 @@ import Unauthorized from './components/Unauthorized';
 
 class App extends Component {
     render() {
-        const { history } = this.props;
+        const { history, basename } = this.props;
 
         return (
-            <Router history={history}>
+            <Router history={history} basename={basename}>
                 <Routes>
-                    <Route exact path="/handlereg/" element={<Home/>} />
-                    <Route exact path="/handlereg/hurtigregistrering" element={<Hurtigregistrering/>} />
-                    <Route exact path="/handlereg/statistikk/sumbutikk" element={<StatistikkSumbutikk/>} />
-                    <Route exact path="/handlereg/statistikk/handlingerbutikk" element={<StatistikkHandlingerbutikk/>} />
-                    <Route exact path="/handlereg/statistikk/sistehandel" element={<StatistikkSistehandel/>} />
-                    <Route exact path="/handlereg/statistikk/sumyearmonth" element={<StatistikkSumyearmonth/>} />
-                    <Route exact path="/handlereg/statistikk/sumyear" element={<StatistikkSumyear/>} />
-                    <Route exact path="/handlereg/statistikk" element={<Statistikk/>} />
-                    <Route exact path="/handlereg/favoritter/leggtil" element={<FavoritterLeggTil/>} />
-                    <Route exact path="/handlereg/favoritter/slett" element={<FavoritterSlett/>} />
-                    <Route exact path="/handlereg/favoritter/sorter" element={<FavoritterSorter/>} />
-                    <Route exact path="/handlereg/favoritter" element={<Favoritter/>} />
-                    <Route exact path="/handlereg/nybutikk" element={<NyButikk/>} />
-                    <Route exact path="/handlereg/endrebutikk" element={<EndreButikk/>} />
-                    <Route exact path="/handlereg/login" element={<Login/>} />
-                    <Route exact path="/handlereg/unauthorized" element={<Unauthorized/>} />
+                    <Route exact path="/" element={<Home/>} />
+                    <Route exact path="/hurtigregistrering" element={<Hurtigregistrering/>} />
+                    <Route exact path="/statistikk/sumbutikk" element={<StatistikkSumbutikk/>} />
+                    <Route exact path="/statistikk/handlingerbutikk" element={<StatistikkHandlingerbutikk/>} />
+                    <Route exact path="/statistikk/sistehandel" element={<StatistikkSistehandel/>} />
+                    <Route exact path="/statistikk/sumyearmonth" element={<StatistikkSumyearmonth/>} />
+                    <Route exact path="/statistikk/sumyear" element={<StatistikkSumyear/>} />
+                    <Route exact path="/statistikk" element={<Statistikk/>} />
+                    <Route exact path="/favoritter/leggtil" element={<FavoritterLeggTil/>} />
+                    <Route exact path="/favoritter/slett" element={<FavoritterSlett/>} />
+                    <Route exact path="/favoritter/sorter" element={<FavoritterSorter/>} />
+                    <Route exact path="/favoritter" element={<Favoritter/>} />
+                    <Route exact path="/nybutikk" element={<NyButikk/>} />
+                    <Route exact path="/endrebutikk" element={<EndreButikk/>} />
+                    <Route exact path="/login" element={<Login/>} />
+                    <Route exact path="/unauthorized" element={<Unauthorized/>} />
                 </Routes>
             </Router>
         );

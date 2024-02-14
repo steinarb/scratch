@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function lagreButikk(butikk) {
-    return axios.post('/handlereg/api/endrebutikk', butikk);
+    return axios.post('/api/endrebutikk', butikk);
 }
 
 function* mottaLagreButikk(action) {

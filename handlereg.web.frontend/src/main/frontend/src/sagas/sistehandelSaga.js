@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function hentSistehandel() {
-    return axios.get('/handlereg/api/statistikk/sistehandel');
+    return axios.get('/api/statistikk/sistehandel');
 }
 
 function* mottaSistehandel() {

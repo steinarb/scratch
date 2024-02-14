@@ -15,7 +15,7 @@ export default function FavoritterSorter() {
     return (
         <div>
             <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
-                <StyledLinkLeft to="/handlereg/favoritter">Tilbake</StyledLinkLeft>
+                <StyledLinkLeft to="/favoritter">Tilbake</StyledLinkLeft>
                 <h1 className="sm:text-1xl md:text-3xl font-bold">Sorter favoritter</h1>
                 <div>&nbsp;</div>
             </nav>

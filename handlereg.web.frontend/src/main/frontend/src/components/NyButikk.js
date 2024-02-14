@@ -14,7 +14,7 @@ export default function NyButikk() {
     return (
         <div>
             <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
-                <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
+                <StyledLinkLeft to="/">Opp til matregnskap</StyledLinkLeft>
                 <h1 className="text-3xl font-bold">Ny butikk</h1>
                 <div>&nbsp;</div>
             </nav>

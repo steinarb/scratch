@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function hentSumyear() {
-    return axios.get('/handlereg/api/statistikk/sumyear');
+    return axios.get('/api/statistikk/sumyear');
 }
 
 function* mottaSumyear() {

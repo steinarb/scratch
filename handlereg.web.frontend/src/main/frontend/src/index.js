@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import axios from 'axios';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -12,12 +13,15 @@ import createRootReducer from './reducers';
 import rootSaga from './sagas';
 import { LOGINTILSTAND_HENT } from './actiontypes';
 
+const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('bundle.js'))[0].replace('/bundle.js', '');
+const basename = new URL(baseUrl).pathname;
+axios.defaults.baseURL = baseUrl;
 const sagaMiddleware = createSagaMiddleware();
 const {
   createReduxHistory,
   routerMiddleware,
   routerReducer
-} = createReduxHistoryContext({ history: createBrowserHistory() });
+} = createReduxHistoryContext({ history: createBrowserHistory(), basename });
 const store = configureStore({
     reducer: createRootReducer(routerReducer),
     middleware: () => new Tuple(sagaMiddleware, routerMiddleware),
@@ -32,7 +36,7 @@ const root = createRoot(container);
 
 root.render(
     <Provider store={store}>
-        <App history={history} />
+        <App history={history} basename={basename} />
     </Provider>,
 );
 

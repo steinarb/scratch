@@ -9,7 +9,7 @@ import {
 } from '../actiontypes';
 
 function hentButikker() {
-    return axios.get('/handlereg/api/butikker');
+    return axios.get('/api/butikker');
 }
 
 function* mottaButikker() {

@@ -8,7 +8,7 @@ import {
 } from '../actiontypes';
 
 function registrerNyhandling(handling) {
-    return axios.post('/handlereg/api/nyhandling', handling);
+    return axios.post('/api/nyhandling', handling);
 }
 
 function* mottaNyhandling(action) {

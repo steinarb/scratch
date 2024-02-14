@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function sendLogin(credentials) {
-    return axios.post('/handlereg/api/login', credentials);
+    return axios.post('/api/login', credentials);
 }
 
 function* mottaLoginResultat(action) {

@@ -8,7 +8,7 @@ import {
 } from '../actiontypes';
 
 function sendLeggTilFavoritt(nyFavoritt) {
-    return axios.post('/handlereg/api/favoritt/leggtil', nyFavoritt);
+    return axios.post('/api/favoritt/leggtil', nyFavoritt);
 }
 
 function* leggTilFavoritt() {

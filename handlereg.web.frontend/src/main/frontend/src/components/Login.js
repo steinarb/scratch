@@ -13,7 +13,7 @@ export default function Login() {
     const dispatch = useDispatch();
 
     if (loginresultat.suksess) {
-        const originalRequestUrl = loginresultat.originalRequestUrl || '/handlereg/';
+        const originalRequestUrl = loginresultat.originalRequestUrl || '/';
         return (<Navigate to={originalRequestUrl} />);
     }
 

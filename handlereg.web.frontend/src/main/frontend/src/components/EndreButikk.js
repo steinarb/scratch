@@ -17,7 +17,7 @@ export default function EndreButikk() {
     return (
         <div>
             <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
-                <StyledLinkLeft to="/handlereg">Opp til matregnskap</StyledLinkLeft>
+                <StyledLinkLeft to="/">Opp til matregnskap</StyledLinkLeft>
                 <h1 className="sm:text-2xl md:text-3xl font-bold">Endre butikk</h1>
                 <div>&nbsp;</div>
             </nav>

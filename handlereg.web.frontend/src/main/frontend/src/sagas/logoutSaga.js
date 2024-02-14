@@ -7,7 +7,7 @@ import {
 } from '../actiontypes';
 
 function sendLogout() {
-    return axios.get('/handlereg/api/logout');
+    return axios.get('/api/logout');
 }
 
 function* mottaLogoutResultat() {

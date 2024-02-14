@@ -8,7 +8,7 @@ import {
 } from '../actiontypes';
 
 function hentFavoritter(username) {
-    return axios.get('/handlereg/api/favoritter', { params: { username } });
+    return axios.get('/api/favoritter', { params: { username } });
 }
 
 function* sendFavoritterHent() {
