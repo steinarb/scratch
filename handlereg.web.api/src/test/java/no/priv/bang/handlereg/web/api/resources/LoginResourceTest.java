@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Base64;
 
+import javax.ws.rs.InternalServerErrorException;
+
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.web.subject.WebSubject;
+import org.apache.shiro.web.util.WebUtils;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockServletContext;
 
 import no.priv.bang.handlereg.services.Credentials;
 import no.priv.bang.handlereg.services.Loginresultat;
@@ -35,14 +41,101 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLogin() {
+        var logservice = new MockLogService();
+        var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/");
+        var webcontext = new MockServletContext();
+        webcontext.setContextPath("/handlereg");
         LoginResource resource = new LoginResource();
+        resource.webcontext = webcontext;
+        resource.request = httpRequest;
+        resource.setLogservice(logservice);
         String username = "jd";
         String password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
+        WebUtils.saveRequest(httpRequest);
         Credentials credentials = Credentials.with().username(username).password(password).build();
         Loginresultat resultat = resource.login(credentials);
         assertTrue(resultat.getSuksess());
         assertEquals(username, resultat.getBrukernavn());
+        assertEquals("/", resultat.getOriginalRequestUrl());
+    }
+
+    @Test
+    void testLoginDifferentPath() {
+        var logservice = new MockLogService();
+        var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/statistikk");
+        var webcontext = new MockServletContext();
+        webcontext.setContextPath("/handlereg");
+        var resource = new LoginResource();
+        resource.webcontext = webcontext;
+        resource.request = httpRequest;
+        resource.setLogservice(logservice);
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        createSubjectAndBindItToThread();
+        WebUtils.saveRequest(httpRequest);
+        var credentials = Credentials.with().username(username).password(password).build();
+        var resultat = resource.login(credentials);
+        assertTrue(resultat.getSuksess());
+        assertEquals(username, resultat.getBrukernavn());
+        assertEquals("/statistikk", resultat.getOriginalRequestUrl());
+    }
+
+    @Test
+    void testLoginWithEmptyWebContextPath() {
+        var logservice = new MockLogService();
+        var httpRequest = new MockHttpServletRequest().setRequestURI("/");
+        var webcontext = new MockServletContext();
+        webcontext.setContextPath("");
+        var resource = new LoginResource();
+        resource.webcontext = webcontext;
+        resource.request = httpRequest;
+        resource.setLogservice(logservice);
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        createSubjectAndBindItToThread();
+        WebUtils.saveRequest(httpRequest);
+        var credentials = Credentials.with().username(username).password(password).build();
+        var resultat = resource.login(credentials);
+        assertTrue(resultat.getSuksess());
+        assertEquals(username, resultat.getBrukernavn());
+        assertEquals("/", resultat.getOriginalRequestUrl());
+    }
+
+    @Test
+    void testLoginNoWebContext() {
+        var logservice = new MockLogService();
+        var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/");
+        var resource = new LoginResource();
+        resource.request = httpRequest;
+        resource.setLogservice(logservice);
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        createSubjectAndBindItToThread();
+        WebUtils.saveRequest(httpRequest);
+        var credentials = Credentials.with().username(username).password(password).build();
+        assertThrows(InternalServerErrorException.class, () -> resource.login(credentials));
+        assertThat(logservice.getLogmessages()).hasSize(1);
+        assertThat(logservice.getLogmessages().get(0)).contains("NullPointerException");
+    }
+
+    @Test
+    void testLoginNoSavedRequest() {
+        var logservice = new MockLogService();
+        var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/");
+        var webcontext = new MockServletContext();
+        webcontext.setContextPath("/handlereg");
+        var resource = new LoginResource();
+        resource.webcontext = webcontext;
+        resource.request = httpRequest;
+        resource.setLogservice(logservice);
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        createSubjectAndBindItToThread();
+        var credentials = Credentials.with().username(username).password(password).build();
+        assertThrows(InternalServerErrorException.class, () -> resource.login(credentials));
+        assertThat(logservice.getLogmessages()).hasSize(1);
+        assertThat(logservice.getLogmessages().get(0)).contains("NullPointerException");
     }
 
     @Test
