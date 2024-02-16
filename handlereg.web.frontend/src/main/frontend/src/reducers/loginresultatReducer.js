@@ -5,7 +5,7 @@ import {
     LOGINTILSTAND_MOTTA,
 } from '../actiontypes';
 
-const loginresultatReducer = createReducer({}, builder => {
+const loginresultatReducer = createReducer({ authorized: true }, builder => {
     builder
         .addCase(LOGIN_MOTTA, (state, action) => action.payload)
         .addCase(LOGOUT_MOTTA, (state, action) => action.payload)
