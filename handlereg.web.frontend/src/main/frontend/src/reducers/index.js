@@ -17,6 +17,7 @@ import sumyearmonth from './sumyearmonthReducer';
 import favoritter from './favoritterReducer';
 import favorittbutikk from './favorittbutikkReducer';
 import errors from './errorsReducer';
+import basename from './basenameReducer';
 
 export default (routerReducer) => combineReducers({
     router: routerReducer,
@@ -38,4 +39,5 @@ export default (routerReducer) => combineReducers({
     errors,
     favoritter,
     favorittbutikk,
+    basename,
 });

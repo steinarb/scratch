@@ -81,3 +81,5 @@ export const BYTT_FAVORITTER = createAction('BYTT_FAVORITTER');
 export const BYTT_FAVORITTER_ERROR = createAction('BYTT_FAVORITTER_ERROR');
 
 export const VIS_KVITTERING = createAction('VIS_KVITTERING');
+
+export const SET_BASENAME = createAction('SET_BASENAME');

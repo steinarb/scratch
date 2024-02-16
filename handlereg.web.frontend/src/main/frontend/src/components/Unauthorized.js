@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     LOGOUT_HENT,
@@ -10,9 +9,6 @@ import { Container } from './bootstrap/Container';
 export default function Unauthorized() {
     const loginresultat = useSelector(state => state.loginresultat);
     const dispatch = useDispatch();
-    if (!loginresultat.suksess) {
-        return <Navigate to="/login" />;
-    }
 
     return (
         <div>

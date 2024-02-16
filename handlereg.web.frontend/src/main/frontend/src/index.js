@@ -11,7 +11,7 @@ import { createReduxHistoryContext } from "redux-first-history";
 import { createBrowserHistory } from 'history';
 import createRootReducer from './reducers';
 import rootSaga from './sagas';
-import { LOGINTILSTAND_HENT } from './actiontypes';
+import { SET_BASENAME, LOGINTILSTAND_HENT } from './actiontypes';
 
 const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('bundle.js'))[0].replace('/bundle.js', '');
 const basename = new URL(baseUrl).pathname;
@@ -26,6 +26,7 @@ const store = configureStore({
     reducer: createRootReducer(routerReducer),
     middleware: () => new Tuple(sagaMiddleware, routerMiddleware),
 });
+store.dispatch(SET_BASENAME(basename));
 sagaMiddleware.run(rootSaga);
 const history = createReduxHistory(store);
 

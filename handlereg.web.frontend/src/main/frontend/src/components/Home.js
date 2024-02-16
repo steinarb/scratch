@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     BELOP_ENDRE,
@@ -13,7 +12,6 @@ import Kvittering from './Kvittering';
 
 
 export default function Home() {
-    const loginresultat = useSelector(state => state.loginresultat);
     const oversikt = useSelector(state => state.oversikt);
     const username = oversikt.brukernavn;
     const handlinger = useSelector(state => state.handlinger);
@@ -24,10 +22,6 @@ export default function Home() {
     const handledato = handletidspunkt.split('T')[0];
     const belop = useSelector(state => state.belop).toString();
     const dispatch = useDispatch();
-
-    if (!loginresultat.authorized) {
-        return <Navigate to="/unauthorized" />;
-    }
 
     return (
         <div>
