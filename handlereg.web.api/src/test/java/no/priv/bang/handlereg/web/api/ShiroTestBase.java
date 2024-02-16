@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Steinar Bang
+ * Copyright 2019, 2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.apache.shiro.web.subject.WebSubject;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockHttpSession;
 
 public class ShiroTestBase {
 
@@ -72,7 +73,7 @@ public class ShiroTestBase {
     }
 
     protected WebSubject createSubjectAndBindItToThread() {
-        HttpSession session = mock(HttpSession.class);
+        var session = new MockHttpSession();
         MockHttpServletRequest dummyrequest = new MockHttpServletRequest();
         dummyrequest.setSession(session);
         MockHttpServletResponse dummyresponse = new MockHttpServletResponse();

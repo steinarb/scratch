@@ -16,6 +16,7 @@
 package no.priv.bang.handlereg.web.api.resources;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -53,7 +54,10 @@ public class LoginResource {
     private Logger logger;
 
     @Context
-    private HttpServletRequest request;
+    ServletContext webcontext;
+
+    @Context
+    HttpServletRequest request;
 
     @Inject
     void setLogservice(LogService logservice) {
@@ -70,7 +74,8 @@ public class LoginResource {
         try {
             subject.login(token);
             SavedRequest savedRequest = WebUtils.getSavedRequest(request);
-            String originalRequestUrl = savedRequest != null ? savedRequest.getRequestUrl() : null;
+            var contextpath = webcontext.getContextPath();
+            String originalRequestUrl = savedRequest.getRequestUrl().replace(contextpath, "");
 
             return Loginresultat.with()
                 .suksess(true)

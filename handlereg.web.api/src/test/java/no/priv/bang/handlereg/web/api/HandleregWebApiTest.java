@@ -33,6 +33,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.web.util.WebUtils;
 import org.glassfish.jersey.server.ServerProperties;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.log.LogService;
@@ -79,8 +80,10 @@ class HandleregWebApiTest extends ShiroTestBase {
         String postBody = mapper.writeValueAsString(credentials);
         request.setBodyContent(postBody);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        WebUtils.saveRequest(request);
 
         servlet.service(request, response);
+        assertThat(logservice.getLogmessages()).hasSize(1);
         assertEquals(200, response.getStatus());
 
     }
@@ -98,8 +101,10 @@ class HandleregWebApiTest extends ShiroTestBase {
         String postBody = mapper.writeValueAsString(credentials);
         request.setBodyContent(postBody);
         MockHttpServletResponse response = new MockHttpServletResponse();
+        WebUtils.saveRequest(request);
 
         servlet.service(request, response);
+        assertThat(logservice.getLogmessages()).hasSize(1);
         assertEquals(200, response.getStatus());
 
     }
