@@ -133,9 +133,10 @@ class LoginResourceTest extends ShiroTestBase {
         var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
-        assertThrows(InternalServerErrorException.class, () -> resource.login(credentials));
-        assertThat(logservice.getLogmessages()).hasSize(1);
-        assertThat(logservice.getLogmessages().get(0)).contains("NullPointerException");
+        var resultat = resource.login(credentials);
+        assertTrue(resultat.getSuksess());
+        assertEquals(username, resultat.getBrukernavn());
+        assertEquals("/", resultat.getOriginalRequestUrl());
     }
 
     @Test

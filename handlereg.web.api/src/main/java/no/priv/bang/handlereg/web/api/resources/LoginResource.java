@@ -45,6 +45,7 @@ import no.priv.bang.handlereg.services.Loginresultat;
 import static no.priv.bang.handlereg.services.HandleregConstants.*;
 
 import java.util.Base64;
+import java.util.Optional;
 
 @Path("")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -73,9 +74,12 @@ public class LoginResource {
         UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), decodedPassword, true);
         try {
             subject.login(token);
-            SavedRequest savedRequest = WebUtils.getSavedRequest(request);
+            var savedRequest = Optional.ofNullable(WebUtils.getSavedRequest(request));
             var contextpath = webcontext.getContextPath();
-            String originalRequestUrl = savedRequest.getRequestUrl().replace(contextpath, "");
+            var originalRequestUrl =  savedRequest
+                .map(request -> request.getRequestUrl())
+                .map(url -> url.replace(contextpath, ""))
+                .orElse("/");
 
             return Loginresultat.with()
                 .suksess(true)
