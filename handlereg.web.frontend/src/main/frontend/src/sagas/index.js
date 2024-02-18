@@ -4,6 +4,7 @@ import loginSaga from './loginSaga';
 import logoutSaga from './logoutSaga';
 import reloadOnLogoutSaga from './reloadOnLogoutSaga';
 import logintilstandSaga from './logintilstandSaga';
+import loginPaaApiFeilSaga from './loginPaaApiFeilSaga';
 import locationSaga from './locationSaga';
 import oversiktSaga from './oversiktSaga';
 import handlingerSaga from './handlingerSaga';
@@ -28,6 +29,7 @@ export default function* rootSaga() {
         fork(logoutSaga),
         fork(reloadOnLogoutSaga),
         fork(logintilstandSaga),
+        fork(loginPaaApiFeilSaga),
         fork(locationSaga),
         fork(oversiktSaga),
         fork(handlingerSaga),
