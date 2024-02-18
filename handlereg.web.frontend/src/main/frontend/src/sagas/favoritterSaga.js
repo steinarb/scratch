@@ -12,8 +12,10 @@ function hentFavoritter(username) {
 }
 
 function* sendFavoritterHent() {
-    const brukernavn = yield select (state => (state.loginresultat || {}).brukernavn);
-    if (brukernavn) {
+    const loginresultat = yield select (state => state.loginresultat);
+    const authorized = loginresultat.authorized;
+    const brukernavn = loginresultat.brukernavn;
+    if (authorized && brukernavn) {
         yield put(FAVORITTER_HENT());
     }
 }
