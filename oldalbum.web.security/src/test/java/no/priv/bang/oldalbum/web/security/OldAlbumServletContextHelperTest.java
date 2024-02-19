@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ class OldAlbumServletContextHelperTest {
 
     @Test
     void testGetMimeType() {
-        OldAlbumServletContextHelper context = new OldAlbumServletContextHelper();
-        String htmlMimeType = context.getMimeType("test.html");
+        var context = new OldAlbumServletContextHelper();
+        var htmlMimeType = context.getMimeType("test.html");
         assertNull(htmlMimeType); // Doesn't look like this is working
     }
 

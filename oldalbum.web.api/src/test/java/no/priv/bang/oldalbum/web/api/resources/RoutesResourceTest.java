@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,51 +59,51 @@ class RoutesResourceTest extends ShiroTestBase {
 
     @Test
     void testAllroutesWhenNotLoggedIn() {
-        RoutesResource resource = new RoutesResource();
+        var resource = new RoutesResource();
         resource.oldAlbumService = backendService;
         createSubjectAndBindItToThread();
-        List<AlbumEntry> routes = resource.allroutes();
+        var routes = resource.allroutes();
         assertThat(routes).hasSameSizeAs(allPublicRoutes);
     }
 
     @Test
     void testAllroutesWhenLoggedIn() {
-        RoutesResource resource = new RoutesResource();
+        var resource = new RoutesResource();
         resource.oldAlbumService = backendService;
         createSubjectAndBindItToThread();
         loginUser("jad", "1ad");
-        List<AlbumEntry> routes = resource.allroutes();
+        var routes = resource.allroutes();
         assertThat(routes).hasSameSizeAs(allroutes);
     }
 
     @Test
     void testDumpSqlWhenNotLoggedIn() {
-        OldAlbumService backendService = mock(OldAlbumService.class);
+        var backendService = mock(OldAlbumService.class);
         when(backendService.dumpDatabaseSql(null, false)).thenReturn(dumpedroutes);
-        RoutesResource resource = new RoutesResource();
+        var resource = new RoutesResource();
         resource.oldAlbumService = backendService;
         createSubjectAndBindItToThread();
-        String sql = resource.dumpSql();
+        var sql = resource.dumpSql();
         assertThat(sql).contains("--liquibase formatted sql");
     }
 
     @Test
     void testDumpSqlWhenLoggedIn() {
-        OldAlbumService backendService = mock(OldAlbumService.class);
+        var backendService = mock(OldAlbumService.class);
         when(backendService.dumpDatabaseSql("jad", true)).thenReturn(dumpedroutes);
-        RoutesResource resource = new RoutesResource();
+        var resource = new RoutesResource();
         resource.oldAlbumService = backendService;
         createSubjectAndBindItToThread();
         loginUser("jad", "1ad");
-        String sql = resource.dumpSql();
+        var sql = resource.dumpSql();
         assertThat(sql).contains("--liquibase formatted sql");
     }
 
     private static String loadClasspathResourceIntoString(String resource) {
-        InputStream resourceStream = RoutesResourceTest.class.getClassLoader().getResourceAsStream(resource);
-        StringBuilder builder = new StringBuilder();
-        try(Reader reader = new BufferedReader(new InputStreamReader(resourceStream, StandardCharsets.UTF_8))) {
-            int c = 0;
+        var resourceStream = RoutesResourceTest.class.getClassLoader().getResourceAsStream(resource);
+        var builder = new StringBuilder();
+        try(var reader = new BufferedReader(new InputStreamReader(resourceStream, StandardCharsets.UTF_8))) {
+            var c = 0;
             while ((c = reader.read()) != -1) {
                 builder.append((char) c);
             }

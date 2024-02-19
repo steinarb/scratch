@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -40,18 +39,18 @@ class ImageResourceTest {
 
     @Test
     void testGetMetadata() {
-        OldAlbumService backendService = mock(OldAlbumService.class);
-        ImageMetadata mockMetadata = ImageMetadata.with()
+        var backendService = mock(OldAlbumService.class);
+        var mockMetadata = ImageMetadata.with()
             .status(200)
             .lastModified(new Date())
             .contentType("image/jpeg")
             .contentLength(128000)
             .build();
         when(backendService.readMetadata(anyString())).thenReturn(mockMetadata);
-        ImageResource resource = new ImageResource();
+        var resource = new ImageResource();
         resource.oldalbum = backendService;
-        String url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
-        ImageMetadata metadata = resource.getMetadata(ImageRequest.with().url(url).build());
+        var url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        var metadata = resource.getMetadata(ImageRequest.with().url(url).build());
         assertEquals(200, metadata.getStatus());
         assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
         assertEquals("image/jpeg", metadata.getContentType());
@@ -60,7 +59,7 @@ class ImageResourceTest {
 
     @Test
     void testDownloadAlbumEntry() {
-        int albumEntryId = 9;
+        var albumEntryId = 9;
         var imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         var lastModifiedDate = new Date();
         var entry = AlbumEntry.with().id(albumEntryId).album(false).path("/moto/places/grava1").imageUrl(imageUrl).lastModified(lastModifiedDate).build();
@@ -68,10 +67,10 @@ class ImageResourceTest {
         var backend = mock(OldAlbumService.class);
         when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.of(entry));
         when(backend.downloadAlbumEntry(anyInt())).thenReturn(streamingOutput);
-        ImageResource resource = new ImageResource();
+        var resource = new ImageResource();
         resource.oldalbum = backend;
 
-        Response response = resource.downloadAlbumEntry(albumEntryId);
+        var response = resource.downloadAlbumEntry(albumEntryId);
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
     }
 
@@ -80,13 +79,13 @@ class ImageResourceTest {
         var backend = mock(OldAlbumService.class);
         when(backend.downloadAlbumEntry(anyInt())).thenThrow(OldAlbumException.class);
         var logservice = new MockLogService();
-        ImageResource resource = new ImageResource();
+        var resource = new ImageResource();
         resource.oldalbum = backend;
         resource.setLogservice(logservice);
 
-        int albumEntryId = 9;
+        var albumEntryId = 9;
         assertThat(logservice.getLogmessages()).isEmpty();
-        Response response = resource.downloadAlbumEntry(albumEntryId);
+        var response = resource.downloadAlbumEntry(albumEntryId);
         assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
@@ -109,9 +108,9 @@ class ImageResourceTest {
 
     @Test
     void testDownloadAlbumEntrySelection() {
-        int albumId = 4;
+        var albumId = 4;
         var album = AlbumEntry.with().id(albumId).parent(2).album(true).path("/moto/vfr96/").title("My VFR750F in 1996").description("In may 1996, I bought a 1995 VFR750F, registered in october 1995, with 3400km on the clock when I bought it. This picture archive, contains pictures from my first (but hopefully not last) season, on a VFR.").build();
-        int albumEntryId = 9;
+        var albumEntryId = 9;
         var imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         var lastModifiedDate = new Date();
         var entry = AlbumEntry.with().id(albumEntryId).album(false).path("/moto/places/grava1").imageUrl(imageUrl).lastModified(lastModifiedDate).build();
@@ -121,10 +120,10 @@ class ImageResourceTest {
         when(backend.getAlbumEntry(albumId)).thenReturn(Optional.of(album));
         when(backend.getAlbumEntry(albumEntryId)).thenReturn(Optional.of(entry));
         when(backend.downloadAlbumEntry(anyInt())).thenReturn(streamingOutput);
-        ImageResource resource = new ImageResource();
+        var resource = new ImageResource();
         resource.oldalbum = backend;
 
-        Response response = resource.downloadAlbumEntrySelection(albumId, selectedentryIds);
+        var response = resource.downloadAlbumEntrySelection(albumId, selectedentryIds);
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
     }
 
@@ -133,15 +132,15 @@ class ImageResourceTest {
         var backend = mock(OldAlbumService.class);
         when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.empty());
         var logservice = new MockLogService();
-        ImageResource resource = new ImageResource();
+        var resource = new ImageResource();
         resource.oldalbum = backend;
         resource.setLogservice(logservice);
 
-        int albumId = 4;
-        int albumEntryId = 9;
+        var albumId = 4;
+        var albumEntryId = 9;
         var selectedentryIds = Collections.singletonList(albumEntryId);
         assertThat(logservice.getLogmessages()).isEmpty();
-        Response response = resource.downloadAlbumEntrySelection(albumId, selectedentryIds);
+        var response = resource.downloadAlbumEntrySelection(albumId, selectedentryIds);
         assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }

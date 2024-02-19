@@ -21,8 +21,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
@@ -33,52 +31,52 @@ class AlbumentryResourceTest {
 
     @Test
     void testModifyalbum() {
-        AlbumEntry modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.modifyalbum(modifiedAlbum);
-        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        var allroutes = resource.modifyalbum(modifiedAlbum);
+        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
         assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
     }
 
     @Test
     void testAddalbum() {
-        AlbumEntry albumToAdd = AlbumEntry.with().parent(1).path("/newalbum/").album(true).title("A new album").description("A new album for new pictures").sort(2).build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var albumToAdd = AlbumEntry.with().parent(1).path("/newalbum/").album(true).title("A new album").description("A new album for new pictures").sort(2).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.addalbum(albumToAdd);
-        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
+        var allroutes = resource.addalbum(albumToAdd);
+        var addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
         assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
         assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
     }
 
     @Test
     void testModifypicture() {
-        AlbumEntry modifiedPicture = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var modifiedPicture = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedPicture));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.modifypicture(modifiedPicture);
-        AlbumEntry updatedPicture = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        var allroutes = resource.modifypicture(modifiedPicture);
+        var updatedPicture = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedPicture.getTitle(), updatedPicture.getTitle());
         assertEquals(modifiedPicture.getDescription(), updatedPicture.getDescription());
     }
 
     @Test
     void testAddpicture() {
-        AlbumEntry pictureToAdd = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var pictureToAdd = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.addpicture(pictureToAdd);
-        AlbumEntry updatedPicture = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
+        var allroutes = resource.addpicture(pictureToAdd);
+        var updatedPicture = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(pictureToAdd.getTitle(), updatedPicture.getTitle());
         assertEquals(pictureToAdd.getDescription(), updatedPicture.getDescription());
     }
@@ -89,11 +87,11 @@ class AlbumentryResourceTest {
             .parent(1)
             .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
             .build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.batchAddPictures(any())).thenReturn(Arrays.asList(AlbumEntry.with().build(), AlbumEntry.with().build()));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.batchAddPictures(request);
+        var allroutes = resource.batchAddPictures(request);
         assertThat(allroutes).hasSize(2);
     }
 
@@ -102,21 +100,21 @@ class AlbumentryResourceTest {
         var request = AlbumEntry.with()
             .id(1)
             .build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.sortByDate(anyInt())).thenReturn(Arrays.asList(AlbumEntry.with().build(), AlbumEntry.with().build()));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.sortAlbumByDate(request);
+        var allroutes = resource.sortAlbumByDate(request);
         assertThat(allroutes).hasSize(2);
     }
 
     @Test
     void testDeleteEntry() {
-        AlbumEntry pictureToDelete = AlbumEntry.with().id(7).parent(3).path("/oldalbum/moto/places/grava3").album(false).title("").description("Tyrigrava, view from the north. Lotsa bikes here too").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var pictureToDelete = AlbumEntry.with().id(7).parent(3).path("/oldalbum/moto/places/grava3").album(false).title("").description("Tyrigrava, view from the north. Lotsa bikes here too").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.deleteEntry(pictureToDelete);
+        var allroutes = resource.deleteEntry(pictureToDelete);
         assertEquals(0, allroutes.size());
     }
 
@@ -126,33 +124,33 @@ class AlbumentryResourceTest {
         var resource = new AlbumentryResource();
         var oldalbum = mock(OldAlbumService.class);
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.deleteSelection(selection);
+        var allroutes = resource.deleteSelection(selection);
         assertThat(allroutes).isEmpty();
     }
 
     @Test
     void testMoveEntryUp() {
-        AlbumEntry albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
-        AlbumEntry movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
+        var movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.moveEntryUp(albumToMove);
-        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        var allroutes = resource.moveEntryUp(albumToMove);
+        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertThat(albumToMove.getSort()).isGreaterThan(updatedAlbum.getSort());
     }
 
     @Test
     void testMoveEntryDown() {
-        AlbumEntry albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
-        AlbumEntry movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
-        AlbumentryResource resource = new AlbumentryResource();
-        OldAlbumService oldalbum = mock(OldAlbumService.class);
+        var albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
+        var movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));
         resource.oldalbum = oldalbum;
-        List<AlbumEntry> allroutes = resource.moveEntryDown(albumToMove);
-        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        var allroutes = resource.moveEntryDown(albumToMove);
+        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertThat(albumToMove.getSort()).isLessThan(updatedAlbum.getSort());
     }
 

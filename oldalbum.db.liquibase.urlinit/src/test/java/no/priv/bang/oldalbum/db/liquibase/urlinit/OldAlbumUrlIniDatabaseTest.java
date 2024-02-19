@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,8 @@ package no.priv.bang.oldalbum.db.liquibase.urlinit;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -41,20 +37,20 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertData() throws Exception {
-        String sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        InputStream dumproutesSql = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("dumproutes.sql");
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        var dumproutesSql = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("dumproutes.sql");
+        var connection = mock(HttpURLConnection.class);
         when(connection.getInputStream()).thenReturn(dumproutesSql);
         when(connection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_OK);
         when(connection.getContentType()).thenReturn("application/sql");
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
-        DataSource datasource = createDataSource("oldalbum_urldata");
-        MockLogService logservice = new MockLogService();
+        var datasource = createDataSource("oldalbum_urldata");
+        var logservice = new MockLogService();
         addSchemaToDatasource(datasource, logservice);
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var component = new OldAlbumUrlInitDatabase();
         component.setEnvironment(environment);
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
@@ -65,20 +61,20 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertDataWhenReturnedDataNotSql() throws Exception {
-        String sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        InputStream dumproutesSql = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("404.html");
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        var dumproutesSql = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("404.html");
+        var connection = mock(HttpURLConnection.class);
         when(connection.getInputStream()).thenReturn(dumproutesSql);
         when(connection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_OK);
         when(connection.getContentType()).thenReturn("text/html");
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
-        DataSource datasource = createDataSource("oldalbum_urldata_not_html");
-        MockLogService logservice = new MockLogService();
+        var datasource = createDataSource("oldalbum_urldata_not_html");
+        var logservice = new MockLogService();
         addSchemaToDatasource(datasource, logservice);
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var component = new OldAlbumUrlInitDatabase();
         component.setEnvironment(environment);
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
@@ -88,20 +84,20 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertDataWhenDataNotFound() throws Exception {
-        String sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        HttpURLConnection connection = mock(HttpURLConnection.class);
-        InputStream errorHtml = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("404.html");
+        var connection = mock(HttpURLConnection.class);
+        var errorHtml = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("404.html");
         when(connection.getInputStream()).thenReturn(errorHtml);
         when(connection.getContentType()).thenReturn("text/html");
         when(connection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_NOT_FOUND);
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
-        DataSource datasource = createDataSource("oldalbum_urldata");
-        MockLogService logservice = new MockLogService();
+        var datasource = createDataSource("oldalbum_urldata");
+        var logservice = new MockLogService();
         addSchemaToDatasource(datasource, logservice);
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var component = new OldAlbumUrlInitDatabase();
         component.setEnvironment(environment);
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
@@ -111,20 +107,20 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertDataWithInternalServerError() throws Exception {
-        String sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        HttpURLConnection connection = mock(HttpURLConnection.class);
-        InputStream errorHtml = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("500.html");
+        var connection = mock(HttpURLConnection.class);
+        var errorHtml = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("500.html");
         when(connection.getInputStream()).thenReturn(errorHtml);
         when(connection.getContentType()).thenReturn("text/html");
         when(connection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_INTERNAL_ERROR);
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
-        DataSource datasource = createDataSource("oldalbum_urldata");
-        MockLogService logservice = new MockLogService();
+        var datasource = createDataSource("oldalbum_urldata");
+        var logservice = new MockLogService();
         addSchemaToDatasource(datasource, logservice);
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var component = new OldAlbumUrlInitDatabase();
         component.setEnvironment(environment);
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
@@ -134,17 +130,17 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertDataWithLiquibaseException() throws Exception {
-        String sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        InputStream dumproutesSql = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("dumproutes.sql");
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        var dumproutesSql = OldAlbumUrlInitDatabaseTest.class.getClassLoader().getResourceAsStream("dumproutes.sql");
+        var connection = mock(HttpURLConnection.class);
         when(connection.getInputStream()).thenReturn(dumproutesSql);
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
-        DataSource datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
-        MockLogService logservice = new MockLogService();
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
+        var logservice = new MockLogService();
+        var component = new OldAlbumUrlInitDatabase();
         component.setEnvironment(environment);
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
@@ -154,12 +150,12 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertDataWithMalformedUrl() throws Exception {
-        String sqlUrl = "xxx";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "xxx";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        DataSource datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
-        MockLogService logservice = new MockLogService();
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
+        var logservice = new MockLogService();
+        var component = new OldAlbumUrlInitDatabase();
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
@@ -168,12 +164,12 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertDataWithUrlNotFound() throws Exception {
-        String sqlUrl = "http://localhost/missing";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "http://localhost/missing";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        DataSource datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
-        MockLogService logservice = new MockLogService();
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
+        var logservice = new MockLogService();
+        var component = new OldAlbumUrlInitDatabase();
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
@@ -182,16 +178,16 @@ class OldAlbumUrlInitDatabaseTest {
 
     @Test
     void testInsertDataWithNoInitialDataUrl() throws Exception {
-        DataSource datasource = mock(DataSource.class);
-        MockLogService logservice = new MockLogService();
-        OldAlbumUrlInitDatabase component = new OldAlbumUrlInitDatabase();
+        var datasource = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var component = new OldAlbumUrlInitDatabase();
         component.setLogService(logservice);
         component.setDatasource(datasource);
         assertThrows(OldAlbumException.class, () -> component.activate());
     }
 
     private void addSchemaToDatasource(DataSource datasource, MockLogService logservice) throws SQLException {
-        OldAlbumScheme scheme = new OldAlbumScheme();
+        var scheme = new OldAlbumScheme();
         scheme.setLogService(logservice);
         scheme.activate();
         scheme.prepare(datasource);
@@ -205,12 +201,12 @@ class OldAlbumUrlInitDatabaseTest {
     }
 
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
-        Connection connection = datasource.getConnection();
-        String countSql = "select count(*) from albumentries";
-        try(Statement countStatement = connection.createStatement()) {
-            try(ResultSet results = countStatement.executeQuery(countSql)) {
+        var connection = datasource.getConnection();
+        var countSql = "select count(*) from albumentries";
+        try(var countStatement = connection.createStatement()) {
+            try(var results = countStatement.executeQuery(countSql)) {
                 if (results.next()) {
-                    int numberOfRows = results.getInt(1);
+                    var numberOfRows = results.getInt(1);
                     assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
                 } else {
                     fail("Unable to count the rows in albumentries");
@@ -220,7 +216,7 @@ class OldAlbumUrlInitDatabaseTest {
     }
 
     private DataSource createDataSource(String dbname) throws Exception {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return derbyDataSourceFactory.createDataSource(properties);
     }

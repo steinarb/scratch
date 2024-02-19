@@ -1,6 +1,6 @@
 package no.priv.bang.oldalbum.services;
 /*
- * Copyright 2022 Steinar Bang
+ * Copyright 2022-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ class OldAlbumExceptionTest {
 
     @Test
     void testCreate() {
-        String message1 = "just a message";
+        var message1 = "just a message";
         var exception1 = new OldAlbumException(message1);
         assertEquals(message1, exception1.getMessage());
         assertNull(exception1.getCause());
 
-        String message2 = "message with cause";
-        Exception cause2 = new SQLException();
+        var message2 = "message with cause";
+        var cause2 = new SQLException();
         var exception2 = new OldAlbumException(message2, cause2);
         assertEquals(message2, exception2.getMessage());
         assertEquals(cause2, exception2.getCause());

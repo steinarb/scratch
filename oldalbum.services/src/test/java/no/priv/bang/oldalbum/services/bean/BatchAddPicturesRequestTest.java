@@ -23,9 +23,9 @@ class BatchAddPicturesRequestTest {
 
     @Test
     void testBuildBean() {
-        int parent = 4;
-        String batchAddUrl = "http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/";
-        int importYear = 1967;
+        var parent = 4;
+        var batchAddUrl = "http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/";
+        var importYear = 1967;
         var defaultTitle = "Daisy";
         var bean = BatchAddPicturesRequest.with()
             .parent(parent)

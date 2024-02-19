@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,22 +21,19 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
-import no.priv.bang.osgiservice.users.UserRoles;
 
 class ShiroRoleAdderForOldalbumTestEnvironmentTest {
 
     @Test
     void testActivate() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var useradmin = mock(UserManagementService.class);
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
         roleadder.activate(Collections.emptyMap());
         verify(useradmin, times(1)).getRoles();
@@ -45,10 +42,10 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
 
     @Test
     void testActivateModifyNotAllowed() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var useradmin = mock(UserManagementService.class);
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        Map<String, Object> config = new HashMap<>();
+        var config = new HashMap<String, Object>();
         config.put("allowModify", "false");
         roleadder.activate(config );
         verify(useradmin, times(0)).getRoles();
@@ -57,13 +54,13 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
 
     @Test
     void testActivateChangeAdminUsername() {
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var useradmin = mock(UserManagementService.class);
         when(useradmin.getUser(anyString())).thenThrow(AuthserviceException.class);
-        User newuser = User.with().userid(2).username("imagemaster").email("admin@company.com").firstname("Ad").lastname("Min").build();
+        var newuser = User.with().userid(2).username("imagemaster").email("admin@company.com").firstname("Ad").lastname("Min").build();
         when(useradmin.addUser(any())).thenReturn(Collections.singletonList(newuser));
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        Map<String, Object> config = new HashMap<>();
+        var config = new HashMap<String, Object>();
         config.put("username", "imagemaster");
         roleadder.activate(config );
         verify(useradmin, times(1)).getUser(anyString());
@@ -72,12 +69,12 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
 
     @Test
     void testActivateChangeAdminPassword() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        User admin = User.with().userid(0).username("admin").email("admin@admin.com").firstname("Admin").lastname("Istrator").build();
+        var useradmin = mock(UserManagementService.class);
+        var admin = User.with().userid(0).username("admin").email("admin@admin.com").firstname("Admin").lastname("Istrator").build();
         when(useradmin.getUser("admin")).thenReturn(admin);
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        Map<String, Object> config = new HashMap<>();
+        var config = new HashMap<String, Object>();
         config.put("password", "zekret");
         roleadder.activate(config );
         verify(useradmin, times(1)).getUser(anyString());
@@ -86,44 +83,44 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
 
     @Test
     void testAddOldalbumRoleWhenRoleDoesntExist() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var useradmin = mock(UserManagementService.class);
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        Role role = roleadder.addOldalbumadminRole();
+        var role = roleadder.addOldalbumadminRole();
         assertEquals("oldalbumadmin", role.getRolename());
         assertEquals("Created by oldalbum.roleadder.test", role.getDescription());
     }
 
     @Test
     void testAddOldalbumRoleWhenRoleAlreadyExist() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        Role existingRole = Role.with().id(0).rolename("oldalbumadmin").description("Already exists").build();
+        var useradmin = mock(UserManagementService.class);
+        var existingRole = Role.with().id(0).rolename("oldalbumadmin").description("Already exists").build();
         when(useradmin.getRoles()).thenReturn(Arrays.asList(existingRole));
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        Role role = roleadder.addOldalbumadminRole();
+        var role = roleadder.addOldalbumadminRole();
         assertEquals("oldalbumadmin", role.getRolename());
         assertEquals("Already exists", role.getDescription());
     }
 
     @Test
     void testGiveUserAdminOldalbumRole() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        User admin = User.with().userid(0).username("admin").email("admin@admin.com").firstname("Admin").lastname("Istrator").build();
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var useradmin = mock(UserManagementService.class);
+        var admin = User.with().userid(0).username("admin").email("admin@admin.com").firstname("Admin").lastname("Istrator").build();
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        Role role = roleadder.addOldalbumadminRole();
-        UserRoles adminroles = roleadder.addRoleToAdmin(admin, role);
+        var role = roleadder.addOldalbumadminRole();
+        var adminroles = roleadder.addRoleToAdmin(admin, role);
         assertNotNull(adminroles);
     }
 
     @Test
     void testGiveUserAdminOldalbumRoleWhenUserAdminNotPresent() {
-        UserManagementService useradmin = mock(UserManagementService.class);
-        ShiroRoleAdderForOldalbumTestEnvironment roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
+        var useradmin = mock(UserManagementService.class);
+        var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
-        Role role = roleadder.addOldalbumadminRole();
-        UserRoles adminroles = roleadder.addRoleToAdmin(null, role);
+        var role = roleadder.addOldalbumadminRole();
+        var adminroles = roleadder.addRoleToAdmin(null, role);
         assertNull(adminroles);
     }
 

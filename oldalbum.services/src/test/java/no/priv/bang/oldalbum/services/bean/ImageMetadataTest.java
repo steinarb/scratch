@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@ class ImageMetadataTest {
 
     @Test
     void testCreate() {
-        int status = 200;
-        Date lastModified = new Date();
-        String contentType = "image/jpeg";
-        int contentLength = 128186;
+        var status = 200;
+        var lastModified = new Date();
+        var contentType = "image/jpeg";
+        var contentLength = 128186;
         var title = "A fine picture";
         var description = "This is a description";
-        ImageMetadata bean = ImageMetadata.with()
+        var bean = ImageMetadata.with()
             .status(status)
             .lastModified(lastModified)
             .contentType(contentType)
@@ -50,7 +50,7 @@ class ImageMetadataTest {
 
     @Test
     void testCreateNoArgsConstructor() {
-        ImageMetadata bean = ImageMetadata.with().build();
+        var bean = ImageMetadata.with().build();
         assertEquals(0, bean.getStatus());
         assertNull(bean.getLastModified());
         assertNull(bean.getContentType());

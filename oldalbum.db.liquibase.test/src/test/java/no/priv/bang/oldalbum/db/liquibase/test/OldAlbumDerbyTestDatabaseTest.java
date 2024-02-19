@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -39,9 +37,9 @@ class OldAlbumDerbyTestDatabaseTest {
 
     @Test
     void testPrepare() throws Exception {
-        DataSource datasource = createDataSource("oldalbum");
-        MockLogService logservice = new MockLogService();
-        OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
+        var datasource = createDataSource("oldalbum");
+        var logservice = new MockLogService();
+        var hook = new OldAlbumDerbyTestDatabase();
         hook.setLogService(logservice);
         hook.activate();
         hook.prepare(datasource);
@@ -50,12 +48,12 @@ class OldAlbumDerbyTestDatabaseTest {
 
     @Test
     void testCreateInitialSchemaWithLiquibaseException() throws Exception {
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when (connection.getMetaData()).thenThrow(SQLException.class);
         when(datasource.getConnection()).thenReturn(connection);
-        MockLogService logservice = new MockLogService();
-        OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
+        var logservice = new MockLogService();
+        var hook = new OldAlbumDerbyTestDatabase();
         hook.setLogService(logservice);
         hook.activate();
         hook.createInitialSchema(datasource);
@@ -64,9 +62,9 @@ class OldAlbumDerbyTestDatabaseTest {
 
     @Test
     void testInsertMockDataWithLiquibaseException() throws Exception {
-        DataSource datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
-        MockLogService logservice = new MockLogService();
-        OldAlbumDerbyTestDatabase hook = new OldAlbumDerbyTestDatabase();
+        var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
+        var logservice = new MockLogService();
+        var hook = new OldAlbumDerbyTestDatabase();
         hook.setLogService(logservice);
         hook.insertMockData(datasource);
         assertEquals(1, logservice.getLogmessages().size());
@@ -98,9 +96,9 @@ class OldAlbumDerbyTestDatabaseTest {
 
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
         try(var connection = datasource.getConnection()) {
-            String sql = "select * from albumentries";
-            try(Statement statement = connection.createStatement()) {
-                try(ResultSet results = statement.executeQuery(sql)) {
+            var sql = "select * from albumentries";
+            try(var statement = connection.createStatement()) {
+                try(var results = statement.executeQuery(sql)) {
                     while (results.next()) {
                         var id = results.getInt("albumentry_id");
                         var localpath = results.getString("localpath");
@@ -108,11 +106,12 @@ class OldAlbumDerbyTestDatabaseTest {
                     }
                 }
             }
-            String countSql = "select count(*) from albumentries";
-            try(Statement countStatement = connection.createStatement()) {
-                try(ResultSet results = countStatement.executeQuery(countSql)) {
+
+            var countSql = "select count(*) from albumentries";
+            try(var countStatement = connection.createStatement()) {
+                try(var results = countStatement.executeQuery(countSql)) {
                     if (results.next()) {
-                        int numberOfRows = results.getInt(1);
+                        var numberOfRows = results.getInt(1);
                         assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
                     } else {
                         fail("Unable to count the rows in albumentries");
@@ -123,7 +122,7 @@ class OldAlbumDerbyTestDatabaseTest {
     }
 
     private DataSource createDataSource(String dbname) throws Exception {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return derbyDataSourceFactory.createDataSource(properties);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -42,12 +40,12 @@ class OldAlbumSchemeTest {
 
     @Test
     void testPrepare() throws Exception {
-        String sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
-        Environment environment = mock(Environment.class);
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
-        DataSource datasource = createDataSource("oldalbum");
-        MockLogService logservice = new MockLogService();
-        OldAlbumScheme hook = new OldAlbumScheme();
+        var datasource = createDataSource("oldalbum");
+        var logservice = new MockLogService();
+        var hook = new OldAlbumScheme();
         hook.setLogService(logservice);
         hook.activate();
         hook.prepare(datasource);
@@ -73,35 +71,35 @@ class OldAlbumSchemeTest {
 
     @Test
     void testCreateInitialSchemaWithLiquibaseException() throws Exception {
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(connection.getMetaData()).thenThrow(SQLException.class);
         when(datasource.getConnection()).thenReturn(connection);
-        MockLogService logservice = new MockLogService();
-        OldAlbumScheme hook = new OldAlbumScheme();
+        var logservice = new MockLogService();
+        var hook = new OldAlbumScheme();
         hook.setLogService(logservice);
         hook.activate();
         assertThrows(OldAlbumException.class, () -> hook.createInitialSchema(datasource));
     }
 
     private DataSource createDataSource(String dbname) throws Exception {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return derbyDataSourceFactory.createDataSource(properties);
     }
 
     private void assertAlbumEntries(DataSource datasource) throws Exception {
-        try (Connection connection = datasource.getConnection()) {
+        try (var connection = datasource.getConnection()) {
             assertAlbumEntry(connection, 1, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
             assertAlbumEntry(connection, 2, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2, new Date(800275785000L), "image/jpeg", 128186);
         }
     }
 
     private void assertAlbumEntry(Connection connection, int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
-        String sql = "select * from albumentries where albumentry_id = ?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where albumentry_id = ?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     assertEquals(parent, result.getInt(2));
                     assertEquals(path, result.getString(3));
@@ -122,15 +120,15 @@ class OldAlbumSchemeTest {
     }
 
     private void addAlbumEntries(DataSource datasource) throws Exception {
-        try (Connection connection = datasource.getConnection()) {
+        try (var connection = datasource.getConnection()) {
             addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
             addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2, new Date(800275785000L), "image/jpeg", 128186);
         }
     }
 
     private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, parent);
             statement.setString(2, path);
             statement.setBoolean(3, album);

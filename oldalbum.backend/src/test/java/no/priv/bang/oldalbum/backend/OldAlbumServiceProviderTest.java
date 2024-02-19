@@ -44,10 +44,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -98,86 +96,86 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testFetchAllRoutes() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
         // First check all routes not requiring login
-        List<AlbumEntry> allroutesNotRequiringLogin = provider.fetchAllRoutes(null, false);
+        var allroutesNotRequiringLogin = provider.fetchAllRoutes(null, false);
         assertThat(allroutesNotRequiringLogin).hasSizeGreaterThan(20);
 
         // Then check that all routes including those that require login has at least 3 more entries
-        List<AlbumEntry> allroutesIncludingThoseRequiringLogin = provider.fetchAllRoutes(null, true);
+        var allroutesIncludingThoseRequiringLogin = provider.fetchAllRoutes(null, true);
         assertThat(allroutesIncludingThoseRequiringLogin)
             .hasSizeGreaterThanOrEqualTo(allroutesNotRequiringLogin.size() + 3);
     }
 
     @Test
     void testFetchAllRoutesWithDatabaseFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        var datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
+        var allroutes = provider.fetchAllRoutes(null, false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, allroutes.size());
     }
 
     @Test
     void testGetPaths() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
         // Test paths when logged in
-        List<String> pathsWhenNotLoggedIn = provider.getPaths(false);
+        var pathsWhenNotLoggedIn = provider.getPaths(false);
         assertThat(pathsWhenNotLoggedIn).hasSizeGreaterThanOrEqualTo(19);
 
         // Test paths when not logged in
-        List<String> pathsWhenLoggedIn = provider.getPaths(true);
+        var pathsWhenLoggedIn = provider.getPaths(true);
         assertThat(pathsWhenLoggedIn).hasSize(pathsWhenNotLoggedIn.size() + 4);
     }
 
     @Test
     void testGetPathsWithDatabaseFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        var datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        List<String> paths = provider.getPaths(false);
+        var paths = provider.getPaths(false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, paths.size());
     }
 
     @Test
     void testGetAlbumEntryFromPath() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        AlbumEntry entry = provider.getAlbumEntryFromPath("/moto/places/");
+        var entry = provider.getAlbumEntryFromPath("/moto/places/");
         assertEquals(3, entry.getId());
     }
 
     @Test
     void testGetAlbumEntryFromPathWithPathNotMatching() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        AlbumEntry entry = provider.getAlbumEntryFromPath("/path/not/matching/");
+        var entry = provider.getAlbumEntryFromPath("/path/not/matching/");
         assertNull(entry);
         assertEquals(1, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(0)).contains("Found no albumentry matching path");
@@ -185,14 +183,14 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testGetAlbumEntryFromPathWithDatabaseFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        var datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        AlbumEntry entry = provider.getAlbumEntryFromPath("/moto/places/");
+        var entry = provider.getAlbumEntryFromPath("/moto/places/");
         assertNull(entry);
         assertEquals(1, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to find albumentry with path");
@@ -200,25 +198,25 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testFetchChildren() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        List<AlbumEntry> children = provider.getChildren(3);
+        var children = provider.getChildren(3);
         assertThat(children).hasSizeGreaterThanOrEqualTo(3);
     }
 
     @Test
     void testFetchChildrenWithDatabaseFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        var datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        List<AlbumEntry> children = provider.getChildren(3);
+        var children = provider.getChildren(3);
         assertEquals(0, children.size());
         assertEquals(1, logservice.getLogmessages().size());
     }
@@ -240,12 +238,12 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testUpdateEntry() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        AlbumEntry modifiedAlbum = AlbumEntry.with()
+        var modifiedAlbum = AlbumEntry.with()
             .id(2)
             .parent(1)
             .path("/moto/")
@@ -257,8 +255,8 @@ class OldAlbumServiceProviderTest {
             .childcount(2)
             .requireLogin(true)
             .build();
-        List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
-        AlbumEntry updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        var allroutes = provider.updateEntry(modifiedAlbum);
+        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
         assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
         assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
         assertEquals(modifiedAlbum.isRequireLogin(), updatedAlbum.isRequireLogin());
@@ -266,25 +264,25 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testUpdatePicture() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
         var originalPicture = provider.fetchAllRoutes(null, false).stream().filter(r -> r.getId() == 5).findFirst().get();
-        String modifiedTitle = "New picture title";
-        String modifiedDescription = "This is an updated description";
+        var modifiedTitle = "New picture title";
+        var modifiedDescription = "This is an updated description";
         var modifiedDate = Date.from(LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC));
-        boolean requireLogin = true;
-        AlbumEntry modifiedPicture = AlbumEntry.with(originalPicture)
+        var requireLogin = true;
+        var modifiedPicture = AlbumEntry.with(originalPicture)
             .title(modifiedTitle)
             .description(modifiedDescription)
             .lastModified(modifiedDate)
             .requireLogin(requireLogin)
             .build();
-        List<AlbumEntry> allroutes = provider.updateEntry(modifiedPicture);
-        AlbumEntry updatedPicture = allroutes.stream().filter(r -> r.getId() == 5).findFirst().get();
+        var allroutes = provider.updateEntry(modifiedPicture);
+        var updatedPicture = allroutes.stream().filter(r -> r.getId() == 5).findFirst().get();
         assertEquals(modifiedTitle, updatedPicture.getTitle());
         assertEquals(modifiedDescription, updatedPicture.getDescription());
         assertEquals(modifiedDate, updatedPicture.getLastModified());
@@ -293,44 +291,44 @@ class OldAlbumServiceProviderTest {
 
     @Test()
     void testSwitchEntryParent() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
         // Verify that sort values are updated correctly when an album
         // entry is moved to a different album
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
-        AlbumEntry destinationAlbum = allroutes.stream().filter(r -> "/moto/places/".equals(r.getPath())).findFirst().get();
-        AlbumEntry imageToMove = allroutes.stream().filter(r -> "/moto/vfr96/acirc3".equals(r.getPath())).findFirst().get();
-        int sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
-        int sortValueOfLastItemInDestinationAlbum = allroutes.stream().filter(r -> "/moto/places/hove".equals(r.getPath())).findFirst().get().getSort();
+        var allroutes = provider.fetchAllRoutes(null, false);
+        var destinationAlbum = allroutes.stream().filter(r -> "/moto/places/".equals(r.getPath())).findFirst().get();
+        var imageToMove = allroutes.stream().filter(r -> "/moto/vfr96/acirc3".equals(r.getPath())).findFirst().get();
+        var sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
+        var sortValueOfLastItemInDestinationAlbum = allroutes.stream().filter(r -> "/moto/places/hove".equals(r.getPath())).findFirst().get().getSort();
 
-        AlbumEntry movedImage = AlbumEntry.with(imageToMove)
+        var movedImage = AlbumEntry.with(imageToMove)
             .parent(destinationAlbum.getId())
             .path("/moto/places/acirc3")
             .build();
         allroutes = provider.updateEntry(movedImage);
 
         // Verify that sort values in the original album have been adjusted
-        int sortValueOfNextImageInOriginalAlbumAfterMove = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();        assertThat(sortValueOfNextImageInOriginalAlbum).isGreaterThan(sortValueOfNextImageInOriginalAlbumAfterMove);
+        var sortValueOfNextImageInOriginalAlbumAfterMove = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();        assertThat(sortValueOfNextImageInOriginalAlbum).isGreaterThan(sortValueOfNextImageInOriginalAlbumAfterMove);
 
         // Verify that image is sorted last in the destination album
-        AlbumEntry imageInDestination = allroutes.stream().filter(r -> r.getId() == imageToMove.getId()).findFirst().get();
+        var imageInDestination = allroutes.stream().filter(r -> r.getId() == imageToMove.getId()).findFirst().get();
         assertThat(imageInDestination.getSort()).isGreaterThan(sortValueOfLastItemInDestinationAlbum);
     }
 
     @Test
     void testUpdateEntryWithDataSourceFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        var datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        AlbumEntry modifiedAlbum = AlbumEntry.with()
+        var modifiedAlbum = AlbumEntry.with()
             .id(357)
             .parent(1)
             .path("/moto/")
@@ -343,7 +341,7 @@ class OldAlbumServiceProviderTest {
             .contentLength(71072)
             .childcount(2)
             .build();
-        List<AlbumEntry> allroutes = provider.updateEntry(modifiedAlbum);
+        var allroutes = provider.updateEntry(modifiedAlbum);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to update album entry for id");
@@ -351,13 +349,13 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testAddEntryWithAlbum() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
-        AlbumEntry albumToAdd = AlbumEntry.with()
+        var numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
+        var albumToAdd = AlbumEntry.with()
             .parent(1)
             .path("/newalbum/")
             .album(true)
@@ -367,9 +365,9 @@ class OldAlbumServiceProviderTest {
             .requireLogin(true)
             .groupByYear(true)
             .build();
-        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        var allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
+        var addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
         assertNotEquals(albumToAdd.getId(), addedAlbum.getId()); // Placeholder ID is replaced with an actual database id
         assertThat(addedAlbum.getId()).isPositive();
         assertEquals(1, addedAlbum.getParent());
@@ -381,15 +379,15 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testAddEntryWithPicture() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
-        String imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
-        ImageMetadata metadata = provider.readMetadata(imageUrl);
-        AlbumEntry pictureToAdd = AlbumEntry.with()
+        var numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
+        var imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
+        var metadata = provider.readMetadata(imageUrl);
+        var pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane4")
             .album(false)
@@ -403,9 +401,9 @@ class OldAlbumServiceProviderTest {
             .contentLength(metadata.getContentLength())
             .requireLogin(true)
             .build();
-        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
+        var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
+        var addedPicture = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
         assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
@@ -419,13 +417,13 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testAddEntryWithPictureWhenPictureIs404() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
-        AlbumEntry pictureToAdd = AlbumEntry.with()
+        var numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
+        var pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
             .album(false)
@@ -435,9 +433,9 @@ class OldAlbumServiceProviderTest {
             .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif")
             .sort(4)
             .build();
-        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
+        var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
         assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
@@ -447,21 +445,21 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testAddEntryWithPictureWhenPictureIs500() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
         // Mocked HTTP request
-        HttpConnectionFactory connectionFactory = mock(HttpConnectionFactory.class);
-        HttpURLConnection connection = mock(HttpURLConnection.class);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(500);
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
-        AlbumEntry pictureToAdd = AlbumEntry.with()
+        var numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
+        var pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
             .album(false)
@@ -471,9 +469,9 @@ class OldAlbumServiceProviderTest {
             .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif")
             .sort(4)
             .build();
-        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
+        var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
         assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
@@ -483,13 +481,13 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testAddEntryWithPictureWhenPictureIsFoundButNotAnyMetadata() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        int numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
-        AlbumEntry pictureToAdd = AlbumEntry.with()
+        var numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
+        var pictureToAdd = AlbumEntry.with()
             .parent(1)
             .path("/sylane5")
             .album(false)
@@ -499,9 +497,9 @@ class OldAlbumServiceProviderTest {
             .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane5.gif")
             .sort(4)
             .build();
-        List<AlbumEntry> allroutes = provider.addEntry(pictureToAdd);
+        var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        AlbumEntry addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
+        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
         assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
         assertEquals(1, addedPicture.getParent());
         assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
@@ -511,14 +509,14 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testAddEntryWithDataSourceFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        var datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        AlbumEntry albumToAdd = AlbumEntry.with()
+        var albumToAdd = AlbumEntry.with()
             .parent(1)
             .path("/newalbum/")
             .album(true)
@@ -526,7 +524,7 @@ class OldAlbumServiceProviderTest {
             .description("A new album for new pictures")
             .sort(2)
             .build();
-        List<AlbumEntry> allroutes = provider.addEntry(albumToAdd);
+        var allroutes = provider.addEntry(albumToAdd);
         assertEquals(0, allroutes.size());
         assertEquals(2, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to add album entry with path");
@@ -534,13 +532,13 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testDeleteEntry() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
-        AlbumEntry pictureToDelete = AlbumEntry.with()
+        var numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
+        var pictureToDelete = AlbumEntry.with()
             .id(7)
             .parent(3)
             .path("/oldalbum/moto/places/grava3")
@@ -555,23 +553,23 @@ class OldAlbumServiceProviderTest {
             .contentLength(71072)
             .childcount(0)
             .build();
-        List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
+        var allroutes = provider.deleteEntry(pictureToDelete);
         assertThat(allroutes).hasSizeLessThan(numberOfEntriesBeforeDelete);
-        Optional<AlbumEntry> deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
+        var deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
         assertFalse(deletedPicture.isPresent());
     }
 
     @Test
     void testDeleteEntryWithDataSourceFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsSqlException = mock(DataSource.class);
+        var datasourceThrowsSqlException = mock(DataSource.class);
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, false).size();
-        AlbumEntry pictureToDelete = AlbumEntry.with()
+        var numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, false).size();
+        var pictureToDelete = AlbumEntry.with()
             .id(7)
             .parent(3)
             .path("/oldalbum/moto/places/grava3")
@@ -586,7 +584,7 @@ class OldAlbumServiceProviderTest {
             .contentLength(71072)
             .childcount(0)
             .build();
-        List<AlbumEntry> allroutes = provider.deleteEntry(pictureToDelete);
+        var allroutes = provider.deleteEntry(pictureToDelete);
         assertEquals(numberOfEntriesBeforeDelete, allroutes.size());
         assertEquals(3, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(1)).contains("Failed to delete album entry with id");
@@ -594,34 +592,34 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testDeleteSelectedEntries() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
+        var provider = new OldAlbumServiceProvider();
         var database = createNewTestDatabase("oldalbum1");
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(database);
         provider.activate(Collections.emptyMap());
-        int numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
-        List<Integer> selection = Arrays.asList(7);
-        List<AlbumEntry> allroutes = provider.deleteSelectedEntries(selection);
+        var numberOfEntriesBeforeDelete = provider.fetchAllRoutes(null, true).size();
+        var selection = Arrays.asList(7);
+        var allroutes = provider.deleteSelectedEntries(selection);
         assertThat(allroutes).hasSizeLessThan(numberOfEntriesBeforeDelete);
-        Optional<AlbumEntry> deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
+        var deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
         assertFalse(deletedPicture.isPresent());
     }
 
     @Test
     void testMoveAlbumEntriesUp() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
+        var allroutes = provider.fetchAllRoutes(null, false);
         // Find the first and second entries of the "vfr" album
-        AlbumEntry originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
+        var originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
         assertEquals(1, originalFirstEntry.getSort());
         var originalFirstEntryLastModifiedDate = originalFirstEntry.getLastModified();
-        AlbumEntry secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
+        var secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
         assertEquals(2, secondEntry.getSort());
         var originalSecondEntryLastModifiedDate = secondEntry.getLastModified();
 
@@ -645,16 +643,16 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testMoveAlbumEntriesUpWithDatabaseFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsException);
         provider.activate(Collections.emptyMap());
 
         // Try moving an album and failing
-        List<AlbumEntry> allroutes = provider.moveEntryUp(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
+        var allroutes = provider.moveEntryUp(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
         assertEquals(0, allroutes.size());
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
@@ -662,19 +660,19 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testMoveAlbumEntriesDown() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
-        List<AlbumEntry> allroutes = provider.fetchAllRoutes(null, false);
+        var allroutes = provider.fetchAllRoutes(null, false);
         // Find the last and second to last entries of the "vfr" album
-        int numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
-        AlbumEntry originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
+        var numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
+        var originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum, originalLastEntry.getSort());
         var originalLastEntryLastModifiedDate = originalLastEntry.getLastModified();
-        AlbumEntry secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
+        var secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
         assertEquals(numberOfAlbumentriesInAlbum - 1, secondToLastEntry.getSort());
         var secondToLastEntryLastModifiedDate = secondToLastEntry.getLastModified();
 
@@ -698,15 +696,15 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testMoveAlbumEntriesDownWithDatabaseFailure() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsException);
         provider.activate(Collections.emptyMap());
 
-        List<AlbumEntry> allroutes = provider.moveEntryDown(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
+        var allroutes = provider.moveEntryDown(AlbumEntry.with().id(0).parent(1).sort(10).childcount(10).build());
         assertEquals(0, allroutes.size());
         assertThat(logservice.getLogmessages()).isNotEmpty();
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to move album entry with id");
@@ -714,12 +712,12 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testThatDatesAreSwappedWhenMovinAlbumEntriesUpAndDownButNotWhenSwappingWithAlbums() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        List<AlbumEntry> allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtomoveentriesin/").album(true).build());
+        var allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtomoveentriesin/").album(true).build());
         var albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/")).findFirst().get();
         var albumid = albumToMoveEntriesIn.getId();
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
@@ -767,16 +765,16 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testAdjustSortValuesWhenMovingToDifferentAlbumNoExistingParent() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        Connection connection = mock(Connection.class);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        ResultSet results = mock(ResultSet.class);
+        var connection = mock(Connection.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        AlbumEntry updatedEntry = AlbumEntry.with()
+        var updatedEntry = AlbumEntry.with()
             .id(7)
             .parent(3)
             .path("/oldalbum/moto/places/grava3")
@@ -791,7 +789,7 @@ class OldAlbumServiceProviderTest {
             .contentLength(71072)
             .childcount(0)
             .build();
-        int sort = provider.adjustSortValuesWhenMovingToDifferentAlbum(connection, updatedEntry);
+        var sort = provider.adjustSortValuesWhenMovingToDifferentAlbum(connection, updatedEntry);
         assertEquals(updatedEntry.getSort(), sort);
     }
 
@@ -899,8 +897,8 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testFindNumberOfEntriesInAlbumEmptyResultSet() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         var connection = new MockConnection();
 
@@ -910,12 +908,12 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testFindPreviousEntryInTheSameAlbumEmptyResultSet() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        Connection connection = mock(Connection.class);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        ResultSet results = mock(ResultSet.class);
+        var connection = mock(Connection.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
@@ -925,12 +923,12 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testFindNextEntryInTheSameAlbumResultSet() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
-        Connection connection = mock(Connection.class);
-        PreparedStatement statement = mock(PreparedStatement.class);
-        ResultSet results = mock(ResultSet.class);
+        var connection = mock(Connection.class);
+        var statement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
@@ -940,8 +938,8 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testGetEntryWhenEntryNotFound() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         var connection = new MockConnection();
 
@@ -1222,12 +1220,12 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testReadImageMetadata() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
 
-        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
-        ImageMetadata metadata = provider.readMetadata(imageUrl);
+        var imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
+        var metadata = provider.readMetadata(imageUrl);
         assertEquals(200, metadata.getStatus());
         assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
         assertEquals("image/jpeg", metadata.getContentType());
@@ -1305,43 +1303,43 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testReadImageMetadataImageNotFound() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
 
-        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
+        var imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/gravva1.jpg";
         var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
         assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
     }
 
     @Test
     void testReadImageMetadataServerNotFound() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
 
-        String imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
+        var imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
         var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
         assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
     }
 
     @Test
     void testReadImageMetadataWithNullImageUrl() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
 
-        ImageMetadata metadata = provider.readMetadata(null);
+        var metadata = provider.readMetadata(null);
         assertNull(metadata);
     }
 
     @Test
     void testReadImageMetadataWithEmptyImageUrl() {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
 
-        ImageMetadata metadata = provider.readMetadata("");
+        var metadata = provider.readMetadata("");
         assertNull(metadata);
     }
 
@@ -1374,28 +1372,28 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testDumpDatabaseSqlNotLoggedIn() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
-        int allroutesCount = findAlbumentriesRows(datasource, false);
-        String sql = provider.dumpDatabaseSql(null, false);
+        var allroutesCount = findAlbumentriesRows(datasource, false);
+        var sql = provider.dumpDatabaseSql(null, false);
         assertThat(sql)
             .contains("insert into")
             .hasLineCount(allroutesCount + 3);
 
         // Create an empty database initialized with the oldalbum schema
         // Then use liquibase to fill the database with the dumped content
-        DataSource emptybase = createEmptyBase("emptyoldalbum1");
-        int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
+        var emptybase = createEmptyBase("emptyoldalbum1");
+        var rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(0, rowsBeforeInsert);
         setDatabaseContentAsLiquibaseChangelog(emptybase, sql);
 
         // Check that the empty database now has the same number of rows as the original
-        int rowsInOriginal = findAlbumentriesRows(datasource, false);
-        int rowsAfterInsert = findAlbumentriesRows(emptybase, false);
+        var rowsInOriginal = findAlbumentriesRows(datasource, false);
+        var rowsAfterInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(rowsInOriginal, rowsAfterInsert);
 
         // Try inserting a row to verify that the id autoincrement doesn't
@@ -1403,34 +1401,35 @@ class OldAlbumServiceProviderTest {
         try(Connection connection = emptybase.getConnection()) {
             addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
         }
-        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, false);
+
+        var rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, false);
         assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
     }
 
     @Test
     void testDumpDatabaseSqlLoggedIn() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
-        int allroutesCount = findAlbumentriesRows(datasource, true);
-        String sql = provider.dumpDatabaseSql(null, true);
+        var allroutesCount = findAlbumentriesRows(datasource, true);
+        var sql = provider.dumpDatabaseSql(null, true);
         assertThat(sql)
             .contains("insert into")
             .hasLineCount(allroutesCount + 3);
 
         // Create an empty database initialized with the oldalbum schema
         // Then use liquibase to fill the database with the dumped content
-        DataSource emptybase = createEmptyBase("emptyoldalbum2");
-        int rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
+        var emptybase = createEmptyBase("emptyoldalbum2");
+        var rowsBeforeInsert = findAlbumentriesRows(emptybase, false);
         assertEquals(0, rowsBeforeInsert);
         setDatabaseContentAsLiquibaseChangelog(emptybase, sql);
 
         // Check that the empty database now has the same number of rows as the original
-        int rowsInOriginal = findAlbumentriesRows(datasource, true);
-        int rowsAfterInsert = findAlbumentriesRows(emptybase, true);
+        var rowsInOriginal = findAlbumentriesRows(datasource, true);
+        var rowsAfterInsert = findAlbumentriesRows(emptybase, true);
         assertEquals(rowsInOriginal, rowsAfterInsert);
 
         // Try inserting a row to verify that the id autoincrement doesn't
@@ -1438,7 +1437,8 @@ class OldAlbumServiceProviderTest {
         try(Connection connection = emptybase.getConnection()) {
             addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
         }
-        int rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, true);
+
+        var rowsAfterInsertingExtraRow = findAlbumentriesRows(emptybase, true);
         assertThat(rowsAfterInsertingExtraRow).isGreaterThan(rowsInOriginal);
     }
 
@@ -1490,10 +1490,12 @@ class OldAlbumServiceProviderTest {
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
             connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
+
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
             connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
+
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
@@ -1521,13 +1523,13 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that a second import will continue to increase the sort value
         var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
-        int lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
         assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
     }
 
@@ -1587,8 +1589,8 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that description of first imported image is content of description txt file
@@ -1653,8 +1655,8 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that description of first imported image is content of description txt file
@@ -1683,15 +1685,17 @@ class OldAlbumServiceProviderTest {
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
             connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
+
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
         for (int i=0; i<110; ++i) { // Need 110 JPEG streams
             connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
+
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
         // Prepare empty database with an album to put pictures in
-        AlbumEntry parentForBatchAddedPictures = AlbumEntry.with()
+        var parentForBatchAddedPictures = AlbumEntry.with()
             .parent(1)
             .path("/pictures/")
             .album(true)
@@ -1714,13 +1718,13 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        int firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        int lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that a second import will continue to increase the sort value
         var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
-        int lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
         assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
     }
 
@@ -1896,12 +1900,12 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testSortAlbumEntriesByDate() throws Exception {
-        OldAlbumServiceProvider provider = new OldAlbumServiceProvider();
-        MockLogService logservice = new MockLogService();
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
-        List<AlbumEntry> allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtosort/").album(true).build());
+        var allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtosort/").album(true).build());
         var albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtosort/")).findFirst().get();
         var albumid = albumToSort.getId();
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
@@ -1958,7 +1962,7 @@ class OldAlbumServiceProviderTest {
         var database = mock(DataSource.class);
         provider.setDataSource(database);
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        List<LocaleBean> locales = provider.availableLocales();
+        var locales = provider.availableLocales();
         assertThat(locales).isNotEmpty().contains(LocaleBean.with().locale(provider.defaultLocale()).build());
     }
 
@@ -1970,7 +1974,7 @@ class OldAlbumServiceProviderTest {
         var database = mock(DataSource.class);
         provider.setDataSource(database);
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        Map<String, String> displayTexts = provider.displayTexts(provider.defaultLocale());
+        var displayTexts = provider.displayTexts(provider.defaultLocale());
         assertThat(displayTexts).isNotEmpty();
     }
 
@@ -1982,13 +1986,13 @@ class OldAlbumServiceProviderTest {
         var database = mock(DataSource.class);
         provider.setDataSource(database);
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        String text1 = provider.displayText("hi", "nb_NO");
+        var text1 = provider.displayText("hi", "nb_NO");
         assertEquals("Hei", text1);
-        String text2 = provider.displayText("hi", "en_GB");
+        var text2 = provider.displayText("hi", "en_GB");
         assertEquals("Hi", text2);
-        String text3 = provider.displayText("hi", "");
+        var text3 = provider.displayText("hi", "");
         assertEquals("Hei", text3);
-        String text4 = provider.displayText("hi", null);
+        var text4 = provider.displayText("hi", null);
         assertEquals("Hei", text4);
     }
 
@@ -2021,11 +2025,11 @@ class OldAlbumServiceProviderTest {
     }
 
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
-        String sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
-        try (Connection connection = ds.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
+        try (var connection = ds.getConnection()) {
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isLoggedIn);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     if (results.next()) {
                         return results.getInt(1);
                     }
@@ -2036,25 +2040,27 @@ class OldAlbumServiceProviderTest {
     }
 
     private static DataSource createEmptyBase(String dbname) throws Exception {
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
+        var derbyDataSourceFactory = new DerbyDataSourceFactory();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
-        DataSource emptyDatasource = derbyDataSourceFactory.createDataSource(properties);
-        try (Connection connection = emptyDatasource.getConnection()) {
-            OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+        var emptyDatasource = derbyDataSourceFactory.createDataSource(properties);
+        try (var connection = emptyDatasource.getConnection()) {
+            var oldAlbumLiquibase = new OldAlbumLiquibase();
             oldAlbumLiquibase.createInitialSchema(connection);
         }
-        try (Connection connection = emptyDatasource.getConnection()) {
-            OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+
+        try (var connection = emptyDatasource.getConnection()) {
+            var oldAlbumLiquibase = new OldAlbumLiquibase();
             oldAlbumLiquibase.updateSchema(connection);
         }
+
         return emptyDatasource;
     }
 
     static DataSource createNewTestDatabase(String databasename) throws Exception, SQLException {
         var database = createEmptyBase(databasename);
-        MockLogService logservice = new MockLogService();
-        OldAlbumDerbyTestDatabase preHook = new OldAlbumDerbyTestDatabase();
+        var logservice = new MockLogService();
+        var preHook = new OldAlbumDerbyTestDatabase();
         preHook.setLogService(logservice);
         preHook.activate();
         preHook.prepare(database);
@@ -2062,7 +2068,7 @@ class OldAlbumServiceProviderTest {
     }
 
     private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {
-        Map<String, String> contentByFileName = new HashMap<>();
+        var contentByFileName = new HashMap<String, String>();
         contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
         try(var connection = datasource.getConnection()) {
             try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
@@ -2080,8 +2086,8 @@ class OldAlbumServiceProviderTest {
     }
 
     private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, parent);
             statement.setString(2, path);
             statement.setBoolean(3, album);

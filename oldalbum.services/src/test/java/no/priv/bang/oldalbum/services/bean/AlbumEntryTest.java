@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,22 +26,22 @@ class AlbumEntryTest {
 
     @Test
     void testAlbumEntry() {
-        int id = 1;
-        int parent = 2;
-        String path = "/album/bilde01";
-        boolean album = true;
-        String title = "Album";
-        String description = "This is an album";
-        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
-        String thumbnailUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif";
-        int sort = 1;
-        int childcount = 4;
-        Date lastmodified = new Date(800275785000L);
-        String contenttype = "image/jpeg";
-        int contentlength = 128186;
-        boolean requirelogin = true;
-        boolean groupByYear = true;
-        AlbumEntry bean = AlbumEntry.with()
+        var id = 1;
+        var parent = 2;
+        var path = "/album/bilde01";
+        var album = true;
+        var title = "Album";
+        var description = "This is an album";
+        var imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
+        var thumbnailUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif";
+        var sort = 1;
+        var childcount = 4;
+        var lastmodified = new Date(800275785000L);
+        var contenttype = "image/jpeg";
+        var contentlength = 128186;
+        var requirelogin = true;
+        var groupByYear = true;
+        var bean = AlbumEntry.with()
             .id(id)
             .parent(parent)
             .path(path)
@@ -78,7 +78,7 @@ class AlbumEntryTest {
 
     @Test
     void testAlbumEntryNoArgsConstructor() {
-        AlbumEntry bean = AlbumEntry.with().build();
+        var bean = AlbumEntry.with().build();
         assertEquals(-1, bean.getId());
         assertNull(bean.getPath());
         assertFalse(bean.isAlbum());

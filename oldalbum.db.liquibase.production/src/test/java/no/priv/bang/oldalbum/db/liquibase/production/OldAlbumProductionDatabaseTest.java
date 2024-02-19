@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -38,9 +37,9 @@ class OldAlbumProductionDatabaseTest {
 
     @Test
     void testPrepare() throws Exception {
-        DataSource datasource = createDataSource("oldalbum");
-        MockLogService logservice = new MockLogService();
-        OldAlbumProductionDatabase hook = new OldAlbumProductionDatabase();
+        var datasource = createDataSource("oldalbum");
+        var logservice = new MockLogService();
+        var hook = new OldAlbumProductionDatabase();
         hook.setLogService(logservice);
         hook.activate();
         hook.prepare(datasource);
@@ -49,12 +48,12 @@ class OldAlbumProductionDatabaseTest {
 
     @Test
     void testCreateInitialSchemaWithLiquibaseException() throws Exception {
-        DataSource datasource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
+        var datasource = mock(DataSource.class);
+        var connection = mock(Connection.class);
         when(connection.getMetaData()).thenThrow(SQLException.class);
         when(datasource.getConnection()).thenReturn(connection);
-        MockLogService logservice = new MockLogService();
-        OldAlbumProductionDatabase hook = new OldAlbumProductionDatabase();
+        var logservice = new MockLogService();
+        var hook = new OldAlbumProductionDatabase();
         hook.setLogService(logservice);
         hook.activate();
         hook.createInitialSchema(datasource);
@@ -63,9 +62,9 @@ class OldAlbumProductionDatabaseTest {
 
     @Test
     void testInsertMockDataWithLiquibaseException() throws Exception {
-        DataSource datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
-        MockLogService logservice = new MockLogService();
-        OldAlbumProductionDatabase hook = new OldAlbumProductionDatabase();
+        var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
+        var logservice = new MockLogService();
+        var hook = new OldAlbumProductionDatabase();
         hook.setLogService(logservice);
         hook.insertInitialData(datasource);
         assertEquals(1, logservice.getLogmessages().size());
@@ -94,11 +93,11 @@ class OldAlbumProductionDatabaseTest {
 
     private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
         try(var connection = datasource.getConnection()) {
-            String countSql = "select count(*) from albumentries";
+            var countSql = "select count(*) from albumentries";
             try(var countStatement = connection.createStatement()) {
-                try(ResultSet results = countStatement.executeQuery(countSql)) {
+                try(var results = countStatement.executeQuery(countSql)) {
                     if (results.next()) {
-                        int numberOfRows = results.getInt(1);
+                        var numberOfRows = results.getInt(1);
                         assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
                     } else {
                         fail("Unable to count the rows in albumentries");
@@ -107,11 +106,11 @@ class OldAlbumProductionDatabaseTest {
             }
 
             // The single existing entry will have require_login=false and count will be 0
-            String countWithRequireLoginSql = "select count(*) from albumentries where require_login=true";
+            var countWithRequireLoginSql = "select count(*) from albumentries where require_login=true";
             try(var countStatement = connection.createStatement()) {
-                try(ResultSet results = countStatement.executeQuery(countWithRequireLoginSql)) {
+                try(var results = countStatement.executeQuery(countWithRequireLoginSql)) {
                     if (results.next()) {
-                        int numberOfRows = results.getInt(1);
+                        var numberOfRows = results.getInt(1);
                         assertEquals(0, numberOfRows);
                     } else {
                         fail("Unable to count the rows with require_login in albumentries");
@@ -122,7 +121,7 @@ class OldAlbumProductionDatabaseTest {
     }
 
     private DataSource createDataSource(String dbname) throws Exception {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return derbyDataSourceFactory.createDataSource(properties);
     }

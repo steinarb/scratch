@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ class ImageRequestTest {
 
     @Test
     void test() {
-        String url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
-        ImageRequest bean = ImageRequest.with().url(url).build();
+        var url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        var bean = ImageRequest.with().url(url).build();
         assertEquals(url, bean.getUrl());
     }
 
     @Test
     void testNoargsConstructor() {
-        ImageRequest bean = ImageRequest.with().build();
+        var bean = ImageRequest.with().build();
         assertNull(bean.getUrl());
     }
 

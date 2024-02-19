@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ class LoginResultTest {
 
     @Test
     void testCreate() {
-        boolean success = true;
-        String username = "admin";
-        String errormessage = "Wrong password";
-        boolean canModifyAlbum = true;
-        boolean canLogin = true;
-        String originalRequestUri = "/oldalbum/slides/";
-        LoginResult bean = LoginResult.with()
+        var success = true;
+        var username = "admin";
+        var errormessage = "Wrong password";
+        var canModifyAlbum = true;
+        var canLogin = true;
+        var originalRequestUri = "/oldalbum/slides/";
+        var bean = LoginResult.with()
             .success(success)
             .username(username)
             .errormessage(errormessage)
@@ -47,7 +47,7 @@ class LoginResultTest {
 
     @Test
     void testNoargsConstructor() {
-        LoginResult bean = LoginResult.with().build();
+        var bean = LoginResult.with().build();
         assertFalse(bean.getSuccess());
         assertNull(bean.getUsername());
         assertNull(bean.getErrormessage());

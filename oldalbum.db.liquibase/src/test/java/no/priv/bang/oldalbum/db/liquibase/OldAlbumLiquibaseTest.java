@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -42,21 +40,25 @@ class OldAlbumLiquibaseTest {
     @Test
     void testCreateAndUpdateSchema() throws Exception {
         var datasource = createDatasource("oldalbum");
-        OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+        var oldAlbumLiquibase = new OldAlbumLiquibase();
         try(var connection = datasource.getConnection()) {
             oldAlbumLiquibase.createInitialSchema(connection);
         }
+
         try(var connection = datasource.getConnection()) {
             addAlbumEntries(connection);
         }
+
         try(var connection = datasource.getConnection()) {
             assertAlbumEntries(connection);
             assertAlbumEntriesDontHaveRequireLoginFlag(connection);
             assertAlbumEntriesDontHaveGroupByYearFlag(connection);
         }
+
         try(var connection = datasource.getConnection()) {
             oldAlbumLiquibase.updateSchema(connection);
         }
+
         try(var connection = datasource.getConnection()) {
             assertAlbumEntries(connection);
             assertAlbumEntriesHasRequireLoginFlag(connection);
@@ -70,7 +72,7 @@ class OldAlbumLiquibaseTest {
         var connection = spy(realdb.getConnection());
         // Wrapping Connection in a spy() makes it throw SQLException on setAutoCommit()
 
-        OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+        var oldAlbumLiquibase = new OldAlbumLiquibase();
         var e = assertThrows(
             LiquibaseException.class,
             () -> oldAlbumLiquibase.createInitialSchema(connection));
@@ -84,7 +86,7 @@ class OldAlbumLiquibaseTest {
         doNothing().when(connection).setAutoCommit(anyBoolean());
         doThrow(Exception.class).when(connection).close();
 
-        OldAlbumLiquibase oldAlbumLiquibase = new OldAlbumLiquibase();
+        var oldAlbumLiquibase = new OldAlbumLiquibase();
         var e = assertThrows(
             LiquibaseException.class,
             () -> oldAlbumLiquibase.createInitialSchema(connection));
@@ -97,10 +99,10 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntry(Connection connection, int id, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
-        String sql = "select * from albumentries where albumentry_id = ?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where albumentry_id = ?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     assertEquals(parent, result.getInt(2));
                     assertEquals(path, result.getString(3));
@@ -131,10 +133,10 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntryDoesntHaveRequireLoginFlag(Connection connection, int id) throws Exception {
-        String sql = "select * from albumentries where albumentry_id = ?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where albumentry_id = ?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     assertThrows(SQLException.class, () -> result.getBoolean("require_login"));
                 } else {
@@ -145,10 +147,10 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntryDoesntHaveGroupByYearFlag(Connection connection, int id) throws Exception {
-        String sql = "select * from albumentries where albumentry_id = ?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where albumentry_id = ?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     assertThrows(SQLException.class, () -> result.getBoolean("group_by_year"));
                 } else {
@@ -169,10 +171,10 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntryHasRequireLoginFlag(Connection connection, int id, boolean requireLogin) throws Exception {
-        String sql = "select * from albumentries where albumentry_id = ?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where albumentry_id = ?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     assertEquals(requireLogin, result.getBoolean("require_login"));
                 } else {
@@ -183,10 +185,10 @@ class OldAlbumLiquibaseTest {
     }
 
     private void assertAlbumEntryHasGroupByYearFlag(Connection connection, int id, boolean requireLogin) throws Exception {
-        String sql = "select * from albumentries where albumentry_id = ?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where albumentry_id = ?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     assertEquals(requireLogin, result.getBoolean("group_by_year"));
                 } else {
@@ -202,8 +204,8 @@ class OldAlbumLiquibaseTest {
     }
 
     private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "insert into albumentries (parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, parent);
             statement.setString(2, path);
             statement.setBoolean(3, album);
@@ -220,7 +222,7 @@ class OldAlbumLiquibaseTest {
     }
 
     private DataSource createDatasource(String dbname) throws Exception {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         return derbyDataSourceFactory.createDataSource(properties);
     }

@@ -21,80 +21,74 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
-import no.priv.bang.oldalbum.services.bean.ImageMetadata;
-import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 class OldAlbumServiceTest {
 
     @Test
     void testOldAlbumService() {
-        OldAlbumService service = mock(OldAlbumService.class);
-        List<AlbumEntry> routes = service.fetchAllRoutes(null, false);
+        var service = mock(OldAlbumService.class);
+        var routes = service.fetchAllRoutes(null, false);
         assertEquals(0, routes.size());
-        List<String> paths = service.getPaths(false);
+        var paths = service.getPaths(false);
         assertEquals(0, paths.size());
-        int albumEntryId = 42;
-        Optional<AlbumEntry> albumentry = service.getAlbumEntry(albumEntryId);
+        var albumEntryId = 42;
+        var albumentry = service.getAlbumEntry(albumEntryId);
         assertTrue(albumentry.isEmpty());
-        String path = "/moto/grava";
-        AlbumEntry entry = service.getAlbumEntryFromPath(path);
+        var path = "/moto/grava";
+        var entry = service.getAlbumEntryFromPath(path);
         assertNull(entry);
-        int parent = 2;
-        List<AlbumEntry> children = service.getChildren(parent);
+        var parent = 2;
+        var children = service.getChildren(parent);
         assertEquals(0, children.size());
-        AlbumEntry modifiedEntry = AlbumEntry.with().build();
-        List<AlbumEntry> updatedRoutesOnModifiedEntry = service.updateEntry(modifiedEntry);
+        var modifiedEntry = AlbumEntry.with().build();
+        var updatedRoutesOnModifiedEntry = service.updateEntry(modifiedEntry);
         assertEquals(0, updatedRoutesOnModifiedEntry.size());
-        AlbumEntry addedEntry = AlbumEntry.with().build();
-        List<AlbumEntry> updatedRoutesOnAddedEntry = service.addEntry(addedEntry);
+        var addedEntry = AlbumEntry.with().build();
+        var updatedRoutesOnAddedEntry = service.addEntry(addedEntry);
         assertEquals(0, updatedRoutesOnAddedEntry.size());
-        AlbumEntry deletedEntry = AlbumEntry.with().build();
-        List<AlbumEntry> updatedRoutesOnDelete = service.deleteEntry(deletedEntry);
+        var deletedEntry = AlbumEntry.with().build();
+        var updatedRoutesOnDelete = service.deleteEntry(deletedEntry);
         assertEquals(0, updatedRoutesOnDelete.size());
-        List<Integer> selection = Arrays.asList(7);
+        var selection = Arrays.asList(7);
         var updatedRoutesOnSelectionDelete = service.deleteSelectedEntries(selection);
         assertEquals(0, updatedRoutesOnSelectionDelete.size());
-        AlbumEntry movedEntry = AlbumEntry.with().build();
-        List<AlbumEntry> updatedRoutesOnEntryMovedUp = service.moveEntryUp(movedEntry);
+        var movedEntry = AlbumEntry.with().build();
+        var updatedRoutesOnEntryMovedUp = service.moveEntryUp(movedEntry);
         assertEquals(0, updatedRoutesOnEntryMovedUp.size());
-        List<AlbumEntry> updatedRoutesOnEntryMovedDown = service.moveEntryDown(movedEntry);
+        var updatedRoutesOnEntryMovedDown = service.moveEntryDown(movedEntry);
         assertEquals(0, updatedRoutesOnEntryMovedDown.size());
-        String dumpedSql = service.dumpDatabaseSql(null, false);
+        var dumpedSql = service.dumpDatabaseSql(null, false);
         assertNull(dumpedSql);
         var streamingOutput = service.downloadAlbumEntry(albumEntryId);
         assertNull(streamingOutput);
         var selectedentryIds = Collections.singletonList(albumEntryId);
         var selectionStreamingOutput = service.downloadAlbumEntrySelection(selectedentryIds);
         assertNull(selectionStreamingOutput);
-        String imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
-        ImageMetadata metadata = service.readMetadata(imageUrl);
+        var imageUrl = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
+        var metadata = service.readMetadata(imageUrl);
         assertNull(metadata);
 
         var batchAddPicturesRequest = BatchAddPicturesRequest.with().build();
-        List<AlbumEntry> updatedRoutesAfterBatchAdd = service.batchAddPictures(batchAddPicturesRequest);
+        var updatedRoutesAfterBatchAdd = service.batchAddPictures(batchAddPicturesRequest);
         assertThat(updatedRoutesAfterBatchAdd).isEmpty();
 
-        List<AlbumEntry> updatedRoutesAfterSort = service.sortByDate(1);
+        var updatedRoutesAfterSort = service.sortByDate(1);
         assertThat(updatedRoutesAfterSort).isEmpty();
 
-        Locale defaultLocale = service.defaultLocale();
+        var defaultLocale = service.defaultLocale();
         assertNull(defaultLocale);
-        List<LocaleBean> availableLocales = service.availableLocales();
+        var availableLocales = service.availableLocales();
         assertThat(availableLocales).isEmpty();
-        Locale locale = Locale.UK;
-        Map<String, String> texts = service.displayTexts(locale);
+        var locale = Locale.UK;
+        var texts = service.displayTexts(locale);
         assertThat(texts).isEmpty();
-        String key = "loggedout";
-        String text = service.displayText(key, locale.toString());
+        var key = "loggedout";
+        var text = service.displayText(key, locale.toString());
         assertNull(text);
     }
 
