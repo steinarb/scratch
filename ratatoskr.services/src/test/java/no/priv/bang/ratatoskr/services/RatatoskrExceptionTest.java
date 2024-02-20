@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,22 +25,22 @@ class RatatoskrExceptionTest {
 
     @Test
     void testCreate() {
-        String message1 = "just a message";
-        RatatoskrException exception1 = new RatatoskrException(message1);
+        var message1 = "just a message";
+        var exception1 = new RatatoskrException(message1);
         assertEquals(message1, exception1.getMessage());
         assertNull(exception1.getCause());
 
-        String message2 = "message with cause";
-        Exception cause2 = new SQLException();
-        RatatoskrException exception2 = new RatatoskrException(message2, cause2);
+        var message2 = "message with cause";
+        var cause2 = new SQLException();
+        var exception2 = new RatatoskrException(message2, cause2);
         assertEquals(message2, exception2.getMessage());
         assertEquals(cause2, exception2.getCause());
 
-        RatatoskrException exception3 = new RatatoskrException(message2, cause2, true, true);
+        var exception3 = new RatatoskrException(message2, cause2, true, true);
         assertEquals(message2, exception3.getMessage());
         assertEquals(cause2, exception3.getCause());
 
-        RatatoskrException exception4 = new RatatoskrException(cause2);
+        var exception4 = new RatatoskrException(cause2);
         assertEquals(cause2.getClass().getName(), exception4.getMessage());
         assertEquals(cause2, exception4.getCause());
     }

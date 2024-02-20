@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,7 @@ package no.priv.bang.ratatoskr.backend;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -36,8 +33,6 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import no.priv.bang.ratatoskr.db.liquibase.test.RatatoskrTestDbLiquibaseRunner;
-import no.priv.bang.ratatoskr.services.beans.Account;
-import no.priv.bang.ratatoskr.services.beans.CounterBean;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -52,53 +47,53 @@ class RatatoskrServiceProviderTest {
 
     @BeforeAll
     static void commonSetupForAllTests() throws Exception {
-        DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
+        var derbyDataSourceFactory = new DerbyDataSourceFactory();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ratatoskr;create=true");
         datasource = derbyDataSourceFactory.createDataSource(properties);
-        RatatoskrTestDbLiquibaseRunner runner = new RatatoskrTestDbLiquibaseRunner();
+        var runner = new RatatoskrTestDbLiquibaseRunner();
         runner.activate();
         runner.prepare(datasource);
     }
 
     @Test
     void testGetAccounts() {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
         provider.setLogservice(logservice);
         provider.setDatasource(datasource);
         provider.setUseradmin(useradmin);
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
-        List<Account> accountsBefore = provider.getAccounts();
+        var accountsBefore = provider.getAccounts();
         assertThat(accountsBefore).isEmpty();
         assertThat(provider.getCounterIncrementStep("jad")).isEmpty();
         assertThat(provider.getCounter("jad")).isEmpty();
-        boolean accountCreated = provider.lazilyCreateAccount("jad");
+        var accountCreated = provider.lazilyCreateAccount("jad");
         assertTrue(accountCreated);
-        List<Account> accountsAfter = provider.getAccounts();
+        var accountsAfter = provider.getAccounts();
         assertThat(accountsAfter).isNotEmpty();
-        int defaultInitialCounterIncrementStepValue = 1;
-        Optional<CounterIncrementStepBean> counterIncrementStep = provider.getCounterIncrementStep("jad");
+        var defaultInitialCounterIncrementStepValue = 1;
+        var counterIncrementStep = provider.getCounterIncrementStep("jad");
         assertThat(counterIncrementStep).isNotEmpty();
         assertEquals(defaultInitialCounterIncrementStepValue, counterIncrementStep.get().getCounterIncrementStep());
-        int defaultInitialCounterValue = 0;
-        Optional<CounterBean> counter = provider.getCounter("jad");
+        var defaultInitialCounterValue = 0;
+        var counter = provider.getCounter("jad");
         assertThat(counter).isNotEmpty();
         assertEquals(defaultInitialCounterValue, counter.get().getCounter());
-        boolean secondAccountCreate = provider.lazilyCreateAccount("jad");
+        var secondAccountCreate = provider.lazilyCreateAccount("jad");
         assertFalse(secondAccountCreate);
-        List<Account> accountsAfterSecondCreate = provider.getAccounts();
+        var accountsAfterSecondCreate = provider.getAccounts();
         assertThat(accountsAfterSecondCreate).isEqualTo(accountsAfter);
     }
 
     @Test
     void testGetAccountsWithSQLException() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(datasourceThrowsException);
@@ -106,17 +101,17 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         assertThat(logservice.getLogmessages()).isEmpty();
-        List<Account> accounts = provider.getAccounts();
+        var accounts = provider.getAccounts();
         assertThat(accounts).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
     void testLazilyCreateAccountWithSQLException() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(datasourceThrowsException);
@@ -124,7 +119,7 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         assertThat(logservice.getLogmessages()).isEmpty();
-        boolean accountCreated = provider.lazilyCreateAccount("jad");
+        var accountCreated = provider.lazilyCreateAccount("jad");
         assertFalse(accountCreated);
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
@@ -177,9 +172,9 @@ class RatatoskrServiceProviderTest {
 
     @Test
     void testIncrementAndDecrement() {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
         provider.setLogservice(logservice);
         provider.setDatasource(datasource);
         provider.setUseradmin(useradmin);
@@ -187,33 +182,33 @@ class RatatoskrServiceProviderTest {
 
         // Create new account with default values for counter and increment step
         provider.lazilyCreateAccount("on");
-        CounterIncrementStepBean initialCounterIncrementStep = provider.getCounterIncrementStep("on").orElseThrow();
-        CounterBean initialCounterValue = provider.getCounter("on").orElseThrow();
+        var initialCounterIncrementStep = provider.getCounterIncrementStep("on").orElseThrow();
+        var initialCounterValue = provider.getCounter("on").orElseThrow();
 
         // Set the increment step to the existing step value plus one
-        CounterIncrementStepBean newIncrementStep = CounterIncrementStepBean.with()
+        var newIncrementStep = CounterIncrementStepBean.with()
             .username("on")
             .counterIncrementStep(initialCounterIncrementStep.getCounterIncrementStep() + 1)
             .build();
-        CounterIncrementStepBean updatedIncrementStep = provider.updateCounterIncrementStep(newIncrementStep).orElseThrow();
+        var updatedIncrementStep = provider.updateCounterIncrementStep(newIncrementStep).orElseThrow();
         assertThat(updatedIncrementStep.getCounterIncrementStep()).isGreaterThan(initialCounterIncrementStep.getCounterIncrementStep());
 
         // Increment and verify the expected result
-        int expectedIncrementedValue = initialCounterValue.getCounter() + updatedIncrementStep.getCounterIncrementStep();
-        CounterBean incrementedValue = provider.incrementCounter("on").orElseThrow();
+        var expectedIncrementedValue = initialCounterValue.getCounter() + updatedIncrementStep.getCounterIncrementStep();
+        var incrementedValue = provider.incrementCounter("on").orElseThrow();
         assertEquals(expectedIncrementedValue, incrementedValue.getCounter());
 
         // Decrement and verify the expected result
-        CounterBean decrementedValue = provider.decrementCounter("on").orElseThrow();
+        var decrementedValue = provider.decrementCounter("on").orElseThrow();
         assertEquals(initialCounterValue, decrementedValue);
     }
 
     @Test
     void testGetCounterIncrementStepWithSQLException() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(datasourceThrowsException);
@@ -221,17 +216,17 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         assertThat(logservice.getLogmessages()).isEmpty();
-        Optional<CounterIncrementStepBean> incrementStep = provider.getCounterIncrementStep("jad");
+        var incrementStep = provider.getCounterIncrementStep("jad");
         assertThat(incrementStep).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
     void testUpdateCounterIncrementStepWithSQLException() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(datasourceThrowsException);
@@ -239,17 +234,17 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         assertThat(logservice.getLogmessages()).isEmpty();
-        Optional<CounterIncrementStepBean> updatedIncrementStep = provider.updateCounterIncrementStep(CounterIncrementStepBean.with().build());
+        var updatedIncrementStep = provider.updateCounterIncrementStep(CounterIncrementStepBean.with().build());
         assertThat(updatedIncrementStep).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
     void testGetCounterWithSQLExceptio() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(datasourceThrowsException);
@@ -257,17 +252,17 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         assertThat(logservice.getLogmessages()).isEmpty();
-        Optional<CounterBean> counter = provider.getCounter("jad");
+        var counter = provider.getCounter("jad");
         assertThat(counter).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
     void testIncrementCounterWithSQLExceptio() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(datasourceThrowsException);
@@ -275,17 +270,17 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         assertThat(logservice.getLogmessages()).isEmpty();
-        Optional<CounterBean> incrementedCounter = provider.incrementCounter("jad");
+        var incrementedCounter = provider.incrementCounter("jad");
         assertThat(incrementedCounter).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
     void testDecrementCounterWithSQLExceptio() throws Exception {
-        MockLogService logservice = new MockLogService();
-        UserManagementService useradmin = mock(UserManagementService.class);
-        RatatoskrServiceProvider provider = new RatatoskrServiceProvider();
-        DataSource datasourceThrowsException = mock(DataSource.class);
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var datasourceThrowsException = mock(DataSource.class);
         when(datasourceThrowsException.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(datasourceThrowsException);
@@ -293,15 +288,15 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         assertThat(logservice.getLogmessages()).isEmpty();
-        Optional<CounterBean> decrementedCounter = provider.decrementCounter("jad");
+        var decrementedCounter = provider.decrementCounter("jad");
         assertThat(decrementedCounter).isEmpty();
         assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
     void testDefaultLocale() {
-        RatatoskrServiceProvider ratatoskr = new RatatoskrServiceProvider();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var ratatoskr = new RatatoskrServiceProvider();
+        var useradmin = mock(UserManagementService.class);
         ratatoskr.setUseradmin(useradmin);
         ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         assertEquals(NB_NO, ratatoskr.defaultLocale());
@@ -309,37 +304,37 @@ class RatatoskrServiceProviderTest {
 
     @Test
     void testAvailableLocales() {
-        RatatoskrServiceProvider ratatoskr = new RatatoskrServiceProvider();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var ratatoskr = new RatatoskrServiceProvider();
+        var useradmin = mock(UserManagementService.class);
         ratatoskr.setUseradmin(useradmin);
         ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        List<LocaleBean> locales = ratatoskr.availableLocales();
+        var locales = ratatoskr.availableLocales();
         assertThat(locales).isNotEmpty().contains(LocaleBean.with().locale(ratatoskr.defaultLocale()).build());
     }
 
     @Test
     void testDisplayTextsForDefaultLocale() {
-        RatatoskrServiceProvider ratatoskr = new RatatoskrServiceProvider();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var ratatoskr = new RatatoskrServiceProvider();
+        var useradmin = mock(UserManagementService.class);
         ratatoskr.setUseradmin(useradmin);
         ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        Map<String, String> displayTexts = ratatoskr.displayTexts(ratatoskr.defaultLocale());
+        var displayTexts = ratatoskr.displayTexts(ratatoskr.defaultLocale());
         assertThat(displayTexts).isNotEmpty();
     }
 
     @Test
     void testDisplayText() {
-        RatatoskrServiceProvider ratatoskr = new RatatoskrServiceProvider();
-        UserManagementService useradmin = mock(UserManagementService.class);
+        var ratatoskr = new RatatoskrServiceProvider();
+        var useradmin = mock(UserManagementService.class);
         ratatoskr.setUseradmin(useradmin);
         ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-        String text1 = ratatoskr.displayText("hi", "nb_NO");
+        var text1 = ratatoskr.displayText("hi", "nb_NO");
         assertEquals("Hei", text1);
-        String text2 = ratatoskr.displayText("hi", "en_GB");
+        var text2 = ratatoskr.displayText("hi", "en_GB");
         assertEquals("Hi", text2);
-        String text3 = ratatoskr.displayText("hi", "");
+        var text3 = ratatoskr.displayText("hi", "");
         assertEquals("Hei", text3);
-        String text4 = ratatoskr.displayText("hi", null);
+        var text4 = ratatoskr.displayText("hi", null);
         assertEquals("Hei", text4);
     }
 

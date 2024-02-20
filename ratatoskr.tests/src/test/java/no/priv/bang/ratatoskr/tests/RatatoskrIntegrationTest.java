@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import static org.ops4j.pax.exam.CoreOptions.*;
@@ -35,13 +34,13 @@ public class RatatoskrIntegrationTest extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {
-        final MavenArtifactUrlReference ratatoskrFeatureRepo = maven()
+        final var ratatoskrFeatureRepo = maven()
             .groupId("no.priv.bang.ratatoskr")
             .artifactId("karaf")
             .versionAsInProject()
             .type("xml")
             .classifier("features");
-        Option[] options = new Option[] {
+        var options = new Option[] {
             features(ratatoskrFeatureRepo)
         };
         return Stream.of(super.config(), options).flatMap(Stream::of).toArray(Option[]::new);
