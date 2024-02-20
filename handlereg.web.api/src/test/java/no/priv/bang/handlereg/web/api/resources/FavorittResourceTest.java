@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2022 Steinar Bang
+ * Copyright 2021-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import no.priv.bang.handlereg.services.Butikk;
 import no.priv.bang.handlereg.services.Favoritt;
@@ -33,45 +31,45 @@ class FavorittResourceTest {
 
     @Test
     void testGetFavoritter() {
-        HandleregService handlereg = mock(HandleregService.class);
-        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
-        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).build();
+        var handlereg = mock(HandleregService.class);
+        var favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
+        var favoritt2 = Favoritt.with().favouriteid(2).accountid(1).build();
         when(handlereg.finnFavoritter("jod")).thenReturn(Arrays.asList(favoritt1, favoritt2));
-        FavorittResource resource = new FavorittResource();
+        var resource = new FavorittResource();
         resource.handlereg = handlereg;
 
-        String username = "jod";
-        List<Favoritt> favoritter = resource.getFavoritter(username);
+        var username = "jod";
+        var favoritter = resource.getFavoritter(username);
         assertThat(favoritter).isNotEmpty();
     }
 
     @Test
     void testLeggTilFavoritt() {
-        HandleregService handlereg = mock(HandleregService.class);
-        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
-        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
-        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
+        var handlereg = mock(HandleregService.class);
+        var favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
+        var butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        var favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
         when(handlereg.leggTilFavoritt(any())).thenReturn(Arrays.asList(favoritt1, favoritt2));
-        FavorittResource resource = new FavorittResource();
+        var resource = new FavorittResource();
         resource.handlereg = handlereg;
 
-        String username = "jod";
-        NyFavoritt nyFavoritt = NyFavoritt.with().brukernavn(username).butikk(butikk ).build();
-        List<Favoritt> favoritter = resource.leggTilFavoritt(nyFavoritt);
+        var username = "jod";
+        var nyFavoritt = NyFavoritt.with().brukernavn(username).butikk(butikk ).build();
+        var favoritter = resource.leggTilFavoritt(nyFavoritt);
         assertThat(favoritter).isNotEmpty();
     }
 
     @Test
     void testSlettFavoritt() {
-        HandleregService handlereg = mock(HandleregService.class);
-        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
-        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
-        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
+        var handlereg = mock(HandleregService.class);
+        var favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
+        var butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        var favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
         when(handlereg.slettFavoritt(any())).thenReturn(Arrays.asList(favoritt2));
-        FavorittResource resource = new FavorittResource();
+        var resource = new FavorittResource();
         resource.handlereg = handlereg;
 
-        List<Favoritt> favoritter = resource.slettFavoritt(favoritt1);
+        var favoritter = resource.slettFavoritt(favoritt1);
         assertThat(favoritter)
             .isNotEmpty()
             .contains(favoritt2)
@@ -81,19 +79,19 @@ class FavorittResourceTest {
 
     @Test
     void testByttRekkefolge() {
-        HandleregService handlereg = mock(HandleregService.class);
-        Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).rekkefolge(2).build();
-        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
-        Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).rekkefolge(1).build();
+        var handlereg = mock(HandleregService.class);
+        var favoritt1 = Favoritt.with().favouriteid(1).accountid(1).rekkefolge(2).build();
+        var butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        var favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).rekkefolge(1).build();
         when(handlereg.byttRekkefolge(any())).thenReturn(Arrays.asList(favoritt2, favoritt1));
-        FavorittResource resource = new FavorittResource();
+        var resource = new FavorittResource();
         resource.handlereg = handlereg;
 
-        Favorittpar favoritterSomSkalBytteRekkefolge = Favorittpar.with()
+        var favoritterSomSkalBytteRekkefolge = Favorittpar.with()
             .forste(favoritt1)
             .andre(favoritt2)
             .build();
-        List<Favoritt> favoritter = resource.byttRekkefolge(favoritterSomSkalBytteRekkefolge);
+        var favoritter = resource.byttRekkefolge(favoritterSomSkalBytteRekkefolge);
         assertThat(favoritter)
             .isNotEmpty()
             .containsSequence(favoritt2, favoritt1);

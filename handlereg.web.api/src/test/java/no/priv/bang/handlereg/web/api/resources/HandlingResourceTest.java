@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.jupiter.api.Test;
@@ -38,33 +36,33 @@ class HandlingResourceTest {
 
     @Test
     void testGetHandlinger() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
         when(handlereg.findLastTransactions(1)).thenReturn(Arrays.asList(Transaction.with().build()));
-        HandlingResource resource = new HandlingResource();
+        var resource = new HandlingResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
-        List<Transaction> handlinger = resource.getHandlinger(1);
+        var handlinger = resource.getHandlinger(1);
         assertThat(handlinger).isNotEmpty();
     }
 
     @Test
     void testGetHandlingerEmpty() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
-        HandlingResource resource = new HandlingResource();
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
+        var resource = new HandlingResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
-        List<Transaction> handlinger = resource.getHandlinger(1);
+        var handlinger = resource.getHandlinger(1);
         assertThat(handlinger).isEmpty();
     }
 
     @Test
     void testGetHandlingerWhenExceptionIsThrown() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
         when(handlereg.findLastTransactions(anyInt())).thenThrow(HandleregException.class);
-        HandlingResource resource = new HandlingResource();
+        var resource = new HandlingResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
@@ -75,9 +73,9 @@ class HandlingResourceTest {
 
     @Test
     void testNyhandling() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
-        Oversikt oversikt = Oversikt.with()
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
+        var oversikt = Oversikt.with()
             .accountid(1)
             .brukernavn("jd")
             .email("johndoe@gmail.com")
@@ -86,29 +84,29 @@ class HandlingResourceTest {
             .balanse(500)
             .build();
         when(handlereg.registrerHandling(any())).thenReturn(oversikt);
-        HandlingResource resource = new HandlingResource();
+        var resource = new HandlingResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
-        NyHandling handling = NyHandling.with()
+        var handling = NyHandling.with()
             .username("jd")
             .accountid(1)
             .storeId(1)
             .belop(510)
             .handletidspunkt(new Date())
             .build();
-        Oversikt oppdatertOversikt = resource.nyhandling(handling);
+        var oppdatertOversikt = resource.nyhandling(handling);
         assertEquals(oversikt.getBalanse(), oppdatertOversikt.getBalanse());
     }
 
     @Test
     void testNyhandlingWhenExceptionIsThrown() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
         when(handlereg.registrerHandling(any())).thenThrow(HandleregException.class);
-        HandlingResource resource = new HandlingResource();
+        var resource = new HandlingResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
-        NyHandling handling = NyHandling.with()
+        var handling = NyHandling.with()
             .username("jd")
             .accountid(1)
             .storeId(1)

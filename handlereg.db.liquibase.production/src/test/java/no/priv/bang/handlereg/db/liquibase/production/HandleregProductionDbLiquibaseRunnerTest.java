@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -38,37 +36,37 @@ class HandleregProductionDbLiquibaseRunnerTest {
 
     @Test
     void testCreateAndVerifySomeDataInSomeTables() throws Exception {
-        DataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:handlereg;create=true");
-        DataSource datasource = dataSourceFactory.createDataSource(properties);
+        var datasource = dataSourceFactory.createDataSource(properties);
 
-        MockLogService logservice = new MockLogService();
-        HandleregProductionDbLiquibaseRunner runner = new HandleregProductionDbLiquibaseRunner();
+        var logservice = new MockLogService();
+        var runner = new HandleregProductionDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
         runner.prepare(datasource);
-        int jdId = addAccount(datasource, "jd");
+        var jdId = addAccount(datasource, "jd");
         assertAccounts(datasource);
-        int storeid = addStore(datasource, "Spar Næroset");
-        int originalNumberOfTransactions = findNumberOfTransactions(datasource);
+        var storeid = addStore(datasource, "Spar Næroset");
+        var originalNumberOfTransactions = findNumberOfTransactions(datasource);
         addTransaction(datasource, jdId, storeid, 138);
-        int updatedNumberOfTransactions = findNumberOfTransactions(datasource);
+        var updatedNumberOfTransactions = findNumberOfTransactions(datasource);
         assertEquals(originalNumberOfTransactions + 1, updatedNumberOfTransactions);
     }
 
     @Test
     void testFailWhenCreatingInitialSchema() throws Exception {
         var realdb = createDataSource("handlereg1");
-        Connection connection = spy(realdb.getConnection());
+        var connection = spy(realdb.getConnection());
         // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
-        DataSource datasource = spy(realdb);
+        var datasource = spy(realdb);
         when(datasource.getConnection())
             .thenReturn(connection)
             .thenCallRealMethod()
             .thenCallRealMethod();
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         var runner = new HandleregProductionDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
@@ -80,9 +78,9 @@ class HandleregProductionDbLiquibaseRunnerTest {
 
     @Test
     void testFailWhenInsertingMockDataBecauseNoSchema() throws Exception {
-        Connection connection = spy(createDataSource("handlereg2").getConnection());
+        var connection = spy(createDataSource("handlereg2").getConnection());
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         var runner = new HandleregProductionDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
@@ -94,15 +92,15 @@ class HandleregProductionDbLiquibaseRunnerTest {
 
     @Test
     void testFailWhenUpdatingsSchema() throws Exception {
-        Connection connection = spy(createDataSource("handlereg3").getConnection());
+        var connection = spy(createDataSource("handlereg3").getConnection());
         // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
-        DataSource datasource = spy(createDataSource("handlereg4"));
+        var datasource = spy(createDataSource("handlereg4"));
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenCallRealMethod()
             .thenReturn(connection);
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         var runner = new HandleregProductionDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
@@ -113,9 +111,9 @@ class HandleregProductionDbLiquibaseRunnerTest {
     }
 
     private void assertAccounts(DataSource datasource) throws Exception {
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from accounts")) {
-                try (ResultSet results = statement.executeQuery()) {
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from accounts")) {
+                try (var results = statement.executeQuery()) {
                     assertAccount(results, "jd");
                 }
             }
@@ -128,17 +126,17 @@ class HandleregProductionDbLiquibaseRunnerTest {
     }
 
     private int addAccount(DataSource datasource, String username) throws Exception {
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into accounts (username) values (?)")) {
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into accounts (username) values (?)")) {
                 statement.setString(1, username);
                 statement.executeUpdate();
             }
         }
-        int accountId = -1;
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from accounts where username=?")) {
+        var accountId = -1;
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from accounts where username=?")) {
                 statement.setString(1, username);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     results.next();
                     accountId = results.getInt(1);
                 }
@@ -148,17 +146,17 @@ class HandleregProductionDbLiquibaseRunnerTest {
     }
 
     private int addStore(DataSource datasource, String storename) throws Exception {
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into stores (store_name) values (?)")) {
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into stores (store_name) values (?)")) {
                 statement.setString(1, storename);
                 statement.executeUpdate();
             }
         }
-        int storeid = -1;
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from stores where store_name=?")) {
+        var storeid = -1;
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from stores where store_name=?")) {
                 statement.setString(1, storename);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     results.next();
                     storeid = results.getInt(1);
                 }
@@ -168,8 +166,8 @@ class HandleregProductionDbLiquibaseRunnerTest {
     }
 
     private void addTransaction(DataSource datasource, int accountid, int storeid, double amount) throws SQLException {
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id, store_id, transaction_amount) values (?, ?, ?)")) {
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into transactions (account_id, store_id, transaction_amount) values (?, ?, ?)")) {
                 statement.setInt(1, accountid);
                 statement.setInt(2, storeid);
                 statement.setDouble(3, amount);
@@ -179,10 +177,10 @@ class HandleregProductionDbLiquibaseRunnerTest {
     }
 
     private int findNumberOfTransactions(DataSource datasource) throws SQLException {
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from transactions")) {
-                try (ResultSet results = statement.executeQuery()) {
-                    int count = 0;
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from transactions")) {
+                try (var results = statement.executeQuery()) {
+                    var count = 0;
                     while(results.next()) {
                         ++count;
                     }
@@ -194,10 +192,10 @@ class HandleregProductionDbLiquibaseRunnerTest {
     }
 
     private DataSource createDataSource(String dbname) throws SQLException {
-        DataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
-        DataSource datasource = dataSourceFactory.createDataSource(properties);
+        var datasource = dataSourceFactory.createDataSource(properties);
         return datasource;
     }
 

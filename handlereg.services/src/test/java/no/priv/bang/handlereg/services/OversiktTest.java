@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ class OversiktTest {
 
     @Test
     void testAllValues() {
-        Oversikt bean = Oversikt.with()
+        var bean = Oversikt.with()
             .accountid(1)
             .brukernavn("jad")
             .email("janedoe21@gmail.com")
@@ -49,7 +49,7 @@ class OversiktTest {
 
     @Test
     void testAllValuesNoargsConstructor() {
-        Oversikt bean = Oversikt.with().build();
+        var bean = Oversikt.with().build();
         assertEquals(-1, bean.getAccountid());
         assertNull(bean.getBrukernavn());
         assertNull(bean.getFornavn());

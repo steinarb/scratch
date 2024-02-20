@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2023 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,11 @@ import static org.mockito.Mockito.*;
 import java.sql.Connection;
 import java.io.PrintWriter;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -44,7 +41,7 @@ class HandleregLiquibaseTest {
 
     @Test
     void testCreateSchema() throws Exception {
-        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+        var handleregLiquibase = new HandleregLiquibase();
         try(var connection = createConnection("handlereg")) {
             handleregLiquibase.createInitialSchema(connection);
         }
@@ -67,10 +64,10 @@ class HandleregLiquibaseTest {
 
     @Test
     void testCreateSchemaWithDatabaseError() throws Exception {
-        Connection connection = spy(createConnection("handlereg2"));
+        var connection = spy(createConnection("handlereg2"));
         // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
 
-        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+        var handleregLiquibase = new HandleregLiquibase();
 
         var e = assertThrows(
             LiquibaseException.class,
@@ -80,11 +77,11 @@ class HandleregLiquibaseTest {
 
     @Test
     void testCreateSchemaWithErrorOnClose() throws Exception {
-        Connection connection = spy(createConnection("handlereg3"));
+        var connection = spy(createConnection("handlereg3"));
         doNothing().when(connection).setAutoCommit(anyBoolean());
         doThrow(Exception.class).when(connection).close();
 
-        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+        var handleregLiquibase = new HandleregLiquibase();
 
 
         var e = assertThrows(
@@ -96,20 +93,20 @@ class HandleregLiquibaseTest {
     @Disabled("Pseudo-test that imports legacy data and turns them into SQL files that can be imported into an SQL database")
     @Test
     void createSqlFromOriginalData() throws Exception {
-        Connection connection = createConnection("handlereg");
-        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
+        var connection = createConnection("handlereg");
+        var handleregLiquibase = new HandleregLiquibase();
         handleregLiquibase.createInitialSchema(connection);
-        OldData oldData = new OldData();
+        var oldData = new OldData();
         assertEquals(137, oldData.butikker.size());
         assertEquals(4501, oldData.handlinger.size());
-        Integer jdAccountid = addAccount(connection, "sb");
-        Integer jadAccountid = addAccount(connection, "tlf");
-        int nærbutikkRekkefølge = 0;
-        int annenbutikkRekkefølge = 0;
-        int gruppe = 1;
-        int rekkefølge = 0;
-        for (String store : oldData.butikker) {
-            boolean deaktivert = oldData.deaktivert.contains(store);
+        var jdAccountid = addAccount(connection, "sb");
+        var jadAccountid = addAccount(connection, "tlf");
+        var nærbutikkRekkefølge = 0;
+        var annenbutikkRekkefølge = 0;
+        var gruppe = 1;
+        var rekkefølge = 0;
+        for (var store : oldData.butikker) {
+            var deaktivert = oldData.deaktivert.contains(store);
             if (oldData.nærbutikker.contains(store)) {
                 gruppe = 1;
                 rekkefølge = (nærbutikkRekkefølge += 10);
@@ -120,34 +117,34 @@ class HandleregLiquibaseTest {
             addStore(connection, store, gruppe, rekkefølge, deaktivert);
         }
 
-        Map<String, Integer> accountids = new HashMap<>();
+        var accountids = new HashMap<>();
         accountids.put("jd", jdAccountid);
         accountids.put("jad", jadAccountid);
-        try(PrintWriter storeWriter = new PrintWriter("accounts.sql")) {
+        try(var storeWriter = new PrintWriter("accounts.sql")) {
             storeWriter.println("--liquibase formatted sql");
             storeWriter.println("--changeset sb:example_accounts");
-            try(PreparedStatement statement = connection.prepareStatement("select username from accounts order by account_id")) {
-                ResultSet results = statement.executeQuery();
+            try(var statement = connection.prepareStatement("select username from accounts order by account_id")) {
+                var results = statement.executeQuery();
                 while(results.next()) {
-                    String username = results.getString(1);
+                    var username = results.getString(1);
                     storeWriter.println(String.format("insert into accounts (username) values ('%s');", username));
                 }
             }
         }
 
-        Map<String, Integer> storeids = findStoreIds(connection);
+        var storeids = findStoreIds(connection);
         assertEquals(137, storeids.size());
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try(PrintWriter transactionWriter = new PrintWriter("transactions.sql")) {
+        var format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try(var transactionWriter = new PrintWriter("transactions.sql")) {
             transactionWriter.println("--liquibase formatted sql");
             transactionWriter.println("--changeset sb:example_transactions");
             for (Handling handling : oldData.handlinger) {
-                int accountid = accountids.get(handling.username);
+                var accountid = accountids.get(handling.username);
                 System.out.println("handling: " + handling);
-                int storeid = storeids.get(handling.butikk);
+                var storeid = storeids.get(handling.butikk);
                 double belop = handling.belop;
-                String timestamp = format.format(handling.timestamp);
+                var timestamp = format.format(handling.timestamp);
                 transactionWriter.println(String.format("insert into transactions (account_id, store_id, transaction_time, transaction_amount) values (%d, %d, '%s', %f);", accountid, storeid, timestamp, belop));
             }
         }
@@ -158,11 +155,11 @@ class HandleregLiquibaseTest {
     }
 
     private void assertAccounts(Connection connection) throws Exception {
-        String sql = "select count(*) from accounts";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            try(ResultSet results = statement.executeQuery()) {
+        var sql = "select count(*) from accounts";
+        try(var statement = connection.prepareStatement(sql)) {
+            try(var results = statement.executeQuery()) {
                 if (results.next()) {
-                    int count = results.getInt(1);
+                    var count = results.getInt(1);
                     assertEquals(1, count);
                 }
             }
@@ -170,8 +167,8 @@ class HandleregLiquibaseTest {
     }
 
     private int addAccount(Connection connection, String username) throws Exception {
-        String sql = "insert into accounts (username) values (?)";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "insert into accounts (username) values (?)";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
             statement.executeUpdate();
         }
@@ -180,10 +177,10 @@ class HandleregLiquibaseTest {
     }
 
     private int findAccountId(Connection connection, String username) throws Exception {
-        String sql = "select account_id from accounts where username=?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select account_id from accounts where username=?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
-            try(ResultSet results = statement.executeQuery()) {
+            try(var results = statement.executeQuery()) {
                 if (results.next()) {
                     return results.getInt(1);
                 }
@@ -194,18 +191,18 @@ class HandleregLiquibaseTest {
     }
 
     private Map<String, Integer> findStoreIds(Connection connection) throws Exception {
-        Map<String, Integer> storeids = new HashMap<>();
-        try(PrintWriter storeWriter = new PrintWriter("stores.sql")) {
+        var storeids = new HashMap<String, Integer>();
+        try(var storeWriter = new PrintWriter("stores.sql")) {
             storeWriter.println("--liquibase formatted sql");
             storeWriter.println("--changeset sb:example_stores");
-            try(PreparedStatement statement = connection.prepareStatement("select * from stores")) {
-                ResultSet results = statement.executeQuery();
+            try(var statement = connection.prepareStatement("select * from stores")) {
+                var results = statement.executeQuery();
                 while(results.next()) {
-                    String storename = results.getString(2);
-                    Integer storeid = results.getInt(1);
-                    Integer gruppe = results.getInt(3);
-                    Integer rekkefølge = results.getInt(4);
-                    boolean deaktivert = results.getBoolean(5);
+                    var storename = results.getString(2);
+                    var storeid = results.getInt(1);
+                    var gruppe = results.getInt(3);
+                    var rekkefølge = results.getInt(4);
+                    var deaktivert = results.getBoolean(5);
                     storeids.put(storename, storeid);
                     storeWriter.println(String.format("insert into stores (store_name, gruppe, rekkefolge, deaktivert) values ('%s', %d, %d, %b);", storename, gruppe, rekkefølge, deaktivert));
                 }
@@ -220,27 +217,27 @@ class HandleregLiquibaseTest {
     }
 
     private void assertStores(Connection connection) throws Exception {
-        try(PreparedStatement statement = connection.prepareStatement("select * from stores")) {
-            ResultSet resultset = statement.executeQuery();
+        try(var statement = connection.prepareStatement("select * from stores")) {
+            var resultset = statement.executeQuery();
             assertStore(resultset, "Joker Folldal");
         }
     }
 
     private void assertTransactions(Connection connection) throws Exception {
-        try(PreparedStatement statement = connection.prepareStatement("select * from transactions join stores on transactions.store_id=stores.store_id join accounts on transactions.account_id=accounts.account_id")) {
-            ResultSet results = statement.executeQuery();
+        try(var statement = connection.prepareStatement("select * from transactions join stores on transactions.store_id=stores.store_id join accounts on transactions.account_id=accounts.account_id")) {
+            var results = statement.executeQuery();
             assertTransaction(results, 210.0, "Joker Folldal", "admin");
         }
     }
 
     private void addTransactions(Connection connection) throws Exception {
-        int accountid = 1;
-        int storeid = 1;
+        var accountid = 1;
+        var storeid = 1;
         addTransaction(connection, accountid, storeid, 210.0);
     }
 
     private void addStore(Connection connection, String storename, int gruppe, int rekkefølge, boolean deaktivert) throws Exception {
-        try(PreparedStatement statement = connection.prepareStatement("insert into stores (store_name, gruppe, rekkefolge, deaktivert) values (?, ?, ?, ?)")) {
+        try(var statement = connection.prepareStatement("insert into stores (store_name, gruppe, rekkefolge, deaktivert) values (?, ?, ?, ?)")) {
             statement.setString(1, storename);
             statement.setInt(2, gruppe);
             statement.setInt(3, rekkefølge);
@@ -255,7 +252,7 @@ class HandleregLiquibaseTest {
     }
 
     private void addTransaction(Connection connection, int accountid, int storeid, double amount) throws Exception {
-        try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id, store_id, transaction_amount) values (?, ?, ?)")) {
+        try(var statement = connection.prepareStatement("insert into transactions (account_id, store_id, transaction_amount) values (?, ?, ?)")) {
             statement.setInt(1, accountid);
             statement.setInt(2, storeid);
             statement.setDouble(3, amount);
@@ -271,13 +268,13 @@ class HandleregLiquibaseTest {
     }
 
     private void addFavourites(Connection connection) throws Exception {
-        int accountid = findAccountId(connection, "admin");
-        int storeid = findStoreIds(connection).entrySet().stream().findFirst().get().getValue();
+        var accountid = findAccountId(connection, "admin");
+        var storeid = findStoreIds(connection).entrySet().stream().findFirst().get().getValue();
         addFavourite(connection, accountid, storeid, 10);
     }
 
     private void addFavourite(Connection connection, int accountid, int storeid, int rekkefolge) throws Exception {
-        try(PreparedStatement statement = connection.prepareStatement("insert into favourites (account_id, store_id, rekkefolge) values (?, ?, ?)")) {
+        try(var statement = connection.prepareStatement("insert into favourites (account_id, store_id, rekkefolge) values (?, ?, ?)")) {
             statement.setInt(1, accountid);
             statement.setInt(2, storeid);
             statement.setInt(3, rekkefolge);
@@ -286,11 +283,11 @@ class HandleregLiquibaseTest {
     }
 
     private void assertFavourites(Connection connection) throws Exception {
-        int accountid = findAccountId(connection, "admin");
-        int storeid = findStoreIds(connection).entrySet().stream().findFirst().get().getValue();
-        int rekkefolge = 10;
-        try(PreparedStatement statement = connection.prepareStatement("select * from favourites")) {
-            ResultSet results = statement.executeQuery();
+        var accountid = findAccountId(connection, "admin");
+        var storeid = findStoreIds(connection).entrySet().stream().findFirst().get().getValue();
+        var rekkefolge = 10;
+        try(var statement = connection.prepareStatement("select * from favourites")) {
+            var results = statement.executeQuery();
             assertFavourite(results, accountid, storeid, rekkefolge);
         }
 
@@ -304,9 +301,9 @@ class HandleregLiquibaseTest {
     }
 
     private Connection createConnection(String dbname) throws Exception {
-        Properties properties = new Properties();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
-        DataSource dataSource = derbyDataSourceFactory.createDataSource(properties);
+        var dataSource = derbyDataSourceFactory.createDataSource(properties);
         return dataSource.getConnection();
     }
 

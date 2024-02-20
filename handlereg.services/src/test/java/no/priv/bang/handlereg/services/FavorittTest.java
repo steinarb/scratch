@@ -24,8 +24,8 @@ class FavorittTest {
 
     @Test
     void test() {
-        Butikk store = Butikk.with().storeId(13).build();
-        Favoritt bean = Favoritt.with()
+        var store = Butikk.with().storeId(13).build();
+        var bean = Favoritt.with()
             .favouriteid(42)
             .accountid(3)
             .store(store)
@@ -39,7 +39,7 @@ class FavorittTest {
 
     @Test
     void testNoArgs() {
-        Favoritt bean = Favoritt.with().build();
+        var bean = Favoritt.with().build();
         assertEquals(-1, bean.getFavouriteid());
         assertEquals(-1, bean.getAccountid());
         assertNull(bean.getStore());
@@ -48,7 +48,7 @@ class FavorittTest {
 
     @Test
     void testToString() {
-        Favoritt bean = Favoritt.with().build();
+        var bean = Favoritt.with().build();
         assertThat(bean.toString()).startsWith("Favoritt [");
     }
 

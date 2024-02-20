@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ class LoginresultatTest {
 
     @Test
     void testCreate() {
-        boolean suksess = true;
-        boolean authorized = true;
-        String feilmelding = "Feil passord";
-        String originalRequestUrl = "http://localhost:8181/handlereg/hurtigregistrering";
-        String brukernavn = "jad";
-        Loginresultat bean = Loginresultat.with()
+        var suksess = true;
+        var authorized = true;
+        var feilmelding = "Feil passord";
+        var originalRequestUrl = "http://localhost:8181/handlereg/hurtigregistrering";
+        var brukernavn = "jad";
+        var bean = Loginresultat.with()
             .brukernavn(brukernavn)
             .suksess(suksess)
             .feilmelding(feilmelding)
@@ -45,7 +45,7 @@ class LoginresultatTest {
 
     @Test
     void testNoargsConstructor() {
-        Loginresultat bean = Loginresultat.with().build();
+        var bean = Loginresultat.with().build();
         assertFalse(bean.getSuksess());
         assertNull(bean.getFeilmelding());
         assertFalse(bean.isAuthorized());
@@ -54,7 +54,7 @@ class LoginresultatTest {
 
     @Test
     void testToString() {
-        Loginresultat bean = Loginresultat.with().build();
+        var bean = Loginresultat.with().build();
         assertThat(bean.toString()).startsWith("Loginresultat [");
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,23 +24,23 @@ class ButikkCountTest {
 
     @Test
     void test() {
-        Butikk butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
+        var butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
         long count = 2345;
-        ButikkCount bean = ButikkCount.with().butikk(butikk).count(count).build();
+        var bean = ButikkCount.with().butikk(butikk).count(count).build();
         assertEquals(butikk, bean.getButikk());
         assertEquals(count, bean.getCount());
     }
 
     @Test
     void testNoargsConstructor() {
-        ButikkCount bean = ButikkCount.with().build();
+        var bean = ButikkCount.with().build();
         assertNull(bean.getButikk());
         assertEquals(0, bean.getCount());
     }
 
     @Test
     void testToString() {
-        ButikkCount bean = ButikkCount.with().build();
+        var bean = ButikkCount.with().build();
         assertThat(bean.toString()).startsWith("ButikkCount [");
     }
 

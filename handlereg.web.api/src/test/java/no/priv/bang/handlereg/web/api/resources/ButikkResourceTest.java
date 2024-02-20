@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.List;
-
 import javax.ws.rs.InternalServerErrorException;
 
 import org.junit.jupiter.api.Test;
@@ -35,23 +33,23 @@ class ButikkResourceTest {
 
     @Test
     void testGetButikker() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
         when(handlereg.finnButikker()).thenReturn(Arrays.asList(Butikk.with().build()));
-        ButikkResource resource = new ButikkResource();
+        var resource = new ButikkResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
-        List<Butikk> butikker = resource.getButikker();
+        var butikker = resource.getButikker();
         assertThat(butikker).isNotEmpty();
     }
 
     @Test
     void testGetButikkerWhenExceptionIsThrown() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
         when(handlereg.finnButikker()).thenThrow(HandleregException.class);
-        ButikkResource resource = new ButikkResource();
+        var resource = new ButikkResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
@@ -62,28 +60,28 @@ class ButikkResourceTest {
 
     @Test
     void testLeggTilButikk() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
-        Butikk nybutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
+        var nybutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
         when(handlereg.leggTilButikk(any())).thenReturn(Arrays.asList(nybutikk));
-        ButikkResource resource = new ButikkResource();
+        var resource = new ButikkResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
-        List<Butikk> butikker = resource.leggTilButikk(nybutikk);
+        var butikker = resource.leggTilButikk(nybutikk);
         assertEquals(nybutikk, butikker.get(0));
     }
 
     @Test
     void testLeggTilButikkWhenExceptionIsThrown() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
         when(handlereg.leggTilButikk(any())).thenThrow(HandleregException.class);
-        ButikkResource resource = new ButikkResource();
+        var resource = new ButikkResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
-        Butikk butikk = Butikk.with().build();
+        var butikk = Butikk.with().build();
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.leggTilButikk(butikk);
             });
@@ -91,28 +89,28 @@ class ButikkResourceTest {
 
     @Test
     void testEndreButikk() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
-        Butikk endretbutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
+        var endretbutikk = Butikk.with().butikknavn("Spar Høydalsmo").build();
         when(handlereg.endreButikk(any())).thenReturn(Arrays.asList(endretbutikk));
-        ButikkResource resource = new ButikkResource();
+        var resource = new ButikkResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
-        List<Butikk> butikker = resource.endreButikk(endretbutikk);
+        var butikker = resource.endreButikk(endretbutikk);
         assertEquals(endretbutikk, butikker.get(0));
     }
 
     @Test
     void testEndreButikkWhenExceptionIsThrown() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
         when(handlereg.endreButikk(any())).thenThrow(HandleregException.class);
-        ButikkResource resource = new ButikkResource();
+        var resource = new ButikkResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
-        Butikk butikk = Butikk.with().build();
+        var butikk = Butikk.with().build();
         assertThrows(InternalServerErrorException.class, () -> {
                 resource.endreButikk(butikk);
             });

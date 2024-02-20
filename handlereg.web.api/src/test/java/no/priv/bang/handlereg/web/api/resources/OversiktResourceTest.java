@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,14 @@ import org.junit.jupiter.api.Test;
 import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.Oversikt;
 import no.priv.bang.handlereg.web.api.ShiroTestBase;
-import no.priv.bang.handlereg.web.api.resources.OversiktResource;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OversiktResourceTest extends ShiroTestBase {
 
     @Test
     void testGetOversikt() {
-        HandleregService handlereg = mock(HandleregService.class);
-        Oversikt jdOversikt = Oversikt.with()
+        var handlereg = mock(HandleregService.class);
+        var jdOversikt = Oversikt.with()
             .accountid(1)
             .brukernavn("jd")
             .email("johndoe@gmail.com")
@@ -42,19 +41,19 @@ class OversiktResourceTest extends ShiroTestBase {
             .balanse(1500)
             .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
-        OversiktResource resource = new OversiktResource();
+        var resource = new OversiktResource();
         resource.handlereg = handlereg;
         loginUser("jd", "johnnyBoi");
 
-        Oversikt oversikt = resource.get();
+        var oversikt = resource.get();
         assertEquals("jd", oversikt.getBrukernavn());
     }
 
     @Test
     void testGetOversiktNotLoggedIn() {
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
-        Oversikt jdOversikt = Oversikt.with()
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
+        var jdOversikt = Oversikt.with()
             .accountid(1)
             .brukernavn("jd")
             .email("johndoe@gmail.com")
@@ -63,7 +62,7 @@ class OversiktResourceTest extends ShiroTestBase {
             .balanse(1500)
             .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
-        OversiktResource resource = new OversiktResource();
+        var resource = new OversiktResource();
         resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         removeWebSubjectFromThread();

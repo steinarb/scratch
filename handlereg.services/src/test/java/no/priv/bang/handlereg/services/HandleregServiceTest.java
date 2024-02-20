@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package no.priv.bang.handlereg.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 
@@ -27,43 +25,43 @@ class HandleregServiceTest {
 
     @Test
     void testOfAllOfTheMethods() {
-        HandleregService service = mock(HandleregService.class);
-        String brukernavn = "jad";
-        Oversikt oversikt =  service.finnOversikt(brukernavn);
+        var service = mock(HandleregService.class);
+        var brukernavn = "jad";
+        var oversikt =  service.finnOversikt(brukernavn);
         assertNull(oversikt);
         int userId = 2;
-        List<Transaction> transactions = service.findLastTransactions(userId);
+        var transactions = service.findLastTransactions(userId);
         assertEquals(0, transactions.size());
-        NyHandling handling = NyHandling.with().build();
-        Oversikt nyoversikt = service.registrerHandling(handling);
+        var handling = NyHandling.with().build();
+        var nyoversikt = service.registrerHandling(handling);
         assertNull(nyoversikt);
-        List<Butikk> butikker = service.finnButikker();
+        var butikker = service.finnButikker();
         assertEquals(0, butikker.size());
-        Butikk nybutikk = Butikk.with().build();
-        List<Butikk> oppdaterteButikker = service.leggTilButikk(nybutikk);
+        var nybutikk = Butikk.with().build();
+        var oppdaterteButikker = service.leggTilButikk(nybutikk);
         assertEquals(0, oppdaterteButikker.size());
-        List<Butikk> endredeButikker = service.endreButikk(nybutikk);
+        var endredeButikker = service.endreButikk(nybutikk);
         assertEquals(0, endredeButikker.size());
-        List<ButikkSum> sumPrButikk = service.sumOverButikk();
+        var sumPrButikk = service.sumOverButikk();
         assertEquals(0, sumPrButikk.size());
-        List<ButikkCount> antallHandlerIButikk = service.antallHandlingerIButikk();
+        var antallHandlerIButikk = service.antallHandlingerIButikk();
         assertEquals(0, antallHandlerIButikk.size());
-        List<ButikkDate> sisteHandelIButikk = service.sisteHandelIButikk();
+        var sisteHandelIButikk = service.sisteHandelIButikk();
         assertEquals(0, sisteHandelIButikk.size());
-        List<SumYear> totaltHandlebelopPrAar = service.totaltHandlebelopPrAar();
+        var totaltHandlebelopPrAar = service.totaltHandlebelopPrAar();
         assertEquals(0, totaltHandlebelopPrAar.size());
-        List<SumYearMonth> totaltHandlebelopPrAarOgMaaned = service.totaltHandlebelopPrAarOgMaaned();
+        var totaltHandlebelopPrAarOgMaaned = service.totaltHandlebelopPrAarOgMaaned();
         assertEquals(0, totaltHandlebelopPrAarOgMaaned.size());
-        List<Favoritt> favoritter = service.finnFavoritter(null);
+        var favoritter = service.finnFavoritter(null);
         assertEquals(0, favoritter.size());
-        NyFavoritt nyFavoritt = NyFavoritt.with().brukernavn("jd").build();
-        List<Favoritt> enMerFavoritt = service.leggTilFavoritt(nyFavoritt);
+        var nyFavoritt = NyFavoritt.with().brukernavn("jd").build();
+        var enMerFavoritt = service.leggTilFavoritt(nyFavoritt);
         assertEquals(0, enMerFavoritt.size());
-        Favoritt skalSlettes = Favoritt.with().build();
-        List<Favoritt> favoritterMinusSlettet = service.slettFavoritt(skalSlettes);
+        var skalSlettes = Favoritt.with().build();
+        var favoritterMinusSlettet = service.slettFavoritt(skalSlettes);
         assertEquals(0, favoritterMinusSlettet.size());
-        Favorittpar parSomSkalBytteRekkfolge = Favorittpar.with().build();
-        List<Favoritt> favoritterByttet = service.byttRekkefolge(parSomSkalBytteRekkfolge);
+        var parSomSkalBytteRekkfolge = Favorittpar.with().build();
+        var favoritterByttet = service.byttRekkefolge(parSomSkalBytteRekkfolge);
         assertEquals(0, favoritterByttet.size());
     }
 

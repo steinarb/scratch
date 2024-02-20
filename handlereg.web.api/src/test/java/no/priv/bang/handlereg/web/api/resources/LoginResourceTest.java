@@ -22,7 +22,6 @@ import java.util.Base64;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.web.subject.WebSubject;
 import org.apache.shiro.web.util.WebUtils;
 
 import static org.assertj.core.api.Assertions.*;
@@ -33,7 +32,6 @@ import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockServletContext;
 
 import no.priv.bang.handlereg.services.Credentials;
-import no.priv.bang.handlereg.services.Loginresultat;
 import no.priv.bang.handlereg.web.api.ShiroTestBase;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
@@ -45,16 +43,16 @@ class LoginResourceTest extends ShiroTestBase {
         var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/");
         var webcontext = new MockServletContext();
         webcontext.setContextPath("/handlereg");
-        LoginResource resource = new LoginResource();
+        var resource = new LoginResource();
         resource.webcontext = webcontext;
         resource.request = httpRequest;
         resource.setLogservice(logservice);
-        String username = "jd";
-        String password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
         WebUtils.saveRequest(httpRequest);
-        Credentials credentials = Credentials.with().username(username).password(password).build();
-        Loginresultat resultat = resource.login(credentials);
+        var credentials = Credentials.with().username(username).password(password).build();
+        var resultat = resource.login(credentials);
         assertTrue(resultat.getSuksess());
         assertEquals(username, resultat.getBrukernavn());
         assertEquals("/", resultat.getOriginalRequestUrl());
@@ -141,42 +139,42 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginFeilPassord() {
-        MockLogService logservice = new MockLogService();
-        LoginResource resource = new LoginResource();
+        var logservice = new MockLogService();
+        var resource = new LoginResource();
         resource.setLogservice(logservice);
-        String username = "jd";
-        String password = Base64.getEncoder().encodeToString("feil".getBytes());
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
-        Credentials credentials = Credentials.with().username(username).password(password).build();
-        Loginresultat resultat = resource.login(credentials);
+        var credentials = Credentials.with().username(username).password(password).build();
+        var resultat = resource.login(credentials);
         assertFalse(resultat.getSuksess());
         assertThat(resultat.getFeilmelding()).startsWith("Feil passord");
     }
 
     @Test
     void testLoginUkjentBrukernavn() {
-        MockLogService logservice = new MockLogService();
-        LoginResource resource = new LoginResource();
+        var logservice = new MockLogService();
+        var resource = new LoginResource();
         resource.setLogservice(logservice);
-        String username = "jdd";
-        String password = Base64.getEncoder().encodeToString("feil".getBytes());
+        var username = "jdd";
+        var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
-        Credentials credentials = Credentials.with().username(username).password(password).build();
-        Loginresultat resultat = resource.login(credentials);
+        var credentials = Credentials.with().username(username).password(password).build();
+        var resultat = resource.login(credentials);
         assertThat(resultat.getFeilmelding()).startsWith("Ukjent konto");
     }
 
     @Test
     void testLogout() {
-        LoginResource resource = new LoginResource();
-        String username = "jd";
-        String password = "johnnyBoi";
-        WebSubject subject = createSubjectAndBindItToThread();
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        var resource = new LoginResource();
+        var username = "jd";
+        var password = "johnnyBoi";
+        var subject = createSubjectAndBindItToThread();
+        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
         assertTrue(subject.isAuthenticated()); // Verify precondition user logged in
 
-        Loginresultat loginresultat = resource.logout();
+        var loginresultat = resource.logout();
         assertFalse(loginresultat.getSuksess());
         assertEquals("Logget ut", loginresultat.getFeilmelding());
         assertFalse(loginresultat.isAuthorized());
@@ -185,14 +183,14 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testGetLogintilstandWhenLoggedIn() {
-        LoginResource resource = new LoginResource();
-        String username = "jd";
-        String password = "johnnyBoi";
-        WebSubject subject = createSubjectAndBindItToThread();
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        var resource = new LoginResource();
+        var username = "jd";
+        var password = "johnnyBoi";
+        var subject = createSubjectAndBindItToThread();
+        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
 
-        Loginresultat loginresultat = resource.logintilstand();
+        var loginresultat = resource.logintilstand();
         assertTrue(loginresultat.getSuksess());
         assertEquals("Bruker er logget inn og har tilgang", loginresultat.getFeilmelding());
         assertTrue(loginresultat.isAuthorized());
@@ -201,14 +199,14 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testGetLogintilstandWhenLoggedInButUserDoesntHaveRoleHandleregbruker() {
-        LoginResource resource = new LoginResource();
-        String username = "jad";
-        String password = "1ad";
-        WebSubject subject = createSubjectAndBindItToThread();
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        var resource = new LoginResource();
+        var username = "jad";
+        var password = "1ad";
+        var subject = createSubjectAndBindItToThread();
+        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
 
-        Loginresultat loginresultat = resource.logintilstand();
+        var loginresultat = resource.logintilstand();
         assertTrue(loginresultat.getSuksess());
         assertEquals("Bruker er logget inn men mangler tilgang", loginresultat.getFeilmelding());
         assertFalse(loginresultat.isAuthorized());
@@ -216,10 +214,10 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testGetLogintilstandWhenNotLoggedIn() {
-        LoginResource resource = new LoginResource();
+        var resource = new LoginResource();
         createSubjectAndBindItToThread();
 
-        Loginresultat loginresultat = resource.logintilstand();
+        var loginresultat = resource.logintilstand();
         assertFalse(loginresultat.getSuksess());
         assertEquals("Bruker er ikke logget inn", loginresultat.getFeilmelding());
         assertFalse(loginresultat.isAuthorized());

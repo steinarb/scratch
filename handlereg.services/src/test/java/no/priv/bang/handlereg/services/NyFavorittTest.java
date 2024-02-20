@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ class NyFavorittTest {
 
     @Test
     void test() {
-        String username = "jd";
-        Butikk butikk = Butikk.with().storeId(4).build();
-        NyFavoritt bean = NyFavoritt.with()
+        var username = "jd";
+        var butikk = Butikk.with().storeId(4).build();
+        var bean = NyFavoritt.with()
             .brukernavn(username)
             .butikk(butikk)
             .build();
@@ -36,7 +36,7 @@ class NyFavorittTest {
 
     @Test
     void testToString() {
-        NyFavoritt bean = NyFavoritt.with().build();
+        var bean = NyFavoritt.with().build();
         assertThat(bean.toString()).startsWith("NyFavoritt [");
     }
 

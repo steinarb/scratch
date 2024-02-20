@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ class NyHandlingTest {
 
     @Test
     void testAllValues() {
-        String username = "jad";
-        int accountid = 2;
-        int storeId = 2;
-        double belop = 42.0;
-        Date now = new Date();
-        NyHandling bean = NyHandling.with()
+        var username = "jad";
+        var accountid = 2;
+        var storeId = 2;
+        var belop = 42.0;
+        var now = new Date();
+        var bean = NyHandling.with()
             .username(username)
             .accountid(accountid)
             .storeId(storeId)
@@ -47,7 +47,7 @@ class NyHandlingTest {
 
     @Test
     void testNoArgsConstructor() {
-        NyHandling bean = NyHandling.with().build();
+        var bean = NyHandling.with().build();
         assertNull(bean.getUsername());
         assertEquals(-1, bean.getAccountid());
         assertEquals(-1, bean.getStoreId());
@@ -57,7 +57,7 @@ class NyHandlingTest {
 
     @Test
     void testToString() {
-        NyHandling bean = NyHandling.with().build();
+        var bean = NyHandling.with().build();
         assertThat(bean.toString()).startsWith("NyHandling [");
     }
 

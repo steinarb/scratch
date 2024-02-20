@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ class FavorittparTest {
 
     @Test
     void test() {
-        Favoritt forste = Favoritt.with().favouriteid(1).build();
-        Favoritt andre = Favoritt.with().favouriteid(2).build();
-        Favorittpar par = Favorittpar.with()
+        var forste = Favoritt.with().favouriteid(1).build();
+        var andre = Favoritt.with().favouriteid(2).build();
+        var par = Favorittpar.with()
             .forste(forste)
             .andre(andre)
             .build();
@@ -36,7 +36,7 @@ class FavorittparTest {
 
     @Test
     void testToString() {
-        Favorittpar bean = Favorittpar.with().build();
+        var bean = Favorittpar.with().build();
         assertThat(bean.toString()).startsWith("Favorittpar [");
     }
 

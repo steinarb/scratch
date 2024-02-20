@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package no.priv.bang.handlereg.db.liquibase.test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -36,32 +34,32 @@ class HandleregDerbyTestDatabaseTest {
 
     @Test
     void testCreateAndVerifySomeDataInSomeTables() throws Exception {
-        DataSource datasource = createDataSource("handlereg");
+        var datasource = createDataSource("handlereg");
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         var runner = new HandleregTestDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
         runner.prepare(datasource);
         assertAccounts(datasource);
-        int originalNumberOfTransactions = findNumberOfTransactions(datasource);
+        var originalNumberOfTransactions = findNumberOfTransactions(datasource);
         addTransaction(datasource, 138);
-        int updatedNumberOfTransactions = findNumberOfTransactions(datasource);
+        var updatedNumberOfTransactions = findNumberOfTransactions(datasource);
         assertEquals(originalNumberOfTransactions + 1, updatedNumberOfTransactions);
     }
 
     @Test
     void testFailWhenCreatingInitialSchema() throws Exception {
         var realdb = createDataSource("handlereg1");
-        Connection connection = spy(realdb.getConnection());
+        var connection = spy(realdb.getConnection());
         // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
-        DataSource datasource = spy(realdb);
+        var datasource = spy(realdb);
         when(datasource.getConnection())
             .thenReturn(connection)
             .thenCallRealMethod()
             .thenCallRealMethod();
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         var runner = new HandleregTestDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
@@ -73,9 +71,9 @@ class HandleregDerbyTestDatabaseTest {
 
     @Test
     void testFailWhenInsertingMockDataBecauseNoSchema() throws Exception {
-        Connection connection = createDataSource("handlereg2").getConnection();
+        var connection = createDataSource("handlereg2").getConnection();
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         var runner = new HandleregTestDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
@@ -87,15 +85,15 @@ class HandleregDerbyTestDatabaseTest {
 
     @Test
     void testFailWhenUpdatingsSchema() throws Exception {
-        Connection connection = spy(createDataSource("handlereg3").getConnection());
+        var connection = spy(createDataSource("handlereg3").getConnection());
         // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
-        DataSource datasource = spy(createDataSource("handlereg4"));
+        var datasource = spy(createDataSource("handlereg4"));
         when(datasource.getConnection())
             .thenCallRealMethod()
             .thenCallRealMethod()
             .thenReturn(connection);
 
-        MockLogService logservice = new MockLogService();
+        var logservice = new MockLogService();
         var runner = new HandleregTestDbLiquibaseRunner();
         runner.setLogService(logservice);
         runner.activate();
@@ -106,9 +104,9 @@ class HandleregDerbyTestDatabaseTest {
     }
 
     private void assertAccounts(DataSource datasource) throws Exception {
-        try (Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from accounts")) {
-                try (ResultSet results = statement.executeQuery()) {
+        try (var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from accounts")) {
+                try (var results = statement.executeQuery()) {
                     assertAccount(results, "jod");
                 }
             }
@@ -121,8 +119,8 @@ class HandleregDerbyTestDatabaseTest {
     }
 
     private void addTransaction(DataSource database, double amount) throws SQLException {
-        try (Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("insert into transactions (account_id, store_id, transaction_amount) values (1, 1, ?)")) {
+        try (var connection = database.getConnection()) {
+            try(var statement = connection.prepareStatement("insert into transactions (account_id, store_id, transaction_amount) values (1, 1, ?)")) {
                 statement.setDouble(1, amount);
                 statement.executeUpdate();
             }
@@ -130,10 +128,10 @@ class HandleregDerbyTestDatabaseTest {
     }
 
     private int findNumberOfTransactions(DataSource database) throws SQLException {
-        try (Connection connection = database.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement("select * from transactions")) {
-                try (ResultSet results = statement.executeQuery()) {
-                    int count = 0;
+        try (var connection = database.getConnection()) {
+            try(var statement = connection.prepareStatement("select * from transactions")) {
+                try (var results = statement.executeQuery()) {
+                    var count = 0;
                     while(results.next()) {
                         ++count;
                     }
@@ -145,10 +143,10 @@ class HandleregDerbyTestDatabaseTest {
     }
 
     private DataSource createDataSource(String dbname) throws SQLException {
-        DataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
-        Properties properties = new Properties();
+        var dataSourceFactory = new DerbyDataSourceFactory();
+        var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
-        DataSource datasource = dataSourceFactory.createDataSource(properties);
+        var datasource = dataSourceFactory.createDataSource(properties);
         return datasource;
     }
 

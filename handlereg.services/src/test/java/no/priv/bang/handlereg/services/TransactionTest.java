@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ class TransactionTest {
 
     @Test
     void testCreate() {
-        Date now = new Date();
-        Transaction bean = Transaction.with()
+        var now = new Date();
+        var bean = Transaction.with()
             .transactionId(1)
             .handletidspunkt(now)
             .butikk("Spar fjellheimen")
@@ -43,7 +43,7 @@ class TransactionTest {
 
     @Test
     void testCreateWithNoargsConstructor() {
-        Transaction bean = Transaction.with().build();
+        var bean = Transaction.with().build();
         assertEquals(-1, bean.getTransactionId());
         assertNull(bean.getHandletidspunkt());
         assertNull(bean.getButikk());
@@ -53,7 +53,7 @@ class TransactionTest {
 
     @Test
     void testToString() {
-        Transaction bean = Transaction.with().build();
+        var bean = Transaction.with().build();
         assertThat(bean.toString()).startsWith("Transaction [");
     }
 

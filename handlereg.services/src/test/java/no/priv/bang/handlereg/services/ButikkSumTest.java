@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,23 +24,23 @@ class ButikkSumTest {
 
     @Test
     void test() {
-        Butikk butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
-        double sum = 2345;
-        ButikkSum bean = ButikkSum.with().butikk(butikk).sum(sum).build();
+        var butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
+        var sum = 2345;
+        var bean = ButikkSum.with().butikk(butikk).sum(sum).build();
         assertEquals(butikk, bean.getButikk());
         assertEquals(sum, bean.getSum());
     }
 
     @Test
     void testNoargsConstructor() {
-        ButikkSum bean = ButikkSum.with().build();
+        var bean = ButikkSum.with().build();
         assertNull(bean.getButikk());
         assertEquals(0, bean.getSum());
     }
 
     @Test
     void testToString() {
-        ButikkSum bean = ButikkSum.with().build();
+        var bean = ButikkSum.with().build();
         assertThat(bean.toString()).startsWith("ButikkSum [");
     }
 

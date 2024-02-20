@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,23 +26,23 @@ class ButikkDateTest {
 
     @Test
     void test() {
-        Butikk butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
-        Date date = new Date();
-        ButikkDate bean = ButikkDate.with().butikk(butikk).date(date).build();
+        var butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
+        var date = new Date();
+        var bean = ButikkDate.with().butikk(butikk).date(date).build();
         assertEquals(butikk, bean.getButikk());
         assertEquals(date, bean.getDate());
     }
 
     @Test
     void testNoargsConstructor() {
-        ButikkDate bean = ButikkDate.with().build();
+        var bean = ButikkDate.with().build();
         assertNull(bean.getButikk());
         assertNull(bean.getDate());
     }
 
     @Test
     void testToString() {
-        ButikkDate bean = ButikkDate.with().build();
+        var bean = ButikkDate.with().build();
         assertThat(bean.toString()).startsWith("ButikkDate [");
     }
 

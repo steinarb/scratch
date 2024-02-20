@@ -69,17 +69,17 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testLogin() throws Exception {
-        String username = "jd";
-        String password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
-        Credentials credentials = Credentials.with().username(username).password(password).build();
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg , logservice);
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        var credentials = Credentials.with().username(username).password(password).build();
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg , logservice);
         createSubjectAndBindItToThread();
-        MockHttpServletRequest request = buildPostUrl("/login");
-        String postBody = mapper.writeValueAsString(credentials);
+        var request = buildPostUrl("/login");
+        var postBody = mapper.writeValueAsString(credentials);
         request.setBodyContent(postBody);
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
         WebUtils.saveRequest(request);
 
         servlet.service(request, response);
@@ -90,17 +90,17 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testLoginWrongPassword() throws Exception {
-        String username = "jd";
-        String password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
-        Credentials credentials = Credentials.with().username(username).password(password).build();
-        MockLogService logservice = new MockLogService();
-        HandleregService handlereg = mock(HandleregService.class);
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg , logservice);
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        var credentials = Credentials.with().username(username).password(password).build();
+        var logservice = new MockLogService();
+        var handlereg = mock(HandleregService.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg , logservice);
         createSubjectAndBindItToThread();
-        MockHttpServletRequest request = buildPostUrl("/login");
-        String postBody = mapper.writeValueAsString(credentials);
+        var request = buildPostUrl("/login");
+        var postBody = mapper.writeValueAsString(credentials);
         request.setBodyContent(postBody);
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
         WebUtils.saveRequest(request);
 
         servlet.service(request, response);
@@ -111,8 +111,8 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testGetOversikt() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
-        Oversikt jdOversikt = Oversikt.with()
+        var handlereg = mock(HandleregService.class);
+        var jdOversikt = Oversikt.with()
             .accountid(1)
             .brukernavn("jd")
             .email("johndoe@gmail.com")
@@ -121,10 +121,10 @@ class HandleregWebApiTest extends ShiroTestBase {
             .balanse(1500)
             .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/oversikt");
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/oversikt");
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
@@ -133,12 +133,12 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testGetHandlinger() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.findLastTransactions(1)).thenReturn(Arrays.asList(Transaction.with().build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/handlinger/1");
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/handlinger/1");
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
@@ -147,8 +147,8 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testPostNyhandlinger() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
-        Oversikt oversikt = Oversikt.with()
+        var handlereg = mock(HandleregService.class);
+        var oversikt = Oversikt.with()
             .accountid(1)
             .brukernavn("jd")
             .email("johndoe@gmail.com")
@@ -157,20 +157,20 @@ class HandleregWebApiTest extends ShiroTestBase {
             .balanse(500)
             .build();
         when(handlereg.registrerHandling(any())).thenReturn(oversikt);
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildPostUrl("/nyhandling");
-        NyHandling handling = NyHandling.with()
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildPostUrl("/nyhandling");
+        var handling = NyHandling.with()
             .username("jd")
             .accountid(1)
             .storeId(1)
             .belop(510)
             .handletidspunkt(new Date())
             .build();
-        String postBody = mapper.writeValueAsString(handling);
+        var postBody = mapper.writeValueAsString(handling);
         request.setBodyContent(postBody);
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
@@ -179,13 +179,13 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testGetButikker() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.finnButikker()).thenReturn(Arrays.asList(Butikk.with().build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/butikker");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/butikker");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
@@ -194,16 +194,16 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testLeggTilButikk() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.finnButikker()).thenReturn(Arrays.asList(Butikk.with().build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildPostUrl("/nybutikk");
-        Butikk butikk = Butikk.with().butikknavn("Ny butikk").build();
-        String postBody = mapper.writeValueAsString(butikk);
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildPostUrl("/nybutikk");
+        var butikk = Butikk.with().butikknavn("Ny butikk").build();
+        var postBody = mapper.writeValueAsString(butikk);
         request.setBodyContent(postBody);
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
@@ -212,16 +212,16 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testEndreButikk() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.endreButikk(any())).thenReturn(Arrays.asList(Butikk.with().build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildPostUrl("/endrebutikk");
-        Butikk butikk = Butikk.with().butikknavn("Ny butikk").build();
-        String postBody = mapper.writeValueAsString(butikk);
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildPostUrl("/endrebutikk");
+        var butikk = Butikk.with().butikknavn("Ny butikk").build();
+        var postBody = mapper.writeValueAsString(butikk);
         request.setBodyContent(postBody);
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
@@ -230,179 +230,179 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testGetSumOverButikk() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.sumOverButikk()).thenReturn(Arrays.asList(ButikkSum.with().butikk(Butikk.with().butikknavn("Spar Fjellheimen").build()).sum(3345).build(), ButikkSum.with().butikk(Butikk.with().butikknavn("Joker Nord").build()).sum(1234).build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/statistikk/sumbutikk");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/statistikk/sumbutikk");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<ButikkSum> sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkSum>>() {});
+        var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkSum>>() {});
         assertThat(sumOverButikk).isNotEmpty();
         assertEquals("Spar Fjellheimen", sumOverButikk.get(0).getButikk().getButikknavn());
     }
 
     @Test
     void testGetTotaltHandlebelopPrAar() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.totaltHandlebelopPrAar()).thenReturn(Arrays.asList(SumYear.with().year(Year.of(2016)).sum(45000).build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/statistikk/sumyear");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/statistikk/sumyear");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         System.out.println("Content:");
         System.out.println(response.getOutputStreamContent());
-        List<SumYear> sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
+        var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
         assertThat(sumOverButikk).isNotEmpty();
         assertEquals(Year.of(2016), sumOverButikk.get(0).getYear());
     }
 
     @Test
     void testAntallHandlingerIButikk() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.antallHandlingerIButikk()).thenReturn(Arrays.asList(ButikkCount.with().butikk(Butikk.with().butikknavn("Spar Fjellheimen").build()).count(3345).build(), ButikkCount.with().butikk(Butikk.with().butikknavn("Joker Nord").build()).count(1234).build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/statistikk/handlingerbutikk");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/statistikk/handlingerbutikk");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<ButikkCount> sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkCount>>() {});
+        var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkCount>>() {});
         assertThat(sumOverButikk).isNotEmpty();
         assertEquals("Spar Fjellheimen", sumOverButikk.get(0).getButikk().getButikknavn());
     }
 
     @Test
     void testSisteHandelIButikk() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.sisteHandelIButikk()).thenReturn(Arrays.asList(ButikkDate.with().butikk(Butikk.with().butikknavn("Spar Fjellheimen").build()).date(new Date()).build(), ButikkDate.with().butikk(Butikk.with().butikknavn("Joker Nord").build()).date(new Date()).build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/statistikk/sistehandel");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/statistikk/sistehandel");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<ButikkDate> sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkDate>>() {});
+        var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkDate>>() {});
         assertThat(sumOverButikk).isNotEmpty();
         assertEquals("Spar Fjellheimen", sumOverButikk.get(0).getButikk().getButikknavn());
     }
 
     @Test
     void testTotaltHandlebelopPrAar() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.totaltHandlebelopPrAar()).thenReturn(Arrays.asList(SumYear.with().sum(2345).year(Year.of(2001)).build(), SumYear.with().sum(3241).year(Year.of(2002)).build(), SumYear.with().sum(3241).year(Year.of(2003)).build(), SumYear.with().sum(3241).year(Year.of(2004)).build(), SumYear.with().sum(3241).year(Year.of(2005)).build(), SumYear.with().sum(3241).year(Year.of(2006)).build(), SumYear.with().sum(3241).year(Year.of(2007)).build(), SumYear.with().sum(3241).year(Year.of(2008)).build(), SumYear.with().sum(3241).year(Year.of(2009)).build(), SumYear.with().sum(3241).year(Year.of(2010)).build(), SumYear.with().sum(3241).year(Year.of(2011)).build(), SumYear.with().sum(3241).year(Year.of(2012)).build(), SumYear.with().sum(3241).year(Year.of(2013)).build(), SumYear.with().sum(3241).year(Year.of(2014)).build(), SumYear.with().sum(3241).year(Year.of(2015)).build(), SumYear.with().sum(3241).year(Year.of(2016)).build(), SumYear.with().sum(3241).year(Year.of(2017)).build(), SumYear.with().sum(3241).year(Year.of(2018)).build(), SumYear.with().sum(3241).year(Year.of(2019)).build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/statistikk/sumyear");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/statistikk/sumyear");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<SumYear> sumyear = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
+        var sumyear = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
         assertThat(sumyear).isNotEmpty();
         assertEquals(Year.of(2001), sumyear.get(0).getYear());
     }
 
     @Test
     void testTotaltHandlebelopPrAarOgMaaned() throws Exception {
-        HandleregService handlereg = mock(HandleregService.class);
+        var handlereg = mock(HandleregService.class);
         when(handlereg.totaltHandlebelopPrAarOgMaaned()).thenReturn(Arrays.asList(SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.JANUARY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.FEBRUARY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.MARCH).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.APRIL).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.MAY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.JUNE).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.JULY).build(),SumYearMonth.with().sum(234).year(Year.of(2001)).month(Month.AUGUST).build(), SumYearMonth.with().sum(324).year(Year.of(2002)).month(Month.SEPTEMBER).build(), SumYearMonth.with().sum(324).year(Year.of(2003)).month(Month.OCTOBER).build(), SumYearMonth.with().sum(324).year(Year.of(2004)).month(Month.NOVEMBER).build(), SumYearMonth.with().sum(324).year(Year.of(2005)).month(Month.DECEMBER).build(), SumYearMonth.with().sum(324).year(Year.of(2006)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2007)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2008)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2009)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2010)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2011)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2012)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2013)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2014)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2015)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2016)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2017)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2018)).month(Month.JANUARY).build(), SumYearMonth.with().sum(324).year(Year.of(2019)).month(Month.JANUARY).build()));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/statistikk/sumyearmonth");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/statistikk/sumyearmonth");
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<SumYearMonth> sumyearmonth = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYearMonth>>() {});
+        var sumyearmonth = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYearMonth>>() {});
         assertThat(sumyearmonth).isNotEmpty();
         assertEquals(Year.of(2001), sumyearmonth.get(0).getYear());
     }
 
     @Test
     void testGetFavoritter() throws Exception {
-        String username = "jd";
-        HandleregService handlereg = mock(HandleregService.class);
+        var username = "jd";
+        var handlereg = mock(HandleregService.class);
         Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
         Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).build();
         when(handlereg.finnFavoritter(username)).thenReturn(Arrays.asList(favoritt1, favoritt2));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildGetUrl("/favoritter");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildGetUrl("/favoritter");
         request.setQueryString("username=" + username);
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, username, "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        var favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
         assertThat(favoritter).isNotEmpty();
     }
 
     @Test
     void testPostLeggTilFavoritt() throws Exception {
-        String username = "jd";
-        HandleregService handlereg = mock(HandleregService.class);
+        var username = "jd";
+        var handlereg = mock(HandleregService.class);
         Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
-        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        var butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
         Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
         when(handlereg.leggTilFavoritt(any())).thenReturn(Arrays.asList(favoritt1, favoritt2));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildPostUrl("/favoritt/leggtil");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildPostUrl("/favoritt/leggtil");
         NyFavoritt nyFavoritt = NyFavoritt.with().brukernavn(username).butikk(butikk ).build();
-        String postBody = mapper.writeValueAsString(nyFavoritt);
+        var postBody = mapper.writeValueAsString(nyFavoritt);
         request.setBodyContent(postBody);
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, username, "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        var favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
         assertThat(favoritter).isNotEmpty();
     }
 
     @Test
     void testPostSlettFavoritt() throws Exception {
-        String username = "jd";
-        HandleregService handlereg = mock(HandleregService.class);
+        var username = "jd";
+        var handlereg = mock(HandleregService.class);
         Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).build();
-        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        var butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
         Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).build();
         when(handlereg.slettFavoritt(any())).thenReturn(Arrays.asList(favoritt2));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildPostUrl("/favoritt/slett");
-        String postBody = mapper.writeValueAsString(favoritt1);
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildPostUrl("/favoritt/slett");
+        var postBody = mapper.writeValueAsString(favoritt1);
         request.setBodyContent(postBody);
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, username, "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        var favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
         assertThat(favoritter)
             .isNotEmpty()
             .contains(favoritt2)
@@ -412,47 +412,47 @@ class HandleregWebApiTest extends ShiroTestBase {
 
     @Test
     void testPostFavoritterByttRekkefolge() throws Exception {
-        String username = "jd";
-        HandleregService handlereg = mock(HandleregService.class);
+        var username = "jd";
+        var handlereg = mock(HandleregService.class);
         Favoritt favoritt1 = Favoritt.with().favouriteid(1).accountid(1).rekkefolge(2).build();
-        Butikk butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
+        var butikk = Butikk.with().storeId(1).butikknavn("Joker Fjellstu").build();
         Favoritt favoritt2 = Favoritt.with().favouriteid(2).accountid(1).store(butikk).rekkefolge(1).build();
         when(handlereg.byttRekkefolge(any())).thenReturn(Arrays.asList(favoritt2, favoritt1));
-        MockLogService logservice = new MockLogService();
-        HandleregWebApi servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
-        MockHttpServletRequest request = buildPostUrl("/favoritter/bytt");
+        var logservice = new MockLogService();
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(handlereg, logservice);
+        var request = buildPostUrl("/favoritter/bytt");
         Favorittpar favoritterSomSkalBytteRekkefolge = Favorittpar.with()
             .forste(favoritt1)
             .andre(favoritt2)
             .build();
-        String postBody = mapper.writeValueAsString(favoritterSomSkalBytteRekkefolge);
+        var postBody = mapper.writeValueAsString(favoritterSomSkalBytteRekkefolge);
         request.setBodyContent(postBody);
 
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        var response = new MockHttpServletResponse();
 
         loginUser(request, response, username, "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
-        List<Favoritt> favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
+        var favoritter = mapper.readValue(getBinaryContent(response), new TypeReference<List<Favoritt>>() {});
         assertThat(favoritter)
             .isNotEmpty()
             .containsSequence(favoritt2, favoritt1);
     }
 
     private byte[] getBinaryContent(MockHttpServletResponse response) throws IOException {
-        MockServletOutputStream outputstream = (MockServletOutputStream) response.getOutputStream();
+        var outputstream = (MockServletOutputStream) response.getOutputStream();
         return outputstream.getBinaryContent();
     }
 
     private MockHttpServletRequest buildGetUrl(String resource) {
-        MockHttpServletRequest request = buildRequest(resource);
+        var request = buildRequest(resource);
         request.setMethod("GET");
         return request;
     }
 
     private MockHttpServletRequest buildPostUrl(String resource) {
-        String contenttype = MediaType.APPLICATION_JSON;
-        MockHttpServletRequest request = buildRequest(resource);
+        var contenttype = MediaType.APPLICATION_JSON;
+        var request = buildRequest(resource);
         request.setMethod("POST");
         request.setContentType(contenttype);
         request.addHeader("Content-Type", contenttype);
@@ -460,8 +460,8 @@ class HandleregWebApiTest extends ShiroTestBase {
     }
 
     private MockHttpServletRequest buildRequest(String resource) {
-        MockHttpSession session = new MockHttpSession();
-        MockHttpServletRequest request = new MockHttpServletRequest();
+        var session = new MockHttpSession();
+        var request = new MockHttpServletRequest();
         request.setProtocol("HTTP/1.1");
         request.setRequestURL("http://localhost:8181/handlereg/api" + resource);
         request.setRequestURI("/handlereg/api" + resource);
@@ -472,20 +472,20 @@ class HandleregWebApiTest extends ShiroTestBase {
     }
 
     private HandleregWebApi simulateDSComponentActivationAndWebWhiteboardConfiguration(HandleregService handlereg, LogService logservice) throws Exception {
-        HandleregWebApi servlet = new HandleregWebApi();
+        var servlet = new HandleregWebApi();
         servlet.setLogService(logservice);
         servlet.setHandleregService(handlereg);
         servlet.activate();
-        ServletConfig config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
+        var config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
         servlet.init(config);
         return servlet;
     }
 
     private ServletConfig createServletConfigWithApplicationAndPackagenameForJerseyResources() {
-        ServletConfig config = mock(ServletConfig.class);
+        var config = mock(ServletConfig.class);
         when(config.getInitParameterNames()).thenReturn(Collections.enumeration(Arrays.asList(ServerProperties.PROVIDER_PACKAGES)));
         when(config.getInitParameter(ServerProperties.PROVIDER_PACKAGES)).thenReturn("no.priv.bang.handlereg.web.api.resources");
-        ServletContext servletContext = mock(ServletContext.class);
+        var servletContext = mock(ServletContext.class);
         when(servletContext.getContextPath()).thenReturn("/handlereg");
         when(config.getServletContext()).thenReturn(servletContext);
         when(servletContext.getAttributeNames()).thenReturn(Collections.emptyEnumeration());
