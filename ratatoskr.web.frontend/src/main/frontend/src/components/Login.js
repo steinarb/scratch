@@ -34,6 +34,7 @@ export default function Login() {
                                 id="username"
                                 className="form-control"
                                 type="text" name="username"
+                                autoComplete="username"
                                 value={username}
                                 onChange={e => setUsername(e.target.value)} />
                         </div>
@@ -45,6 +46,7 @@ export default function Login() {
                                 id="password" className="form-control"
                                 type="password"
                                 name="password"
+                                autoComplete="current-password"
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}/>
                         </div>
