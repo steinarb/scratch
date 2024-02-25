@@ -53,8 +53,8 @@ class LoginResourceTest extends ShiroTestBase {
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
-        var username = "jd";
-        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        var username = "jad";
+        var password = Base64.getEncoder().encodeToString("1ad".getBytes());
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "nb_NO";
@@ -78,8 +78,8 @@ class LoginResourceTest extends ShiroTestBase {
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
-        var username = "jad";
-        var password = Base64.getEncoder().encodeToString("1ad".getBytes());
+        var username = "jd";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "nb_NO";
@@ -103,8 +103,8 @@ class LoginResourceTest extends ShiroTestBase {
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
-        var username = "jd";
-        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
+        var username = "jad";
+        var password = Base64.getEncoder().encodeToString("1ad".getBytes());
         var originalRequest = new MockHttpServletRequest();
         originalRequest.setRequestURI("/ratatoskr/");
         createSubjectFromOriginalRequestAndBindItToThread(originalRequest);
@@ -192,8 +192,8 @@ class LoginResourceTest extends ShiroTestBase {
         var resource = new LoginResource();
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
-        var username = "jd";
-        var password = "johnnyBoi";
+        var username = "jad";
+        var password = "1ad";
         var subject = createSubjectAndBindItToThread();
         var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
@@ -213,8 +213,8 @@ class LoginResourceTest extends ShiroTestBase {
         var resource = new LoginResource();
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
-        var username = "jad";
-        var password = "1ad";
+        var username = "jd";
+        var password = "johnnyBoi";
         var subject = createSubjectAndBindItToThread();
         var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
