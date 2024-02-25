@@ -53,7 +53,10 @@ export default function Login() {
                     </div>
                     <div className="form-group row">
                         <div className="offset-xs-3 col-xs-9">
-                            <input className="btn btn-primary" type="submit" value="Login" onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
+                            <input
+                                className="btn btn-primary"
+                                type="submit" value="Login"
+                                onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
                         </div>
                     </div>
                 </form>
