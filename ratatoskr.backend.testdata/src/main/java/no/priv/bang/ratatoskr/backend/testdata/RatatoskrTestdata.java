@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import no.priv.bang.ratatoskr.services.RatatoskrService;
-import no.priv.bang.osgiservice.users.Role;
-import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.osgiservice.users.UserRoles;
 
@@ -51,8 +49,8 @@ public class RatatoskrTestdata {
     }
 
     void addRolesForTestusers() {
-        Role ratatoskruser = useradmin.getRoles().stream().filter(r -> RATATOSKRUSER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
-        User jad = useradmin.getUser("jad");
+        var ratatoskruser = useradmin.getRoles().stream().filter(r -> RATATOSKRUSER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
+        var jad = useradmin.getUser("jad");
         useradmin.addUserRoles(UserRoles.with().user(jad).roles(Arrays.asList(ratatoskruser)).build());
     }
 

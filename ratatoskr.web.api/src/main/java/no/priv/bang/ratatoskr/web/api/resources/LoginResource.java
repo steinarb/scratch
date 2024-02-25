@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,6 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.util.SavedRequest;
 import org.apache.shiro.web.util.WebUtils;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
@@ -72,19 +70,19 @@ public class LoginResource {
     @POST
     @Path("/login")
     public Loginresult login(@QueryParam("locale")String locale, Credentials credentials) {
-        Subject subject = SecurityUtils.getSubject();
-        String username = credentials.getUsername();
+        var subject = SecurityUtils.getSubject();
+        var username = credentials.getUsername();
 
-        UsernamePasswordToken token = new UsernamePasswordToken(username, credentials.getPassword().toCharArray(), true);
+        var token = new UsernamePasswordToken(username, credentials.getPassword().toCharArray(), true);
         try {
             subject.login(token);
-            String originalRequestUrl = findOriginalRequestUrl();
-            boolean authorized = subject.hasRole(RATATOSKRUSER_ROLE);
+            var originalRequestUrl = findOriginalRequestUrl();
+            var authorized = subject.hasRole(RATATOSKRUSER_ROLE);
             if (authorized) {
                 ratatoskr.lazilyCreateAccount(username);
             }
 
-            User user = useradmin.getUser(username);
+            var user = useradmin.getUser(username);
 
             return Loginresult.with()
                 .success(true)
@@ -116,7 +114,7 @@ public class LoginResource {
     @GET
     @Path("/logout")
     public Loginresult logout(@QueryParam("locale")String locale) {
-        Subject subject = SecurityUtils.getSubject();
+        var subject = SecurityUtils.getSubject();
         subject.logout();
 
         return Loginresult.with()
@@ -129,15 +127,15 @@ public class LoginResource {
     @GET
     @Path("/loginstate")
     public Loginresult loginstate(@QueryParam("locale")String locale) {
-        Subject subject = SecurityUtils.getSubject();
-        String username = (String) subject.getPrincipal();
-        boolean success = subject.isAuthenticated();
-        boolean harRoleRatatoskruser = subject.hasRole(RATATOSKRUSER_ROLE);
-        String brukerLoggetInnMelding = harRoleRatatoskruser ?
+        var subject = SecurityUtils.getSubject();
+        var username = (String) subject.getPrincipal();
+        var success = subject.isAuthenticated();
+        var harRoleRatatoskruser = subject.hasRole(RATATOSKRUSER_ROLE);
+        var brukerLoggetInnMelding = harRoleRatatoskruser ?
             ratatoskr.displayText("userloggedinwithaccesses", locale) :
             ratatoskr.displayText("userloggedinwithoutaccesses", locale);
-        String melding = success ? brukerLoggetInnMelding : ratatoskr.displayText("usernotloggedin", locale);
-        User user = findUserSafely(username);
+        var melding = success ? brukerLoggetInnMelding : ratatoskr.displayText("usernotloggedin", locale);
+        var user = findUserSafely(username);
         return Loginresult.with()
             .success(success)
             .errormessage(melding)
@@ -155,9 +153,9 @@ public class LoginResource {
     }
 
     String findOriginalRequestUrl() {
-        SavedRequest savedRequest = WebUtils.getSavedRequest(request);
-        String contextPath = request.getContextPath();
-        String originalRequestUrl = savedRequest != null ? savedRequest.getRequestUrl() : null;
+        var savedRequest = WebUtils.getSavedRequest(request);
+        var contextPath = request.getContextPath();
+        var originalRequestUrl = savedRequest != null ? savedRequest.getRequestUrl() : null;
         if (contextPath != null && originalRequestUrl != null) {
             return originalRequestUrl.replaceFirst(contextPath, "");
         }

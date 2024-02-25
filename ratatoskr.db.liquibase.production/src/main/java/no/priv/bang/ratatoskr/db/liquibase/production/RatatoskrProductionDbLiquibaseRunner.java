@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,8 @@ public class RatatoskrProductionDbLiquibaseRunner implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
-        RatatoskrLiquibase ratatoskrLiquibase = new RatatoskrLiquibase();
-        try (Connection connect = datasource.getConnection()) {
+        var ratatoskrLiquibase = new RatatoskrLiquibase();
+        try (var connect = datasource.getConnection()) {
             ratatoskrLiquibase.createInitialSchema(connect);
         } catch (SQLException e) {
             throw e;
@@ -47,11 +47,11 @@ public class RatatoskrProductionDbLiquibaseRunner implements PreHook {
             throw new SQLException("Failed to create schema in ratatoskr PostgreSQL database", e);
         }
 
-        try (Connection connect = datasource.getConnection()) {
+        try (var connect = datasource.getConnection()) {
             insertInitialData(connect);
         }
 
-        try (Connection connect = datasource.getConnection()) {
+        try (var connect = datasource.getConnection()) {
             ratatoskrLiquibase.updateSchema(connect);
         } catch (SQLException e) {
             throw e;
@@ -61,7 +61,7 @@ public class RatatoskrProductionDbLiquibaseRunner implements PreHook {
     }
 
     public void insertInitialData(Connection connect) throws SQLException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
+        var databaseConnection = new JdbcConnection(connect);
         try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
             try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
                 liquibase.update("");

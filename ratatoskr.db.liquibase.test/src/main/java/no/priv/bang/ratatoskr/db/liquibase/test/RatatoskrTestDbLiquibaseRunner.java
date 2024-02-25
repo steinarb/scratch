@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import liquibase.Liquibase;
-import liquibase.database.DatabaseConnection;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.ratatoskr.db.liquibase.RatatoskrLiquibase;
@@ -37,8 +36,8 @@ public class RatatoskrTestDbLiquibaseRunner implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
-        RatatoskrLiquibase ratatoskrLiquibase = new RatatoskrLiquibase();
-        try (Connection connect = datasource.getConnection()) {
+        var ratatoskrLiquibase = new RatatoskrLiquibase();
+        try (var connect = datasource.getConnection()) {
             ratatoskrLiquibase.createInitialSchema(connect);
         } catch (SQLException e) {
             throw e;
@@ -46,11 +45,11 @@ public class RatatoskrTestDbLiquibaseRunner implements PreHook {
             throw new SQLException("Error creating ratatoskr test database schema", e);
         }
 
-        try (Connection connect = datasource.getConnection()) {
+        try (var connect = datasource.getConnection()) {
             insertMockData(connect);
         }
 
-        try (Connection connect = datasource.getConnection()) {
+        try (var connect = datasource.getConnection()) {
             ratatoskrLiquibase.updateSchema(connect);
         } catch (SQLException e) {
             throw e;
@@ -60,7 +59,7 @@ public class RatatoskrTestDbLiquibaseRunner implements PreHook {
     }
 
     public void insertMockData(Connection connect) throws SQLException {
-        DatabaseConnection databaseConnection = new JdbcConnection(connect);
+        var databaseConnection = new JdbcConnection(connect);
         try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
             try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
                 liquibase.update("");
