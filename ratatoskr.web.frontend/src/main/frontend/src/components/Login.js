@@ -56,7 +56,7 @@ export default function Login() {
                             <input
                                 className="btn btn-primary"
                                 type="submit" value="Login"
-                                onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
+                                onClick={() => dispatch(LOGIN_REQUEST({ username, password: btoa(password) }))}/>
                         </div>
                     </div>
                 </form>

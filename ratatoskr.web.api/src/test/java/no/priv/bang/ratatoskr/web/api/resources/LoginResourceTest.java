@@ -18,6 +18,8 @@ package no.priv.bang.ratatoskr.web.api.resources;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Base64;
+
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.web.util.WebUtils;
 
@@ -39,14 +41,16 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLogin() {
         var request = new MockHttpServletRequest();
+        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
         var resource = new LoginResource();
+        resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
         var username = "jd";
-        var password = "johnnyBoi";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "nb_NO";
@@ -59,14 +63,16 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLoginByUserWithoutRole() {
         var request = new MockHttpServletRequest();
+        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
         var resource = new LoginResource();
+        resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
         var username = "jad";
-        var password = "1ad";
+        var password = Base64.getEncoder().encodeToString("1ad".getBytes());
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "nb_NO";
@@ -79,14 +85,16 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginWithOriginalRequestUrl() {
         var request = new MockHttpServletRequest()
             .setContextPath("/ratatoskr");
+        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
         var resource = new LoginResource();
+        resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
         var username = "jd";
-        var password = "johnnyBoi";
+        var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         var originalRequest = new MockHttpServletRequest();
         originalRequest.setRequestURI("/ratatoskr/");
         createSubjectFromOriginalRequestAndBindItToThread(originalRequest);
@@ -108,7 +116,7 @@ class LoginResourceTest extends ShiroTestBase {
         resource.ratatoskr = ratatoskr;
         resource.setLogservice(logservice);
         var username = "jd";
-        var password = "feil";
+        var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "nb_NO";
@@ -126,7 +134,7 @@ class LoginResourceTest extends ShiroTestBase {
         resource.ratatoskr = ratatoskr;
         resource.setLogservice(logservice);
         var username = "jdd";
-        var password = "feil";
+        var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "nb_NO";

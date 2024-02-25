@@ -17,6 +17,8 @@ package no.priv.bang.ratatoskr.web.api.resources;
 
 import static no.priv.bang.ratatoskr.services.RatatoskrConstants.*;
 
+import java.util.Base64;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -72,8 +74,9 @@ public class LoginResource {
     public Loginresult login(@QueryParam("locale")String locale, Credentials credentials) {
         var subject = SecurityUtils.getSubject();
         var username = credentials.getUsername();
+        var decodedPassword = new String(Base64.getDecoder().decode(credentials.getPassword()));
 
-        var token = new UsernamePasswordToken(username, credentials.getPassword().toCharArray(), true);
+        var token = new UsernamePasswordToken(username, decodedPassword, true);
         try {
             subject.login(token);
             var originalRequestUrl = findOriginalRequestUrl();
