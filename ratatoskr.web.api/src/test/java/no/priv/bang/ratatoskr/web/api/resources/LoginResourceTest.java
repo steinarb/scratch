@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockServletContext;
 
 import no.priv.bang.ratatoskr.services.RatatoskrService;
 import no.priv.bang.ratatoskr.services.beans.Credentials;
@@ -44,7 +45,10 @@ class LoginResourceTest extends ShiroTestBase {
         var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
+        var webcontext = new MockServletContext();
+        webcontext.setContextPath("/ratatoskr");
         var resource = new LoginResource();
+        resource.webcontext = webcontext;
         resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
@@ -57,7 +61,7 @@ class LoginResourceTest extends ShiroTestBase {
         var result = resource.login(locale, credentials);
         assertTrue(result.getSuccess());
         assertTrue(result.isAuthorized());
-        assertNull(result.getOriginalRequestUrl());
+        assertEquals("/", result.getOriginalRequestUrl());
     }
 
     @Test
@@ -66,7 +70,10 @@ class LoginResourceTest extends ShiroTestBase {
         var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
+        var webcontext = new MockServletContext();
+        webcontext.setContextPath("/ratatoskr");
         var resource = new LoginResource();
+        resource.webcontext = webcontext;
         resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
@@ -88,7 +95,10 @@ class LoginResourceTest extends ShiroTestBase {
         var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
+        var webcontext = new MockServletContext();
+        webcontext.setContextPath("/ratatoskr");
         var resource = new LoginResource();
+        resource.webcontext = webcontext;
         resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;

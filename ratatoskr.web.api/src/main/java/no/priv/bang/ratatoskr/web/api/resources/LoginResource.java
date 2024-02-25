@@ -18,8 +18,10 @@ package no.priv.bang.ratatoskr.web.api.resources;
 import static no.priv.bang.ratatoskr.services.RatatoskrConstants.*;
 
 import java.util.Base64;
+import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -55,6 +57,9 @@ public class LoginResource {
 
     private Logger logger;
 
+    @Inject
+    ServletContext webcontext;
+
     @Context
     HttpServletRequest request;
 
@@ -79,7 +84,12 @@ public class LoginResource {
         var token = new UsernamePasswordToken(username, decodedPassword, true);
         try {
             subject.login(token);
-            var originalRequestUrl = findOriginalRequestUrl();
+            var savedRequest = Optional.ofNullable(WebUtils.getSavedRequest(request));
+            var contextpath = webcontext.getContextPath();
+            var originalRequestUrl =  savedRequest
+                .map(request -> request.getRequestUrl())
+                .map(url -> url.replace(contextpath, ""))
+                .orElse("/");
             var authorized = subject.hasRole(RATATOSKRUSER_ROLE);
             if (authorized) {
                 ratatoskr.lazilyCreateAccount(username);
@@ -153,17 +163,6 @@ public class LoginResource {
         } catch (AuthserviceException e) {
             return User.with().build();
         }
-    }
-
-    String findOriginalRequestUrl() {
-        var savedRequest = WebUtils.getSavedRequest(request);
-        var contextPath = request.getContextPath();
-        var originalRequestUrl = savedRequest != null ? savedRequest.getRequestUrl() : null;
-        if (contextPath != null && originalRequestUrl != null) {
-            return originalRequestUrl.replaceFirst(contextPath, "");
-        }
-
-        return originalRequestUrl;
     }
 
 }
