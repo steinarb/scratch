@@ -28,7 +28,9 @@ import org.apache.shiro.web.util.WebUtils;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,6 +46,16 @@ import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 class LoginResourceTest extends AbstractShiroTest {
+
+    @BeforeAll
+    static void beforeAll() {
+        readTestShiroIni();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        tearDownShiro();
+    }
 
     @BeforeEach
     void beforeEach() {

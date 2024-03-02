@@ -37,7 +37,9 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.subject.Subject;
 import org.glassfish.jersey.server.ServerProperties;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.log.LogService;
@@ -65,6 +67,16 @@ class SampleappWebApiTest extends AbstractShiroTest {
     public static final ObjectMapper mapper = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .findAndRegisterModules();
+
+    @BeforeAll
+    static void beforeAll() {
+        readTestShiroIni();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        tearDownShiro();
+    }
 
     @BeforeEach
     void beforeEach() {

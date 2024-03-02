@@ -23,7 +23,9 @@ import java.util.Optional;
 import javax.ws.rs.NotFoundException;
 
 import org.apache.shiro.subject.Subject;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +35,16 @@ import no.priv.bang.sampleapp.services.beans.CounterIncrementStepBean;
 import no.priv.bang.sampleapp.web.api.AbstractShiroTest;
 
 class CounterResourceTest extends AbstractShiroTest {
+
+    @BeforeAll
+    static void beforeAll() {
+        readTestShiroIni();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        tearDownShiro();
+    }
 
     @BeforeEach
     void beforeEach() {
