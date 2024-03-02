@@ -22,19 +22,27 @@ import java.util.Optional;
 
 import javax.ws.rs.NotFoundException;
 
+import org.apache.shiro.subject.Subject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import no.priv.bang.sampleapp.services.SampleappService;
 import no.priv.bang.sampleapp.services.beans.CounterBean;
 import no.priv.bang.sampleapp.services.beans.CounterIncrementStepBean;
-import no.priv.bang.sampleapp.web.api.ShiroTestBase;
+import no.priv.bang.sampleapp.web.api.AbstractShiroTest;
 
-class CounterResourceTest extends ShiroTestBase {
+class CounterResourceTest extends AbstractShiroTest {
 
     @BeforeEach
-    void loginUser() {
-        loginUser("jad", "1ad");
+    void beforeEach() {
+        var subject = new Subject.Builder(getSecurityManager()).buildSubject();
+        setSubject(subject);
+    }
+
+    @AfterEach
+    void afterEach( ) {
+        clearSubject();
     }
 
     @Test

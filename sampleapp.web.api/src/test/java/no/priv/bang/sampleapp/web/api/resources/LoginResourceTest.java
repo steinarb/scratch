@@ -23,10 +23,13 @@ import java.util.Base64;
 import javax.ws.rs.InternalServerErrorException;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -34,13 +37,24 @@ import com.mockrunner.mock.web.MockServletContext;
 
 import no.priv.bang.sampleapp.services.SampleappService;
 import no.priv.bang.sampleapp.services.beans.Credentials;
-import no.priv.bang.sampleapp.web.api.ShiroTestBase;
+import no.priv.bang.sampleapp.web.api.AbstractShiroTest;
 import no.priv.bang.authservice.definitions.AuthserviceException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
-class LoginResourceTest extends ShiroTestBase {
+class LoginResourceTest extends AbstractShiroTest {
+
+    @BeforeEach
+    void beforeEach() {
+        var subject = new Subject.Builder(getSecurityManager()).buildSubject();
+        setSubject(subject);
+    }
+
+    @AfterEach
+    void afterEach( ) {
+        clearSubject();
+    }
 
     @Test
     void testLogin() {
@@ -86,7 +100,6 @@ class LoginResourceTest extends ShiroTestBase {
         resource.setLogservice(logservice);
         resource.sampleapp = sampleapp;
         resource.useradmin = useradmin;
-        createSubjectAndBindItToThread();
         WebUtils.saveRequest(httpRequest);
         var locale = "nb_NO";
         var credentials = Credentials.with().username(username).password(password).build();
@@ -121,6 +134,11 @@ class LoginResourceTest extends ShiroTestBase {
         assertTrue(resultat.getSuccess());
         assertEquals(username, resultat.getUser().getUsername());
         assertEquals("/", resultat.getOriginalRequestUrl());
+    }
+
+    private void createSubjectAndBindItToThread() {
+        // TODO Auto-generated method stub
+
     }
 
     @Test
@@ -199,6 +217,11 @@ class LoginResourceTest extends ShiroTestBase {
         assertEquals("/", result.getOriginalRequestUrl());
     }
 
+    private void createSubjectFromOriginalRequestAndBindItToThread(MockHttpServletRequest originalRequest) {
+        // TODO Auto-generated method stub
+
+    }
+
     @Test
     void testLoginFeilPassord() {
         var sampleapp = mock(SampleappService.class);
@@ -251,12 +274,7 @@ class LoginResourceTest extends ShiroTestBase {
         when(sampleapp.displayText(anyString(), anyString())).thenReturn("Logget ut");
         var resource = new LoginResource();
         resource.sampleapp = sampleapp;
-        var username = "jd";
-        var password = "johnnyBoi";
-        var subject = createSubjectAndBindItToThread();
-        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
-        subject.login(token);
-        assertTrue(subject.isAuthenticated()); // Verify precondition user logged in
+        var subject = getSubject();
 
         var loginresult = resource.logout(locale);
         assertFalse(loginresult.getSuccess());
@@ -276,7 +294,7 @@ class LoginResourceTest extends ShiroTestBase {
         resource.useradmin = useradmin;
         var username = "jad";
         var password = "1ad";
-        var subject = createSubjectAndBindItToThread();
+        var subject = getSubject();
         var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
 
@@ -297,7 +315,7 @@ class LoginResourceTest extends ShiroTestBase {
         resource.useradmin = useradmin;
         var username = "jd";
         var password = "johnnyBoi";
-        var subject = createSubjectAndBindItToThread();
+        var subject = getSubject();
         var token = new UsernamePasswordToken(username, password.toCharArray(), true);
         subject.login(token);
 

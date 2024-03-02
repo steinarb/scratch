@@ -35,7 +35,9 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.subject.Subject;
 import org.glassfish.jersey.server.ServerProperties;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.osgi.service.log.LogService;
@@ -56,7 +58,7 @@ import no.priv.bang.sampleapp.web.api.resources.ErrorMessage;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
-class SampleappWebApiTest extends ShiroTestBase {
+class SampleappWebApiTest extends AbstractShiroTest {
     private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
     private final static Locale EN_UK = Locale.forLanguageTag("en-uk");
 
@@ -65,8 +67,14 @@ class SampleappWebApiTest extends ShiroTestBase {
         .findAndRegisterModules();
 
     @BeforeEach
-    void beforeEachTest() {
-        removeWebSubjectFromThread();
+    void beforeEach() {
+        var subject = new Subject.Builder(getSecurityManager()).buildSubject();
+        setSubject(subject);
+    }
+
+    @AfterEach
+    void afterEach( ) {
+        clearSubject();
     }
 
     @Test
@@ -78,7 +86,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var sampleapp = mock(SampleappService.class);
         var useradmin = mock(UserManagementService.class);
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin, logservice);
-        createSubjectAndBindItToThread();
         var request = buildPostUrl("/login");
         var postBody = mapper.writeValueAsString(credentials);
         request.setBodyContent(postBody);
@@ -97,7 +104,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var sampleapp = mock(SampleappService.class);
         var useradmin = mock(UserManagementService.class);
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin, logservice);
-        createSubjectAndBindItToThread();
         var request = buildPostUrl("/login");
         var postBody = mapper.writeValueAsString(credentials);
         request.setBodyContent(postBody);
@@ -118,7 +124,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/accounts");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var accounts = mapper.readValue(response.getOutputStreamBinaryContent(), new TypeReference<List<Account>>() {});
@@ -137,7 +142,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         CounterIncrementStepBean bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterIncrementStepBean.class);
@@ -156,7 +160,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
-        createSubjectAndBindItToThread();
         servlet.service(request, response);
         assertEquals(401, response.getStatus());
     }
@@ -173,7 +176,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jd", "johnnyBoi");
         servlet.service(request, response);
         assertEquals(403, response.getStatus());
     }
@@ -187,7 +189,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(404, response.getStatus());
     }
@@ -210,7 +211,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         request.setBodyContent(postBody);
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterIncrementStepBean.class);
@@ -232,7 +232,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         request.setBodyContent(postBody);
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(500, response.getStatus());
     }
@@ -249,7 +248,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/jad");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterBean.class);
@@ -265,7 +263,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/jad");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(404, response.getStatus());
     }
@@ -282,7 +279,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/jad/increment");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterBean.class);
@@ -298,7 +294,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/jad/increment");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(500, response.getStatus());
     }
@@ -315,7 +310,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/jad/decrement");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterBean.class);
@@ -331,7 +325,6 @@ class SampleappWebApiTest extends ShiroTestBase {
         var request = buildGetUrl("/counter/jad/decrement");
         var response = new MockHttpServletResponse();
 
-        loginUser(request, response, "jad", "1ad");
         servlet.service(request, response);
         assertEquals(500, response.getStatus());
     }
