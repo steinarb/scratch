@@ -31,9 +31,11 @@ under the License.
     <properties>
         <snakeyaml.version>1.17</snakeyaml.version>
         <open-iconic.version>1.1.1</open-iconic.version>
-        <sonar.cpd.exclusions>**/RatatoskrServiceProvider.java,
+        <sonar.cpd.exclusions>
+            **/RatatoskrServiceProvider.java,
             **/RatatoskrTestDbLiquibaseRunner.java,
-            **/RatatoskrProductionDbLiquibaseRunner.java,</sonar.cpd.exclusions>
+            **/RatatoskrProductionDbLiquibaseRunner.java,
+        </sonar.cpd.exclusions>
         <sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S2160</sonar.issue.ignore.multicriteria.e1.ruleKey>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/ratatoskr.services/**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
