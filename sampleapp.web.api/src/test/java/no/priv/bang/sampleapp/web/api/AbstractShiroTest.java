@@ -2,6 +2,7 @@ package no.priv.bang.sampleapp.web.api;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.env.BasicIniEnvironment;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.SubjectThreadState;
@@ -20,6 +21,16 @@ public class AbstractShiroTest {
         var env = new BasicIniEnvironment("classpath:test.shiro.ini");
         setSecurityManager(env.getSecurityManager());
     }
+
+    protected void login(String username, String password) {
+        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        getSubject().login(token);
+    }
+
+    protected void logout() {
+        getSubject().logout();
+    }
+
     /**
      * Allows subclasses to set the currently executing {@link Subject} instance.
      *

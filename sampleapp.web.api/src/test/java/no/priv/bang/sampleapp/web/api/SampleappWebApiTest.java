@@ -81,6 +81,7 @@ class SampleappWebApiTest extends AbstractShiroTest {
     @BeforeEach
     void beforeEach() {
         var subject = new Subject.Builder(getSecurityManager()).buildSubject();
+        subject.logout();
         setSubject(subject);
     }
 
@@ -171,6 +172,7 @@ class SampleappWebApiTest extends AbstractShiroTest {
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin, logservice);
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
+        logout();
 
         servlet.service(request, response);
         assertEquals(401, response.getStatus());
@@ -187,6 +189,7 @@ class SampleappWebApiTest extends AbstractShiroTest {
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin, logservice);
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
+        login("jd", "johnnyBoi");
 
         servlet.service(request, response);
         assertEquals(403, response.getStatus());
