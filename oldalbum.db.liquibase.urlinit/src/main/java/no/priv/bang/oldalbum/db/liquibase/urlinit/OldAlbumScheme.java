@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -52,7 +51,7 @@ public class OldAlbumScheme implements PreHook {
     }
 
     void createInitialSchema(DataSource datasource) throws SQLException {
-        try (Connection connect = datasource.getConnection()) {
+        try (var connect = datasource.getConnection()) {
             oldalbumLiquibase.createInitialSchema(connect);
         } catch (Exception e) {
             throw new OldAlbumException("Error creating initial schema for oldalbum database initialized from URL", e);
@@ -60,7 +59,7 @@ public class OldAlbumScheme implements PreHook {
     }
 
     private void updateSchema(DataSource datasource) {
-        try (Connection connect = datasource.getConnection()) {
+        try (var connect = datasource.getConnection()) {
             oldalbumLiquibase.updateSchema(connect);
         } catch (Exception e) {
             throw new OldAlbumException("Error updating schema for oldalbum database initialized from URL", e);

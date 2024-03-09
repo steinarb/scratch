@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package no.priv.bang.oldalbum.db.liquibase.production;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -65,8 +64,8 @@ public class OldAlbumProductionDatabase implements PreHook {
     }
 
     void createInitialSchema(DataSource datasource) throws SQLException {
-        try (Connection connect = datasource.getConnection()) {
-            OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
+        try (var connect = datasource.getConnection()) {
+            var oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
         } catch (Exception e) {
             logger.error("Error creating oldalbum production database", e);
@@ -92,8 +91,8 @@ public class OldAlbumProductionDatabase implements PreHook {
     }
 
     private void updateSchema(DataSource datasource) throws SQLException {
-        try (Connection connect = datasource.getConnection()) {
-            OldAlbumLiquibase oldalbumLiquibase = new OldAlbumLiquibase();
+        try (var connect = datasource.getConnection()) {
+            var oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.updateSchema(connect);
         } catch (LiquibaseException e) {
             logger.error("Error updating schema of oldalbum production database", e);

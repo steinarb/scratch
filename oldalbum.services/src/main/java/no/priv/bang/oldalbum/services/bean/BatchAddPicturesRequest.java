@@ -56,7 +56,7 @@ public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable ha
         private String defaultTitle;
 
         public BatchAddPicturesRequest build() {
-            BatchAddPicturesRequest bean = new BatchAddPicturesRequest();
+            var bean = new BatchAddPicturesRequest();
             bean.parent = this.parent;
             bean.batchAddUrl = this.batchAddUrl;
             bean.importYear = this.importYear;

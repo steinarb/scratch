@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package no.priv.bang.oldalbum.web.frontend;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.*;
@@ -24,7 +23,6 @@ import static javax.servlet.http.HttpServletResponse.*;
 import org.apache.shiro.SecurityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -85,11 +83,11 @@ public class OldalbumServlet extends FrontendServlet {
 
     private List<String> combineDynamicAndStaticRoutes() {
         var subject = SecurityUtils.getSubject();
-        boolean isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
-        List<String> dynamicroutes = oldalbum.getPaths(isLoggedIn);
-        List<String> staticroutes = super.getRoutes();
-        int numberOfRoutes = dynamicroutes.size() + staticroutes.size();
-        List<String> allroutes = new ArrayList<>(numberOfRoutes);
+        var isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
+        var dynamicroutes = oldalbum.getPaths(isLoggedIn);
+        var staticroutes = super.getRoutes();
+        var numberOfRoutes = dynamicroutes.size() + staticroutes.size();
+        var allroutes = new ArrayList<String>(numberOfRoutes);
         allroutes.addAll(dynamicroutes);
         allroutes.addAll(staticroutes);
         return allroutes;
@@ -102,15 +100,15 @@ public class OldalbumServlet extends FrontendServlet {
 
     @Override
     protected void processResource(HttpServletResponse response, HttpServletRequest request, String pathInfo, String resource, String contentType) throws IOException {
-        AlbumEntry entry = oldalbum.getAlbumEntryFromPath(pathInfo);
+        var entry = oldalbum.getAlbumEntryFromPath(pathInfo);
         response.setStatus(SC_OK);
         response.setContentType(contentType);
         setLastModifiedHeader(response, entry);
-        Document html = loadHtmlFile(resource);
+        var html = loadHtmlFile(resource);
         addMetaTagIfNotEmpty(html, "og:url", request.getRequestURL().toString());
         addOpenGraphHeaderElements(html, entry);
         html.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        try(ServletOutputStream body = response.getOutputStream()) {
+        try(var body = response.getOutputStream()) {
             body.print(html.outerHtml());
         }
     }
@@ -119,8 +117,8 @@ public class OldalbumServlet extends FrontendServlet {
     protected void handleResourceNotFound(HttpServletResponse response, String resource) throws IOException {
         response.setStatus(SC_NOT_FOUND);
         response.setContentType("text/html");
-        try(ServletOutputStream responseBody = response.getOutputStream()) {
-            try(InputStream resourceFromClasspath = getClass().getClassLoader().getResourceAsStream("index.html")) {
+        try(var responseBody = response.getOutputStream()) {
+            try(var resourceFromClasspath = getClass().getClassLoader().getResourceAsStream("index.html")) {
                 copyStream(resourceFromClasspath, responseBody);
             }
         }
@@ -144,7 +142,7 @@ public class OldalbumServlet extends FrontendServlet {
             addMetaTagIfNotEmpty(html, "twitter:description", entry.getDescription());
             addMetaTagIfNotEmpty(html, "twitter:image", entry.getImageUrl());
             if (entry.isAlbum()) {
-                List<AlbumEntry> children = oldalbum.getChildren(entry.getId());
+                var children = oldalbum.getChildren(entry.getId());
                 if (!children.isEmpty()) {
                     for(AlbumEntry child : children) {
                         addMetaTagIfNotEmpty(html, "og:image", child.getImageUrl());
@@ -157,7 +155,7 @@ public class OldalbumServlet extends FrontendServlet {
 
     private void setTitleIfNotEmpty(Document html, String title) {
         if (!nullOrEmpty(title)) {
-            Elements titles = html.head().getElementsByTag("title");
+            var titles = html.head().getElementsByTag("title");
             titles.first().text(title);
         }
     }
@@ -169,14 +167,14 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     protected void addMetaTagIfNotEmpty(Document html, String property, String content) {
-        String propertyAttribute = property.startsWith("twitter:") ? "name" : "property";
+        var propertyAttribute = property.startsWith("twitter:") ? "name" : "property";
         if (content != null && !content.isEmpty()) {
             html.head().appendElement("meta").attr(propertyAttribute, property).attr("content", content);
         }
     }
 
     protected Document loadHtmlFile(String htmlFile) throws IOException {
-        try (InputStream body = getClasspathResource(htmlFile)) {
+        try (var body = getClasspathResource(htmlFile)) {
             return Jsoup.parse(body, "UTF-8", "");
         }
     }

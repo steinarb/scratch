@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
     }
 
     public static AlbumEntryBuilder with(AlbumEntry albumEntry) {
-        AlbumEntryBuilder builder = new AlbumEntryBuilder();
+        var builder = new AlbumEntryBuilder();
         builder.id = albumEntry.id;
         builder.parent = albumEntry.parent;
         builder.path = albumEntry.path;
@@ -152,7 +152,7 @@ public class AlbumEntry extends Immutable { // NOSONAR Immutable handles added f
         private AlbumEntryBuilder() {}
 
         public AlbumEntry build() {
-            AlbumEntry albumEntry = new AlbumEntry();
+            var albumEntry = new AlbumEntry();
             albumEntry.id = this.id;
             albumEntry.parent = this.parent;
             albumEntry.path = this.path;

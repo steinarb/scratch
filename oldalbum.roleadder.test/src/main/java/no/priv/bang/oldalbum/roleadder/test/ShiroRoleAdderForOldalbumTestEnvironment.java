@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package no.priv.bang.oldalbum.roleadder.test;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,38 +42,39 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
 
     @Activate
     public void activate(Map<String, Object> config) {
-        boolean allowModify = Boolean.parseBoolean((String) config.getOrDefault("allowModify", "true"));
+        var allowModify = Boolean.parseBoolean((String) config.getOrDefault("allowModify", "true"));
         if (allowModify) {
-            String adminusername = (String) config.getOrDefault("username", "admin");
-            String adminpassword = (String) config.getOrDefault("password", "admin"); // NOSONAR hard to do anything without saying the word
-            User adminuser = findAdminuser(adminusername, adminpassword);
-            Role role = addOldalbumadminRole();
+            var adminusername = (String) config.getOrDefault("username", "admin");
+            var adminpassword = (String) config.getOrDefault("password", "admin"); // NOSONAR hard to do anything without saying the word
+            var adminuser = findAdminuser(adminusername, adminpassword);
+            var role = addOldalbumadminRole();
             addRoleToAdmin(adminuser, role);
         }
     }
 
     User findAdminuser(String adminusername, String adminpassword) {
-        User admin = getUser(adminusername);
+        var admin = getUser(adminusername);
         if (admin == null) {
-            User user = User.with().userid(0).username(adminusername).email("admin@company.com").firstname("Ad").lastname("Min").build();
-            UserAndPasswords newUserWithPasswords = UserAndPasswords.with().user(user).password1(adminpassword).password2(adminpassword).build();
-            List<User> users = useradmin.addUser(newUserWithPasswords);
+            var user = User.with().userid(0).username(adminusername).email("admin@company.com").firstname("Ad").lastname("Min").build();
+            var newUserWithPasswords = UserAndPasswords.with().user(user).password1(adminpassword).password2(adminpassword).build();
+            var users = useradmin.addUser(newUserWithPasswords);
             Optional<User> adminOpt = users.isEmpty() ? Optional.empty() : users.stream().filter(u -> adminusername.equals(u.getUsername())).findFirst();
             admin = adminOpt.isEmpty() ? null : adminOpt.get();
         } else {
-            UserAndPasswords userAndPasswords = UserAndPasswords.with().user(admin).password1(adminpassword).password2(adminpassword).build();
+            var userAndPasswords = UserAndPasswords.with().user(admin).password1(adminpassword).password2(adminpassword).build();
             useradmin.updatePassword(userAndPasswords);
         }
+
         return admin;
     }
 
     public Role addOldalbumadminRole() {
-        Optional<Role> existingrole = useradmin.getRoles().stream().filter(r -> "oldalbumadmin".equals(r.getRolename())).findFirst();
+        var existingrole = useradmin.getRoles().stream().filter(r -> "oldalbumadmin".equals(r.getRolename())).findFirst();
         if (existingrole.isPresent()) {
             return existingrole.get();
         }
 
-        Role role = Role.with().id(0).rolename("oldalbumadmin").description("Created by oldalbum.roleadder.test").build();
+        var role = Role.with().id(0).rolename("oldalbumadmin").description("Created by oldalbum.roleadder.test").build();
         useradmin.addRole(role);
         return role;
     }
@@ -83,7 +83,8 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
         if (admin == null) {
             return null;
         }
-        UserRoles adminroles = UserRoles.with().user(admin).roles(Arrays.asList(role)).build();
+
+        var adminroles = UserRoles.with().user(admin).roles(Arrays.asList(role)).build();
         useradmin.addUserRoles(adminroles);
         return adminroles;
     }

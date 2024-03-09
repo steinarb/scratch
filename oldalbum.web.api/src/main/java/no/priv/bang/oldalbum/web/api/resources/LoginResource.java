@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,10 +68,10 @@ public class LoginResource {
     @GET
     @Path("/login")
     public LoginResult loginCheck() {
-        Subject subject = SecurityUtils.getSubject();
-        boolean remembered = subject.isAuthenticated();
-        boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
-        boolean canLogin = shiroRoleOldalbumadminExists();
+        var subject = SecurityUtils.getSubject();
+        var remembered = subject.isAuthenticated();
+        var canModifyAlbum = checkIfUserCanModifyAlbum(subject);
+        var canLogin = shiroRoleOldalbumadminExists();
         return LoginResult.with()
             .success(remembered)
             .username((String) subject.getPrincipal())
@@ -84,14 +84,14 @@ public class LoginResource {
     @POST
     @Path("/login")
     public LoginResult login(@QueryParam("locale")String locale, Credentials credentials) {
-        Subject subject = SecurityUtils.getSubject();
+        var subject = SecurityUtils.getSubject();
         var originalRequestUri = findOriginalRequestUri().orElse(null);
 
-        UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
-        boolean canLogin = shiroRoleOldalbumadminExists();
+        var token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
+        var canLogin = shiroRoleOldalbumadminExists();
         try {
             subject.login(token);
-            boolean canModifyAlbum = checkIfUserCanModifyAlbum(subject);
+            var canModifyAlbum = checkIfUserCanModifyAlbum(subject);
             return LoginResult.with()
                 .success(true)
                 .username((String) subject.getPrincipal())
@@ -123,9 +123,9 @@ public class LoginResource {
     @GET
     @Path("/logout")
     public LoginResult logout(Credentials credentials) {
-        Subject subject = SecurityUtils.getSubject();
+        var subject = SecurityUtils.getSubject();
         subject.logout();
-        boolean canLogin = shiroRoleOldalbumadminExists();
+        var canLogin = shiroRoleOldalbumadminExists();
 
         return LoginResult.with().success(false).errormessage("Logged out").canModifyAlbum(false).canLogin(canLogin).build();
     }
@@ -137,6 +137,7 @@ public class LoginResource {
         } catch (AuthorizationException e) {
             // Skip and continue
         }
+
         return false;
     }
 

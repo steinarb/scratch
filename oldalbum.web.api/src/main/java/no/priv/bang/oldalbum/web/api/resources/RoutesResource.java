@@ -39,8 +39,8 @@ public class RoutesResource {
     @GET
     public List<AlbumEntry> allroutes() {
         var subject = SecurityUtils.getSubject();
-        String username = (String) subject.getPrincipal();
-        boolean isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
+        var username = (String) subject.getPrincipal();
+        var isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
         return oldAlbumService.fetchAllRoutes(username, isLoggedIn);
     }
 
@@ -49,8 +49,8 @@ public class RoutesResource {
     @Produces("application/sql")
     public String dumpSql() {
         var subject = SecurityUtils.getSubject();
-        String username = (String) subject.getPrincipal();
-        boolean isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
+        var username = (String) subject.getPrincipal();
+        var isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
         return oldAlbumService.dumpDatabaseSql(username, isLoggedIn);
     }
 

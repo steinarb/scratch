@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class LoginResult extends Immutable { // NOSONAR Immutable handles added 
         private LoginResultBuilder() {}
 
         public LoginResult build() {
-            LoginResult loginResult = new LoginResult();
+            var loginResult = new LoginResult();
             loginResult.success = this.success;
             loginResult.username = this.username;
             loginResult.errormessage = this.errormessage;

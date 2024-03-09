@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,10 @@ package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,27 +63,28 @@ public class OldAlbumUrlInitDatabase {
 
     @Activate
     public void activate() {
-        String contentLiquibaseChangelog = fetchDatabaseContentFromUrl();
+        var contentLiquibaseChangelog = fetchDatabaseContentFromUrl();
         if (contentLiquibaseChangelog != null) {
             setDatabaseContent(contentLiquibaseChangelog);
         }
     }
 
     private String fetchDatabaseContentFromUrl() {
-        String databaseContentUrl = getenv("DATABASE_CONTENT_URL");
+        var databaseContentUrl = getenv("DATABASE_CONTENT_URL");
         if (!nullOrEmpty(databaseContentUrl)) {
             try {
-                HttpURLConnection connection = getConnectionFactory().connect(databaseContentUrl);
-                int statusCode = connection.getResponseCode();
+                var connection = getConnectionFactory().connect(databaseContentUrl);
+                var statusCode = connection.getResponseCode();
                 if (statusCode == HttpURLConnection.HTTP_OK) {
-                    InputStream content = connection.getInputStream();
-                    StringBuilder builder = new StringBuilder();
-                    try(Reader reader = new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8))) {
+                    var content = connection.getInputStream();
+                    var builder = new StringBuilder();
+                    try(var reader = new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8))) {
                         int c = 0;
                         while ((c = reader.read()) != -1) {
                             builder.append((char) c);
                         }
                     }
+
                     return builder.toString();
                 } else {
                     var message = String.format("Failed to load oldalbum database content because HTTP statuscode of %s was %d", databaseContentUrl, statusCode);
@@ -102,9 +100,9 @@ public class OldAlbumUrlInitDatabase {
     }
 
     private void setDatabaseContent(String contentLiquibaseChangelog) {
-        Map<String, String> contentByFileName = new HashMap<>();
+        var contentByFileName = new HashMap<String, String>();
         contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
-        try(Connection connection = datasource.getConnection()) {
+        try(var connection = datasource.getConnection()) {
             try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
                 Map<String, Object> scopeObjects = Map.of(
                     Scope.Attr.database.name(), database,

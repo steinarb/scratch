@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,9 +68,9 @@ public class ImageResource {
     @Produces(APPLICATION_OCTET_STREAM)
     public Response downloadAlbumEntry(@PathParam("albumEntryId") int albumEntryId) {
         try {
-            AlbumEntry entry = oldalbum.getAlbumEntry(albumEntryId).orElseThrow(() -> new OldAlbumException(String.format("Couldn't find album entry from id=%d", albumEntryId)));
-            Date lastModified = Optional.ofNullable(entry.getLastModified()).orElse(new Date());
-            String filename = findFilenameFromAlbumEntryPath(entry);
+            var entry = oldalbum.getAlbumEntry(albumEntryId).orElseThrow(() -> new OldAlbumException(String.format("Couldn't find album entry from id=%d", albumEntryId)));
+            var lastModified = Optional.ofNullable(entry.getLastModified()).orElse(new Date());
+            var filename = findFilenameFromAlbumEntryPath(entry);
             var streamingOutput = oldalbum.downloadAlbumEntry(albumEntryId);
             return Response.ok(streamingOutput)
                 .header("Content-Disposition", "attachment; filename=" + filename)
@@ -90,9 +90,9 @@ public class ImageResource {
     @Produces(APPLICATION_OCTET_STREAM)
     public Response downloadAlbumEntrySelection(@PathParam("albumId") int albumId, @QueryParam("id") List<Integer> selectedentryIds) {
         try {
-            AlbumEntry album = oldalbum.getAlbumEntry(albumId).orElseThrow(() -> new OldAlbumException(String.format("Couldn't find album rom id=%d", albumId)));
-            Date lastModified = new Date();
-            String filename = findFilenameFromAlbumEntryPath(album);
+            var album = oldalbum.getAlbumEntry(albumId).orElseThrow(() -> new OldAlbumException(String.format("Couldn't find album rom id=%d", albumId)));
+            var lastModified = new Date();
+            var filename = findFilenameFromAlbumEntryPath(album);
             var streamingOutput = oldalbum.downloadAlbumEntrySelection(selectedentryIds);
             return Response.ok(streamingOutput)
                 .header("Content-Disposition", "attachment; filename=" + filename)

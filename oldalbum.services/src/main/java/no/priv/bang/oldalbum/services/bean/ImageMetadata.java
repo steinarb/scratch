@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         private ImageMetadataBuilder() {}
 
         public ImageMetadata build() {
-            ImageMetadata imageMetadata = new ImageMetadata();
+            var imageMetadata = new ImageMetadata();
             imageMetadata.status = this.status;
             imageMetadata.lastModified = this.lastModified;
             imageMetadata.contentType = this.contentType;

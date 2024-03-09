@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class Credentials extends Immutable { // NOSONAR Immutable handles added 
         private CredentialsBuilder() {}
 
         public Credentials build() {
-            Credentials credentials = new Credentials();
+            var credentials = new Credentials();
             credentials.username = this.username;
             credentials.password = this.password;
             return credentials;

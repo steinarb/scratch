@@ -27,10 +27,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
@@ -40,9 +38,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -147,28 +143,29 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> fetchAllRoutes(String username, boolean isLoggedIn) {
-        List<AlbumEntry> allroutes = new ArrayList<>();
+        var allroutes = new ArrayList<AlbumEntry>();
 
-        List<AlbumEntry> albums = new ArrayList<>();
-        String sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true and (not a.require_login or (a.require_login and a.require_login=?)) group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort, a.lastmodified, a.contenttype, a.contentlength, a.require_login, a.group_by_year order by a.localpath";
-        try (Connection connection = datasource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        var albums = new ArrayList<AlbumEntry>();
+        var sql = "select a.*, count(c.albumentry_id) as childcount from albumentries a left join albumentries c on c.parent=a.albumentry_id where a.album=true and (not a.require_login or (a.require_login and a.require_login=?)) group by a.albumentry_id, a.parent, a.localpath, a.album, a.title, a.description, a.imageUrl, a.thumbnailUrl, a.sort, a.lastmodified, a.contenttype, a.contentlength, a.require_login, a.group_by_year order by a.localpath";
+        try (var connection = datasource.getConnection()) {
+            try (var statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isLoggedIn);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     while (results.next()) {
-                        AlbumEntry route = unpackAlbumEntry(results);
+                        var route = unpackAlbumEntry(results);
                         albums.add(route);
                     }
                 }
             }
-            for (AlbumEntry album : albums) {
-                String imageQuery = "select * from albumentries where album=false and parent=? order by localpath";
+
+            for (var album : albums) {
+                var imageQuery = "select * from albumentries where album=false and parent=? order by localpath";
                 allroutes.add(album);
-                try (PreparedStatement statement = connection.prepareStatement(imageQuery)) {
+                try (var statement = connection.prepareStatement(imageQuery)) {
                     statement.setInt(1, album.getId());
-                    try (ResultSet results = statement.executeQuery()) {
+                    try (var results = statement.executeQuery()) {
                         while (results.next()) {
-                            AlbumEntry route = unpackAlbumEntry(results);
+                            var route = unpackAlbumEntry(results);
                             allroutes.add(route);
                         }
                     }
@@ -177,17 +174,18 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (SQLException e) {
             logger.error("Failed to find the list of all routes", e);
         }
+
         return allroutes;
     }
 
     @Override
     public List<String> getPaths(boolean isLoggedIn) {
-        List<String> paths = new ArrayList<>();
-        String sql = "select localpath from albumentries where (not require_login or (require_login and require_login=?)) order by localpath";
-        try (Connection connection = datasource.getConnection()) {
+        var paths = new ArrayList<String>();
+        var sql = "select localpath from albumentries where (not require_login or (require_login and require_login=?)) order by localpath";
+        try (var connection = datasource.getConnection()) {
             try (var statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isLoggedIn);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         paths.add(results.getString(1));
                     }
@@ -196,6 +194,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (SQLException e) {
             logger.error("Failed to find the list of paths the app can be entered in", e);
         }
+
         return paths;
     }
 
@@ -211,11 +210,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public AlbumEntry getAlbumEntryFromPath(String path) {
-        String sql = "select * from albumentries where localpath=?";
-        try (Connection connection = datasource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where localpath=?";
+        try (var connection = datasource.getConnection()) {
+            try (var statement = connection.prepareStatement(sql)) {
                 statement.setString(1, path);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     while (results.next()) {
                         return unpackAlbumEntry(results);
                     }
@@ -231,14 +230,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> getChildren(int parent) {
-        List<AlbumEntry> children = new ArrayList<>();
-        String sql = "select * from albumentries where parent=?";
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var children = new ArrayList<AlbumEntry>();
+        var sql = "select * from albumentries where parent=?";
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, parent);
-                try(ResultSet results = statement.executeQuery()) {
+                try(var results = statement.executeQuery()) {
                     while(results.next()) {
-                        AlbumEntry child = unpackAlbumEntry(results);
+                        var child = unpackAlbumEntry(results);
                         children.add(child);
                     }
                 }
@@ -246,11 +245,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (SQLException e) {
             logger.error(String.format("Failed to get list of children for id \"%d\"", parent), e);
         }
+
         return children;
     }
 
     List<AlbumEntry> findSelectedentries(List<Integer> selectedentryIds) {
-        List<AlbumEntry> selectedentries = new ArrayList<>();
+        var selectedentries = new ArrayList<AlbumEntry>();
         var selectedentryIdGroup = selectedentryIds.stream().map(Object::toString).collect(Collectors.joining(","));
         var sql = String.format("select * from albumentries where albumentry_id in (%s)", selectedentryIdGroup);
         try(var connection = datasource.getConnection()) {
@@ -271,11 +271,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
-        int id = modifiedEntry.getId();
-        String sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=?, group_by_year=? where albumentry_id=?";
-        try(Connection connection = datasource.getConnection()) {
-            int sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var id = modifiedEntry.getId();
+        var sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=?, group_by_year=? where albumentry_id=?";
+        try(var connection = datasource.getConnection()) {
+            var sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, modifiedEntry.getParent());
                 statement.setString(2, modifiedEntry.getPath());
                 statement.setString(3, modifiedEntry.getTitle());
@@ -296,15 +296,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (SQLException e) {
             logger.error(String.format("Failed to update album entry for id \"%d\"", id), e);
         }
+
         return fetchAllRoutes(null, true); // All edits are logged in
     }
 
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
-        String sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String path = addedEntry.getPath();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        var path = addedEntry.getPath();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, addedEntry.getParent());
                 statement.setString(2, path);
                 statement.setBoolean(3, addedEntry.isAlbum());
@@ -327,6 +328,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (SQLException e) {
             logger.error(String.format("Failed to add album entry with path \"%s\"", path), e);
         }
+
         return fetchAllRoutes(null, true); // All edits are logged in
     }
 
@@ -346,12 +348,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     void deleteSingleAlbumEntry(AlbumEntry deletedEntry) {
-        int id = deletedEntry.getId();
+        var id = deletedEntry.getId();
         var sql = "delete from albumentries where albumentry_id=?";
-        int parentOfDeleted = deletedEntry.getParent();
-        int sortOfDeleted = deletedEntry.getSort();
-        try(Connection connection = datasource.getConnection()) {
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var parentOfDeleted = deletedEntry.getParent();
+        var sortOfDeleted = deletedEntry.getSort();
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, id);
                 statement.executeUpdate();
             }
@@ -364,25 +366,26 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> moveEntryUp(AlbumEntry movedEntry) {
-        int sort = movedEntry.getSort();
+        var sort = movedEntry.getSort();
         if (sort > 1) {
-            int entryId = movedEntry.getId();
-            try(Connection connection = datasource.getConnection()) {
+            var entryId = movedEntry.getId();
+            try(var connection = datasource.getConnection()) {
                 findPreviousEntryInTheSameAlbum(connection, movedEntry, sort)
                     .ifPresent(previousEntry -> swapSortAndModifiedTimes(connection, movedEntry, previousEntry));
             } catch (SQLException e) {
                 logger.error(String.format("Failed to move album entry with id \"%d\"", entryId), e);
             }
         }
+
         return fetchAllRoutes(null, true); // All edits are logged in
     }
 
     @Override
     public List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry) {
-        int sort = movedEntry.getSort();
-        int entryId = movedEntry.getId();
-        try(Connection connection = datasource.getConnection()) {
-            int numberOfEntriesInAlbum = findNumberOfEntriesInAlbum(connection, movedEntry.getParent());
+        var sort = movedEntry.getSort();
+        var entryId = movedEntry.getId();
+        try(var connection = datasource.getConnection()) {
+            var numberOfEntriesInAlbum = findNumberOfEntriesInAlbum(connection, movedEntry.getParent());
             if (sort < numberOfEntriesInAlbum) {
                 findNextEntryInTheSameAlbum(connection, movedEntry, sort)
                     .ifPresent(nextEntry -> swapSortAndModifiedTimes(connection, movedEntry, nextEntry));
@@ -404,11 +407,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void dumpDatabaseSqlToOutputStream(boolean isLoggedn, OutputStream outputStream) {
         var sqldumper = new ResultSetSqlDumper();
-        String sql = "select * from albumentries where (not require_login or (require_login and require_login=?)) order by albumentry_id";
-        try (Connection connection = datasource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where (not require_login or (require_login and require_login=?)) order by albumentry_id";
+        try (var connection = datasource.getConnection()) {
+            try (var statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isLoggedn);
-                try (ResultSet results = statement.executeQuery()) {
+                try (var results = statement.executeQuery()) {
                     sqldumper.dumpResultSetAsSql("sb:saved_albumentries", results, outputStream);
                 }
             }
@@ -421,10 +424,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private void addSqlToAdjustThePrimaryKeyGeneratorAfterImport(OutputStream outputStream, Connection connection) throws SQLException, IOException {
-        try (Statement statement = connection.createStatement()) {
-            try (ResultSet results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
+        try (var statement = connection.createStatement()) {
+            try (var results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
                 while(results.next()) {
-                    int lastIdInDump = results.getInt(1);
+                    var lastIdInDump = results.getInt(1);
                     try(var writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
                         writer.write(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d;%n", lastIdInDump + 1));
                     }
@@ -434,26 +437,26 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) {
-        int originalSortvalue = modifiedEntry.getSort();
+        var originalSortvalue = modifiedEntry.getSort();
         return getEntry(connection, modifiedEntry.getId()).map(entryBeforeUpdate -> {
-                int originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.getParent() : 0;
+                var originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.getParent() : 0;
                 if (modifiedEntry.getParent() == originalParent) {
                     return originalSortvalue;
                 }
 
-                int originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.getSort() : 0;
+                var originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.getSort() : 0;
                 adjustSortValuesAfterEntryIsRemoved(connection, originalParent, originalSort);
-                int destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.getParent());
+                var destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.getParent());
                 return destinationChildCount + 1;
             }).orElse(originalSortvalue);
     }
 
     int findNumberOfEntriesInAlbum(Connection connection, int parentid) {
-        int numberOfEntriesInAlbum = 0;
-        String findPreviousEntrySql = "select count(albumentry_id) from albumentries where parent=?";
-        try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
+        var numberOfEntriesInAlbum = 0;
+        var findPreviousEntrySql = "select count(albumentry_id) from albumentries where parent=?";
+        try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, parentid);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     numberOfEntriesInAlbum = result.getInt(1);
                 }
@@ -462,31 +465,33 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             var message = String.format("Failed to find number of entries in album with id=%d", parentid);
             throw new OldAlbumException(message, e);
         }
+
         return numberOfEntriesInAlbum;
     }
 
     Optional<AlbumEntry> findPreviousEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
         Optional<AlbumEntry> previousEntryId = Optional.empty();
-        String findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
-        try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
+        var findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
+        try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort - 1);
             statement.setInt(2, movedEntry.getParent());
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     previousEntryId = Optional.of(unpackAlbumEntry(result));
                 }
             }
         }
+
         return previousEntryId;
     }
 
     Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
         Optional<AlbumEntry> nextEntryId = Optional.empty();
-        String findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
-        try(PreparedStatement statement = connection.prepareStatement(findPreviousEntrySql)) {
+        var findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
+        try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort + 1);
             statement.setInt(2, movedEntry.getParent());
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     nextEntryId = Optional.of(unpackAlbumEntry(result));
                 }
@@ -497,10 +502,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     Optional<AlbumEntry> getEntry(Connection connection, int id) {
-        String sql = "select * from albumentries where albumentry_id=?";
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        var sql = "select * from albumentries where albumentry_id=?";
+        try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
-            try(ResultSet result = statement.executeQuery()) {
+            try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     return Optional.of(unpackAlbumEntry(result));
                 }
@@ -525,7 +530,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public StreamingOutput downloadAlbumEntrySelection(List<Integer> selectedentryIds) {
-        List<AlbumEntry> selectedentries = findSelectedentries(selectedentryIds);
+        var selectedentries = findSelectedentries(selectedentryIds);
         return new StreamingOutput() {
 
             @Override
@@ -576,7 +581,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
         ImageAndWriter imageAndWriter = null;
         try {
-            HttpURLConnection connection = getConnectionFactory().connect(imageUrl);
+            var connection = getConnectionFactory().connect(imageUrl);
             connection.setRequestMethod("GET");
             try(var inputStream = ImageIO.createImageInputStream(connection.getInputStream())) {
                 var readers = ImageIO.getImageReaders(inputStream);
@@ -593,6 +598,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (IOException e) {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
         }
+
         return imageAndWriter;
     }
 
@@ -623,7 +629,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) throws IOException {
-        Collection<Entry> entries = new ArrayList<>();
+        var entries = new ArrayList<Entry>();
         if (albumEntry.getLastModified() != null) {
             var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
             entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formattedDateTime));
@@ -855,9 +861,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
-        Document document = loadAndParseIndexHtml(request);
+        var document = loadAndParseIndexHtml(request);
         getAlbumEntry(request.getParent()).ifPresent(parent -> {
-                int sort = findHighestSortValueInParentAlbum(request.getParent());
+                var sort = findHighestSortValueInParentAlbum(request.getParent());
                 var links = document.select("a");
                 for (var link: links) {
                     if (hrefIsJpeg(link.attr("href"))) {
@@ -874,24 +880,24 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> sortByDate(int albumid) {
         try {
-            List<AlbumEntry> entriesToSort = new ArrayList<>();
-            try (Connection connection = datasource.getConnection()) {
-                String sql = "select * from albumentries where parent=? order by lastmodified";
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            var entriesToSort = new ArrayList<AlbumEntry>();
+            try (var connection = datasource.getConnection()) {
+                var sql = "select * from albumentries where parent=? order by lastmodified";
+                try (var statement = connection.prepareStatement(sql)) {
                     statement.setInt(1, albumid);
-                    try (ResultSet results = statement.executeQuery()) {
+                    try (var results = statement.executeQuery()) {
                         while (results.next()) {
-                            AlbumEntry route = unpackAlbumEntry(results);
+                            var route = unpackAlbumEntry(results);
                             entriesToSort.add(route);
                         }
                     }
                 }
             }
 
-            int sort = 0;
+            var sort = 0;
             try (Connection connection = datasource.getConnection()) {
-                String sql = "update albumentries set sort=? where albumentry_id=?";
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                var sql = "update albumentries set sort=? where albumentry_id=?";
+                try (var statement = connection.prepareStatement(sql)) {
                     for (var albumEntry : entriesToSort) {
                         ++sort;
                         statement.setInt(1, sort);
@@ -925,16 +931,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public String displayText(String key, String locale) {
-        Locale active = locale == null || locale.isEmpty() ? defaultLocale : Locale.forLanguageTag(locale.replace('_', '-'));
-        ResourceBundle bundle = ResourceBundle.getBundle(DISPLAY_TEXT_RESOURCES, active);
+        var active = locale == null || locale.isEmpty() ? defaultLocale : Locale.forLanguageTag(locale.replace('_', '-'));
+        var bundle = ResourceBundle.getBundle(DISPLAY_TEXT_RESOURCES, active);
         return bundle.getString(key);
     }
 
     private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear, String defaultTitle) {
-        String basename = findBasename(link);
-        String path = parent.getPath() + basename;
-        String imageUrl = link.absUrl("href");
-        String thumbnailUrl = findThumbnailUrl(link);
+        var basename = findBasename(link);
+        var path = parent.getPath() + basename;
+        var imageUrl = link.absUrl("href");
+        var thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
         var lastModified = findLastModifiedDate(metadata, importYear);
         var contenttype = metadata != null ? metadata.getContentType() : null;
@@ -991,10 +997,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     int findHighestSortValueInParentAlbum(int parent) {
         try (var connection = datasource.getConnection()) {
-            String sql = "select max(sort) from albumentries where parent=?";
-            try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            var sql = "select max(sort) from albumentries where parent=?";
+            try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, parent);
-                try(ResultSet result = statement.executeQuery()) {
+                try(var result = statement.executeQuery()) {
                     if (result.next()) {
                         return result.getInt(1);
                     }
@@ -1011,9 +1017,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     private Document loadAndParseIndexHtml(BatchAddPicturesRequest request) {
         Document document = null;
         try {
-            HttpURLConnection connection = getConnectionFactory().connect(request.getBatchAddUrl());
+            var connection = getConnectionFactory().connect(request.getBatchAddUrl());
             connection.setRequestMethod("GET");
-            int statuscode = connection.getResponseCode();
+            var statuscode = connection.getResponseCode();
             if (statuscode != 200) {
                 throw new OldAlbumException(String.format("Got HTTP error when requesting the batch add pictures URL, statuscode: %d", statuscode));
             }
@@ -1023,6 +1029,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         } catch (IOException e) {
             throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.getBatchAddUrl()), e);
         }
+
         return document;
     }
 
@@ -1031,12 +1038,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         if (albumentry.getLastModified() != null) {
             lastmodified = Timestamp.from(Instant.ofEpochMilli(albumentry.getLastModified().getTime()));
         }
+
         return lastmodified;
     }
 
     void adjustSortValuesAfterEntryIsRemoved(Connection connection, int parentOfRemovedEntry, int sortOfRemovedEntry) {
-        String updateSortSql = "update albumentries set sort=sort-1 where parent=? and sort > ?";
-        try(PreparedStatement updateSortStatement = connection.prepareStatement(updateSortSql)) {
+        var updateSortSql = "update albumentries set sort=sort-1 where parent=? and sort > ?";
+        try(var updateSortStatement = connection.prepareStatement(updateSortSql)) {
             updateSortStatement.setInt(1, parentOfRemovedEntry);
             updateSortStatement.setInt(2, sortOfRemovedEntry);
             updateSortStatement.executeUpdate();
@@ -1066,7 +1074,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     void swapSortValues(Connection connection, int entryId, int newIndex, int neighbourEntryId, int newIndexOfNeighbourEntry) {
-        String sql = "update albumentries set sort=? where albumentry_id=?";
+        var sql = "update albumentries set sort=? where albumentry_id=?";
         try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, newIndex);
             statement.setInt(2, entryId);
@@ -1093,7 +1101,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         int newSortOfNeighbourEntry,
         Date newLastModifiedOfNeighbourEntry)
     {
-        String sql = "update albumentries set sort=?, lastmodified=? where albumentry_id=?";
+        var sql = "update albumentries set sort=?, lastmodified=? where albumentry_id=?";
         try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, newSort);
             statement.setTimestamp(2, Timestamp.from(newLastModified.toInstant()));
@@ -1143,7 +1151,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private int findChildCount(ResultSet results) throws SQLException {
-        int columncount = results.getMetaData().getColumnCount();
+        var columncount = results.getMetaData().getColumnCount();
         return columncount > 14 ? results.getInt(15) : 0;
     }
 
@@ -1152,7 +1160,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private int getAndParseContentLengthHeader(HttpURLConnection connection) {
-        String contentLengthHeader = connection.getHeaderField("Content-Length");
+        var contentLengthHeader = connection.getHeaderField("Content-Length");
         return contentLengthHeader != null ? Integer.parseInt(contentLengthHeader) : 0;
     }
 
@@ -1189,9 +1197,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     Map<String, String> transformResourceBundleToMap(Locale locale) {
-        Map<String, String> map = new HashMap<>();
-        ResourceBundle bundle = ResourceBundle.getBundle(DISPLAY_TEXT_RESOURCES, locale);
-        Enumeration<String> keys = bundle.getKeys();
+        var map = new HashMap<String, String>();
+        var bundle = ResourceBundle.getBundle(DISPLAY_TEXT_RESOURCES, locale);
+        var keys = bundle.getKeys();
         while(keys.hasMoreElements()) {
             String key = keys.nextElement();
             map.put(key, bundle.getString(key));
