@@ -95,21 +95,21 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testFetchAllRoutes() {
+    void testFetchAllRoutes() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
+        var database = createNewTestDatabase("oldalbum2");
         provider.setLogService(logservice);
-        provider.setDataSource(datasource);
+        provider.setDataSource(database);
         provider.activate(Collections.emptyMap());
 
         // First check all routes not requiring login
         var allroutesNotRequiringLogin = provider.fetchAllRoutes(null, false);
-        assertThat(allroutesNotRequiringLogin).hasSizeGreaterThan(20);
+        assertThat(allroutesNotRequiringLogin).hasSize(21);
 
         // Then check that all routes including those that require login has at least 3 more entries
         var allroutesIncludingThoseRequiringLogin = provider.fetchAllRoutes(null, true);
-        assertThat(allroutesIncludingThoseRequiringLogin)
-            .hasSizeGreaterThanOrEqualTo(allroutesNotRequiringLogin.size() + 3);
+        assertThat(allroutesIncludingThoseRequiringLogin).hasSize(allroutesNotRequiringLogin.size() + 3);
     }
 
     @Test
