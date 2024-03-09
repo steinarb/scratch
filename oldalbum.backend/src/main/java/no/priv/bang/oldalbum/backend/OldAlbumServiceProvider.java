@@ -171,11 +171,31 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     }
                 }
             }
+
+            if (!isLoggedIn) {
+                addAlbumEntriesThatDoNotRequireLoginButHasAParentThatRequiresLogin(allroutes, connection);
+            }
+
         } catch (SQLException e) {
             logger.error("Failed to find the list of all routes", e);
         }
 
         return allroutes;
+    }
+
+    private void addAlbumEntriesThatDoNotRequireLoginButHasAParentThatRequiresLogin(
+        List<AlbumEntry> allroutes,
+        Connection connection) throws SQLException
+    {
+        var sql = "select a.* from albumentries a join albumentries p on a.parent=p.albumentry_id where p.require_login and not a.require_login";
+        try (var statement = connection.createStatement()) {
+            try (var results = statement.executeQuery(sql)) {
+                while (results.next()) {
+                    var entry = unpackAlbumEntry(results);
+                    allroutes.add(entry);
+                }
+            }
+        }
     }
 
     @Override
