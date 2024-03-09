@@ -140,7 +140,7 @@ class OldAlbumServiceProviderTest {
 
         // Test paths when not logged in
         var pathsWhenLoggedIn = provider.getPaths(true);
-        assertThat(pathsWhenLoggedIn).hasSize(pathsWhenNotLoggedIn.size() + 4);
+        assertThat(pathsWhenLoggedIn).hasSize(pathsWhenNotLoggedIn.size() + 3);
     }
 
     @Test
