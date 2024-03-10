@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.web.security;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.config.Ini;
@@ -26,6 +27,8 @@ import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.web.env.IniWebEnvironment;
 import org.junit.jupiter.api.Test;
 
+import no.priv.bang.oldalbum.services.OldAlbumService;
+
 class OldAlbumShiroFilterTest {
 
     @Test
@@ -35,6 +38,8 @@ class OldAlbumShiroFilterTest {
         filter.setRealm(realm);
         var session = new MemorySessionDAO();
         filter.setSession(session);
+        var oldalbum = mock(OldAlbumService.class);
+        filter.setOldAlbumService(oldalbum);
         filter.activate();
         var securitymanager = filter.getSecurityManager();
         var token = new UsernamePasswordToken("jad", "1ad".toCharArray());
