@@ -18,7 +18,6 @@ package no.priv.bang.oldalbum.web.security;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
-import org.apache.shiro.web.env.IniWebEnvironment;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
@@ -27,6 +26,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPattern;
+
+import no.priv.bang.oldalbum.services.OldAlbumService;
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
@@ -43,6 +44,7 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter { // NOSONAR Can't 
     }
     private Realm realm;
     private SessionDAO session;
+    private OldAlbumService oldalbum;
 
     @Reference
     public void setRealm(Realm realm) {
@@ -54,9 +56,14 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter { // NOSONAR Can't 
         this.session = session;
     }
 
+    @Reference
+    public void setOldAlbumService(OldAlbumService oldalbum) {
+        this.oldalbum = oldalbum;
+    }
+
     @Activate
     public void activate() {
-        var environment = new IniWebEnvironment();
+        var environment = new OldAlbumWebEnvironment(oldalbum);
         environment.setIni(INI_FILE);
         environment.setServletContext(getServletContext());
         environment.init();

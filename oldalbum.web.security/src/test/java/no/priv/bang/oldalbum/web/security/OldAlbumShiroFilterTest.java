@@ -16,6 +16,9 @@
 package no.priv.bang.oldalbum.web.security;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.LinkedHashMap;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.config.Ini;
@@ -26,25 +29,76 @@ import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.web.env.IniWebEnvironment;
 import org.junit.jupiter.api.Test;
 
+import com.mockrunner.mock.web.MockFilterChain;
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockHttpSession;
+
+import no.priv.bang.oldalbum.services.OldAlbumService;
+
 class OldAlbumShiroFilterTest {
 
     @Test
-    void testAuthenticate() {
+    void testAuthenticate() throws Exception {
         var filter = new OldAlbumShiroFilter();
         var realm = getRealmFromIniFile();
         filter.setRealm(realm);
         var session = new MemorySessionDAO();
         filter.setSession(session);
+        var oldalbum = mock(OldAlbumService.class);
+        filter.setOldAlbumService(oldalbum);
         filter.activate();
+
         var securitymanager = filter.getSecurityManager();
         var token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         var info = securitymanager.authenticate(token);
         assertEquals(1, info.getPrincipals().asList().size());
     }
 
+    @Test
+    void testWebAuthorize() throws Exception {
+        var filter = new OldAlbumShiroFilter();
+        var realm = getRealmFromIniFile();
+        filter.setRealm(realm);
+        var session = new MemorySessionDAO();
+        filter.setSession(session);
+        var oldalbum = mock(OldAlbumService.class);
+        var protectedUrls = new LinkedHashMap<String, String>();
+        protectedUrls.put("/slides/berglia", "anon");
+        protectedUrls.put("/slides/", "authc");
+        when(oldalbum.findShiroProtectedUrls()).thenReturn(protectedUrls);
+        filter.setOldAlbumService(oldalbum);
+        filter.activate();
+
+        var slidesRequest = buildGetRequest("/slides/");
+        var slidesResponse = new MockHttpServletResponse();
+        var filterChain = new MockFilterChain();
+        filter.doFilter(slidesRequest, slidesResponse, filterChain);
+        assertEquals(302, slidesResponse.getStatusCode(), "Expect redirect to /login");
+
+        var bergliaRequest = buildGetRequest("/slides/berglia");
+        var bergliaResponse = new MockHttpServletResponse();
+        filter.doFilter(bergliaRequest, bergliaResponse, filterChain);
+        assertEquals(200, bergliaResponse.getStatusCode(), "Expect access allowed");
+    }
+
+    MockHttpServletRequest buildGetRequest(String resource) {
+        var session = new MockHttpSession();
+        var contextPath = "/oldalbum";
+        var requestUri = contextPath + resource;
+        return new MockHttpServletRequest()
+            .setProtocol("HTTP/1.1")
+            .setRequestURL("http://localhost:8181" + requestUri)
+            .setRequestURI(requestUri)
+            .setPathInfo(resource)
+            .setContextPath(contextPath)
+            .setServletPath("")
+            .setSession(session);
+    }
+
     private static Realm getRealmFromIniFile() {
         var environment = new IniWebEnvironment();
-        environment.setIni(Ini.fromResourcePath("classpath:test.shiro.ini"));
+        environment.setIni(Ini.fromResourcePath("classpath:security.test.shiro.ini"));
         environment.init();
         var securitymanager = RealmSecurityManager.class.cast(environment.getWebSecurityManager());
         var realms = securitymanager.getRealms();
