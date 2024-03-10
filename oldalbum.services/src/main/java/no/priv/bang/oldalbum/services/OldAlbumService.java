@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.services;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -30,6 +31,8 @@ import no.priv.bang.oldalbum.services.bean.LocaleBean;
 public interface OldAlbumService {
 
     List<AlbumEntry> fetchAllRoutes(String username, boolean isLoggedIn);
+
+    LinkedHashMap<String, String> findShiroProtectedUrls();
 
     List<String> getPaths(boolean isLoggedIn);
 

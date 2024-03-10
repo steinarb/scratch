@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -196,6 +197,41 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             }
         }
+    }
+
+    @Override
+    public LinkedHashMap<String, String> findShiroProtectedUrls() {
+        var urls = new LinkedHashMap<String, String>();
+        try (var connection = datasource.getConnection()) {
+            var childrenOfAlbumRequiringLoginThatDoNotRequireLogin = new ArrayList<AlbumEntry>();
+            addAlbumEntriesThatDoNotRequireLoginButHasAParentThatRequiresLogin(childrenOfAlbumRequiringLoginThatDoNotRequireLogin, connection);
+            for(var entry : childrenOfAlbumRequiringLoginThatDoNotRequireLogin) {
+                urls.put(entry.getPath(), "anon");
+            }
+
+            var protectedAlbums = findProtectedAlbums(connection);
+            for(var album : protectedAlbums) {
+                urls.put(album.getPath(), "authc");
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to find the list of shiro protected urls", e);
+        }
+        return urls;
+    }
+
+    private List<AlbumEntry> findProtectedAlbums(Connection connection) throws SQLException {
+        var protectedAlbums = new ArrayList<AlbumEntry>();
+        var sql = "select a.* from albumentries a where album and require_login";
+        try (var statement = connection.createStatement()) {
+            try (var results = statement.executeQuery(sql)) {
+                while (results.next()) {
+                    var entry = unpackAlbumEntry(results);
+                    protectedAlbums.add(entry);
+                }
+            }
+        }
+
+        return protectedAlbums;
     }
 
     @Override

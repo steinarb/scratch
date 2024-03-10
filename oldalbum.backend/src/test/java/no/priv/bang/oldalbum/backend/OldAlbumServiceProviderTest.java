@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -124,6 +125,53 @@ class OldAlbumServiceProviderTest {
         var allroutes = provider.fetchAllRoutes(null, false);
         assertEquals(1, logservice.getLogmessages().size());
         assertEquals(0, allroutes.size());
+    }
+
+    @Test
+    void testFindShiroProtectedUrls() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var database = createNewTestDatabase("oldalbum3");
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate(Collections.emptyMap());
+
+        // Call method under test
+        var urls = provider.findShiroProtectedUrls();
+
+        // Verify that the results comes with unprotected album entries before protected albums
+        // In the Ini files what comes first "wins", so the unprotected pictures can be accessed
+        // even though their parent albums are blocked
+        var expectedUrls = new LinkedHashMap<String, String>();
+        expectedUrls.put("/slides/berglia", "anon");
+        expectedUrls.put("/slides/", "authc");
+        var iterator = expectedUrls.entrySet().iterator();
+        var bergliaPicture = iterator.next();
+        var slidesAlbum = iterator.next();
+        assertThat(urls.entrySet()).containsExactly(bergliaPicture, slidesAlbum);
+    }
+
+    @Test
+    void testFindShiroProtectedUrlsWithDatabaseFailure() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate(Collections.emptyMap());
+
+        // Precondition: log initially empty
+        assertThat(logservice.getLogmessages()).isEmpty();
+
+        // Call method under test
+        var urls = provider.findShiroProtectedUrls();
+
+        // Expect empty result and logged error
+        // In case of an empty result the initial, static, shiro.ini will determine what's protected
+        assertThat(urls.entrySet()).isEmpty();
+        assertThat(logservice.getLogmessages()).hasSize(1);
+        assertThat(logservice.getLogmessages().get(0)).contains("Failed to find the list of shiro protected urls");
     }
 
     @Test
