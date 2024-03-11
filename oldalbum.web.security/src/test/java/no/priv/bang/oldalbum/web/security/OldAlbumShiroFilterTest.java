@@ -18,10 +18,7 @@ package no.priv.bang.oldalbum.web.security;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
-
-import javax.servlet.ServletException;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.config.Ini;
