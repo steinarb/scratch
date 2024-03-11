@@ -535,30 +535,31 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     }
 
     private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {
-        var request = buildRequest(resource);
-        request.setMethod("POST");
-        request.setContentType(APPLICATION_JSON);
+        var request = buildRequest(resource)
+            .setMethod("POST")
+            .setContentType(APPLICATION_JSON)
+            .setBodyContent(mapper.writeValueAsString(body));
         request.setHeader("content-type", APPLICATION_JSON);
-        request.setBodyContent(mapper.writeValueAsString(body));
         return request;
     }
 
     private MockHttpServletRequest buildGetUrl(String resource) {
-        var request = buildRequest(resource);
-        request.setMethod("GET");
-        return request;
+        return buildRequest(resource)
+            .setMethod("GET");
     }
 
     private MockHttpServletRequest buildRequest(String resource) {
         var session = new MockHttpSession();
-        var request = new MockHttpServletRequest();
-        request.setProtocol("HTTP/1.1");
-        request.setRequestURL("http://localhost:8181/oldalbum/api" + resource);
-        request.setRequestURI("/oldalbum/api" + resource);
-        request.setContextPath("/oldalbum");
-        request.setServletPath("/api");
-        request.setSession(session);
-        return request;
+        var contextPath = "/oldalbum";
+        var servletPath = "/api";
+        var requestUri = contextPath + servletPath + resource;
+        return new MockHttpServletRequest()
+            .setProtocol("HTTP/1.1")
+            .setRequestURL("http://localhost:8181" + requestUri)
+            .setRequestURI(requestUri)
+            .setContextPath(contextPath)
+            .setServletPath(servletPath)
+            .setSession(session);
     }
 
     private OldAlbumWebApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(OldAlbumService oldAlbumService, LogService logservice, UserManagementService useradmin) throws Exception {
