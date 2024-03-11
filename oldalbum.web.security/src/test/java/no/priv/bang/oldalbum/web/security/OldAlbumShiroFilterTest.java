@@ -78,7 +78,7 @@ class OldAlbumShiroFilterTest {
 
     private static Realm getRealmFromIniFile() {
         var environment = new IniWebEnvironment();
-        environment.setIni(Ini.fromResourcePath("classpath:test.shiro.ini"));
+        environment.setIni(Ini.fromResourcePath("classpath:security.test.shiro.ini"));
         environment.init();
         var securitymanager = RealmSecurityManager.class.cast(environment.getWebSecurityManager());
         var realms = securitymanager.getRealms();
