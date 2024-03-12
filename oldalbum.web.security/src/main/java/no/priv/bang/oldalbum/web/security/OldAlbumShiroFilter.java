@@ -32,7 +32,14 @@ import no.priv.bang.oldalbum.services.OldAlbumService;
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
+import java.io.IOException;
+
 import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 @Component(service=Filter.class, immediate=true)
 @HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=oldalbum)")
@@ -79,6 +86,16 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter { // NOSONAR Can't 
 
         setSecurityManager(securityManager);
         setFilterChainResolver(environment.getFilterChainResolver());
+    }
+
+    @Override
+    protected void doFilterInternal(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws ServletException, IOException {
+        var request = (HttpServletRequest) servletRequest;
+        System.out.println("request.getRequestURI(): " + request.getRequestURI());
+        System.out.println("request.getRequestURL(): " + request.getRequestURL());
+        System.out.println("request.getServletPath(): " + request.getServletPath());
+        System.out.println("request.getContextPath(): " + request.getContextPath());
+        super.doFilterInternal(servletRequest, servletResponse, chain);
     }
 
 }
