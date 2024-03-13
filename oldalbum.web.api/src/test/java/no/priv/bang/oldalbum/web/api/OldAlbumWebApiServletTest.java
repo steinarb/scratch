@@ -557,6 +557,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
             .setProtocol("HTTP/1.1")
             .setRequestURL("http://localhost:8181" + requestUri)
             .setRequestURI(requestUri)
+            .setPathInfo(resource)
             .setContextPath(contextPath)
             .setServletPath(servletPath)
             .setSession(session);
