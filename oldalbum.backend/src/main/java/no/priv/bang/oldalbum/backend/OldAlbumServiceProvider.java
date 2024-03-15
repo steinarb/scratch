@@ -188,7 +188,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         List<AlbumEntry> allroutes,
         Connection connection) throws SQLException
     {
-        var sql = "select a.* from albumentries a join albumentries p on a.parent=p.albumentry_id where p.require_login and not a.require_login";
+        var sql = "select a.albumentry_id , (select a2.albumentry_id from albumentries a2 where a2.localpath = '/') as parent , a.localpath, a.album, a.title, a.description, a.imageurl, a.thumbnailurl, a.sort, a.lastmodified, a.contenttype, a.contentlength, a.require_login, a.group_by_year from albumentries a join albumentries p on a.parent=p.albumentry_id where p.require_login and not a.require_login";
         try (var statement = connection.createStatement()) {
             try (var results = statement.executeQuery(sql)) {
                 while (results.next()) {
