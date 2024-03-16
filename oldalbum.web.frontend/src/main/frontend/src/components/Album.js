@@ -12,6 +12,7 @@ import AlbumHideShowYearsButton from './AlbumHideShowYearsButton';
 import EditModeButton from './EditModeButton';
 import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
+import ReloadShiroConfigButton from './ReloadShiroConfigButton';
 import DownloadButton from './DownloadButton';
 import ModifyButton from './ModifyButton';
 import AddAlbumButton from './AddAlbumButton';
@@ -81,6 +82,7 @@ export default function Album(props) {
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end">
                                 <li><CopyLinkButton className="dropdown-item" /></li>
+                                <li><ReloadShiroConfigButton className="dropdown-item"/></li>
                                 <li><AlbumSelectAllButton className="dropdown-item" album={item} /></li>
                                 <li><AlbumGroupByYearButton className="dropdown-item" album={item} /></li>
                                 <li><AlbumHideShowYearsButton key={'albumHideShowYears' + item.id.toString()} className="dropdown-item" album={item} /></li>
