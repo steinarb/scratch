@@ -26,17 +26,20 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPattern;
+import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
 import javax.servlet.Filter;
 
-@Component(service=Filter.class, immediate=true)
+@Component(service= {Filter.class, ReloadableShiroFilter.class}, immediate=true)
 @HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=oldalbum)")
 @HttpWhiteboardFilterPattern("/*")
-public class OldAlbumShiroFilter extends AbstractShiroFilter { // NOSONAR Can't do anything about the inheritance of Shiro
+public class OldAlbumShiroFilter extends AbstractShiroFilter implements ReloadableShiroFilter { // NOSONAR Can't do anything about the inheritance of Shiro
     private static final Ini INI_FILE = new Ini();
     static {
         // Can't use the Ini.fromResourcePath(String) method because it can't find "shiro.ini" on the classpath in an OSGi context
@@ -45,6 +48,7 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter { // NOSONAR Can't 
     private Realm realm;
     private SessionDAO session;
     private OldAlbumService oldalbum;
+    private Logger logger;
 
     @Reference
     public void setRealm(Realm realm) {
@@ -61,8 +65,23 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter { // NOSONAR Can't 
         this.oldalbum = oldalbum;
     }
 
+    @Reference
+    public void setLogService(LogService logservice) {
+        this.logger = logservice.getLogger(getClass());
+    }
+
     @Activate
     public void activate() {
+        loadShiroConfiguration();
+    }
+
+    @Override
+    public boolean reloadConfiguration() {
+        return loadShiroConfiguration();
+    }
+
+    boolean loadShiroConfiguration() {
+        logger.info("Configuring shiro filter");
         var environment = new OldAlbumWebEnvironment(oldalbum);
         environment.setIni(INI_FILE);
         environment.setServletContext(getServletContext());
@@ -78,6 +97,7 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter { // NOSONAR Can't 
 
         setSecurityManager(securityManager);
         setFilterChainResolver(environment.getFilterChainResolver());
+        return true;
     }
 
 }

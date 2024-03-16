@@ -17,6 +17,7 @@ package no.priv.bang.oldalbum.web.api.resources;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.web.api.ShiroTestBase;
 
@@ -97,6 +99,26 @@ class RoutesResourceTest extends ShiroTestBase {
         loginUser("jad", "1ad");
         var sql = resource.dumpSql();
         assertThat(sql).contains("--liquibase formatted sql");
+    }
+
+    @Test
+    void testReloadShiroConfig() {
+        var shirofilter = mock(ReloadableShiroFilter.class);
+        when(shirofilter.reloadConfiguration()).thenReturn(true);
+        var resource = new RoutesResource();
+        resource.shiroFilter = shirofilter;
+        var response = resource.reloadShiroConfig();
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void testReloadShiroConfigWithFailedReload() {
+        var shirofilter = mock(ReloadableShiroFilter.class);
+        when(shirofilter.reloadConfiguration()).thenReturn(false);
+        var resource = new RoutesResource();
+        resource.shiroFilter = shirofilter;
+        var response = resource.reloadShiroConfig();
+        assertEquals(500, response.getStatus());
     }
 
     private static String loadClasspathResourceIntoString(String resource) {

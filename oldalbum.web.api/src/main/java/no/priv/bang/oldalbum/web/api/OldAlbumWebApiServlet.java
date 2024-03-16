@@ -26,6 +26,7 @@ import org.osgi.service.log.LogService;
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.servlet.jersey.JerseyServlet;
 
@@ -50,6 +51,11 @@ public class OldAlbumWebApiServlet extends JerseyServlet {
     @Reference
     public void setUseradmin(UserManagementService useradmin) {
         addInjectedOsgiService(UserManagementService.class, useradmin);
+    }
+
+    @Reference
+    public void setReloadableShiroFilter(ReloadableShiroFilter shirofilter) {
+        addInjectedOsgiService(ReloadableShiroFilter.class, shirofilter);
     }
 
     @Activate

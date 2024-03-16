@@ -21,11 +21,13 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.apache.shiro.SecurityUtils;
 import static javax.ws.rs.core.MediaType.*;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 
 @Path("")
@@ -34,6 +36,9 @@ public class RoutesResource {
 
     @Inject
     public OldAlbumService oldAlbumService;
+
+    @Inject
+    ReloadableShiroFilter shiroFilter;
 
     @Path("allroutes")
     @GET
@@ -52,6 +57,17 @@ public class RoutesResource {
         var username = (String) subject.getPrincipal();
         var isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
         return oldAlbumService.dumpDatabaseSql(username, isLoggedIn);
+    }
+
+    @Path("reloadshiroconfig")
+    @GET
+    @Produces(TEXT_PLAIN)
+    public Response reloadShiroConfig() {
+        if (shiroFilter.reloadConfiguration()) {
+            return Response.ok("SHIRO FILTER RELOAD SUCCESS").build();
+        }
+
+        return Response.serverError().entity("SHIRO FILTER RELOAD FAILURE").build();
     }
 
 }

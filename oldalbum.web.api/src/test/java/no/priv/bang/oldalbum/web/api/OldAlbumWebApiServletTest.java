@@ -62,6 +62,7 @@ import com.mockrunner.mock.web.MockServletOutputStream;
 
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.ImageRequest;
@@ -116,7 +117,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var shirofilter = mock(ReloadableShiroFilter.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin, shirofilter);
         var request = buildGetUrl("/allroutes");
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -134,7 +136,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var shirofilter = mock(ReloadableShiroFilter.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin, shirofilter);
         var request = buildGetUrl("/dumproutessql");
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -564,10 +567,18 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     }
 
     private OldAlbumWebApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(OldAlbumService oldAlbumService, LogService logservice, UserManagementService useradmin) throws Exception {
+        return simulateDSComponentActivationAndWebWhiteboardConfiguration(oldAlbumService, logservice, useradmin, null);
+    }
+
+    private OldAlbumWebApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(OldAlbumService oldAlbumService, LogService logservice, UserManagementService useradmin, ReloadableShiroFilter shirofilter) throws Exception {
         var servlet = new OldAlbumWebApiServlet();
         servlet.setLogService(logservice);
         servlet.setOldAlbumService(oldAlbumService);
         servlet.setUseradmin(useradmin);
+        if (shirofilter != null) {
+            servlet.setReloadableShiroFilter(shirofilter);
+        }
+
         servlet.activate();
         var config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
         servlet.init(config);

@@ -35,6 +35,7 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
+import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumShiroFilterTest {
 
@@ -47,6 +48,8 @@ class OldAlbumShiroFilterTest {
         filter.setSession(session);
         var oldalbum = mock(OldAlbumService.class);
         filter.setOldAlbumService(oldalbum);
+        var logservice = new MockLogService();
+        filter.setLogService(logservice);
         filter.activate();
 
         var securitymanager = filter.getSecurityManager();
@@ -63,23 +66,41 @@ class OldAlbumShiroFilterTest {
         var session = new MemorySessionDAO();
         filter.setSession(session);
         var oldalbum = mock(OldAlbumService.class);
+        var emptyProtectedUrls = new LinkedHashMap<String, String>();
         var protectedUrls = new LinkedHashMap<String, String>();
         protectedUrls.put("/slides/berglia", "anon");
         protectedUrls.put("/slides/", "authc");
-        when(oldalbum.findShiroProtectedUrls()).thenReturn(protectedUrls);
+        when(oldalbum.findShiroProtectedUrls()).thenReturn(emptyProtectedUrls).thenReturn(protectedUrls);
         filter.setOldAlbumService(oldalbum);
+        var logservice = new MockLogService();
+        filter.setLogService(logservice);
         filter.activate();
 
+        // Resources to test
         var slidesRequest = buildGetRequest("/slides/");
-        var slidesResponse = new MockHttpServletResponse();
-        var filterChain = new MockFilterChain();
-        filter.doFilter(slidesRequest, slidesResponse, filterChain);
-        assertEquals(302, slidesResponse.getStatusCode(), "Expect redirect to /login");
 
         var bergliaRequest = buildGetRequest("/slides/berglia");
-        var bergliaResponse = new MockHttpServletResponse();
-        filter.doFilter(bergliaRequest, bergliaResponse, filterChain);
-        assertEquals(200, bergliaResponse.getStatusCode(), "Expect access allowed");
+
+        // First verify that access is allowed for both resources
+        var filterChain = new MockFilterChain();
+        var slidesResponse1 = new MockHttpServletResponse();
+        filter.doFilter(slidesRequest, slidesResponse1, filterChain);
+        assertEquals(200, slidesResponse1.getStatusCode(), "Expect redirect to /login");
+        var bergliaResponse1 = new MockHttpServletResponse();
+        filter.doFilter(bergliaRequest, bergliaResponse1, filterChain);
+        assertEquals(200, bergliaResponse1.getStatusCode(), "Expect access allowed");
+
+        // Call the update function to reload the filter
+        var status = filter.reloadConfiguration();
+        assertTrue(status);
+
+        // Verify that the album is password protected (redirects to login) and picture is unprotected
+        var slidesResponse2 = new MockHttpServletResponse();
+        filter.doFilter(slidesRequest, slidesResponse2, filterChain);
+        assertEquals(302, slidesResponse2.getStatusCode(), "Expect redirect to /login");
+        var bergliaResponse2 = new MockHttpServletResponse();
+        filter.doFilter(bergliaRequest, bergliaResponse2, filterChain);
+        assertEquals(200, bergliaResponse2.getStatusCode(), "Expect access allowed");
     }
 
     MockHttpServletRequest buildGetRequest(String resource) {
