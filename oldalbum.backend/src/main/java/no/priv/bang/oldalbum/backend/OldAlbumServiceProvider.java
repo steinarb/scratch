@@ -397,7 +397,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> deleteSelectedEntries(List<Integer> selection) {
         for(var id : selection) {
-            getAlbumEntry(id).ifPresent(entry -> deleteSingleAlbumEntry(entry));
+            getAlbumEntry(id).ifPresent(this::deleteSingleAlbumEntry);
         }
 
         return fetchAllRoutes(null, true);
