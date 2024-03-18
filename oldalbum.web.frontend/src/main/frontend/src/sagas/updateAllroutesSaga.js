@@ -13,6 +13,7 @@ import {
     MOVE_ALBUMENTRY_LEFT_RECEIVE,
     MOVE_ALBUMENTRY_DOWN_RECEIVE,
     MOVE_ALBUMENTRY_RIGHT_RECEIVE,
+    TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_RECEIVE,
 } from '../reduxactions';
 
 export default function* updateAllroutesSaga() {
@@ -28,6 +29,7 @@ export default function* updateAllroutesSaga() {
     yield takeLatest(MOVE_ALBUMENTRY_LEFT_RECEIVE, sendUpdateAllroutesAction);
     yield takeLatest(MOVE_ALBUMENTRY_DOWN_RECEIVE, sendUpdateAllroutesAction);
     yield takeLatest(MOVE_ALBUMENTRY_RIGHT_RECEIVE, sendUpdateAllroutesAction);
+    yield takeLatest(TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_RECEIVE, sendUpdateAllroutesAction);
 }
 
 function* sendUpdateAllroutesAction(action) {

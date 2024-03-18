@@ -357,6 +357,31 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
+    public List<AlbumEntry> toggleEntryPasswordProtection(int albumEntryId) {
+        try(var connection = datasource.getConnection()) {
+            Boolean requireLogin = null;
+            try(var statement = connection.prepareStatement("select require_login from albumentries where albumentry_id=?")) {
+                statement.setInt(1, albumEntryId);
+                try (var results = statement.executeQuery()) {
+                    while (results.next()) {
+                        requireLogin = results.getBoolean("require_login");
+                    }
+                }
+            }
+
+            try(var statement = connection.prepareStatement("update albumentries set require_login=? where albumentry_id=?")) {
+                statement.setBoolean(1, !requireLogin);
+                statement.setInt(2, albumEntryId);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            logger.error(String.format("Failed to toggle album entry for login requirement for id \"%d\"", albumEntryId), e);
+        }
+
+        return fetchAllRoutes(null, true); // Have to be logged in to be able to toggle login requirement
+    }
+
+    @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
         var sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         var path = addedEntry.getPath();

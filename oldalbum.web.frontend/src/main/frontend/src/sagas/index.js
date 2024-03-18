@@ -11,6 +11,7 @@ import batchAddPicturesSaga from './batchAddPicturesSaga';
 import sortAlbumentriesByDateSaga from './sortAlbumentriesByDateSaga';
 import modifyPicture from './modifyPictureSaga';
 import addPicture from './addPictureSaga';
+import togglepasswordprotectionSaga from './togglepasswordprotectionSaga';
 import imageMetadata from './imageMetadataSaga';
 import deleteSaga from './deleteSaga';
 import deleteSelectionSaga from './deleteSelectionSaga';
@@ -42,6 +43,7 @@ export default function* rootSaga() {
         fork(selectionSaga),
         fork(modifyPicture),
         fork(addPicture),
+        fork(togglepasswordprotectionSaga),
         fork(imageMetadata),
         fork(deleteSaga),
         fork(deleteSelectionSaga),

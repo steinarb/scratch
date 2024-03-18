@@ -44,6 +44,8 @@ public interface OldAlbumService {
 
     List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry);
 
+    List<AlbumEntry> toggleEntryPasswordProtection(int albumEntryId);
+
     List<AlbumEntry> addEntry(AlbumEntry addedEntry);
 
     List<AlbumEntry> deleteEntry(AlbumEntry deletedEntry);

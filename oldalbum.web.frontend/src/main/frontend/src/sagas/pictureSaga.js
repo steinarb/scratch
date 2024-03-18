@@ -10,7 +10,19 @@ import {
     SAVE_MODIFIED_PICTURE_RECEIVE,
     SAVE_ADDED_PICTURE_REQUEST,
     SAVE_ADDED_PICTURE_RECEIVE,
+    TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_RECEIVE,
+    RELOAD_SHIRO_CONFIG_REQUEST,
 } from '../reduxactions';
+
+export default function* pictureSaga() {
+    yield takeLatest(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED, saveModifiedPicture);
+    yield takeLatest(ADD_PICTURE_UPDATE_BUTTON_CLICKED, saveAddedPicture);
+    yield takeLatest(SAVE_MODIFIED_PICTURE_RECEIVE, clearFormAndNavigateToPicture);
+    yield takeLatest(SAVE_ADDED_PICTURE_RECEIVE, clearFormAndNavigateToPicture);
+    yield takeLatest(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
+    yield takeLatest(ADD_PICTURE_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
+    yield takeLatest(TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_RECEIVE, reconfigureShiroFilter);
+}
 
 function* saveModifiedPicture() {
     const picture = yield select(state => ({
@@ -59,11 +71,6 @@ function* clearFormAndNavigateBack() {
     yield put(goBack());
 }
 
-export default function* pictureSaga() {
-    yield takeLatest(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED, saveModifiedPicture);
-    yield takeLatest(ADD_PICTURE_UPDATE_BUTTON_CLICKED, saveAddedPicture);
-    yield takeLatest(SAVE_MODIFIED_PICTURE_RECEIVE, clearFormAndNavigateToPicture);
-    yield takeLatest(SAVE_ADDED_PICTURE_RECEIVE, clearFormAndNavigateToPicture);
-    yield takeLatest(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
-    yield takeLatest(ADD_PICTURE_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
+function* reconfigureShiroFilter() {
+    yield put(RELOAD_SHIRO_CONFIG_REQUEST());
 }

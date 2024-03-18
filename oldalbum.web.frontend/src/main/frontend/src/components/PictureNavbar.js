@@ -5,6 +5,7 @@ import Locale from './Locale';
 import EditModeButton from './EditModeButton';
 import CopyLinkButton from './CopyLinkButton';
 import ReloadShiroConfigButton from './ReloadShiroConfigButton';
+import TogglePasswordProtection from './TogglePasswordProtection';
 import DownloadButton from './DownloadButton';
 import LoginLogoutButton from './LoginLogoutButton';
 
@@ -35,6 +36,7 @@ export default function PictureNavbar(props) {
                         <div className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <CopyLinkButton className="dropdown-item" />
                             <ReloadShiroConfigButton className="dropdown-item"/>
+                            <TogglePasswordProtection className="dropdown-item" item={item}/>
                             <EditModeButton className="dropdown-item" />
                             <LoginLogoutButton className="dropdown-item" item={item}/>
                         </div>

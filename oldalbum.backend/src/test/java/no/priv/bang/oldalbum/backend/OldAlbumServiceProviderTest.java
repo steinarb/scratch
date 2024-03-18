@@ -337,6 +337,48 @@ class OldAlbumServiceProviderTest {
         assertEquals(requireLogin, updatedPicture.isRequireLogin());
     }
 
+    @Test
+    void testToggleEntryPasswordProtection() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var database = createNewTestDatabase("oldalbum4");
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate(Collections.emptyMap());
+
+        var allroutes = provider.fetchAllRoutes(null, true);
+        var protectedAlbums = allroutes.stream().filter(r -> r.isAlbum()).filter(r -> r.isRequireLogin()).collect(Collectors.toList());
+        var protectedPictures = allroutes.stream().filter(r -> !r.isAlbum()).filter(r -> r.isRequireLogin()).collect(Collectors.toList());
+
+        var protectedAlbum = protectedAlbums.get(0);
+        assertTrue(protectedAlbum.isRequireLogin());
+        var updatedAllroutesAfterUnprotectingAlbum = provider.toggleEntryPasswordProtection(protectedAlbum.getId());
+        var unprotectedAlbum = updatedAllroutesAfterUnprotectingAlbum.stream().filter(r -> r.getId() == protectedAlbum.getId()).findFirst().get();
+        assertThat(unprotectedAlbum.isRequireLogin()).isNotEqualTo(protectedAlbum.isRequireLogin());
+
+        var protectedPicture = protectedPictures.get(0);
+        assertTrue(protectedPicture.isRequireLogin());
+        var updatedAllroutesAfterUnprotectingPicture = provider.toggleEntryPasswordProtection(protectedPicture.getId());
+        var unprotectedPicture = updatedAllroutesAfterUnprotectingPicture.stream().filter(r -> r.getId() == protectedAlbum.getId()).findFirst().get();
+        assertThat(unprotectedPicture.isRequireLogin()).isNotEqualTo(protectedPicture.isRequireLogin());
+    }
+
+    @Test
+    void testToggleEntryPasswordProtectionWithDatabaseFailure() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var database = mock(DataSource.class);
+        when(database.getConnection()).thenThrow(SQLException.class);
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate(Collections.emptyMap());
+
+        assertThat(logservice.getLogmessages()).isEmpty(); // Verify log initially empty
+        var allroutes = provider.toggleEntryPasswordProtection(1);
+        assertThat(allroutes).isEmpty(); // No real database so empty is expected
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
     @Test()
     void testSwitchEntryParent() {
         var provider = new OldAlbumServiceProvider();

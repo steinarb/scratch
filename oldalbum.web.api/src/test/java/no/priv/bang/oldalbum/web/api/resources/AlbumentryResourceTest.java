@@ -69,6 +69,18 @@ class AlbumentryResourceTest {
     }
 
     @Test
+    void testTogglepasswordprotection() {
+        var pictureWithToggledPasswordProtection = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).requireLogin(true).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.toggleEntryPasswordProtection(anyInt())).thenReturn(Arrays.asList(pictureWithToggledPasswordProtection));
+        resource.oldalbum = oldalbum;
+        var allroutes = resource.togglepasswordprotection(pictureWithToggledPasswordProtection.getId());
+        var updatedPicture = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
+        assertTrue(updatedPicture.isRequireLogin());
+    }
+
+    @Test
     void testAddpicture() {
         var pictureToAdd = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         var resource = new AlbumentryResource();
