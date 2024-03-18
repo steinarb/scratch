@@ -35,7 +35,6 @@ import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 @Path("")
 @Produces(APPLICATION_JSON)
 @RequiresUser
-@RequiresRoles("oldalbumadmin")
 public class AlbumentryResource {
 
     @Inject
@@ -44,6 +43,7 @@ public class AlbumentryResource {
     @Path("modifyalbum")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> modifyalbum(AlbumEntry modifiedAlbum) {
         return oldalbum.updateEntry(modifiedAlbum);
     }
@@ -51,6 +51,7 @@ public class AlbumentryResource {
     @Path("addalbum")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> addalbum(AlbumEntry albumEntryToAdd) {
         return oldalbum.addEntry(albumEntryToAdd);
     }
@@ -58,6 +59,7 @@ public class AlbumentryResource {
     @Path("modifypicture")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> modifypicture(AlbumEntry modifiedPicture) {
         return oldalbum.updateEntry(modifiedPicture);
     }
@@ -65,6 +67,7 @@ public class AlbumentryResource {
     @Path("addpicture")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> addpicture(AlbumEntry pictureToAdd) {
         return oldalbum.addEntry(pictureToAdd);
     }
@@ -72,6 +75,7 @@ public class AlbumentryResource {
     @Path("batchaddpictures")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         return oldalbum.batchAddPictures(request);
     }
@@ -79,6 +83,7 @@ public class AlbumentryResource {
     @Path("sortalbumbydate")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> sortAlbumByDate(AlbumEntry request) {
         return oldalbum.sortByDate(request.getId());
     }
@@ -86,6 +91,7 @@ public class AlbumentryResource {
     @Path("deleteentry")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> deleteEntry(AlbumEntry entryToDelete) {
         return oldalbum.deleteEntry(entryToDelete);
     }
@@ -94,6 +100,7 @@ public class AlbumentryResource {
     @Path("deleteselection")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> deleteSelection(List<Integer> selection) {
         return oldalbum.deleteSelectedEntries(selection);
     }
@@ -101,6 +108,7 @@ public class AlbumentryResource {
     @Path("movealbumentryup")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> moveEntryUp(AlbumEntry entryToMove) {
         return oldalbum.moveEntryUp(entryToMove);
     }
@@ -108,6 +116,7 @@ public class AlbumentryResource {
     @Path("movealbumentrydown")
     @POST
     @Consumes(APPLICATION_JSON)
+    @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> moveEntryDown(AlbumEntry entryToMove) {
         return oldalbum.moveEntryDown(entryToMove);
     }
