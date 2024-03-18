@@ -22,7 +22,7 @@ public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable ha
     private int parent;
     private String batchAddUrl;
     private Integer importYear;
-    public String defaultTitle;
+    private String defaultTitle;
 
     public int getParent() {
         return parent;
