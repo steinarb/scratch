@@ -1001,7 +1001,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var lastModified = findLastModifiedDate(metadata, importYear);
         var contenttype = metadata != null ? metadata.getContentType() : null;
         var contentlength = metadata != null ? metadata.getContentLength() : 0;
-        var title = defaultTitle != null && !defaultTitle.isBlank() ? defaultTitle : metadata != null ? metadata.getTitle() : null;
+        var title = !stringIsNullOrBlank(defaultTitle) ? defaultTitle : safeGetTitleFromMetadata(metadata);
         var description = metadata != null ? metadata.getDescription() : null;
         return AlbumEntry.with()
             .album(false)
@@ -1018,6 +1018,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .requireLogin(parent.isRequireLogin())
             .sort(sort)
             .build();
+    }
+
+    boolean stringIsNullOrBlank(String text) {
+        return text == null || text.isBlank();
+    }
+
+    String safeGetTitleFromMetadata(ImageMetadata metadata) {
+        return Optional.ofNullable(metadata).map(ImageMetadata::getTitle).orElse(null);
     }
 
     Date findLastModifiedDate(ImageMetadata metadata, Integer importYear) {
