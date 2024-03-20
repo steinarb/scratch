@@ -6,8 +6,8 @@ import {
     SAVE_MODIFIED_PICTURE_FAILURE,
 } from '../reduxactions';
 
-function postModifiedPicture(picture) {
-    return axios.post('/api/modifypicture', picture);
+export default function* modifyPictureSaga() {
+    yield takeLatest(SAVE_MODIFIED_PICTURE_REQUEST, saveModifiedPicture);
 }
 
 function* saveModifiedPicture(action) {
@@ -20,6 +20,6 @@ function* saveModifiedPicture(action) {
     }
 }
 
-export default function* modifyPictureSaga() {
-    yield takeLatest(SAVE_MODIFIED_PICTURE_REQUEST, saveModifiedPicture);
+function postModifiedPicture(picture) {
+    return axios.post('/api/modifypicture', picture);
 }

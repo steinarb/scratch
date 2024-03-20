@@ -7,8 +7,9 @@ import {
     ADD_PICTURE_BASENAME_FIELD_CHANGED,
 } from '../reduxactions';
 
-function doDownloadImageMetadata(url) {
-    return axios.post('/api/image/metadata', { url });
+export default function* imageMetadataSaga() {
+    yield takeLatest(IMAGE_METADATA_REQUEST,  downloadImageMetadata);
+    yield takeLatest(IMAGE_METADATA_REQUEST,  extractBasename);
 }
 
 function* downloadImageMetadata(action) {
@@ -22,6 +23,10 @@ function* downloadImageMetadata(action) {
     }
 }
 
+function doDownloadImageMetadata(url) {
+    return axios.post('/api/image/metadata', { url });
+}
+
 function* extractBasename(action) {
     const url = action.payload;
     const paths = url.split('/');
@@ -29,9 +34,4 @@ function* extractBasename(action) {
     const fileAndExtension = filename.split('.');
     const basename = fileAndExtension.shift();
     yield put(ADD_PICTURE_BASENAME_FIELD_CHANGED(basename));
-}
-
-export default function* imageMetadataSaga() {
-    yield takeLatest(IMAGE_METADATA_REQUEST,  downloadImageMetadata);
-    yield takeLatest(IMAGE_METADATA_REQUEST,  extractBasename);
 }

@@ -6,8 +6,8 @@ import {
     DELETE_SELECTION_FAILURE,
 } from '../reduxactions';
 
-function deleteAlbumItemSelection(selection) {
-    return axios.post('/api/deleteselection', selection);
+export default function* deleteSaga() {
+    yield takeLatest(DELETE_SELECTION_REQUEST, deleteSelectionAndReceiveRoutes);
 }
 
 function* deleteSelectionAndReceiveRoutes(action) {
@@ -21,6 +21,6 @@ function* deleteSelectionAndReceiveRoutes(action) {
     }
 }
 
-export default function* deleteSaga() {
-    yield takeLatest(DELETE_SELECTION_REQUEST, deleteSelectionAndReceiveRoutes);
+function deleteAlbumItemSelection(selection) {
+    return axios.post('/api/deleteselection', selection);
 }

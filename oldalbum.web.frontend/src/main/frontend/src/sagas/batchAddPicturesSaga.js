@@ -6,8 +6,8 @@ import {
     BATCH_ADD_PICTURES_FROM_URL_FAILURE,
 } from '../reduxactions';
 
-function batchAddPictures(batchaddpicturesrequest) {
-    return axios.post('/api/batchaddpictures', batchaddpicturesrequest);
+export default function* addPictureSaga() {
+    yield takeLatest(BATCH_ADD_PICTURES_FROM_URL_REQUEST, batchAddPicturesAndReceiveRoutes);
 }
 
 function* batchAddPicturesAndReceiveRoutes(action) {
@@ -20,6 +20,6 @@ function* batchAddPicturesAndReceiveRoutes(action) {
     }
 }
 
-export default function* addPictureSaga() {
-    yield takeLatest(BATCH_ADD_PICTURES_FROM_URL_REQUEST, batchAddPicturesAndReceiveRoutes);
+function batchAddPictures(batchaddpicturesrequest) {
+    return axios.post('/api/batchaddpictures', batchaddpicturesrequest);
 }

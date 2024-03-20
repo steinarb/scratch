@@ -16,9 +16,11 @@ import {
 } from '../reduxactions';
 import { stripFieldsNotInAlbumEntryJavaBean } from './commonSagaCode';
 
-function moveAlbumentryUp(albumentry) {
-    const body = stripFieldsNotInAlbumEntryJavaBean(albumentry);
-    return axios.post('/api/movealbumentryup', body);
+export default function* allroutesSaga() {
+    yield takeLatest(MOVE_ALBUMENTRY_UP_REQUEST, moveAlbumentryUpAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_LEFT_REQUEST, moveAlbumentryLeftAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_DOWN_REQUEST, moveAlbumentryDownAndReceiveRoutes);
+    yield takeLatest(MOVE_ALBUMENTRY_RIGHT_REQUEST, moveAlbumentryRightAndReceiveRoutes);
 }
 
 function* moveAlbumentryUpAndReceiveRoutes(action) {
@@ -67,9 +69,7 @@ function* moveAlbumentryRightAndReceiveRoutes(action) {
     }
 }
 
-export default function* allroutesSaga() {
-    yield takeLatest(MOVE_ALBUMENTRY_UP_REQUEST, moveAlbumentryUpAndReceiveRoutes);
-    yield takeLatest(MOVE_ALBUMENTRY_LEFT_REQUEST, moveAlbumentryLeftAndReceiveRoutes);
-    yield takeLatest(MOVE_ALBUMENTRY_DOWN_REQUEST, moveAlbumentryDownAndReceiveRoutes);
-    yield takeLatest(MOVE_ALBUMENTRY_RIGHT_REQUEST, moveAlbumentryRightAndReceiveRoutes);
+function moveAlbumentryUp(albumentry) {
+    const body = stripFieldsNotInAlbumEntryJavaBean(albumentry);
+    return axios.post('/api/movealbumentryup', body);
 }

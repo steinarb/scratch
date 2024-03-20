@@ -2,8 +2,8 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import { ALLROUTES_REQUEST, ALLROUTES_RECEIVE, ALLROUTES_FAILURE } from '../reduxactions';
 
-function fetchAllRoutes() {
-    return axios.get('/api/allroutes');
+export default function* allroutesSaga() {
+    yield takeLatest(ALLROUTES_REQUEST, receiveRoutes);
 }
 
 function* receiveRoutes() {
@@ -16,6 +16,6 @@ function* receiveRoutes() {
     }
 }
 
-export default function* allroutesSaga() {
-    yield takeLatest(ALLROUTES_REQUEST, receiveRoutes);
+function fetchAllRoutes() {
+    return axios.get('/api/allroutes');
 }

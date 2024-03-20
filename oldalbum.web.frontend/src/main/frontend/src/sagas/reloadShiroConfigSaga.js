@@ -2,8 +2,8 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import axios from 'axios';
 import { RELOAD_SHIRO_CONFIG_REQUEST, RELOAD_SHIRO_CONFIG_RECEIVE, RELOAD_SHIRO_CONFIG_FAILURE } from '../reduxactions';
 
-function fetchReloadShiroConfig() {
-    return axios.get('/api/reloadshiroconfig');
+export default function* reloadShiroConfigSaga() {
+    yield takeLatest(RELOAD_SHIRO_CONFIG_REQUEST, receiveConfigReloadResult);
 }
 
 function* receiveConfigReloadResult() {
@@ -16,6 +16,6 @@ function* receiveConfigReloadResult() {
     }
 }
 
-export default function* reloadShiroConfigSaga() {
-    yield takeLatest(RELOAD_SHIRO_CONFIG_REQUEST, receiveConfigReloadResult);
+function fetchReloadShiroConfig() {
+    return axios.get('/api/reloadshiroconfig');
 }

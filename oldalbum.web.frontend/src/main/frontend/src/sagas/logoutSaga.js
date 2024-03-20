@@ -7,8 +7,8 @@ import {
     ALLROUTES_REQUEST,
 } from '../reduxactions';
 
-function sendLogout(locale) {
-    return axios.get('/api/logout', { params: { locale } });
+export default function* logoutSaga() {
+    yield takeLatest(LOGOUT_REQUEST, receiveLogoutResult);
 }
 
 function* receiveLogoutResult(action) {
@@ -25,6 +25,6 @@ function* receiveLogoutResult(action) {
     }
 }
 
-export default function* logoutSaga() {
-    yield takeLatest(LOGOUT_REQUEST, receiveLogoutResult);
+function sendLogout(locale) {
+    return axios.get('/api/logout', { params: { locale } });
 }

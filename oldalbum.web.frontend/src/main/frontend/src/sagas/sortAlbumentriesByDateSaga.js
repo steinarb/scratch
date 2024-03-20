@@ -6,8 +6,8 @@ import {
     SORT_ALBUM_ENTRIES_BY_DATE_FAILURE,
 } from '../reduxactions';
 
-function sortAlbumentriesByDate(batchaddpicturesrequest) {
-    return axios.post('/api/sortalbumbydate', batchaddpicturesrequest);
+export default function* addPictureSaga() {
+    yield takeLatest(SORT_ALBUM_ENTRIES_BY_DATE_REQUEST, sortAlbumAndReceiveRoutes);
 }
 
 function* sortAlbumAndReceiveRoutes(action) {
@@ -20,6 +20,6 @@ function* sortAlbumAndReceiveRoutes(action) {
     }
 }
 
-export default function* addPictureSaga() {
-    yield takeLatest(SORT_ALBUM_ENTRIES_BY_DATE_REQUEST, sortAlbumAndReceiveRoutes);
+function sortAlbumentriesByDate(batchaddpicturesrequest) {
+    return axios.post('/api/sortalbumbydate', batchaddpicturesrequest);
 }

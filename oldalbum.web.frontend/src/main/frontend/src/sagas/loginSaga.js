@@ -10,12 +10,9 @@ import {
     ALLROUTES_REQUEST,
 } from '../reduxactions';
 
-function checkLogin() {
-    return axios.get('/api/login');
-}
-
-function sendLogin(credentials, locale) {
-    return axios.post('/api/login', credentials, { params: { locale } });
+export default function* loginSaga() {
+    yield takeLatest(LOGIN_CHECK_REQUEST, receiveCheckLoginResult);
+    yield takeLatest(LOGIN_REQUEST, receiveLoginResult);
 }
 
 function* receiveCheckLoginResult() {
@@ -28,6 +25,10 @@ function* receiveCheckLoginResult() {
         console.log(error);
         yield put(LOGIN_CHECK_FAILURE(error));
     }
+}
+
+function checkLogin() {
+    return axios.get('/api/login');
 }
 
 function* receiveLoginResult(action) {
@@ -44,7 +45,6 @@ function* receiveLoginResult(action) {
     }
 }
 
-export default function* loginSaga() {
-    yield takeLatest(LOGIN_CHECK_REQUEST, receiveCheckLoginResult);
-    yield takeLatest(LOGIN_REQUEST, receiveLoginResult);
+function sendLogin(credentials, locale) {
+    return axios.post('/api/login', credentials, { params: { locale } });
 }

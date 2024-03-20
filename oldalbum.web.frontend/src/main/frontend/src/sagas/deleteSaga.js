@@ -6,8 +6,8 @@ import {
     DELETE_ALBUMENTRY_FAILURE,
 } from '../reduxactions';
 
-function deleteAlbumItem(item) {
-    return axios.post('/api/deleteentry', item);
+export default function* deleteSaga() {
+    yield takeLatest(DELETE_ALBUMENTRY_REQUEST, deleteItemAndReceiveRoutes);
 }
 
 function* deleteItemAndReceiveRoutes(action) {
@@ -20,6 +20,6 @@ function* deleteItemAndReceiveRoutes(action) {
     }
 }
 
-export default function* deleteSaga() {
-    yield takeLatest(DELETE_ALBUMENTRY_REQUEST, deleteItemAndReceiveRoutes);
+function deleteAlbumItem(item) {
+    return axios.post('/api/deleteentry', item);
 }

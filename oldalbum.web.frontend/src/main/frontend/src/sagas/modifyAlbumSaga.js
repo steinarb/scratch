@@ -6,8 +6,8 @@ import {
     SAVE_MODIFIED_ALBUM_FAILURE,
 } from '../reduxactions';
 
-function postModifiedAlbum(album) {
-    return axios.post('/api/modifyalbum', album);
+export default function* modifyAlbumSaga() {
+    yield takeLatest(SAVE_MODIFIED_ALBUM_REQUEST, saveModifiedAlbum);
 }
 
 function* saveModifiedAlbum(action) {
@@ -20,6 +20,6 @@ function* saveModifiedAlbum(action) {
     }
 }
 
-export default function* modifyAlbumSaga() {
-    yield takeLatest(SAVE_MODIFIED_ALBUM_REQUEST, saveModifiedAlbum);
+function postModifiedAlbum(album) {
+    return axios.post('/api/modifyalbum', album);
 }

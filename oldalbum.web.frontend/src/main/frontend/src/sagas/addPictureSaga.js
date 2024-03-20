@@ -6,8 +6,8 @@ import {
     SAVE_ADDED_PICTURE_FAILURE,
 } from '../reduxactions';
 
-function updateAddedPicture(picture) {
-    return axios.post('/api/addpicture', picture);
+export default function* addPictureSaga() {
+    yield takeLatest(SAVE_ADDED_PICTURE_REQUEST, updatePictureAndReceiveRoutes);
 }
 
 function* updatePictureAndReceiveRoutes(action) {
@@ -20,6 +20,6 @@ function* updatePictureAndReceiveRoutes(action) {
     }
 }
 
-export default function* addPictureSaga() {
-    yield takeLatest(SAVE_ADDED_PICTURE_REQUEST, updatePictureAndReceiveRoutes);
+function updateAddedPicture(picture) {
+    return axios.post('/api/addpicture', picture);
 }

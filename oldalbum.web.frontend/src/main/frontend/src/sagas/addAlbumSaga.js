@@ -6,8 +6,8 @@ import {
     SAVE_ADDED_ALBUM_FAILURE,
 } from '../reduxactions';
 
-function postAddAlbum(album) {
-    return axios.post('/api/addalbum', album);
+export default function* addAlbumSaga() {
+    yield takeLatest(SAVE_ADDED_ALBUM_REQUEST, requestAddAlbumAndReceiveRoutes);
 }
 
 function* requestAddAlbumAndReceiveRoutes(action) {
@@ -20,6 +20,6 @@ function* requestAddAlbumAndReceiveRoutes(action) {
     }
 }
 
-export default function* addAlbumSaga() {
-    yield takeLatest(SAVE_ADDED_ALBUM_REQUEST, requestAddAlbumAndReceiveRoutes);
+function postAddAlbum(album) {
+    return axios.post('/api/addalbum', album);
 }
