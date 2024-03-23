@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import alert from './alertReducer';
+import messageBanner from './messageBannerReducer';
 import modifyFailedError from './modifyFailedErrorReducer';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
@@ -45,6 +46,7 @@ import dateOfLastChildOfAlbum from './dateOfLastChildOfAlbumReducer';
 export default (routerReducer) => combineReducers({
     router: routerReducer,
     alert,
+    messageBanner,
     modifyFailedError,
     allroutes,
     albumentries,

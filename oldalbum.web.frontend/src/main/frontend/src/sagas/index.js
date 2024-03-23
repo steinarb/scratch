@@ -29,6 +29,7 @@ import albumGroupByYearSaga from './albumGroupByYearSaga';
 import childentriesByYearSaga from './childentriesByYearSaga';
 import modifyFailedErrorSaga from './modifyFailedErrorSaga';
 import reloadShiroConfigSaga from './reloadShiroConfigSaga';
+import messageBannerSaga from './messageBannerSaga';
 
 export default function* rootSaga() {
     yield all([
@@ -61,5 +62,6 @@ export default function* rootSaga() {
         fork(childentriesByYearSaga),
         fork(modifyFailedErrorSaga),
         fork(reloadShiroConfigSaga),
+        fork(messageBannerSaga),
     ]);
 }

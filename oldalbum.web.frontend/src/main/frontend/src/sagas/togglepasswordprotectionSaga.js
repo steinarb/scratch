@@ -4,6 +4,7 @@ import {
     TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_REQUEST,
     TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_RECEIVE,
     TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_FAILURE,
+    SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT,
 } from '../reduxactions';
 
 export default function* togglepasswordprotectionSaga() {
@@ -15,6 +16,7 @@ function* receiveRoutes(action) {
         const response = yield call(getTogglepasswordprotection, action.payload);
         const routes = (response.headers['content-type'] === 'application/json') ? response.data : [];
         yield put(TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_RECEIVE(routes));
+        yield put(SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT(action.payload));
     } catch (error) {
         yield put(TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_FAILURE(error));
     }
