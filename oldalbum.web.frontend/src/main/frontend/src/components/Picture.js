@@ -9,6 +9,7 @@ import DeleteButton from './DeleteButton';
 import Previous from './Previous';
 import Next from './Next';
 import PictureNavbar from './PictureNavbar';
+import MessageBanner from './MessageBanner';
 import PictureDescription from './PictureDescription';
 
 export default function Picture(props) {
@@ -33,6 +34,7 @@ export default function Picture(props) {
             </Helmet>
             <PictureNavbar className="hide-on-landscape d-lg-none" item={item} parent={parent} title={title}/>
             <PictureNavbar className="d-none d-lg-block" item={item} parent={parent} title={title}/>
+            <MessageBanner/>
             <div className="d-lg-none hide-on-landscape">
                 <div className="d-flex flex-fill" role="toolbar">
                     <Previous className="align-self-start" previous={previous} />
