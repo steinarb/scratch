@@ -83,7 +83,7 @@ export default function Album(props) {
                                 <span className="navbar-toggler-icon"></span>
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end">
-                                <li><CopyLinkButton className="dropdown-item" /></li>
+                                <li><CopyLinkButton className="dropdown-item" item={item} /></li>
                                 <li><ReloadShiroConfigButton className="dropdown-item"/></li>
                                 <li><TogglePasswordProtection className="dropdown-item" item={item}/></li>
                                 <li><AlbumSelectAllButton className="dropdown-item" album={item} /></li>

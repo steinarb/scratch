@@ -42,6 +42,8 @@ import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
 import originalRequestUri from './originalRequestUriReducer';
 import dateOfLastChildOfAlbum from './dateOfLastChildOfAlbumReducer';
+import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogReducer';
+import sharedLinkItem from './sharedLinkItemReducer';
 
 export default (routerReducer) => combineReducers({
     router: routerReducer,
@@ -88,4 +90,6 @@ export default (routerReducer) => combineReducers({
     canLogin,
     originalRequestUri,
     dateOfLastChildOfAlbum,
+    displayPasswordProtectionWarningDialog,
+    sharedLinkItem,
 });

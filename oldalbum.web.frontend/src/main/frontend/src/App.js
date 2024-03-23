@@ -12,24 +12,28 @@ import AddAlbum from './components/AddAlbum';
 import ModifyPicture from './components/ModifyPicture';
 import AddPicture from './components/AddPicture';
 import LoadingOrNotFound from './components/LoadingOrNotFound';
+import PasswordProtectedWarningDialog from './components/PasswordProtectedWarningDialog';
 
 export default function App(props) {
     const { history, basename } = props;
     const allroutes = useSelector(state => state.allroutes);
 
     return (
-        <Router history={history} basename={basename}>
-            <Routes >
-                { allroutes.map((item, index) => <Route exact key={index} path={item.path} element={albumOrPicture(item)} />) }
-                <Route exact key="login" path="/login" element={<Login/>} />
-                <Route exact key="unauthorized" path="/unauthorized" element={<Unauthorized/>} />
-                <Route key="modifyalbum" path="/modifyalbum" element={<ModifyAlbum/>} />
-                <Route key="addalbum" path="/addalbum" element={<AddAlbum/>} />
-                <Route key="modifypicture" path="/modifypicture" element={<ModifyPicture/>} />
-                <Route key="addpicture" path="/addpicture" element={<AddPicture/>} />
-                <Route key="loadingornotfound" path="*" element={<LoadingOrNotFound/>} />
-            </Routes>
-        </Router>
+        <div>
+            <PasswordProtectedWarningDialog/>
+            <Router history={history} basename={basename}>
+                <Routes >
+                    { allroutes.map((item, index) => <Route exact key={index} path={item.path} element={albumOrPicture(item)} />) }
+                    <Route exact key="login" path="/login" element={<Login/>} />
+                    <Route exact key="unauthorized" path="/unauthorized" element={<Unauthorized/>} />
+                    <Route key="modifyalbum" path="/modifyalbum" element={<ModifyAlbum/>} />
+                    <Route key="addalbum" path="/addalbum" element={<AddAlbum/>} />
+                    <Route key="modifypicture" path="/modifypicture" element={<ModifyPicture/>} />
+                    <Route key="addpicture" path="/addpicture" element={<AddPicture/>} />
+                    <Route key="loadingornotfound" path="*" element={<LoadingOrNotFound/>} />
+                </Routes>
+            </Router>
+        </div>
     );
 }
 

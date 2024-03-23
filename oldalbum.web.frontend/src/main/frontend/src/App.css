@@ -121,3 +121,7 @@
         display: none;
     }
 }
+
+.oldalbum-modal {
+    z-index: 10000;
+}

@@ -34,7 +34,7 @@ export default function PictureNavbar(props) {
                             <span className="navbar-toggler-icon"></span>
                         </button>
                         <div className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <CopyLinkButton className="dropdown-item" />
+                            <CopyLinkButton className="dropdown-item" item={item} />
                             <ReloadShiroConfigButton className="dropdown-item"/>
                             <TogglePasswordProtection className="dropdown-item" item={item}/>
                             <EditModeButton className="dropdown-item" />
