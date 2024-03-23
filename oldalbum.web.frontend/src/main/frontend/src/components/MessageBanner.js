@@ -9,6 +9,6 @@ export default function MessageBanner() {
     }
 
     return(
-        <div className="alert alert-success" role="alert">{messageBanner}</div>
+        <div className="alert alert-success floating-message-banner" role="alert">{messageBanner}</div>
     );
 }
