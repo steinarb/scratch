@@ -14,8 +14,8 @@ export function* displaySuccessfullPasswordRequirementMessage(action) {
     const albumEntry = yield select(state => state.albumentries[albumEntryId]);
     const messageText = formatMessageText(albumEntry);
     yield put(SET_MESSAGE_BANNER(messageText));
-    yield delay(10000); // 10s wait before taking downn the banner
-    yield put(CLEAR_MESSAGE_BANNER);
+    yield delay(5000); // 5s wait before taking down the banner
+    yield put(CLEAR_MESSAGE_BANNER());
 }
 
 function formatMessageText(albumEntry) {
