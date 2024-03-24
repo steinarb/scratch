@@ -211,7 +211,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
             var protectedAlbums = findProtectedAlbums(connection);
             for(var album : protectedAlbums) {
-                urls.put(album.getPath(), "authc");
+                urls.put(album.getPath() + "**", "authc");
             }
         } catch (SQLException e) {
             logger.error("Failed to find the list of shiro protected urls", e);
