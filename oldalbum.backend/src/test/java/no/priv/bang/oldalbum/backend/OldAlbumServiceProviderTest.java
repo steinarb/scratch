@@ -144,7 +144,7 @@ class OldAlbumServiceProviderTest {
         // even though their parent albums are blocked
         var expectedUrls = new LinkedHashMap<String, String>();
         expectedUrls.put("/slides/berglia", "anon");
-        expectedUrls.put("/slides/", "authc");
+        expectedUrls.put("/slides/**", "authc");
         var iterator = expectedUrls.entrySet().iterator();
         var bergliaPicture = iterator.next();
         var slidesAlbum = iterator.next();
