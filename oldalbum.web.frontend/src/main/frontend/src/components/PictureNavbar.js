@@ -33,13 +33,13 @@ export default function PictureNavbar(props) {
                         <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <span className="navbar-toggler-icon"></span>
                         </button>
-                        <div className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <CopyLinkButton className="dropdown-item" item={item} />
-                            <ReloadShiroConfigButton className="dropdown-item"/>
-                            <TogglePasswordProtection className="dropdown-item" item={item}/>
-                            <EditModeButton className="dropdown-item" />
-                            <LoginLogoutButton className="dropdown-item" item={item}/>
-                        </div>
+                        <ul className="dropdown-menu dropdown-menu-end">
+                            <li><CopyLinkButton className="dropdown-item" item={item} /></li>
+                            <li><ReloadShiroConfigButton className="dropdown-item"/></li>
+                            <li><TogglePasswordProtection className="dropdown-item" item={item}/></li>
+                            <li><EditModeButton className="dropdown-item" /></li>
+                            <li><LoginLogoutButton className="dropdown-item" item={item}/></li>
+                        </ul>
                     </div>
                 </div>
             </nav>
