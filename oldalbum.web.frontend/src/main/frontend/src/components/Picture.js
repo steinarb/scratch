@@ -14,7 +14,7 @@ import PictureDescription from './PictureDescription';
 
 export default function Picture(props) {
     const { item } = props;
-    const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
+    const parent = useSelector(state => (state.albumentries[item.parent] || {}).path) || '/';
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
