@@ -23,15 +23,15 @@ export default function LoadingOrNotFound() {
                     </div>
                 </NavLink>
                 <h1>{titleText}</h1>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                    <div className="navbar-nav">
-                        <CopyLinkButton className="nav-item" />
-                        <EditModeButton className="nav-item" />
-                        <LoginLogoutButton className="nav-item" item={{}}/>
-                    </div>
+                <div className="dropdown">
+                    <button className="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end">
+                        <li><CopyLinkButton className="nav-item" /></li>
+                        <li><EditModeButton className="nav-item" /></li>
+                        <li><LoginLogoutButton className="nav-item" item={{}}/></li>
+                    </ul>
                 </div>
             </nav>
             <p>{message}</p>
