@@ -32,7 +32,7 @@ import MessageBanner from './MessageBanner';
 export default function Album(props) {
     const { item } = props;
     const text = useSelector(state => state.displayTexts);
-    const parent = useSelector(state => (state.albumentries[item.parent] || {}).path);
+    const parent = useSelector(state => (state.albumentries[item.parent] || {}).path) || '/';
     const children = useSelector(state => state.childentries[item.id]);
     const childrenGroupedByYear = useSelector(state => state.childentriesByYear[item.id]);
     const previous = useSelector(state => state.previousentry[item.id]);
