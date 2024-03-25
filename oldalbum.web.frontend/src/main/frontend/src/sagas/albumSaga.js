@@ -12,6 +12,15 @@ import {
     SAVE_ADDED_ALBUM_RECEIVE,
 } from '../reduxactions';
 
+export default function* albumSaga() {
+    yield takeLatest(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED, saveModifiedAlbum);
+    yield takeLatest(ADD_ALBUM_UPDATE_BUTTON_CLICKED, saveAddedAlbum);
+    yield takeLatest(SAVE_MODIFIED_ALBUM_RECEIVE, clearFormAndNavigateToAlbum);
+    yield takeLatest(SAVE_ADDED_ALBUM_RECEIVE, clearFormAndNavigateToAlbum);
+    yield takeLatest(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
+    yield takeLatest(ADD_ALBUM_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
+}
+
 function* saveModifiedAlbum() {
     const album = yield select(state => ({
         id: state.albumentryid,
@@ -52,13 +61,4 @@ function* clearFormAndNavigateToAlbum() {
 function* clearFormAndNavigateBack() {
     yield put(CLEAR_ALBUM_FORM());
     yield put(goBack());
-}
-
-export default function* albumSaga() {
-    yield takeLatest(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED, saveModifiedAlbum);
-    yield takeLatest(ADD_ALBUM_UPDATE_BUTTON_CLICKED, saveAddedAlbum);
-    yield takeLatest(SAVE_MODIFIED_ALBUM_RECEIVE, clearFormAndNavigateToAlbum);
-    yield takeLatest(SAVE_ADDED_ALBUM_RECEIVE, clearFormAndNavigateToAlbum);
-    yield takeLatest(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
-    yield takeLatest(ADD_ALBUM_CANCEL_BUTTON_CLICKED, clearFormAndNavigateBack);
 }

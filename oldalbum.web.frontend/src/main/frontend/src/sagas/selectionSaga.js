@@ -7,6 +7,12 @@ import {
     CLEAR_SELECTION,
 } from '../reduxactions';
 
+export default function* selectionSaga() {
+    yield takeLatest(ALBUM_SELECT_ALL, selectAllAlbumEntries);
+    yield takeLatest(START_SELECTION_DOWNLOAD, clearDownloadSelection);
+    yield takeLatest(DELETE_SELECTION_RECEIVE, clearDownloadSelection);
+}
+
 function* selectAllAlbumEntries(action) {
     const album = action.payload;
     const allroutes = yield select(state => state.allroutes);
@@ -17,10 +23,4 @@ function* selectAllAlbumEntries(action) {
 function* clearDownloadSelection() {
     yield delay(1000);
     yield put(CLEAR_SELECTION());
-}
-
-export default function* selectionSaga() {
-    yield takeLatest(ALBUM_SELECT_ALL, selectAllAlbumEntries);
-    yield takeLatest(START_SELECTION_DOWNLOAD, clearDownloadSelection);
-    yield takeLatest(DELETE_SELECTION_RECEIVE, clearDownloadSelection);
 }

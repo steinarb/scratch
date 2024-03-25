@@ -10,6 +10,10 @@ import {
     FILL_ADD_PICTURE_FORM,
 } from '../reduxactions';
 
+export default function* locationSaga() {
+    yield takeLatest(LOCATION_CHANGE, locationChange);
+}
+
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const basename = yield select(state => state.router.basename);
@@ -71,10 +75,6 @@ function* locationChange(action) {
 
         yield put(FILL_ADD_PICTURE_FORM({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort, contentLength, contentType, lastModified, requireLogin }));
     }
-}
-
-export default function* locationSaga() {
-    yield takeLatest(LOCATION_CHANGE, locationChange);
 }
 
 function findPathname(location, basename) {
