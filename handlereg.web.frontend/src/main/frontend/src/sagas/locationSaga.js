@@ -12,6 +12,10 @@ import {
     VIS_KVITTERING,
 } from '../actiontypes';
 
+export default function* locationSaga() {
+    yield takeLatest(LOCATION_CHANGE, locationChange);
+}
+
 function* locationChange(action) {
     const { location = {} } = action.payload || {};
     const basename = yield select(state => state.router.basename);
@@ -68,10 +72,6 @@ function* locationChange(action) {
     if (pathname === '/favoritter/sorter') {
         yield put(OVERSIKT_HENT());
     }
-}
-
-export default function* locationSaga() {
-    yield takeLatest(LOCATION_CHANGE, locationChange);
 }
 
 function findPathname(location, basename) {

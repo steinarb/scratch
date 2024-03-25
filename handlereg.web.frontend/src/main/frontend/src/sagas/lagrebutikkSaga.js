@@ -6,8 +6,8 @@ import {
     NYBUTIKK_ERROR,
 } from '../actiontypes';
 
-function lagreButikk(butikk) {
-    return axios.post('/api/endrebutikk', butikk);
+export default function* lagrebutikkSaga() {
+    yield takeLatest(BUTIKK_LAGRE, mottaLagreButikk);
 }
 
 function* mottaLagreButikk(action) {
@@ -22,6 +22,6 @@ function* mottaLagreButikk(action) {
     }
 }
 
-export default function* lagrebutikkSaga() {
-    yield takeLatest(BUTIKK_LAGRE, mottaLagreButikk);
+function lagreButikk(butikk) {
+    return axios.post('/api/endrebutikk', butikk);
 }

@@ -8,6 +8,11 @@ import {
     VALGT_BUTIKK,
 } from '../actiontypes';
 
+export default function* butikkerSaga() {
+    yield takeLatest(BUTIKKER_HENT, mottaButikker);
+    yield takeLatest(VELG_BUTIKK, velgButikk);
+}
+
 function hentButikker() {
     return axios.get('/api/butikker');
 }
@@ -29,9 +34,4 @@ function* velgButikk(action) {
     const butikker = yield select(state => state.butikker);
     const butikk = butikker[indeks] || uvalgtButikk;
     yield put(VALGT_BUTIKK({ ...butikk }));
-}
-
-export default function* butikkerSaga() {
-    yield takeLatest(BUTIKKER_HENT, mottaButikker);
-    yield takeLatest(VELG_BUTIKK, velgButikk);
 }

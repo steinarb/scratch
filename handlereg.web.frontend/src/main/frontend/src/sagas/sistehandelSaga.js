@@ -6,8 +6,8 @@ import {
     SISTEHANDEL_ERROR,
 } from '../actiontypes';
 
-function hentSistehandel() {
-    return axios.get('/api/statistikk/sistehandel');
+export default function* sistehandelSaga() {
+    yield takeLatest(SISTEHANDEL_HENT, mottaSistehandel);
 }
 
 function* mottaSistehandel() {
@@ -20,6 +20,6 @@ function* mottaSistehandel() {
     }
 }
 
-export default function* sistehandelSaga() {
-    yield takeLatest(SISTEHANDEL_HENT, mottaSistehandel);
+function hentSistehandel() {
+    return axios.get('/api/statistikk/sistehandel');
 }

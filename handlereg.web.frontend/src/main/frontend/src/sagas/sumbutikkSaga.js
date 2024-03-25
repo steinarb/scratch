@@ -6,8 +6,8 @@ import {
     SUMBUTIKK_ERROR,
 } from '../actiontypes';
 
-function hentSumbutikk() {
-    return axios.get('/api/statistikk/sumbutikk');
+export default function* sumbutikkSaga() {
+    yield takeLatest(SUMBUTIKK_HENT, mottaSumbutikk);
 }
 
 function* mottaSumbutikk() {
@@ -20,6 +20,6 @@ function* mottaSumbutikk() {
     }
 }
 
-export default function* sumbutikkSaga() {
-    yield takeLatest(SUMBUTIKK_HENT, mottaSumbutikk);
+function hentSumbutikk() {
+    return axios.get('/api/statistikk/sumbutikk');
 }

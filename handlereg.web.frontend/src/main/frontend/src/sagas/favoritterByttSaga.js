@@ -6,8 +6,8 @@ import {
     BYTT_FAVORITTER_ERROR,
 } from '../actiontypes';
 
-function sendByttFavoritter(favorittpar) {
-    return axios.post('/api/favoritter/bytt', favorittpar);
+export default function* favoritterByttSaga() {
+    yield takeLatest(BYTT_FAVORITTER, byttFavoritter);
 }
 
 function* byttFavoritter(action) {
@@ -20,6 +20,6 @@ function* byttFavoritter(action) {
     }
 }
 
-export default function* favoritterByttSaga() {
-    yield takeLatest(BYTT_FAVORITTER, byttFavoritter);
+function sendByttFavoritter(favorittpar) {
+    return axios.post('/api/favoritter/bytt', favorittpar);
 }

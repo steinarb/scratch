@@ -6,8 +6,8 @@ import {
     HANDLINGER_ERROR,
 } from '../actiontypes';
 
-function hentHandlinger(accountid) {
-    return axios.get('/api/handlinger/' + accountid);
+export default function* handlingerSaga() {
+    yield takeLatest(HANDLINGER_HENT, mottaHandlinger);
 }
 
 function* mottaHandlinger(action) {
@@ -21,6 +21,6 @@ function* mottaHandlinger(action) {
     }
 }
 
-export default function* handlingerSaga() {
-    yield takeLatest(HANDLINGER_HENT, mottaHandlinger);
+function hentHandlinger(accountid) {
+    return axios.get('/api/handlinger/' + accountid);
 }

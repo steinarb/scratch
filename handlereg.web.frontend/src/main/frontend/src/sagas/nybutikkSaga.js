@@ -6,8 +6,8 @@ import {
     NYBUTIKK_ERROR,
 } from '../actiontypes';
 
-function registrerNybutikk(butikk) {
-    return axios.post('/api/nybutikk', butikk);
+export default function* nybutikkSaga() {
+    yield takeLatest(NYBUTIKK_REGISTRER, mottaNybutikk);
 }
 
 function* mottaNybutikk(action) {
@@ -21,6 +21,6 @@ function* mottaNybutikk(action) {
     }
 }
 
-export default function* nybutikkSaga() {
-    yield takeLatest(NYBUTIKK_REGISTRER, mottaNybutikk);
+function registrerNybutikk(butikk) {
+    return axios.post('/api/nybutikk', butikk);
 }

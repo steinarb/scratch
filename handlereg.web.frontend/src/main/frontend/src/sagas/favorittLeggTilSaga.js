@@ -7,8 +7,8 @@ import {
     VELG_FAVORITTBUTIKK,
 } from '../actiontypes';
 
-function sendLeggTilFavoritt(nyFavoritt) {
-    return axios.post('/api/favoritt/leggtil', nyFavoritt);
+export default function* favorittLeggTilSaga() {
+    yield takeLatest(LEGG_TIL_FAVORITT, leggTilFavoritt);
 }
 
 function* leggTilFavoritt() {
@@ -25,6 +25,6 @@ function* leggTilFavoritt() {
     }
 }
 
-export default function* favorittLeggTilSaga() {
-    yield takeLatest(LEGG_TIL_FAVORITT, leggTilFavoritt);
+function sendLeggTilFavoritt(nyFavoritt) {
+    return axios.post('/api/favoritt/leggtil', nyFavoritt);
 }

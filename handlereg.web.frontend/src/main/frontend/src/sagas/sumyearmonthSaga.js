@@ -6,8 +6,8 @@ import {
     SUMYEARMONTH_ERROR,
 } from '../actiontypes';
 
-function hentSumyearmonth() {
-    return axios.get('/api/statistikk/sumyearmonth');
+export default function* sumyearmonthSaga() {
+    yield takeLatest(SUMYEARMONTH_HENT, mottaSumyearmonth);
 }
 
 function* mottaSumyearmonth() {
@@ -20,6 +20,6 @@ function* mottaSumyearmonth() {
     }
 }
 
-export default function* sumyearmonthSaga() {
-    yield takeLatest(SUMYEARMONTH_HENT, mottaSumyearmonth);
+function hentSumyearmonth() {
+    return axios.get('/api/statistikk/sumyearmonth');
 }

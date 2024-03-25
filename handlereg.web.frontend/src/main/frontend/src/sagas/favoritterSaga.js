@@ -7,8 +7,9 @@ import {
     FAVORITTER_ERROR,
 } from '../actiontypes';
 
-function hentFavoritter(username) {
-    return axios.get('/api/favoritter', { params: { username } });
+export default function* favoritterSaga() {
+    yield takeLatest(LOGINTILSTAND_MOTTA, sendFavoritterHent);
+    yield takeLatest(FAVORITTER_HENT, mottaFavoritter);
 }
 
 function* sendFavoritterHent() {
@@ -31,7 +32,6 @@ function* mottaFavoritter() {
     }
 }
 
-export default function* favoritterSaga() {
-    yield takeLatest(LOGINTILSTAND_MOTTA, sendFavoritterHent);
-    yield takeLatest(FAVORITTER_HENT, mottaFavoritter);
+function hentFavoritter(username) {
+    return axios.get('/api/favoritter', { params: { username } });
 }

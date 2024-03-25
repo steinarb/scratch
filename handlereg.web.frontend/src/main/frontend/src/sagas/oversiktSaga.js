@@ -8,8 +8,9 @@ import {
     LOGINTILSTAND_MOTTA,
 } from '../actiontypes';
 
-function hentOversikt() {
-    return axios.get('/api/oversikt');
+export default function* oversiktSaga() {
+    yield takeLatest(OVERSIKT_HENT, mottaOversikt);
+    yield takeLatest(LOGINTILSTAND_MOTTA, hentOversiktDersomInnloggetOgAutorisert);
 }
 
 function* mottaOversikt() {
@@ -24,14 +25,13 @@ function* mottaOversikt() {
     }
 }
 
+function hentOversikt() {
+    return axios.get('/api/oversikt');
+}
+
 function* hentOversiktDersomInnloggetOgAutorisert(action) {
     const { suksess, authorized } = action.payload;
     if (suksess && authorized) {
         yield put(OVERSIKT_HENT());
     }
-}
-
-export default function* oversiktSaga() {
-    yield takeLatest(OVERSIKT_HENT, mottaOversikt);
-    yield takeLatest(LOGINTILSTAND_MOTTA, hentOversiktDersomInnloggetOgAutorisert);
 }

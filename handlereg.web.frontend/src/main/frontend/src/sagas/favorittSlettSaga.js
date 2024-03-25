@@ -6,8 +6,8 @@ import {
     SLETT_FAVORITT_ERROR,
 } from '../actiontypes';
 
-function sendSlettFavoritt(favoritt) {
-    return axios.post('/api/favoritt/slett', favoritt);
+export default function* favorittSlettSaga() {
+    yield takeLatest(SLETT_FAVORITT, slettFavoritt);
 }
 
 function* slettFavoritt(action) {
@@ -20,6 +20,6 @@ function* slettFavoritt(action) {
     }
 }
 
-export default function* favorittSlettSaga() {
-    yield takeLatest(SLETT_FAVORITT, slettFavoritt);
+function sendSlettFavoritt(favoritt) {
+    return axios.post('/api/favoritt/slett', favoritt);
 }

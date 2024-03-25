@@ -6,8 +6,8 @@ import {
     LOGIN_ERROR,
 } from '../actiontypes';
 
-function sendLogin(credentials) {
-    return axios.post('/api/login', credentials);
+export default function* loginSaga() {
+    yield takeLatest(LOGIN_HENT, mottaLoginResultat);
 }
 
 function* mottaLoginResultat(action) {
@@ -20,6 +20,6 @@ function* mottaLoginResultat(action) {
     }
 }
 
-export default function* loginSaga() {
-    yield takeLatest(LOGIN_HENT, mottaLoginResultat);
+function sendLogin(credentials) {
+    return axios.post('/api/login', credentials);
 }

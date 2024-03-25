@@ -7,8 +7,8 @@ import {
     HANDLINGER_HENT,
 } from '../actiontypes';
 
-function registrerNyhandling(handling) {
-    return axios.post('/api/nyhandling', handling);
+export default function* nyhandlingSaga() {
+    yield takeLatest(NYHANDLING_REGISTRER, mottaNyhandling);
 }
 
 function* mottaNyhandling(action) {
@@ -24,6 +24,6 @@ function* mottaNyhandling(action) {
     }
 }
 
-export default function* nyhandlingSaga() {
-    yield takeLatest(NYHANDLING_REGISTRER, mottaNyhandling);
+function registrerNyhandling(handling) {
+    return axios.post('/api/nyhandling', handling);
 }

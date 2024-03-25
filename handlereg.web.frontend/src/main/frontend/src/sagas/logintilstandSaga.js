@@ -6,8 +6,8 @@ import {
     LOGINTILSTAND_ERROR,
 } from '../actiontypes';
 
-function sendLogintilstand() {
-    return axios.get('/api/logintilstand');
+export default function* logintilstandSaga() {
+    yield takeLatest(LOGINTILSTAND_HENT, mottaLogintilstandResultat);
 }
 
 function* mottaLogintilstandResultat() {
@@ -20,6 +20,6 @@ function* mottaLogintilstandResultat() {
     }
 }
 
-export default function* logintilstandSaga() {
-    yield takeLatest(LOGINTILSTAND_HENT, mottaLogintilstandResultat);
+function sendLogintilstand() {
+    return axios.get('/api/logintilstand');
 }

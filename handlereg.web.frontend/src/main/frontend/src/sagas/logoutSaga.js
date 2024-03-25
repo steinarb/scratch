@@ -6,8 +6,8 @@ import {
     LOGOUT_ERROR,
 } from '../actiontypes';
 
-function sendLogout() {
-    return axios.get('/api/logout');
+export default function* logoutSaga() {
+    yield takeLatest(LOGOUT_HENT, mottaLogoutResultat);
 }
 
 function* mottaLogoutResultat() {
@@ -20,6 +20,6 @@ function* mottaLogoutResultat() {
     }
 }
 
-export default function* logoutSaga() {
-    yield takeLatest(LOGOUT_HENT, mottaLogoutResultat);
+function sendLogout() {
+    return axios.get('/api/logout');
 }

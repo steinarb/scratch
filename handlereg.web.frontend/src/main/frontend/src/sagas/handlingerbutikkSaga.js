@@ -6,8 +6,8 @@ import {
     HANDLINGERBUTIKK_ERROR,
 } from '../actiontypes';
 
-function hentHandlingerbutikk() {
-    return axios.get('/api/statistikk/handlingerbutikk');
+export default function* handlingerbutikkSaga() {
+    yield takeLatest(HANDLINGERBUTIKK_HENT, mottaHandlingerbutikk);
 }
 
 function* mottaHandlingerbutikk() {
@@ -20,6 +20,6 @@ function* mottaHandlingerbutikk() {
     }
 }
 
-export default function* handlingerbutikkSaga() {
-    yield takeLatest(HANDLINGERBUTIKK_HENT, mottaHandlingerbutikk);
+function hentHandlingerbutikk() {
+    return axios.get('/api/statistikk/handlingerbutikk');
 }
