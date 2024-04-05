@@ -7,7 +7,7 @@ export default function ReloadShiroConfigButton() {
     const canModifyAlbum = useSelector(state => state.canModifyAlbum);
     const dispatch = useDispatch();
 
-    if (canModifyAlbum) {
+    if (!canModifyAlbum) {
         return null;
     }
 
