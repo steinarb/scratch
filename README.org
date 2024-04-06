@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2024-03-25 Mon 20:13> |  1.9.27 | Possible to unprotect protected pictures when sharing them, dynamic shiro protection of albums and pictures    |
 | <2024-03-02 Sat 11:33> |  1.9.26 | Use postgresql jdbc 42.7.2                                                                                     |
 | <2024-02-12 Mon 23:05> |  1.9.25 | Fix 404 Not Found after login from edit page, many layout improvements                                         |
 | <2024-01-18 Thu 23:59> |  1.9.24 | Many layout fixes, better import of nginx directory listings into albums                                       |
