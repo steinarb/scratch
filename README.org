@@ -1,0 +1,58 @@
+* Karaf feature for derby datasources
+
+The version of derby provided by pax-jdbc is, at the time of writing, 6 years old.
+
+The reason is that the pax-jdbc project wishes to maintain java8 compatibility.
+
+This project will provide an apache karaf feature to load a DataSourceFactory for embedded Derby
+
+** Project status
+[[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.karaf/derby-karaf-features-parent][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.karaf/derby-karaf-features-parent/badge.svg]]
+[[https://github.com/steinarb/liquibase-karaf-feature/actions/workflows/liquibase-karaf-feature-maven-ci-build.yml][file:https://github.com/steinarb/liquibase-karaf-feature/actions/workflows/liquibase-karaf-feature-maven-ci-build.yml/badge.svg]]
+
+*** Release history
+
+| Date | Version | Comment |
+|------+---------+---------|
+|      |         |         |
+** Installing the derby feature in karaf
+
+To install this feature:
+ 1. start karaf and give the following commands to the karaf console:
+    #+BEGIN_EXAMPLE
+      feature:repo-add mvn:no.priv.bang.karaf.derby/embedded-derby-karaf-feature/1.0.0-SNAPSHOT/xml/features
+      feature:install embedded-derby-karaf-feature
+    #+END_EXAMPLE
+
+After this, [[http://www.liquibase.org/javadoc/liquibase/Liquibase.html][the liquibase Java API]] is available to your OSGi applications and the liquibase logging will go to the karaf log.
+
+** Using derby from a karaf feature
+To use liquibase from your own, manually edited, karaf feature, include the feature's feature repository and depend on the liquibase-core feature:
+#+BEGIN_SRC xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle.db.liquibase">
+    <repository>mvn:no.priv.bang.karaf.derby/embedded-derby-karaf-feature/1.0.0-SNAPSHOT/xml/features</repository>
+    <feature name="ukelonn-db-liquibase">
+        <feature>embedded-derby-karaf-feature</feature>
+    </feature>
+</features>
+#+END_SRC
+
+** Using derby from a generated karaf feature
+
+If you generate your karaf feature repository using the karaf-maven-plugin, you can include the liquibase-core feature into your generated feature repository, by adding this dependency to the maven project building the feature repository:
+#+BEGIN_SRC xml
+  <dependency>
+      <groupId>no.priv.bang.karaf.derby</groupId>
+      <artifactId>embedded-derby-karaf-feature</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+  </dependency>
+#+END_SRC
+
+* License
+
+This maven project is licensed with the [[https://www.apache.org/licenses/LICENSE-2.0][Apache v 2.0 license]].
+
+The details of the license can be found in the LICENSE file.
