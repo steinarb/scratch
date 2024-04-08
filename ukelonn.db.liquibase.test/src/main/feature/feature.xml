@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="ukelonn.bundle.test.db">
 
-    <!-- Copyright 2016-2019 Steinar Bang                                                -->
+    <!-- Copyright 2016-2024 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -15,7 +15,6 @@
 
     <feature name="ukelonn-db-liquibase-test">
         <feature>scr</feature>
-        <feature>pax-jdbc-derby</feature>
     </feature>
     <feature name="ukelonn-db-test" version="${project.version}">
         <config name="org.ops4j.datasource-ukelonn-test">
@@ -28,6 +27,6 @@
             osgi.service;objectClass=javax.sql.DataSource;effective:=active;osgi.jndi.service.name=jdbc/ukelonn
         </capability>
         <feature>ukelonn-db-liquibase-test</feature>
-        <feature>pax-jdbc-config</feature>
+        <feature>embedded-derby-karaf-feature</feature>
     </feature>
 </features>
