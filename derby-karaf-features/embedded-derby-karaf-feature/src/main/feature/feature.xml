@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features>
+    <feature name="${artifactId}">
+        <feature>scr</feature>
+        <feature>jdbc</feature>
+    </feature>
+</features>
