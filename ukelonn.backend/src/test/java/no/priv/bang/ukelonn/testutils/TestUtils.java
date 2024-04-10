@@ -25,11 +25,11 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import org.osgi.service.log.LogService;
 
 import no.priv.bang.ukelonn.db.liquibase.test.TestLiquibaseRunner;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ukelonn.backend.UkelonnServiceProvider;
@@ -113,7 +113,7 @@ public class TestUtils {
     }
 
     static DataSource createUkelonnDatasource(LogService logservice) throws SQLException {
-        var datasourceFactory = new DerbyDataSourceFactory();
+        var datasourceFactory = new EmbeddedDerbyDataSourceFactory();
         var derbyDbCredentials = createDerbyMemoryDbCredentials();
         var ukelonnDatasource = datasourceFactory.createDataSource(derbyDbCredentials);
         var runner = createLiquibaseRunner(logservice);

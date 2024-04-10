@@ -38,7 +38,6 @@ import org.apache.shiro.util.ByteSource.Util;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
@@ -52,6 +51,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.ukelonn.UkelonnException;
 import no.priv.bang.ukelonn.db.liquibase.UkelonnLiquibase;
@@ -61,7 +61,7 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testPrepareDatabase() throws SQLException, DatabaseException {
-        var dataSourceFactory = new DerbyDataSourceFactory();
+        var dataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_pure", "no");
         var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         var runner = new TestLiquibaseRunner();
@@ -102,7 +102,7 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testPrepareDatabaseWithConfiguredLanguage() throws SQLException, DatabaseException {
-        var dataSourceFactory = new DerbyDataSourceFactory();
+        var dataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "en");
         var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         var runner = new TestLiquibaseRunner();
@@ -143,7 +143,7 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testPrepareDatabaseWithConfiguredLanguageNotFound() throws SQLException, DatabaseException {
-        var dataSourceFactory = new DerbyDataSourceFactory();
+        var dataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "uk");
         var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         var runner = new TestLiquibaseRunner();
@@ -195,7 +195,7 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testInsert() throws SQLException {
-        var dataSourceFactory = new DerbyDataSourceFactory();
+        var dataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn", "no");
         var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         var runner = new TestLiquibaseRunner();
@@ -245,7 +245,7 @@ class TestLiquibaseRunnerTest {
 
     @Test
     void testRollbackMockData() throws Exception {
-        var dataSourceFactory = new DerbyDataSourceFactory();
+        var dataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var derbyMemoryCredentials = createDerbyMemoryCredentials("ukelonn_rollback", "no");
         var datasource = dataSourceFactory.createDataSource(derbyMemoryCredentials);
         var runner = new TestLiquibaseRunner();
