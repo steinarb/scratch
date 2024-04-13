@@ -14,6 +14,7 @@
     <description>A set of apache karaf features for the apache derby databaase</description>
 
     <modules>
+        <module>rebundle</module>
         <module>embedded-derby-karaf-feature</module>
     </modules>
 
@@ -29,6 +30,11 @@
             <dependency>
                 <groupId>org.apache.derby</groupId>
                 <artifactId>derby</artifactId>
+                <version>${derby.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derbyclient</artifactId>
                 <version>${derby.version}</version>
             </dependency>
             <dependency>
