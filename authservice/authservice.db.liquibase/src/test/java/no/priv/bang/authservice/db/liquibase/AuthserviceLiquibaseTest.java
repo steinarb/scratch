@@ -30,16 +30,16 @@ import java.util.logging.LogManager;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 import com.mockrunner.mock.jdbc.MockConnection;
 import com.mockrunner.mock.jdbc.MockResultSet;
 
 import liquibase.exception.CommandExecutionException;
 import no.priv.bang.authservice.definitions.AuthserviceException;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 
 class AuthserviceLiquibaseTest {
-    DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+    DataSourceFactory derbyDataSourceFactory = new EmbeddedDerbyDataSourceFactory();
 
     @BeforeAll
     static void initialSetup() throws Exception {

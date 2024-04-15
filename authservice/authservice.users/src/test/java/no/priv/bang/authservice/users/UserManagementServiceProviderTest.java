@@ -33,7 +33,6 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import static org.assertj.core.api.Assertions.*;
@@ -50,13 +49,14 @@ import no.priv.bang.osgiservice.users.RolePermissions;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserAndPasswords;
 import no.priv.bang.osgiservice.users.UserRoles;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 
 class UserManagementServiceProviderTest {
     private static DataSource datasource;
 
     @BeforeAll
     static void setupForAll() throws Exception {
-        var derbyDataSourceFactory = new DerbyDataSourceFactory();
+        var derbyDataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ukelonn;create=true");
         datasource = derbyDataSourceFactory.createDataSource(properties);
