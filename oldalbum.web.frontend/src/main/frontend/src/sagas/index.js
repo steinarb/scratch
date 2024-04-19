@@ -31,6 +31,7 @@ import modifyFailedErrorSaga from './modifyFailedErrorSaga';
 import reloadShiroConfigSaga from './reloadShiroConfigSaga';
 import messageBannerSaga from './messageBannerSaga';
 import copyLinkSaga from './copyLinkSaga';
+import reloadWebappSaga from './reloadWebappSaga';
 
 export default function* rootSaga() {
     yield all([
@@ -65,5 +66,6 @@ export default function* rootSaga() {
         fork(reloadShiroConfigSaga),
         fork(messageBannerSaga),
         fork(copyLinkSaga),
+        fork(reloadWebappSaga),
     ]);
 }
