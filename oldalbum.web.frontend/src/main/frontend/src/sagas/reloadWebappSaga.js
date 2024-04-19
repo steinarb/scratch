@@ -6,6 +6,6 @@ export default function* reloadWebappSaga() {
 }
 
 function* reloadWebapp() {
-    const currentLocation = yield select(state => state.location.basename);
+    const currentLocation = yield select(state => state.router.location.pathname);
     location.href = currentLocation;
 }
