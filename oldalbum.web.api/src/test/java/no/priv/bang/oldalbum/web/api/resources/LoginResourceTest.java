@@ -146,6 +146,41 @@ class LoginResourceTest extends ShiroTestBase {
     }
 
     @Test
+    void testLoginWithClearedOriginalRequestUri() {
+        var oldalbum = new OldAlbumServiceProvider();
+        var originalRequestUri = "/oldalbum/slides/";
+        var useradmin = mock(UserManagementService.class);
+        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
+        var session = mock(HttpSession.class);
+        var request = new MockHttpServletRequest();
+        request.setSession(session);
+        request.setMethod("GET");
+        request.setRequestURL("http://localhost:8181" + originalRequestUri);
+        request.setRequestURI(originalRequestUri);
+        var response = new MockHttpServletResponse();
+
+        var resource = new LoginResource();
+        resource.useradmin = useradmin;
+        resource.oldalbum = oldalbum;
+        var username = "admin";
+        var password = "admin";
+        createSubjectAndBindItToThread(request, response);
+        var credentials = Credentials.with().username(username).password(password).build();
+
+        var clearRequestResult = resource.clearOriginalRequestUrl();
+        assertFalse(clearRequestResult.getSuccess());
+        assertFalse(clearRequestResult.isCanModifyAlbum());
+        assertNull(clearRequestResult.getOriginalRequestUri());
+
+        var locale = "";
+        var result = resource.login(locale, credentials);
+        assertTrue(result.getSuccess());
+        assertTrue(result.isCanModifyAlbum());
+        assertNull(result.getOriginalRequestUri());
+    }
+
+    @Test
     void testLoginModifyNotAllowed() {
         var oldalbum = new OldAlbumServiceProvider();
         var useradmin = mock(UserManagementService.class);
