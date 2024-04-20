@@ -130,6 +130,8 @@ public class LoginResource {
         return LoginResult.with().success(false).errormessage("Logged out").canModifyAlbum(false).canLogin(canLogin).build();
     }
 
+    @GET
+    @Path("/clearoriginalrequesturl")
     public LoginResult clearOriginalRequestUrl() {
         WebUtils.getAndClearSavedRequest(null);
         return loginCheck();

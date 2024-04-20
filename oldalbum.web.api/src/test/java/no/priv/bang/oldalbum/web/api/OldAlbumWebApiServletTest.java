@@ -110,6 +110,24 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     }
 
     @Test
+    void testClearOriginalRequestUrl() throws Exception {
+        createSubjectAndBindItToThread();
+        var logservice = new MockLogService();
+        var backendService = mock(OldAlbumService.class);
+        when(backendService.fetchAllRoutes(any(), anyBoolean())).thenReturn(allroutes);
+        var useradmin = mock(UserManagementService.class);
+        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
+        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var request = buildGetUrl("/clearoriginalrequesturl");
+        var response = new MockHttpServletResponse();
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        var loginresult = mapper.readValue(getBinaryContent(response), LoginResult.class);
+        assertTrue(loginresult.isCanLogin());
+    }
+
+    @Test
     void testFetchRoutes() throws Exception {
         var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
