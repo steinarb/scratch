@@ -130,6 +130,11 @@ public class LoginResource {
         return LoginResult.with().success(false).errormessage("Logged out").canModifyAlbum(false).canLogin(canLogin).build();
     }
 
+    public LoginResult clearOriginalRequestUrl() {
+        WebUtils.getAndClearSavedRequest(null);
+        return loginCheck();
+    }
+
     private boolean checkIfUserCanModifyAlbum(Subject subject) {
         try {
             subject.checkRole("oldalbumadmin");

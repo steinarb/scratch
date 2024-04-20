@@ -90,7 +90,9 @@ public class ShiroTestBase {
     protected WebSubject createSubjectAndBindItToThread(WebSecurityManager webSecurityManager, HttpServletRequest request, HttpServletResponse response) {
         var session = mock(Session.class);
         var savedRequest = new SavedRequest(request);
-        when(session.getAttribute(SAVED_REQUEST_KEY)).thenReturn(savedRequest);
+        when(session.getAttribute(SAVED_REQUEST_KEY))
+            .thenReturn(savedRequest)
+            .thenReturn(null);
         var subject = (WebSubject) new WebSubject.Builder(webSecurityManager, request, response).session(session).buildSubject();
         ThreadContext.bind(subject);
         return subject;
