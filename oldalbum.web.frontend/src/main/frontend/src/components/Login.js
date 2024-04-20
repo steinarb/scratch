@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, NavLink, useSearchParams } from 'react-router-dom';
-import { LOGIN_REQUEST } from '../reduxactions';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import {
+    LOGIN_REQUEST,
+    LOGIN_CANCEL_BUTTON_CLICKED,
+} from '../reduxactions';
 
 export default function Login() {
     const text = useSelector(state => state.displayTexts);
@@ -51,7 +54,11 @@ export default function Login() {
                             type="submit"
                             value={loginButtonTitle}
                             onClick={() => dispatch(LOGIN_REQUEST({ username, password }))}/>
-                        <NavLink className="btn btn-light mx-2" to={returnpath}>{text.cancel}</NavLink>
+                        <input
+                            className="btn btn-light mx-2"
+                            type="button"
+                            value={text.cancel}
+                            onClick={() => dispatch(LOGIN_CANCEL_BUTTON_CLICKED(returnpath))}/>
                     </div>
                 </form>
                 { errormessage && <div className="alert alert-warning">{errormessage}</div> }

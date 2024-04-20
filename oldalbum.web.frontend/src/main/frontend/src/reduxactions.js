@@ -15,6 +15,7 @@ export const LOGIN_CHECK_FAILURE = createAction('LOGIN_CHECK_FAILURE');
 export const LOGIN_REQUEST = createAction('LOGIN_REQUEST');
 export const LOGIN_RECEIVE = createAction('LOGIN_RECEIVE');
 export const LOGIN_FAILURE = createAction('LOGIN_FAILURE');
+export const LOGIN_CANCEL_BUTTON_CLICKED = createAction('LOGIN_CANCEL_BUTTON_CLICKED');
 export const LOGOUT_REQUEST = createAction('LOGOUT_REQUEST');
 export const LOGOUT_RECEIVE = createAction('LOGOUT_RECEIVE');
 export const LOGOUT_FAILURE = createAction('LOGOUT_FAILURE');
