@@ -18,6 +18,7 @@ import deleteSelectionSaga from './deleteSelectionSaga';
 import movealbumentry from './movealbumentrySaga';
 import login from './loginSaga';
 import logout from './logoutSaga';
+import clearOriginalRequestUrlSaga from './clearOriginalRequestUrlSaga';
 import localeSaga from './localeSaga';
 import defaultLocaleSaga from './defaultLocaleSaga';
 import availableLocalesSaga from './availableLocalesSaga';
@@ -53,6 +54,7 @@ export default function* rootSaga() {
         fork(movealbumentry),
         fork(login),
         fork(logout),
+        fork(clearOriginalRequestUrlSaga),
         fork(localeSaga),
         fork(defaultLocaleSaga),
         fork(availableLocalesSaga),
