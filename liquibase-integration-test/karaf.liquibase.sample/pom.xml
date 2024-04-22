@@ -38,6 +38,13 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.karaf.derby</groupId>
+            <artifactId>embedded-derby-karaf-feature</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
@@ -98,8 +105,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-derby</artifactId>
+            <groupId>no.priv.bang.karaf.derby</groupId>
+            <artifactId>embedded-derby-karaf-feature</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

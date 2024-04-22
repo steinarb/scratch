@@ -25,19 +25,19 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class SampleDbLiquibaseRunnerTest {
 
     @Test
     void testCreateAndVerifySomeDataInSomeTables() throws Exception {
-        DataSourceFactory dataSourceFactory = new DerbyDataSourceFactory();
+        DataSourceFactory dataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         Properties properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:sample;create=true");
         DataSource datasource = dataSourceFactory.createDataSource(properties);

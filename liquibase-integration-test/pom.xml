@@ -90,14 +90,11 @@
                 <version>${pax.jdbc.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.ops4j.pax.jdbc</groupId>
-                <artifactId>pax-jdbc-derby</artifactId>
-                <version>${pax.jdbc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.derby</groupId>
-                <artifactId>derby</artifactId>
-                <version>${derby.version}</version>
+                <groupId>no.priv.bang.karaf.derby</groupId>
+                <artifactId>derby-karaf-features-bom</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
