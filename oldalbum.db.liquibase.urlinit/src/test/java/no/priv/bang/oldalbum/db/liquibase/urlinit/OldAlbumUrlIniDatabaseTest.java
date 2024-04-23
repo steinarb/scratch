@@ -25,15 +25,15 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumUrlInitDatabaseTest {
     private static final int EXPECTED_NUMBER_OF_ALBUMENTRIES = 21;
-    DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+    DataSourceFactory derbyDataSourceFactory = new EmbeddedDerbyDataSourceFactory();
 
     @Test
     void testInsertData() throws Exception {

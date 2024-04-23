@@ -59,7 +59,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import com.mockrunner.mock.jdbc.MockConnection;
@@ -75,6 +74,7 @@ import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 import no.priv.bang.oldalbum.backend.imageio.ImageioSpiRegistration;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
@@ -2130,7 +2130,7 @@ class OldAlbumServiceProviderTest {
     }
 
     private static DataSource createEmptyBase(String dbname) throws Exception {
-        var derbyDataSourceFactory = new DerbyDataSourceFactory();
+        var derbyDataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         var emptyDatasource = derbyDataSourceFactory.createDataSource(properties);
