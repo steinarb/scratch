@@ -32,7 +32,6 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import no.priv.bang.handlereg.db.liquibase.test.HandleregTestDbLiquibaseRunner;
@@ -41,6 +40,7 @@ import no.priv.bang.handlereg.services.Favorittpar;
 import no.priv.bang.handlereg.services.NyFavoritt;
 import no.priv.bang.handlereg.services.HandleregException;
 import no.priv.bang.handlereg.services.NyHandling;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.User;
 import no.priv.bang.osgiservice.users.UserManagementService;
@@ -50,7 +50,7 @@ class HandleregServiceProviderTest {
 
     @BeforeAll
     static void commonSetupForAllTests() throws Exception {
-        var derbyDataSourceFactory = new DerbyDataSourceFactory();
+        var derbyDataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:handlereg;create=true");
         datasource = derbyDataSourceFactory.createDataSource(properties);

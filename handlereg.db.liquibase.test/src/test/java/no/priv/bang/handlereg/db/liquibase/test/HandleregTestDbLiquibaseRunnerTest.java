@@ -24,10 +24,10 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import no.priv.bang.handlereg.services.HandleregException;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class HandleregDerbyTestDatabaseTest {
@@ -143,7 +143,7 @@ class HandleregDerbyTestDatabaseTest {
     }
 
     private DataSource createDataSource(String dbname) throws SQLException {
-        var dataSourceFactory = new DerbyDataSourceFactory();
+        var dataSourceFactory = new EmbeddedDerbyDataSourceFactory();
         var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:" + dbname + ";create=true");
         var datasource = dataSourceFactory.createDataSource(properties);

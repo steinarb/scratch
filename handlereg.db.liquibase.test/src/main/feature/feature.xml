@@ -15,7 +15,6 @@
 
     <feature name="${karaf-feature-name}">
         <feature>scr</feature>
-        <feature>pax-jdbc-derby</feature>
     </feature>
     <feature name="handlereg-db-test" description="handlereg test DataSource" version="${project.version}">
         <config name="org.ops4j.datasource-handlereg-test">

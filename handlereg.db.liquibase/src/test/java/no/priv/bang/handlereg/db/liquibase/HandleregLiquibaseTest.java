@@ -30,14 +30,14 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import liquibase.exception.LiquibaseException;
 import no.priv.bang.handlereg.services.HandleregException;
+import no.priv.bang.karaf.derby.embedded.EmbeddedDerbyDataSourceFactory;
 
 class HandleregLiquibaseTest {
-    DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+    DataSourceFactory derbyDataSourceFactory = new EmbeddedDerbyDataSourceFactory();
 
     @Test
     void testCreateSchema() throws Exception {

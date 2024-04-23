@@ -123,8 +123,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-derby</artifactId>
+            <groupId>no.priv.bang.karaf.derby</groupId>
+            <artifactId>embedded-derby-karaf-feature</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
