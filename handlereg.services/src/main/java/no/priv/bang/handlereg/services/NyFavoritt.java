@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class NyFavoritt extends Immutable {
         private NyFavorittBuilder() {}
 
         public NyFavoritt build() {
-            NyFavoritt favorittOgBrukernavn = new NyFavoritt();
+            var favorittOgBrukernavn = new NyFavoritt();
             favorittOgBrukernavn.brukernavn = this.brukernavn;
             favorittOgBrukernavn.butikk = this.butikk;
             return favorittOgBrukernavn;

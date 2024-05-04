@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction [transactionId=" + transactionId + ", handletidspunkt=" + handletidspunkt + ", butikk="
-                + butikk + ", storeId=" + storeId + ", belop=" + belop + "]";
+            + butikk + ", storeId=" + storeId + ", belop=" + belop + "]";
     }
 
     public static TransactionBuilder with() {
@@ -66,7 +66,7 @@ public class Transaction {
         private TransactionBuilder() {}
 
         public Transaction build() {
-            Transaction transaction = new Transaction();
+            var transaction = new Transaction();
             transaction.transactionId = this.transactionId;
             transaction.handletidspunkt = this.handletidspunkt;
             transaction.butikk = this.butikk;

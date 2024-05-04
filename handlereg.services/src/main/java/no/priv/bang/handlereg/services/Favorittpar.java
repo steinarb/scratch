@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class Favorittpar extends Immutable {
         private FavorittparBuilder() {}
 
         public Favorittpar build() {
-            Favorittpar favorittpar = new Favorittpar();
+            var favorittpar = new Favorittpar();
             favorittpar.forste = this.forste;
             favorittpar.andre = this.andre;
             return favorittpar;

@@ -61,8 +61,8 @@ public class HandleregProductionDbLiquibaseRunner implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
-        HandleregLiquibase handleregLiquibase = new HandleregLiquibase();
-        try (Connection connect = datasource.getConnection()) {
+        var handleregLiquibase = new HandleregLiquibase();
+        try (var connect = datasource.getConnection()) {
             handleregLiquibase.createInitialSchema(connect);
         } catch (Exception e) {
             logError("Failed to create initial schema of handlereg PostgreSQL database", e);
@@ -72,7 +72,7 @@ public class HandleregProductionDbLiquibaseRunner implements PreHook {
             insertMockData(connect);
         }
 
-        try (Connection connect = datasource.getConnection()) {
+        try (var connect = datasource.getConnection()) {
             handleregLiquibase.updateSchema(connect);
         } catch (Exception e) {
             logError("Failed to update schema of handlereg PostgreSQL database", e);

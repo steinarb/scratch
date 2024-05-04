@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class ButikkSum {
         private ButikkSumBuilder() {}
 
         public ButikkSum build() {
-            ButikkSum butikkSum = new ButikkSum();
+            var butikkSum = new ButikkSum();
             butikkSum.butikk = this.butikk;
             butikkSum.sum = this.sum;
             return butikkSum;

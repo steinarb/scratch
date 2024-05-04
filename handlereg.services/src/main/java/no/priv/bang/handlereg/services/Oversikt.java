@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ public class Oversikt {
         private OversiktBuilder() {}
 
         public Oversikt build() {
-            Oversikt oversikt = new Oversikt();
+            var oversikt = new Oversikt();
             oversikt.accountid = this.accountid;
             oversikt.brukernavn = this.brukernavn;
             oversikt.email = this.email;

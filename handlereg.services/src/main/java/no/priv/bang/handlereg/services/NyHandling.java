@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class NyHandling {
         private NyHandlingBuilder() {}
 
         public NyHandling build() {
-            NyHandling nyHandling = new NyHandling();
+            var nyHandling = new NyHandling();
             nyHandling.username = this.username;
             nyHandling.accountid = this.accountid;
             nyHandling.storeId = this.storeId;

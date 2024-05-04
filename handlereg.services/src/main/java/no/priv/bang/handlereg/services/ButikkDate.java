@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class ButikkDate {
         private ButikkDateBuilder() {}
 
         public ButikkDate build() {
-            ButikkDate butikkDate = new ButikkDate();
+            var butikkDate = new ButikkDate();
             butikkDate.butikk = this.butikk;
             butikkDate.date = this.date;
             return butikkDate;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 Steinar Bang
+ * Copyright 2019-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class SumYearMonth extends SumYear {
 
         @Override
         public SumYearMonth build() {
-            SumYearMonth sumYearMonth = new SumYearMonth();
+            var sumYearMonth = new SumYearMonth();
             copyValues(sumYearMonth);
             sumYearMonth.month = this.month;
             return sumYearMonth;

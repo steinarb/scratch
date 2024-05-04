@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 Steinar Bang
+ * Copyright 2018-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class Butikk extends Immutable {
     }
 
     public static ButikkBuilder with(Butikk butikk) {
-        ButikkBuilder builder = new ButikkBuilder();
+        var builder = new ButikkBuilder();
         builder.storeId = butikk.storeId;
         builder.butikknavn = butikk.butikknavn;
         builder.gruppe = butikk.gruppe;
@@ -68,7 +68,7 @@ public class Butikk extends Immutable {
         private int rekkefolge;
 
         public Butikk build() {
-            Butikk butikk = new Butikk();
+            var butikk = new Butikk();
             butikk.storeId = this.storeId;
             butikk.butikknavn = this.butikknavn;
             butikk.gruppe = this.gruppe;
