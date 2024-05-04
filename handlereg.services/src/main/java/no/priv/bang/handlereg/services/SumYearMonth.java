@@ -18,11 +18,21 @@ package no.priv.bang.handlereg.services;
 import java.time.Month;
 import java.time.Year;
 
-public class SumYearMonth extends SumYear {
+public class SumYearMonth {
 
+    private double sum;
+    private Year year;
     private Month month;
 
     private SumYearMonth() {}
+
+    public double getSum() {
+        return sum;
+    }
+
+    public Year getYear() {
+        return year;
+    }
 
     public Month getMonth() {
         return month;
@@ -37,26 +47,26 @@ public class SumYearMonth extends SumYear {
         return new SumYearMonthBuilder();
     }
 
-    public static class SumYearMonthBuilder extends SumYearBuilder {
+    public static class SumYearMonthBuilder {
+        private double sum;
+        private Year year;
         private Month month;
 
-        @Override
         public SumYearMonth build() {
             var sumYearMonth = new SumYearMonth();
-            copyValues(sumYearMonth);
+            sumYearMonth.sum = this.sum;
+            sumYearMonth.year = this.year;
             sumYearMonth.month = this.month;
             return sumYearMonth;
         }
 
-        @Override
         public SumYearMonthBuilder sum(double sum) {
-            super.sum(sum);
+            this.sum = sum;
             return this;
         }
 
-        @Override
         public SumYearMonthBuilder year(Year year) {
-            super.year(year);
+            this.year = year;
             return this;
         }
 
