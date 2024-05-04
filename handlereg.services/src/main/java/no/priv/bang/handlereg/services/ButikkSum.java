@@ -35,15 +35,15 @@ public class ButikkSum {
         return "ButikkSum [butikk=" + butikk + ", sum=" + sum + "]";
     }
 
-    public static ButikkSumBuilder with() {
-        return new ButikkSumBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class ButikkSumBuilder {
+    public static class Builder {
         private Butikk butikk;
         private double sum;
 
-        private ButikkSumBuilder() {}
+        private Builder() {}
 
         public ButikkSum build() {
             var butikkSum = new ButikkSum();
@@ -52,12 +52,12 @@ public class ButikkSum {
             return butikkSum;
         }
 
-        public ButikkSumBuilder butikk(Butikk butikk) {
+        public Builder butikk(Butikk butikk) {
             this.butikk = butikk;
             return this;
         }
 
-        public ButikkSumBuilder sum(double sum) {
+        public Builder sum(double sum) {
             this.sum = sum;
             return this;
         }

@@ -43,11 +43,11 @@ public class SumYearMonth {
         return "SumYearMonth [month=" + month + "]";
     }
 
-    public static SumYearMonthBuilder with() {
-        return new SumYearMonthBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class SumYearMonthBuilder {
+    public static class Builder {
         private double sum;
         private Year year;
         private Month month;
@@ -60,17 +60,17 @@ public class SumYearMonth {
             return sumYearMonth;
         }
 
-        public SumYearMonthBuilder sum(double sum) {
+        public Builder sum(double sum) {
             this.sum = sum;
             return this;
         }
 
-        public SumYearMonthBuilder year(Year year) {
+        public Builder year(Year year) {
             this.year = year;
             return this;
         }
 
-        public SumYearMonthBuilder month(Month month) {
+        public Builder month(Month month) {
             this.month = month;
             return this;
         }

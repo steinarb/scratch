@@ -74,11 +74,11 @@ public class Oversikt {
         return "Oversikt [accountid=" + accountid + ", brukernavn=" + brukernavn + ", email=" + email + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + ", sumPreviousMonth=" + sumPreviousMonth + ", sumThisMonth=" + sumThisMonth + ", lastTransactionAmount=" + lastTransactionAmount + ", lastTransactionStore=" + lastTransactionStore + "]";
     }
 
-    public static OversiktBuilder with() {
-        return new OversiktBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class OversiktBuilder {
+    public static class Builder {
         private int accountid = -1;
         private String brukernavn;
         private String email;
@@ -90,7 +90,7 @@ public class Oversikt {
         private double lastTransactionAmount;
         private int lastTransactionStore;
 
-        private OversiktBuilder() {}
+        private Builder() {}
 
         public Oversikt build() {
             var oversikt = new Oversikt();
@@ -107,52 +107,52 @@ public class Oversikt {
             return oversikt;
         }
 
-        public OversiktBuilder accountid(int accountid) {
+        public Builder accountid(int accountid) {
             this.accountid = accountid;
             return this;
         }
 
-        public OversiktBuilder brukernavn(String brukernavn) {
+        public Builder brukernavn(String brukernavn) {
             this.brukernavn = brukernavn;
             return this;
         }
 
-        public OversiktBuilder email(String email) {
+        public Builder email(String email) {
             this.email = email;
             return this;
         }
 
-        public OversiktBuilder fornavn(String fornavn) {
+        public Builder fornavn(String fornavn) {
             this.fornavn = fornavn;
             return this;
         }
 
-        public OversiktBuilder etternavn(String etternavn) {
+        public Builder etternavn(String etternavn) {
             this.etternavn = etternavn;
             return this;
         }
 
-        public OversiktBuilder balanse(double balanse) {
+        public Builder balanse(double balanse) {
             this.balanse = balanse;
             return this;
         }
 
-        public OversiktBuilder sumPreviousMonth(double sumPreviousMonth) {
+        public Builder sumPreviousMonth(double sumPreviousMonth) {
             this.sumPreviousMonth = sumPreviousMonth;
             return this;
         }
 
-        public OversiktBuilder sumThisMonth(double sumThisMonth) {
+        public Builder sumThisMonth(double sumThisMonth) {
             this.sumThisMonth = sumThisMonth;
             return this;
         }
 
-        public OversiktBuilder lastTransactionAmount(double lastTransactionAmount) {
+        public Builder lastTransactionAmount(double lastTransactionAmount) {
             this.lastTransactionAmount = lastTransactionAmount;
             return this;
         }
 
-        public OversiktBuilder lastTransactionStore(int lastTransactionStore) {
+        public Builder lastTransactionStore(int lastTransactionStore) {
             this.lastTransactionStore = lastTransactionStore;
             return this;
         }

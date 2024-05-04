@@ -52,18 +52,18 @@ public class NyHandling {
         return "NyHandling [username=" + username + ", accountid=" + accountid + ", storeId=" + storeId + ", belop=" + belop + ", handletidspunkt=" + handletidspunkt + "]";
     }
 
-    public static NyHandlingBuilder with() {
-        return new NyHandlingBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class NyHandlingBuilder {
+    public static class Builder {
         private String username;
         private int accountid = -1;
         private int storeId = -1;
         private double belop;
         private Date handletidspunkt;
 
-        private NyHandlingBuilder() {}
+        private Builder() {}
 
         public NyHandling build() {
             var nyHandling = new NyHandling();
@@ -75,27 +75,27 @@ public class NyHandling {
             return nyHandling;
         }
 
-        public NyHandlingBuilder username(String username) {
+        public Builder username(String username) {
             this.username = username;
             return this;
         }
 
-        public NyHandlingBuilder accountid(int accountid) {
+        public Builder accountid(int accountid) {
             this.accountid = accountid;
             return this;
         }
 
-        public NyHandlingBuilder storeId(int storeId) {
+        public Builder storeId(int storeId) {
             this.storeId = storeId;
             return this;
         }
 
-        public NyHandlingBuilder belop(double belop) {
+        public Builder belop(double belop) {
             this.belop = belop;
             return this;
         }
 
-        public NyHandlingBuilder handletidspunkt(Date handletidspunkt) {
+        public Builder handletidspunkt(Date handletidspunkt) {
             this.handletidspunkt = handletidspunkt;
             return this;
         }

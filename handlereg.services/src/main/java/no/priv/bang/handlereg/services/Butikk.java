@@ -47,12 +47,12 @@ public class Butikk extends Immutable {
         return "Butikk [storeId=" + storeId + ", butikknavn=" + butikknavn + ", gruppe=" + gruppe + ", rekkefolge=" + rekkefolge + "]";
     }
 
-    public static ButikkBuilder with() {
-        return new ButikkBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static ButikkBuilder with(Butikk butikk) {
-        var builder = new ButikkBuilder();
+    public static Builder with(Butikk butikk) {
+        var builder = new Builder();
         builder.storeId = butikk.storeId;
         builder.butikknavn = butikk.butikknavn;
         builder.gruppe = butikk.gruppe;
@@ -60,7 +60,7 @@ public class Butikk extends Immutable {
         return builder;
     }
 
-    public static class ButikkBuilder {
+    public static class Builder {
 
         private int storeId = -1;
         private String butikknavn;
@@ -76,22 +76,22 @@ public class Butikk extends Immutable {
             return butikk;
         }
 
-        public ButikkBuilder storeId(int storeId) {
+        public Builder storeId(int storeId) {
             this.storeId = storeId;
             return this;
         }
 
-        public ButikkBuilder butikknavn(String butikknavn) {
+        public Builder butikknavn(String butikknavn) {
             this.butikknavn = butikknavn;
             return this;
         }
 
-        public ButikkBuilder gruppe(int gruppe) {
+        public Builder gruppe(int gruppe) {
             this.gruppe = gruppe;
             return this;
         }
 
-        public ButikkBuilder rekkefolge(int rekkefolge) {
+        public Builder rekkefolge(int rekkefolge) {
             this.rekkefolge = rekkefolge;
             return this;
         }

@@ -24,8 +24,8 @@ public class Favorittpar extends Immutable {
 
     private Favorittpar() {}
 
-    public static FavorittparBuilder with() {
-        return new FavorittparBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
     public Favoritt getForste() {
@@ -41,12 +41,12 @@ public class Favorittpar extends Immutable {
         return "Favorittpar [forste=" + forste + ", andre=" + andre + "]";
     }
 
-    public static class FavorittparBuilder {
+    public static class Builder {
 
         private Favoritt forste;
         private Favoritt andre;
 
-        private FavorittparBuilder() {}
+        private Builder() {}
 
         public Favorittpar build() {
             var favorittpar = new Favorittpar();
@@ -55,12 +55,12 @@ public class Favorittpar extends Immutable {
             return favorittpar;
         }
 
-        public FavorittparBuilder forste(Favoritt forste) {
+        public Builder forste(Favoritt forste) {
             this.forste = forste;
             return this;
         }
 
-        public FavorittparBuilder andre(Favoritt andre) {
+        public Builder andre(Favoritt andre) {
             this.andre = andre;
             return this;
         }

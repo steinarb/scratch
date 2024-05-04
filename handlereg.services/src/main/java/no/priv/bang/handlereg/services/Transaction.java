@@ -52,18 +52,18 @@ public class Transaction {
             + butikk + ", storeId=" + storeId + ", belop=" + belop + "]";
     }
 
-    public static TransactionBuilder with() {
-        return new TransactionBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class TransactionBuilder {
+    public static class Builder {
         private int transactionId = -1;
         private Date handletidspunkt;
         private String butikk;
         private int storeId = -1;
         private double belop;
 
-        private TransactionBuilder() {}
+        private Builder() {}
 
         public Transaction build() {
             var transaction = new Transaction();
@@ -75,27 +75,27 @@ public class Transaction {
             return transaction;
         }
 
-        public TransactionBuilder transactionId(int transactionId) {
+        public Builder transactionId(int transactionId) {
             this.transactionId = transactionId;
             return this;
         }
 
-        public TransactionBuilder handletidspunkt(Date handletidspunkt) {
+        public Builder handletidspunkt(Date handletidspunkt) {
             this.handletidspunkt = handletidspunkt;
             return this;
         }
 
-        public TransactionBuilder butikk(String butikk) {
+        public Builder butikk(String butikk) {
             this.butikk = butikk;
             return this;
         }
 
-        public TransactionBuilder storeId(int storeId) {
+        public Builder storeId(int storeId) {
             this.storeId = storeId;
             return this;
         }
 
-        public TransactionBuilder belop(double belop) {
+        public Builder belop(double belop) {
             this.belop = belop;
             return this;
         }

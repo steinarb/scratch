@@ -37,16 +37,16 @@ public class NyFavoritt extends Immutable {
         return "NyFavoritt [brukernavn=" + brukernavn + ", butikk=" + butikk + "]";
     }
 
-    public static NyFavorittBuilder with() {
-        return new NyFavorittBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class NyFavorittBuilder {
+    public static class Builder {
 
         private String brukernavn;
         private Butikk butikk;
 
-        private NyFavorittBuilder() {}
+        private Builder() {}
 
         public NyFavoritt build() {
             var favorittOgBrukernavn = new NyFavoritt();
@@ -55,12 +55,12 @@ public class NyFavoritt extends Immutable {
             return favorittOgBrukernavn;
         }
 
-        public NyFavorittBuilder brukernavn(String brukernavn) {
+        public Builder brukernavn(String brukernavn) {
             this.brukernavn = brukernavn;
             return this;
         }
 
-        public NyFavorittBuilder butikk(Butikk favoritt) {
+        public Builder butikk(Butikk favoritt) {
             this.butikk = favoritt;
             return this;
         }

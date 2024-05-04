@@ -50,18 +50,18 @@ public class Loginresultat {
         return "Loginresultat [suksess=" + suksess + ", feilmelding=" + feilmelding + ", authorized=" + authorized + ", originalRequestUrl=" + originalRequestUrl + ", brukernavn=" + brukernavn + "]";
     }
 
-    public static LoginresultatBuilder with() {
-        return new LoginresultatBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class LoginresultatBuilder {
+    public static class Builder {
         private boolean suksess;
         private String feilmelding;
         private boolean authorized;
         private String originalRequestUrl;
         private String brukernavn;
 
-        private LoginresultatBuilder() {}
+        private Builder() {}
 
         public Loginresultat build() {
             var loginresultat = new Loginresultat();
@@ -73,27 +73,27 @@ public class Loginresultat {
             return loginresultat;
         }
 
-        public LoginresultatBuilder suksess(boolean suksess) {
+        public Builder suksess(boolean suksess) {
             this.suksess = suksess;
             return this;
         }
 
-        public LoginresultatBuilder feilmelding(String feilmelding) {
+        public Builder feilmelding(String feilmelding) {
             this.feilmelding = feilmelding;
             return this;
         }
 
-        public LoginresultatBuilder authorized(boolean authorized) {
+        public Builder authorized(boolean authorized) {
             this.authorized = authorized;
             return this;
         }
 
-        public LoginresultatBuilder originalRequestUrl(String originalRequestUrl) {
+        public Builder originalRequestUrl(String originalRequestUrl) {
             this.originalRequestUrl = originalRequestUrl;
             return this;
         }
 
-        public LoginresultatBuilder brukernavn(String brukernavn) {
+        public Builder brukernavn(String brukernavn) {
             this.brukernavn = brukernavn;
             return this;
         }

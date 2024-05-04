@@ -37,15 +37,15 @@ public class SumYear {
         return "SumYear [sum=" + sum + ", year=" + year + "]";
     }
 
-    public static SumYearBuilder with() {
-        return new SumYearBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class SumYearBuilder {
+    public static class Builder {
         private double sum;
         private Year year;
 
-        protected SumYearBuilder() {}
+        protected Builder() {}
 
         public SumYear build() {
             var sumYear = new SumYear();
@@ -54,12 +54,12 @@ public class SumYear {
             return sumYear;
         }
 
-        public SumYearBuilder sum(double sum) {
+        public Builder sum(double sum) {
             this.sum = sum;
             return this;
         }
 
-        public SumYearBuilder year(Year year) {
+        public Builder year(Year year) {
             this.year = year;
             return this;
         }

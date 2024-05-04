@@ -35,15 +35,15 @@ public class ButikkCount {
         return "ButikkCount [butikk=" + butikk + ", count=" + count + "]";
     }
 
-    public static ButikkCountBuilder with() {
-        return new ButikkCountBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class ButikkCountBuilder {
+    public static class Builder {
         private Butikk butikk;
         private long count;
 
-        private ButikkCountBuilder() {}
+        private Builder() {}
 
         public ButikkCount build() {
             var butikkCount = new ButikkCount();
@@ -52,12 +52,12 @@ public class ButikkCount {
             return butikkCount;
         }
 
-        public ButikkCountBuilder butikk(Butikk butikk) {
+        public Builder butikk(Butikk butikk) {
             this.butikk = butikk;
             return this;
         }
 
-        public ButikkCountBuilder count(long count) {
+        public Builder count(long count) {
             this.count = count;
             return this;
         }

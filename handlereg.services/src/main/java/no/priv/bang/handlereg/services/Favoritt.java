@@ -46,17 +46,17 @@ public class Favoritt extends Immutable {
         return "Favoritt [favouriteid=" + favouriteid + ", accountid=" + accountid + ", store=" + store + ", rekkefolge=" + rekkefolge + "]";
     }
 
-    public static FavorittBuilder with() {
-        return new FavorittBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class FavorittBuilder {
+    public static class Builder {
         private int favouriteid = -1;
         private int accountid = -1;
         private Butikk store;
         private int rekkefolge = -1;
 
-        private FavorittBuilder() {}
+        private Builder() {}
 
         public Favoritt build() {
             var favoritt = new Favoritt();
@@ -67,22 +67,22 @@ public class Favoritt extends Immutable {
             return favoritt;
         }
 
-        public FavorittBuilder favouriteid(int favouriteid) {
+        public Builder favouriteid(int favouriteid) {
             this.favouriteid = favouriteid;
             return this;
         }
 
-        public FavorittBuilder accountid(int accountid) {
+        public Builder accountid(int accountid) {
             this.accountid = accountid;
             return this;
         }
 
-        public FavorittBuilder store(Butikk store) {
+        public Builder store(Butikk store) {
             this.store = store;
             return this;
         }
 
-        public FavorittBuilder rekkefolge(int rekkefolge) {
+        public Builder rekkefolge(int rekkefolge) {
             this.rekkefolge = rekkefolge;
             return this;
         }

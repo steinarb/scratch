@@ -37,15 +37,15 @@ public class ButikkDate {
         return "ButikkDate [butikk=" + butikk + ", date=" + date + "]";
     }
 
-    public static ButikkDateBuilder with() {
-        return new ButikkDateBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class ButikkDateBuilder {
+    public static class Builder {
         private Butikk butikk;
         private Date date;
 
-        private ButikkDateBuilder() {}
+        private Builder() {}
 
         public ButikkDate build() {
             var butikkDate = new ButikkDate();
@@ -54,12 +54,12 @@ public class ButikkDate {
             return butikkDate;
         }
 
-        public ButikkDateBuilder butikk(Butikk butikk) {
+        public Builder butikk(Butikk butikk) {
             this.butikk = butikk;
             return this;
         }
 
-        public ButikkDateBuilder date(Date date) {
+        public Builder date(Date date) {
             this.date = date;
             return this;
         }
