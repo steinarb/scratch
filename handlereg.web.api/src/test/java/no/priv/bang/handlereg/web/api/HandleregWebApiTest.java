@@ -243,7 +243,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         assertEquals(200, response.getStatus());
         var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkSum>>() {});
         assertThat(sumOverButikk).isNotEmpty();
-        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).getButikk().getButikknavn());
+        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).butikk().butikknavn());
     }
 
     @Test
@@ -263,7 +263,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         System.out.println(response.getOutputStreamContent());
         var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
         assertThat(sumOverButikk).isNotEmpty();
-        assertEquals(Year.of(2016), sumOverButikk.get(0).getYear());
+        assertEquals(Year.of(2016), sumOverButikk.get(0).year());
     }
 
     @Test
@@ -281,7 +281,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         assertEquals(200, response.getStatus());
         var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkCount>>() {});
         assertThat(sumOverButikk).isNotEmpty();
-        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).getButikk().getButikknavn());
+        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).butikk().butikknavn());
     }
 
     @Test
@@ -299,7 +299,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         assertEquals(200, response.getStatus());
         var sumOverButikk = mapper.readValue(getBinaryContent(response), new TypeReference<List<ButikkDate>>() {});
         assertThat(sumOverButikk).isNotEmpty();
-        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).getButikk().getButikknavn());
+        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).butikk().butikknavn());
     }
 
     @Test
@@ -317,7 +317,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         assertEquals(200, response.getStatus());
         var sumyear = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYear>>() {});
         assertThat(sumyear).isNotEmpty();
-        assertEquals(Year.of(2001), sumyear.get(0).getYear());
+        assertEquals(Year.of(2001), sumyear.get(0).year());
     }
 
     @Test
@@ -335,7 +335,7 @@ class HandleregWebApiTest extends ShiroTestBase {
         assertEquals(200, response.getStatus());
         var sumyearmonth = mapper.readValue(getBinaryContent(response), new TypeReference<List<SumYearMonth>>() {});
         assertThat(sumyearmonth).isNotEmpty();
-        assertEquals(Year.of(2001), sumyearmonth.get(0).getYear());
+        assertEquals(Year.of(2001), sumyearmonth.get(0).year());
     }
 
     @Test
@@ -407,7 +407,7 @@ class HandleregWebApiTest extends ShiroTestBase {
             .isNotEmpty()
             .contains(favoritt2)
             .doesNotContain(favoritt1);
-        assertEquals(butikk, favoritter.get(0).getStore());
+        assertEquals(butikk, favoritter.get(0).store());
     }
 
     @Test

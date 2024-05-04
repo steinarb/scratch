@@ -29,21 +29,21 @@ class SumYearTest {
         var sum = 2345;
         var year = Year.of(2017);
         var bean = SumYear.with().sum(sum).year(year).build();
-        assertEquals(sum, bean.getSum());
-        assertEquals(year, bean.getYear());
+        assertEquals(sum, bean.sum());
+        assertEquals(year, bean.year());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = SumYear.with().build();
-        assertEquals(0, bean.getSum());
-        assertNull(bean.getYear());
+        assertEquals(0, bean.sum());
+        assertNull(bean.year());
     }
 
     @Test
     void testToString() {
         var bean = SumYear.with().build();
-        assertThat(bean.toString()).startsWith("SumYear [");
+        assertThat(bean.toString()).startsWith("SumYear[");
     }
 
 }

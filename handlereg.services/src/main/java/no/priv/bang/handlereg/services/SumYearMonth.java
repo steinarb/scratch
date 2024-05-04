@@ -18,30 +18,7 @@ package no.priv.bang.handlereg.services;
 import java.time.Month;
 import java.time.Year;
 
-public class SumYearMonth {
-
-    private double sum;
-    private Year year;
-    private Month month;
-
-    private SumYearMonth() {}
-
-    public double getSum() {
-        return sum;
-    }
-
-    public Year getYear() {
-        return year;
-    }
-
-    public Month getMonth() {
-        return month;
-    }
-
-    @Override
-    public String toString() {
-        return "SumYearMonth [month=" + month + "]";
-    }
+public record SumYearMonth(double sum, Year year, Month month) {
 
     public static Builder with() {
         return new Builder();
@@ -53,11 +30,7 @@ public class SumYearMonth {
         private Month month;
 
         public SumYearMonth build() {
-            var sumYearMonth = new SumYearMonth();
-            sumYearMonth.sum = this.sum;
-            sumYearMonth.year = this.year;
-            sumYearMonth.month = this.month;
-            return sumYearMonth;
+            return new SumYearMonth(sum, year, month);
         }
 
         public Builder sum(double sum) {

@@ -46,7 +46,7 @@ class OversiktResourceTest extends ShiroTestBase {
         loginUser("jd", "johnnyBoi");
 
         var oversikt = resource.get();
-        assertEquals("jd", oversikt.getBrukernavn());
+        assertEquals("jd", oversikt.brukernavn());
     }
 
     @Test

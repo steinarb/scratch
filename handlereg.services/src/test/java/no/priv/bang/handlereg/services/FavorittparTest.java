@@ -30,14 +30,14 @@ class FavorittparTest {
             .forste(forste)
             .andre(andre)
             .build();
-        assertEquals(forste, par.getForste());
-        assertEquals(andre, par.getAndre());
+        assertEquals(forste, par.forste());
+        assertEquals(andre, par.andre());
     }
 
     @Test
     void testToString() {
         var bean = Favorittpar.with().build();
-        assertThat(bean.toString()).startsWith("Favorittpar [");
+        assertThat(bean.toString()).startsWith("Favorittpar[");
     }
 
 }

@@ -17,25 +17,7 @@ package no.priv.bang.handlereg.services;
 
 import java.time.Year;
 
-public class SumYear {
-
-    private double sum;
-    private Year year;
-
-    protected SumYear() {}
-
-    public double getSum() {
-        return sum;
-    }
-
-    public Year getYear() {
-        return year;
-    }
-
-    @Override
-    public String toString() {
-        return "SumYear [sum=" + sum + ", year=" + year + "]";
-    }
+public record SumYear(double sum, Year year) {
 
     public static Builder with() {
         return new Builder();
@@ -48,10 +30,7 @@ public class SumYear {
         protected Builder() {}
 
         public SumYear build() {
-            var sumYear = new SumYear();
-            sumYear.sum = this.sum;
-            sumYear.year = this.year;
-            return sumYear;
+            return new SumYear(sum, year);
         }
 
         public Builder sum(double sum) {

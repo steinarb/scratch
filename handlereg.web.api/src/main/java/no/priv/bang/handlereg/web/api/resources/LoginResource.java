@@ -68,9 +68,9 @@ public class LoginResource {
     @Path("/login")
     public Loginresultat login(Credentials credentials) {
         Subject subject = SecurityUtils.getSubject();
-        var decodedPassword = new String(Base64.getDecoder().decode(credentials.getPassword()));
+        var decodedPassword = new String(Base64.getDecoder().decode(credentials.password()));
 
-        UsernamePasswordToken token = new UsernamePasswordToken(credentials.getUsername(), decodedPassword, true);
+        UsernamePasswordToken token = new UsernamePasswordToken(credentials.username(), decodedPassword, true);
         try {
             subject.login(token);
             var savedRequest = Optional.ofNullable(WebUtils.getSavedRequest(request));

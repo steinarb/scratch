@@ -47,7 +47,7 @@ class StatistikkResourceTest {
 
         var sumOverButikk = resource.sumOverButikk();
         assertThat(sumOverButikk).isNotEmpty();
-        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).getButikk().getButikknavn());
+        assertEquals("Spar Fjellheimen", sumOverButikk.get(0).butikk().butikknavn());
     }
 
     @Test
@@ -61,7 +61,7 @@ class StatistikkResourceTest {
 
         var antallHandlingerIButikk = resource.antallHandlingerIButikk();
         assertThat(antallHandlingerIButikk).isNotEmpty();
-        assertEquals("Spar Fjellheimen", antallHandlingerIButikk.get(0).getButikk().getButikknavn());
+        assertEquals("Spar Fjellheimen", antallHandlingerIButikk.get(0).butikk().butikknavn());
     }
 
     @Test
@@ -75,7 +75,7 @@ class StatistikkResourceTest {
 
         var sisteHandelIButikk = resource.sisteHandelIButikk();
         assertThat(sisteHandelIButikk).isNotEmpty();
-        assertEquals("Spar Fjellheimen", sisteHandelIButikk.get(0).getButikk().getButikknavn());
+        assertEquals("Spar Fjellheimen", sisteHandelIButikk.get(0).butikk().butikknavn());
     }
 
     @Test
@@ -89,7 +89,7 @@ class StatistikkResourceTest {
 
         var totaltHandlebelopPrAar = resource.totaltHandlebelopPrAar();
         assertThat(totaltHandlebelopPrAar).isNotEmpty();
-        assertEquals(Year.of(2001), totaltHandlebelopPrAar.get(0).getYear());
+        assertEquals(Year.of(2001), totaltHandlebelopPrAar.get(0).year());
     }
 
     @Test
@@ -103,7 +103,7 @@ class StatistikkResourceTest {
 
         var totaltHandlebelopPrAarOgMaaned = resource.totaltHandlebelopPrAarOgMaaned();
         assertThat(totaltHandlebelopPrAarOgMaaned).isNotEmpty();
-        assertEquals(Year.of(2001), totaltHandlebelopPrAarOgMaaned.get(0).getYear());
+        assertEquals(Year.of(2001), totaltHandlebelopPrAarOgMaaned.get(0).year());
     }
 
 }

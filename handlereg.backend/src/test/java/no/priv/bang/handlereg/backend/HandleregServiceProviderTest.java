@@ -73,14 +73,14 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         var jod = handlereg.finnOversikt("jod");
-        assertEquals(1, jod.getAccountid());
-        assertEquals("jod", jod.getBrukernavn());
-        assertEquals("John", jod.getFornavn());
-        assertEquals("Doe", jod.getEtternavn());
-        assertThat(jod.getBalanse()).isGreaterThan(0.0);
-        assertThat(jod.getSumPreviousMonth()).isGreaterThan(0.0);
-        assertThat(jod.getSumThisMonth()).isGreaterThan(0.0);
-        assertThat(jod.getLastTransactionAmount()).isGreaterThan(0.0);
+        assertEquals(1, jod.accountid());
+        assertEquals("jod", jod.brukernavn());
+        assertEquals("John", jod.fornavn());
+        assertEquals("Doe", jod.etternavn());
+        assertThat(jod.balanse()).isGreaterThan(0.0);
+        assertThat(jod.sumPreviousMonth()).isGreaterThan(0.0);
+        assertThat(jod.sumThisMonth()).isGreaterThan(0.0);
+        assertThat(jod.lastTransactionAmount()).isGreaterThan(0.0);
     }
 
     @Test
@@ -131,11 +131,11 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         var jod = handlereg.finnOversikt("jod");
-        var handlingerJod = handlereg.findLastTransactions(jod.getAccountid());
+        var handlingerJod = handlereg.findLastTransactions(jod.accountid());
         assertEquals(5, handlingerJod.size());
 
         var jad = handlereg.finnOversikt("jad");
-        var handlingerJad = handlereg.findLastTransactions(jad.getAccountid());
+        var handlingerJad = handlereg.findLastTransactions(jad.accountid());
         assertEquals(5, handlingerJad.size());
     }
 
@@ -169,7 +169,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         var originalOversikt = handlereg.finnOversikt("jod");
-        var originalBalanse = originalOversikt.getBalanse();
+        var originalBalanse = originalOversikt.balanse();
         var nyttBelop = 510;
         var now = new Date();
         var nyHandling = NyHandling.with()
@@ -180,8 +180,8 @@ class HandleregServiceProviderTest {
             .handletidspunkt(now)
             .build();
         var nyOversikt = handlereg.registrerHandling(nyHandling);
-        assertThat(nyOversikt.getBalanse()).isEqualTo(originalBalanse + nyttBelop);
-        assertThat(nyOversikt.getLastTransactionStore()).isEqualTo(1);
+        assertThat(nyOversikt.balanse()).isEqualTo(originalBalanse + nyttBelop);
+        assertThat(nyOversikt.lastTransactionStore()).isEqualTo(1);
     }
 
     @Test
@@ -196,7 +196,7 @@ class HandleregServiceProviderTest {
         handlereg.activate();
 
         var originalOversikt = handlereg.finnOversikt("jod");
-        var originalBalanse = originalOversikt.getBalanse();
+        var originalBalanse = originalOversikt.balanse();
         var nyttBelop = 510;
         var nyHandling = NyHandling.with()
             .username("jod")
@@ -205,7 +205,7 @@ class HandleregServiceProviderTest {
             .belop(nyttBelop)
             .build();
         var nyOversikt = handlereg.registrerHandling(nyHandling);
-        assertThat(nyOversikt.getBalanse()).isEqualTo(originalBalanse + nyttBelop);
+        assertThat(nyOversikt.balanse()).isEqualTo(originalBalanse + nyttBelop);
     }
 
     @Test
@@ -310,12 +310,12 @@ class HandleregServiceProviderTest {
 
         var butikkerFoerEndring = handlereg.finnButikker();
         var butikk = butikkerFoerEndring.get(10);
-        var butikkId = butikk.getStoreId();
+        var butikkId = butikk.storeId();
         var nyttButikkNavn = "Joker Særbøåsen";
         var butikkMedEndretTittel = endreTittel(butikk, nyttButikkNavn);
         var butikker = handlereg.endreButikk(butikkMedEndretTittel);
-        var oppdatertButikk = butikker.stream().filter(b -> b.getStoreId() == butikkId).findFirst().get();
-        assertEquals(nyttButikkNavn, oppdatertButikk.getButikknavn());
+        var oppdatertButikk = butikker.stream().filter(b -> b.storeId() == butikkId).findFirst().get();
+        assertEquals(nyttButikkNavn, oppdatertButikk.butikknavn());
     }
 
     @Test
@@ -334,7 +334,7 @@ class HandleregServiceProviderTest {
         var butikker = handlereg.endreButikk(butikkMedEndretTittel);
         assertEquals(butikkerFoerEndring.size(), butikker.size());
         assertEquals(0, logservice.getLogmessages().size()); // Blir tydeligvis ikke noen SQLExceptin av update på en rad som ikke finnes?
-        Optional<Butikk> oppdatertButikk = butikker.stream().filter(b -> b.getStoreId() == idPaaButikkSomIkkeFinnes).findFirst();
+        Optional<Butikk> oppdatertButikk = butikker.stream().filter(b -> b.storeId() == idPaaButikkSomIkkeFinnes).findFirst();
         assertFalse(oppdatertButikk.isPresent()); // Men butikken med ikke-eksisterende id blir heller ikke inserted
     }
 
@@ -483,10 +483,10 @@ class HandleregServiceProviderTest {
         var andreFavorittIndeks = favoritter1.size();
         var favoritt1 = favoritter2.get(forsteFavorittIndeks);
         var favoritt2 = favoritter2.get(andreFavorittIndeks);
-        assertEquals(favoritt1.getAccountid(), favoritt2.getAccountid());
-        assertEquals(butikk1, favoritt1.getStore());
-        assertEquals(butikk2, favoritt2.getStore());
-        assertThat(favoritt2.getRekkefolge()).isGreaterThan(favoritt1.getRekkefolge());
+        assertEquals(favoritt1.accountid(), favoritt2.accountid());
+        assertEquals(butikk1, favoritt1.store());
+        assertEquals(butikk2, favoritt2.store());
+        assertThat(favoritt2.rekkefolge()).isGreaterThan(favoritt1.rekkefolge());
 
         // Bytt rekkefølge på de to favorittene
         var favoritterSomSkalFlippes = Favorittpar.with().forste(favoritt1).andre(favoritt2).build();
@@ -494,9 +494,9 @@ class HandleregServiceProviderTest {
         assertEquals(favoritter2.size(), favoritter3.size());
         var flippetFavoritt1 = favoritter3.get(forsteFavorittIndeks);
         var flippetFavoritt2 = favoritter3.get(andreFavorittIndeks);
-        assertEquals(flippetFavoritt1.getFavouriteid(), favoritt2.getFavouriteid());
-        assertEquals(flippetFavoritt2.getFavouriteid(), favoritt1.getFavouriteid());
-        assertThat(flippetFavoritt2.getRekkefolge()).isGreaterThan(flippetFavoritt1.getRekkefolge());
+        assertEquals(flippetFavoritt1.favouriteid(), favoritt2.favouriteid());
+        assertEquals(flippetFavoritt2.favouriteid(), favoritt1.favouriteid());
+        assertThat(flippetFavoritt2.rekkefolge()).isGreaterThan(flippetFavoritt1.rekkefolge());
 
         // Slett en favoritt
         assertThat(favoritter3)

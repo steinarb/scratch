@@ -177,19 +177,19 @@ public class HandleregServiceProvider implements HandleregService {
 
     @Override
     public Oversikt registrerHandling(NyHandling handling) {
-        var transactionTime = handling.getHandletidspunkt() == null ? new Date() : handling.getHandletidspunkt();
+        var transactionTime = handling.handletidspunkt() == null ? new Date() : handling.handletidspunkt();
         var sql = "insert into transactions (account_id, store_id, transaction_amount, transaction_time) values ((select account_id from accounts where username=?), ?, ?, ?)";
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
-                statement.setString(1, handling.getUsername());
-                statement.setInt(2, handling.getStoreId());
-                statement.setDouble(3, handling.getBelop());
+                statement.setString(1, handling.username());
+                statement.setInt(2, handling.storeId());
+                statement.setDouble(3, handling.belop());
                 statement.setTimestamp(4, Timestamp.from(transactionTime.toInstant()));
                 statement.executeUpdate();
-                return finnOversikt(handling.getUsername());
+                return finnOversikt(handling.username());
             }
         } catch (SQLException e) {
-            var message = String.format("Failed to register purchase for user %s", handling.getUsername());
+            var message = String.format("Failed to register purchase for user %s", handling.username());
             logError(message, e);
             throw new HandleregException(message, e);
         }
@@ -223,10 +223,10 @@ public class HandleregServiceProvider implements HandleregService {
 
     @Override
     public List<Butikk> endreButikk(Butikk butikkSomSkalEndres) {
-        var butikkId = butikkSomSkalEndres.getStoreId();
-        var butikknavn = butikkSomSkalEndres.getButikknavn();
-        var gruppe = butikkSomSkalEndres.getGruppe();
-        var rekkefolge = butikkSomSkalEndres.getRekkefolge();
+        var butikkId = butikkSomSkalEndres.storeId();
+        var butikknavn = butikkSomSkalEndres.butikknavn();
+        var gruppe = butikkSomSkalEndres.gruppe();
+        var rekkefolge = butikkSomSkalEndres.rekkefolge();
         var sql = "update stores set store_name=?, gruppe=?, rekkefolge=? where store_id=?";
         try (var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
@@ -238,7 +238,7 @@ public class HandleregServiceProvider implements HandleregService {
                 return finnButikker();
             }
         } catch (SQLException e) {
-            var message = String.format("Failed to insert store \"%s\" in group %d, sort order %s", butikkSomSkalEndres.getButikknavn(), gruppe, rekkefolge);
+            var message = String.format("Failed to insert store \"%s\" in group %d, sort order %s", butikkSomSkalEndres.butikknavn(), gruppe, rekkefolge);
             logError(message, e);
             throw new HandleregException(message, e);
         }
@@ -246,19 +246,19 @@ public class HandleregServiceProvider implements HandleregService {
 
     @Override
     public List<Butikk> leggTilButikk(Butikk nybutikk) {
-        var gruppe = nybutikk.getGruppe() < 1 ? 2 : nybutikk.getGruppe();
-        var rekkefolge = nybutikk.getRekkefolge() < 1 ? finnNesteLedigeRekkefolgeForGruppe(gruppe) : nybutikk.getRekkefolge();
+        var gruppe = nybutikk.gruppe() < 1 ? 2 : nybutikk.gruppe();
+        var rekkefolge = nybutikk.rekkefolge() < 1 ? finnNesteLedigeRekkefolgeForGruppe(gruppe) : nybutikk.rekkefolge();
         var sql = "insert into stores (store_name, gruppe, rekkefolge) values (?, ?, ?)";
         try (var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
-                statement.setString(1, nybutikk.getButikknavn());
+                statement.setString(1, nybutikk.butikknavn());
                 statement.setInt(2, gruppe);
                 statement.setInt(3, rekkefolge);
                 statement.executeUpdate();
                 return finnButikker();
             }
         } catch (SQLException e) {
-            var message = String.format("Failed to modify store \"%s\" in group %d, sort order %s", nybutikk.getButikknavn(), gruppe, rekkefolge);
+            var message = String.format("Failed to modify store \"%s\" in group %d, sort order %s", nybutikk.butikknavn(), gruppe, rekkefolge);
             logError(message, e);
             throw new HandleregException(message, e);
         }
@@ -432,11 +432,11 @@ public class HandleregServiceProvider implements HandleregService {
     @Override
     public List<Favoritt> leggTilFavoritt(NyFavoritt nyFavoritt) {
         try (var connection = datasource.getConnection()) {
-            var sisteRekkefolge = finnSisteRekkefolgeIBrukersFavoritter(connection, nyFavoritt.getBrukernavn());
+            var sisteRekkefolge = finnSisteRekkefolgeIBrukersFavoritter(connection, nyFavoritt.brukernavn());
             var sql = "insert into favourites (account_id, store_id, rekkefolge) values ((select account_id from accounts where username=?), ?, ?)";
             try (var statement = connection.prepareStatement(sql)) {
-                statement.setString(1, nyFavoritt.getBrukernavn());
-                statement.setInt(2, nyFavoritt.getButikk().getStoreId());
+                statement.setString(1, nyFavoritt.brukernavn());
+                statement.setInt(2, nyFavoritt.butikk().storeId());
                 statement.setInt(3, sisteRekkefolge + 1);
                 statement.executeUpdate();
             }
@@ -445,7 +445,7 @@ public class HandleregServiceProvider implements HandleregService {
             logError(message, e);
             throw new HandleregException(message, e);
         }
-        return finnFavoritter(nyFavoritt.getBrukernavn());
+        return finnFavoritter(nyFavoritt.brukernavn());
     }
 
     @Override
@@ -453,7 +453,7 @@ public class HandleregServiceProvider implements HandleregService {
         try (var connection = datasource.getConnection()) {
             var sql = "delete from favourites where favourite_id=?";
             try (var statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, skalSlettes.getFavouriteid());
+                statement.setInt(1, skalSlettes.favouriteid());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -461,7 +461,7 @@ public class HandleregServiceProvider implements HandleregService {
             logError(message, e);
             throw new HandleregException(message, e);
         }
-        return finnFavoritterMedAccountid(skalSlettes.getAccountid());
+        return finnFavoritterMedAccountid(skalSlettes.accountid());
     }
 
     @Override
@@ -469,13 +469,13 @@ public class HandleregServiceProvider implements HandleregService {
         try (var connection = datasource.getConnection()) {
             var sql = "update favourites set rekkefolge=? where favourite_id=?";
             try (var flipstatement1 = connection.prepareStatement(sql)) {
-                flipstatement1.setInt(1, parSomSkalBytteRekkfolge.getAndre().getRekkefolge());
-                flipstatement1.setInt(2, parSomSkalBytteRekkfolge.getForste().getFavouriteid());
+                flipstatement1.setInt(1, parSomSkalBytteRekkfolge.andre().rekkefolge());
+                flipstatement1.setInt(2, parSomSkalBytteRekkfolge.forste().favouriteid());
                 flipstatement1.executeUpdate();
             }
             try (var flipstatement2 = connection.prepareStatement(sql)) {
-                flipstatement2.setInt(1, parSomSkalBytteRekkfolge.getForste().getRekkefolge());
-                flipstatement2.setInt(2, parSomSkalBytteRekkfolge.getAndre().getFavouriteid());
+                flipstatement2.setInt(1, parSomSkalBytteRekkfolge.forste().rekkefolge());
+                flipstatement2.setInt(2, parSomSkalBytteRekkfolge.andre().favouriteid());
                 flipstatement2.executeUpdate();
             }
         } catch (SQLException e) {
@@ -483,7 +483,7 @@ public class HandleregServiceProvider implements HandleregService {
             logError(message, e);
             throw new HandleregException(message, e);
         }
-        return finnFavoritterMedAccountid(parSomSkalBytteRekkfolge.getForste().getAccountid());
+        return finnFavoritterMedAccountid(parSomSkalBytteRekkfolge.forste().accountid());
     }
 
     int finnNesteLedigeRekkefolgeForGruppe(int gruppe) {

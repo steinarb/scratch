@@ -95,7 +95,7 @@ class HandlingResourceTest {
             .handletidspunkt(new Date())
             .build();
         var oppdatertOversikt = resource.nyhandling(handling);
-        assertEquals(oversikt.getBalanse(), oppdatertOversikt.getBalanse());
+        assertEquals(oversikt.balanse(), oppdatertOversikt.balanse());
     }
 
     @Test

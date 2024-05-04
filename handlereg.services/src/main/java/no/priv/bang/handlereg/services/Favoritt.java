@@ -15,36 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class Favoritt extends Immutable {
-    private int favouriteid;
-    private int accountid;
-    private Butikk store;
-    private int rekkefolge;
-
-    private Favoritt() {}
-
-    public int getFavouriteid() {
-        return favouriteid;
-    }
-
-    public int getAccountid() {
-        return accountid;
-    }
-
-    public Butikk getStore() {
-        return store;
-    }
-
-    public int getRekkefolge() {
-        return rekkefolge;
-    }
-
-    @Override
-    public String toString() {
-        return "Favoritt [favouriteid=" + favouriteid + ", accountid=" + accountid + ", store=" + store + ", rekkefolge=" + rekkefolge + "]";
-    }
+public record Favoritt(int favouriteid, int accountid, Butikk store, int rekkefolge) {
 
     public static Builder with() {
         return new Builder();
@@ -59,12 +30,7 @@ public class Favoritt extends Immutable {
         private Builder() {}
 
         public Favoritt build() {
-            var favoritt = new Favoritt();
-            favoritt.favouriteid = this.favouriteid;
-            favoritt.accountid = this.accountid;
-            favoritt.store = this.store;
-            favoritt.rekkefolge = this.rekkefolge;
-            return favoritt;
+            return new Favoritt(favouriteid, accountid, store, this.rekkefolge);
         }
 
         public Builder favouriteid(int favouriteid) {

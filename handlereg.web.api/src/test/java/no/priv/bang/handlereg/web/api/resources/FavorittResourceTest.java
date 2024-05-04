@@ -74,7 +74,7 @@ class FavorittResourceTest {
             .isNotEmpty()
             .contains(favoritt2)
             .doesNotContain(favoritt1);
-        assertEquals(butikk, favoritter.get(0).getStore());
+        assertEquals(butikk, favoritter.get(0).store());
     }
 
     @Test

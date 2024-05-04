@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Steinar Bang
+ * Copyright 2021-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,25 +31,25 @@ class FavorittTest {
             .store(store)
             .rekkefolge(10)
             .build();
-        assertEquals(42, bean.getFavouriteid());
-        assertEquals(3, bean.getAccountid());
-        assertEquals(store, bean.getStore());
-        assertEquals(10, bean.getRekkefolge());
+        assertEquals(42, bean.favouriteid());
+        assertEquals(3, bean.accountid());
+        assertEquals(store, bean.store());
+        assertEquals(10, bean.rekkefolge());
     }
 
     @Test
     void testNoArgs() {
         var bean = Favoritt.with().build();
-        assertEquals(-1, bean.getFavouriteid());
-        assertEquals(-1, bean.getAccountid());
-        assertNull(bean.getStore());
-        assertEquals(-1, bean.getRekkefolge());
+        assertEquals(-1, bean.favouriteid());
+        assertEquals(-1, bean.accountid());
+        assertNull(bean.store());
+        assertEquals(-1, bean.rekkefolge());
     }
 
     @Test
     void testToString() {
         var bean = Favoritt.with().build();
-        assertThat(bean.toString()).startsWith("Favoritt [");
+        assertThat(bean.toString()).startsWith("Favoritt[");
     }
 
 }

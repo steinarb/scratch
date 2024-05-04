@@ -15,25 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
-public class ButikkCount {
-
-    private Butikk butikk;
-    private long count;
-
-    private ButikkCount() {}
-
-    public Butikk getButikk() {
-        return butikk;
-    }
-
-    public long getCount() {
-        return count;
-    }
-
-    @Override
-    public String toString() {
-        return "ButikkCount [butikk=" + butikk + ", count=" + count + "]";
-    }
+public record ButikkCount(Butikk butikk, long count) {
 
     public static Builder with() {
         return new Builder();
@@ -46,10 +28,7 @@ public class ButikkCount {
         private Builder() {}
 
         public ButikkCount build() {
-            var butikkCount = new ButikkCount();
-            butikkCount.butikk = this.butikk;
-            butikkCount.count = this.count;
-            return butikkCount;
+            return new ButikkCount(butikk, count);
         }
 
         public Builder butikk(Butikk butikk) {

@@ -38,27 +38,27 @@ class NyHandlingTest {
             .belop(belop)
             .handletidspunkt(now)
             .build();
-        assertEquals(username, bean.getUsername());
-        assertEquals(accountid, bean.getAccountid());
-        assertEquals(storeId, bean.getStoreId());
-        assertEquals(belop, bean.getBelop(), 1.0);
-        assertEquals(now, bean.getHandletidspunkt());
+        assertEquals(username, bean.username());
+        assertEquals(accountid, bean.accountid());
+        assertEquals(storeId, bean.storeId());
+        assertEquals(belop, bean.belop(), 1.0);
+        assertEquals(now, bean.handletidspunkt());
     }
 
     @Test
     void testNoArgsConstructor() {
         var bean = NyHandling.with().build();
-        assertNull(bean.getUsername());
-        assertEquals(-1, bean.getAccountid());
-        assertEquals(-1, bean.getStoreId());
-        assertEquals(0.0, bean.getBelop(), 1.0);
-        assertNull(bean.getHandletidspunkt());
+        assertNull(bean.username());
+        assertEquals(-1, bean.accountid());
+        assertEquals(-1, bean.storeId());
+        assertEquals(0.0, bean.belop(), 1.0);
+        assertNull(bean.handletidspunkt());
     }
 
     @Test
     void testToString() {
         var bean = NyHandling.with().build();
-        assertThat(bean.toString()).startsWith("NyHandling [");
+        assertThat(bean.toString()).startsWith("NyHandling[");
     }
 
 }

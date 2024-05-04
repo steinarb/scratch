@@ -17,40 +17,7 @@ package no.priv.bang.handlereg.services;
 
 import java.util.Date;
 
-public class NyHandling {
-
-    private String username;
-    private int accountid;
-    private int storeId;
-    private double belop;
-    private Date handletidspunkt;
-
-    private NyHandling() {}
-
-    public String getUsername() {
-        return username;
-    }
-
-    public int getAccountid() {
-        return accountid;
-    }
-
-    public int getStoreId() {
-        return storeId;
-    }
-
-    public double getBelop() {
-        return belop;
-    }
-
-    public Date getHandletidspunkt() {
-        return handletidspunkt;
-    }
-
-    @Override
-    public String toString() {
-        return "NyHandling [username=" + username + ", accountid=" + accountid + ", storeId=" + storeId + ", belop=" + belop + ", handletidspunkt=" + handletidspunkt + "]";
-    }
+public record NyHandling(String username, int accountid, int storeId, double belop, Date handletidspunkt) {
 
     public static Builder with() {
         return new Builder();
@@ -66,13 +33,7 @@ public class NyHandling {
         private Builder() {}
 
         public NyHandling build() {
-            var nyHandling = new NyHandling();
-            nyHandling.username = this.username;
-            nyHandling.accountid = this.accountid;
-            nyHandling.storeId = this.storeId;
-            nyHandling.belop = this.belop;
-            nyHandling.handletidspunkt = this.handletidspunkt;
-            return nyHandling;
+            return new NyHandling(username, accountid, storeId, belop, handletidspunkt);
         }
 
         public Builder username(String username) {

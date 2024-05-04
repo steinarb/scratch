@@ -29,10 +29,10 @@ class ButikkTest {
         int gruppe = 2;
         int rekkefolge = 140;
         Butikk bean = Butikk.with().storeId(storeId).butikknavn(storeName).gruppe(gruppe).rekkefolge(rekkefolge).build();
-        assertEquals(storeId, bean.getStoreId());
-        assertEquals(storeName, bean.getButikknavn());
-        assertEquals(gruppe, bean.getGruppe());
-        assertEquals(rekkefolge, bean.getRekkefolge());
+        assertEquals(storeId, bean.storeId());
+        assertEquals(storeName, bean.butikknavn());
+        assertEquals(gruppe, bean.gruppe());
+        assertEquals(rekkefolge, bean.rekkefolge());
     }
 
     @Test
@@ -43,10 +43,10 @@ class ButikkTest {
         int rekkefolge = 140;
         Butikk bean = Butikk.with().storeId(storeId).butikknavn(storeName).gruppe(gruppe).rekkefolge(rekkefolge).build();
         Butikk copy = Butikk.with(bean).build();
-        assertEquals(storeId, copy.getStoreId());
-        assertEquals(storeName, copy.getButikknavn());
-        assertEquals(gruppe, copy.getGruppe());
-        assertEquals(rekkefolge, copy.getRekkefolge());
+        assertEquals(storeId, copy.storeId());
+        assertEquals(storeName, copy.butikknavn());
+        assertEquals(gruppe, copy.gruppe());
+        assertEquals(rekkefolge, copy.rekkefolge());
     }
 
     @Test
@@ -55,31 +55,31 @@ class ButikkTest {
         int gruppe = 2;
         int rekkefolge = 140;
         Butikk bean = Butikk.with().butikknavn(storeName).gruppe(gruppe).rekkefolge(rekkefolge).build();
-        assertEquals(storeName, bean.getButikknavn());
-        assertEquals(gruppe, bean.getGruppe());
-        assertEquals(rekkefolge, bean.getRekkefolge());
+        assertEquals(storeName, bean.butikknavn());
+        assertEquals(gruppe, bean.gruppe());
+        assertEquals(rekkefolge, bean.rekkefolge());
     }
 
     @Test
     void testNameOnlyConstructor() {
         String storeName = "Spar fjelheimen";
         Butikk bean = Butikk.with().butikknavn(storeName).build();
-        assertEquals(storeName, bean.getButikknavn());
+        assertEquals(storeName, bean.butikknavn());
     }
 
     @Test
     void testNoArgsConstructor() {
         Butikk bean = Butikk.with().build();
-        assertEquals(-1, bean.getStoreId());
-        assertNull(bean.getButikknavn());
-        assertEquals(0, bean.getGruppe());
-        assertEquals(0, bean.getRekkefolge());
+        assertEquals(-1, bean.storeId());
+        assertNull(bean.butikknavn());
+        assertEquals(0, bean.gruppe());
+        assertEquals(0, bean.rekkefolge());
     }
 
     @Test
     void testToString() {
         Butikk bean = Butikk.with().build();
-        assertThat(bean.toString()).startsWith("Butikk [");
+        assertThat(bean.toString()).startsWith("Butikk[");
     }
 
 }

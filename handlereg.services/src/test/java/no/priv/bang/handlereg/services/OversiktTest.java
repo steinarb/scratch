@@ -36,25 +36,25 @@ class OversiktTest {
             .lastTransactionAmount(92.0)
             .lastTransactionStore(1)
             .build();
-        assertEquals(1, bean.getAccountid());
-        assertEquals("jad", bean.getBrukernavn());
-        assertEquals("janedoe21@gmail.com", bean.getEmail());
-        assertEquals("Jane", bean.getFornavn());
-        assertEquals("Doe", bean.getEtternavn());
-        assertEquals(1041.0, bean.getBalanse(), 0.1);
-        assertEquals(8900, bean.getSumPreviousMonth());
-        assertEquals(310, bean.getSumThisMonth());
-        assertThat(bean.toString()).startsWith("Oversikt [");
+        assertEquals(1, bean.accountid());
+        assertEquals("jad", bean.brukernavn());
+        assertEquals("janedoe21@gmail.com", bean.email());
+        assertEquals("Jane", bean.fornavn());
+        assertEquals("Doe", bean.etternavn());
+        assertEquals(1041.0, bean.balanse(), 0.1);
+        assertEquals(8900, bean.sumPreviousMonth());
+        assertEquals(310, bean.sumThisMonth());
+        assertThat(bean.toString()).startsWith("Oversikt[");
     }
 
     @Test
     void testAllValuesNoargsConstructor() {
         var bean = Oversikt.with().build();
-        assertEquals(-1, bean.getAccountid());
-        assertNull(bean.getBrukernavn());
-        assertNull(bean.getFornavn());
-        assertNull(bean.getEtternavn());
-        assertEquals(0.0, bean.getBalanse(), 0.1);
+        assertEquals(-1, bean.accountid());
+        assertNull(bean.brukernavn());
+        assertNull(bean.fornavn());
+        assertNull(bean.brukernavn());
+        assertEquals(0.0, bean.balanse(), 0.1);
     }
 
 }

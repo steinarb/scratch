@@ -17,40 +17,7 @@ package no.priv.bang.handlereg.services;
 
 import java.util.Date;
 
-public class Transaction {
-    private int transactionId;
-    private Date handletidspunkt;
-    private String butikk;
-    private int storeId;
-    private double belop;
-
-    private Transaction() {}
-
-    public int getTransactionId() {
-        return transactionId;
-    }
-
-    public Date getHandletidspunkt() {
-        return handletidspunkt;
-    }
-
-    public String getButikk() {
-        return butikk;
-    }
-
-    public int getStoreId() {
-        return storeId;
-    }
-
-    public double getBelop() {
-        return belop;
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction [transactionId=" + transactionId + ", handletidspunkt=" + handletidspunkt + ", butikk="
-            + butikk + ", storeId=" + storeId + ", belop=" + belop + "]";
-    }
+public record Transaction(int transactionId, Date handletidspunkt, String butikk, int storeId, double belop) {
 
     public static Builder with() {
         return new Builder();
@@ -66,13 +33,7 @@ public class Transaction {
         private Builder() {}
 
         public Transaction build() {
-            var transaction = new Transaction();
-            transaction.transactionId = this.transactionId;
-            transaction.handletidspunkt = this.handletidspunkt;
-            transaction.butikk = this.butikk;
-            transaction.storeId = this.storeId;
-            transaction.belop = this.belop;
-            return transaction;
+            return new Transaction(transactionId, handletidspunkt, butikk, storeId, belop);
         }
 
         public Builder transactionId(int transactionId) {

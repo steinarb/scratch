@@ -15,30 +15,10 @@
  */
 package no.priv.bang.handlereg.services;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class Favorittpar extends Immutable {
-
-    private Favoritt forste;
-    private Favoritt andre;
-
-    private Favorittpar() {}
+public record Favorittpar(Favoritt forste, Favoritt andre) {
 
     public static Builder with() {
         return new Builder();
-    }
-
-    public Favoritt getForste() {
-        return forste;
-    }
-
-    public Favoritt getAndre() {
-        return andre;
-    }
-
-    @Override
-    public String toString() {
-        return "Favorittpar [forste=" + forste + ", andre=" + andre + "]";
     }
 
     public static class Builder {
@@ -49,10 +29,7 @@ public class Favorittpar extends Immutable {
         private Builder() {}
 
         public Favorittpar build() {
-            var favorittpar = new Favorittpar();
-            favorittpar.forste = this.forste;
-            favorittpar.andre = this.andre;
-            return favorittpar;
+            return new Favorittpar(forste, andre);
         }
 
         public Builder forste(Favoritt forste) {

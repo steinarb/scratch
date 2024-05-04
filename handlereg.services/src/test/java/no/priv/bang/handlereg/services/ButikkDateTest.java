@@ -29,21 +29,21 @@ class ButikkDateTest {
         var butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
         var date = new Date();
         var bean = ButikkDate.with().butikk(butikk).date(date).build();
-        assertEquals(butikk, bean.getButikk());
-        assertEquals(date, bean.getDate());
+        assertEquals(butikk, bean.butikk());
+        assertEquals(date, bean.date());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = ButikkDate.with().build();
-        assertNull(bean.getButikk());
-        assertNull(bean.getDate());
+        assertNull(bean.butikk());
+        assertNull(bean.date());
     }
 
     @Test
     void testToString() {
         var bean = ButikkDate.with().build();
-        assertThat(bean.toString()).startsWith("ButikkDate [");
+        assertThat(bean.toString()).startsWith("ButikkDate[");
     }
 
 }

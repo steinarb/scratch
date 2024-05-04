@@ -15,27 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class NyFavoritt extends Immutable {
-
-    private String brukernavn;
-    private Butikk butikk;
-
-    private NyFavoritt() {}
-
-    public String getBrukernavn() {
-        return brukernavn;
-    }
-
-    public Butikk getButikk() {
-        return butikk;
-    }
-
-    @Override
-    public String toString() {
-        return "NyFavoritt [brukernavn=" + brukernavn + ", butikk=" + butikk + "]";
-    }
+public record NyFavoritt(String brukernavn, Butikk butikk) {
 
     public static Builder with() {
         return new Builder();
@@ -49,10 +29,7 @@ public class NyFavoritt extends Immutable {
         private Builder() {}
 
         public NyFavoritt build() {
-            var favorittOgBrukernavn = new NyFavoritt();
-            favorittOgBrukernavn.brukernavn = this.brukernavn;
-            favorittOgBrukernavn.butikk = this.butikk;
-            return favorittOgBrukernavn;
+            return new NyFavoritt(brukernavn, butikk);
         }
 
         public Builder brukernavn(String brukernavn) {

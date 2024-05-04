@@ -36,26 +36,26 @@ class LoginresultatTest {
             .authorized(authorized)
             .originalRequestUrl(originalRequestUrl)
             .build();
-        assertTrue(bean.getSuksess());
-        assertEquals(feilmelding, bean.getFeilmelding());
-        assertTrue(bean.isAuthorized());
-        assertEquals(originalRequestUrl, bean.getOriginalRequestUrl());
-        assertEquals(brukernavn, bean.getBrukernavn());
+        assertTrue(bean.suksess());
+        assertEquals(feilmelding, bean.feilmelding());
+        assertTrue(bean.authorized());
+        assertEquals(originalRequestUrl, bean.originalRequestUrl());
+        assertEquals(brukernavn, bean.brukernavn());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = Loginresultat.with().build();
-        assertFalse(bean.getSuksess());
-        assertNull(bean.getFeilmelding());
-        assertFalse(bean.isAuthorized());
-        assertNull(bean.getOriginalRequestUrl());
+        assertFalse(bean.suksess());
+        assertNull(bean.feilmelding());
+        assertFalse(bean.authorized());
+        assertNull(bean.originalRequestUrl());
     }
 
     @Test
     void testToString() {
         var bean = Loginresultat.with().build();
-        assertThat(bean.toString()).startsWith("Loginresultat [");
+        assertThat(bean.toString()).startsWith("Loginresultat[");
     }
 
 }

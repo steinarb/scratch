@@ -17,25 +17,7 @@ package no.priv.bang.handlereg.services;
 
 import java.util.Date;
 
-public class ButikkDate {
-
-    private Butikk butikk;
-    private Date date;
-
-    private ButikkDate() {}
-
-    public Butikk getButikk() {
-        return butikk;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    @Override
-    public String toString() {
-        return "ButikkDate [butikk=" + butikk + ", date=" + date + "]";
-    }
+public record ButikkDate(Butikk butikk, Date date) {
 
     public static Builder with() {
         return new Builder();
@@ -48,10 +30,7 @@ public class ButikkDate {
         private Builder() {}
 
         public ButikkDate build() {
-            var butikkDate = new ButikkDate();
-            butikkDate.butikk = this.butikk;
-            butikkDate.date = this.date;
-            return butikkDate;
+            return new ButikkDate(butikk, date);
         }
 
         public Builder butikk(Butikk butikk) {

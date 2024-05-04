@@ -27,21 +27,21 @@ class ButikkCountTest {
         var butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
         long count = 2345;
         var bean = ButikkCount.with().butikk(butikk).count(count).build();
-        assertEquals(butikk, bean.getButikk());
-        assertEquals(count, bean.getCount());
+        assertEquals(butikk, bean.butikk());
+        assertEquals(count, bean.count());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = ButikkCount.with().build();
-        assertNull(bean.getButikk());
-        assertEquals(0, bean.getCount());
+        assertNull(bean.butikk());
+        assertEquals(0, bean.count());
     }
 
     @Test
     void testToString() {
         var bean = ButikkCount.with().build();
-        assertThat(bean.toString()).startsWith("ButikkCount [");
+        assertThat(bean.toString()).startsWith("ButikkCount[");
     }
 
 }

@@ -15,25 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
-public class ButikkSum {
-
-    private Butikk butikk;
-    private double sum;
-
-    private ButikkSum() {}
-
-    public Butikk getButikk() {
-        return butikk;
-    }
-
-    public double getSum() {
-        return sum;
-    }
-
-    @Override
-    public String toString() {
-        return "ButikkSum [butikk=" + butikk + ", sum=" + sum + "]";
-    }
+public record ButikkSum(Butikk butikk, double sum) {
 
     public static Builder with() {
         return new Builder();
@@ -46,10 +28,7 @@ public class ButikkSum {
         private Builder() {}
 
         public ButikkSum build() {
-            var butikkSum = new ButikkSum();
-            butikkSum.butikk = this.butikk;
-            butikkSum.sum = this.sum;
-            return butikkSum;
+            return new ButikkSum(butikk, sum);
         }
 
         public Builder butikk(Butikk butikk) {

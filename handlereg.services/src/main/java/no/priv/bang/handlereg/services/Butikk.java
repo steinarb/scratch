@@ -15,37 +15,7 @@
  */
 package no.priv.bang.handlereg.services;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class Butikk extends Immutable {
-
-    private int storeId;
-    private String butikknavn;
-    private int gruppe;
-    private int rekkefolge;
-
-    private Butikk() {}
-
-    public int getStoreId() {
-        return storeId;
-    }
-
-    public String getButikknavn() {
-        return butikknavn;
-    }
-
-    public int getGruppe() {
-        return gruppe;
-    }
-
-    public int getRekkefolge() {
-        return rekkefolge;
-    }
-
-    @Override
-    public String toString() {
-        return "Butikk [storeId=" + storeId + ", butikknavn=" + butikknavn + ", gruppe=" + gruppe + ", rekkefolge=" + rekkefolge + "]";
-    }
+public record Butikk(int storeId, String butikknavn, int gruppe, int rekkefolge) {
 
     public static Builder with() {
         return new Builder();
@@ -68,12 +38,7 @@ public class Butikk extends Immutable {
         private int rekkefolge;
 
         public Butikk build() {
-            var butikk = new Butikk();
-            butikk.storeId = this.storeId;
-            butikk.butikknavn = this.butikknavn;
-            butikk.gruppe = this.gruppe;
-            butikk.rekkefolge = this.rekkefolge;
-            return butikk;
+            return new Butikk(storeId, butikknavn, gruppe, rekkefolge);
         }
 
         public Builder storeId(int storeId) {

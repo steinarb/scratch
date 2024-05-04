@@ -53,9 +53,9 @@ class LoginResourceTest extends ShiroTestBase {
         WebUtils.saveRequest(httpRequest);
         var credentials = Credentials.with().username(username).password(password).build();
         var resultat = resource.login(credentials);
-        assertTrue(resultat.getSuksess());
-        assertEquals(username, resultat.getBrukernavn());
-        assertEquals("/", resultat.getOriginalRequestUrl());
+        assertTrue(resultat.suksess());
+        assertEquals(username, resultat.brukernavn());
+        assertEquals("/", resultat.originalRequestUrl());
     }
 
     @Test
@@ -74,9 +74,9 @@ class LoginResourceTest extends ShiroTestBase {
         WebUtils.saveRequest(httpRequest);
         var credentials = Credentials.with().username(username).password(password).build();
         var resultat = resource.login(credentials);
-        assertTrue(resultat.getSuksess());
-        assertEquals(username, resultat.getBrukernavn());
-        assertEquals("/statistikk", resultat.getOriginalRequestUrl());
+        assertTrue(resultat.suksess());
+        assertEquals(username, resultat.brukernavn());
+        assertEquals("/statistikk", resultat.originalRequestUrl());
     }
 
     @Test
@@ -95,9 +95,9 @@ class LoginResourceTest extends ShiroTestBase {
         WebUtils.saveRequest(httpRequest);
         var credentials = Credentials.with().username(username).password(password).build();
         var resultat = resource.login(credentials);
-        assertTrue(resultat.getSuksess());
-        assertEquals(username, resultat.getBrukernavn());
-        assertEquals("/", resultat.getOriginalRequestUrl());
+        assertTrue(resultat.suksess());
+        assertEquals(username, resultat.brukernavn());
+        assertEquals("/", resultat.originalRequestUrl());
     }
 
     @Test
@@ -132,9 +132,9 @@ class LoginResourceTest extends ShiroTestBase {
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var resultat = resource.login(credentials);
-        assertTrue(resultat.getSuksess());
-        assertEquals(username, resultat.getBrukernavn());
-        assertEquals("/", resultat.getOriginalRequestUrl());
+        assertTrue(resultat.suksess());
+        assertEquals(username, resultat.brukernavn());
+        assertEquals("/", resultat.originalRequestUrl());
     }
 
     @Test
@@ -147,8 +147,8 @@ class LoginResourceTest extends ShiroTestBase {
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var resultat = resource.login(credentials);
-        assertFalse(resultat.getSuksess());
-        assertThat(resultat.getFeilmelding()).startsWith("Feil passord");
+        assertFalse(resultat.suksess());
+        assertThat(resultat.feilmelding()).startsWith("Feil passord");
     }
 
     @Test
@@ -161,7 +161,7 @@ class LoginResourceTest extends ShiroTestBase {
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
         var resultat = resource.login(credentials);
-        assertThat(resultat.getFeilmelding()).startsWith("Ukjent konto");
+        assertThat(resultat.feilmelding()).startsWith("Ukjent konto");
     }
 
     @Test
@@ -175,9 +175,9 @@ class LoginResourceTest extends ShiroTestBase {
         assertTrue(subject.isAuthenticated()); // Verify precondition user logged in
 
         var loginresultat = resource.logout();
-        assertFalse(loginresultat.getSuksess());
-        assertEquals("Logget ut", loginresultat.getFeilmelding());
-        assertFalse(loginresultat.isAuthorized());
+        assertFalse(loginresultat.suksess());
+        assertEquals("Logget ut", loginresultat.feilmelding());
+        assertFalse(loginresultat.authorized());
         assertFalse(subject.isAuthenticated()); // Verify user has been logged out
     }
 
@@ -191,10 +191,10 @@ class LoginResourceTest extends ShiroTestBase {
         subject.login(token);
 
         var loginresultat = resource.logintilstand();
-        assertTrue(loginresultat.getSuksess());
-        assertEquals("Bruker er logget inn og har tilgang", loginresultat.getFeilmelding());
-        assertTrue(loginresultat.isAuthorized());
-        assertEquals(username, loginresultat.getBrukernavn());
+        assertTrue(loginresultat.suksess());
+        assertEquals("Bruker er logget inn og har tilgang", loginresultat.feilmelding());
+        assertTrue(loginresultat.authorized());
+        assertEquals(username, loginresultat.brukernavn());
     }
 
     @Test
@@ -207,9 +207,9 @@ class LoginResourceTest extends ShiroTestBase {
         subject.login(token);
 
         var loginresultat = resource.logintilstand();
-        assertTrue(loginresultat.getSuksess());
-        assertEquals("Bruker er logget inn men mangler tilgang", loginresultat.getFeilmelding());
-        assertFalse(loginresultat.isAuthorized());
+        assertTrue(loginresultat.suksess());
+        assertEquals("Bruker er logget inn men mangler tilgang", loginresultat.feilmelding());
+        assertFalse(loginresultat.authorized());
     }
 
     @Test
@@ -218,9 +218,9 @@ class LoginResourceTest extends ShiroTestBase {
         createSubjectAndBindItToThread();
 
         var loginresultat = resource.logintilstand();
-        assertFalse(loginresultat.getSuksess());
-        assertEquals("Bruker er ikke logget inn", loginresultat.getFeilmelding());
-        assertFalse(loginresultat.isAuthorized());
+        assertFalse(loginresultat.suksess());
+        assertEquals("Bruker er ikke logget inn", loginresultat.feilmelding());
+        assertFalse(loginresultat.authorized());
     }
 
 }

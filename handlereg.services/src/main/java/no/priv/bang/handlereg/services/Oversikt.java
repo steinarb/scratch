@@ -15,64 +15,18 @@
  */
 package no.priv.bang.handlereg.services;
 
-public class Oversikt {
-    private int accountid;
-    private String brukernavn;
-    private String email;
-    private String fornavn;
-    private String etternavn;
-    private double balanse;
-    private double sumPreviousMonth;
-    private double sumThisMonth;
-    private double lastTransactionAmount;
-    private int lastTransactionStore;
-
-    private Oversikt() {}
-
-    public int getAccountid() {
-        return accountid;
-    }
-
-    public String getBrukernavn() {
-        return brukernavn;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getFornavn() {
-        return fornavn;
-    }
-
-    public String getEtternavn() {
-        return etternavn;
-    }
-
-    public double getBalanse() {
-        return balanse;
-    }
-
-    public double getSumPreviousMonth() {
-        return sumPreviousMonth;
-    }
-
-    public double getSumThisMonth() {
-        return sumThisMonth;
-    }
-
-    public double getLastTransactionAmount() {
-        return lastTransactionAmount;
-    }
-
-    public int getLastTransactionStore() {
-        return lastTransactionStore;
-    }
-
-    @Override
-    public String toString() {
-        return "Oversikt [accountid=" + accountid + ", brukernavn=" + brukernavn + ", email=" + email + ", fornavn=" + fornavn + ", etternavn=" + etternavn + ", balanse=" + balanse + ", sumPreviousMonth=" + sumPreviousMonth + ", sumThisMonth=" + sumThisMonth + ", lastTransactionAmount=" + lastTransactionAmount + ", lastTransactionStore=" + lastTransactionStore + "]";
-    }
+public record Oversikt(
+    int accountid,
+    String brukernavn,
+    String email,
+    String fornavn,
+    String etternavn,
+    double balanse,
+    double sumPreviousMonth,
+    double sumThisMonth,
+    double lastTransactionAmount,
+    int lastTransactionStore)
+{
 
     public static Builder with() {
         return new Builder();
@@ -93,18 +47,17 @@ public class Oversikt {
         private Builder() {}
 
         public Oversikt build() {
-            var oversikt = new Oversikt();
-            oversikt.accountid = this.accountid;
-            oversikt.brukernavn = this.brukernavn;
-            oversikt.email = this.email;
-            oversikt.fornavn = this.fornavn;
-            oversikt.etternavn = this.etternavn;
-            oversikt.balanse = this.balanse;
-            oversikt.sumPreviousMonth = this.sumPreviousMonth;
-            oversikt.sumThisMonth = this.sumThisMonth;
-            oversikt.lastTransactionAmount = this.lastTransactionAmount;
-            oversikt.lastTransactionStore = this.lastTransactionStore;
-            return oversikt;
+            return new Oversikt(
+                accountid,
+                brukernavn,
+                email,
+                fornavn,
+                etternavn,
+                balanse,
+                sumPreviousMonth,
+                sumThisMonth,
+                lastTransactionAmount,
+                lastTransactionStore);
         }
 
         public Builder accountid(int accountid) {

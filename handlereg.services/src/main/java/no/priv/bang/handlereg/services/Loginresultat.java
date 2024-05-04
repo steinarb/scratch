@@ -15,40 +15,13 @@
  */
 package no.priv.bang.handlereg.services;
 
-public class Loginresultat {
-
-    private boolean suksess;
-    private String feilmelding;
-    private boolean authorized;
-    private String originalRequestUrl;
-    private String brukernavn;
-
-    private Loginresultat() {}
-
-    public boolean getSuksess() {
-        return suksess;
-    }
-
-    public String getFeilmelding() {
-        return feilmelding;
-    }
-
-    public boolean isAuthorized() {
-        return authorized;
-    }
-
-    public String getOriginalRequestUrl() {
-        return originalRequestUrl;
-    }
-
-    public String getBrukernavn() {
-        return brukernavn;
-    }
-
-    @Override
-    public String toString() {
-        return "Loginresultat [suksess=" + suksess + ", feilmelding=" + feilmelding + ", authorized=" + authorized + ", originalRequestUrl=" + originalRequestUrl + ", brukernavn=" + brukernavn + "]";
-    }
+public record Loginresultat(
+    boolean suksess,
+    String feilmelding,
+    boolean authorized,
+    String originalRequestUrl,
+    String brukernavn)
+{
 
     public static Builder with() {
         return new Builder();
@@ -64,13 +37,7 @@ public class Loginresultat {
         private Builder() {}
 
         public Loginresultat build() {
-            var loginresultat = new Loginresultat();
-            loginresultat.suksess = this.suksess;
-            loginresultat.feilmelding = this.feilmelding;
-            loginresultat.authorized = authorized;
-            loginresultat.originalRequestUrl = originalRequestUrl;
-            loginresultat.brukernavn = brukernavn;
-            return loginresultat;
+            return new Loginresultat(suksess, feilmelding, authorized, originalRequestUrl, brukernavn);
         }
 
         public Builder suksess(boolean suksess) {

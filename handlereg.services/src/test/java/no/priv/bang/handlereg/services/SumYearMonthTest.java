@@ -31,23 +31,23 @@ class SumYearMonthTest {
         var year = Year.of(2017);
         var month = Month.JULY;
         var bean = SumYearMonth.with().sum(sum).year(year).month(month).build();
-        assertEquals(sum, bean.getSum());
-        assertEquals(year, bean.getYear());
-        assertEquals(month, bean.getMonth());
+        assertEquals(sum, bean.sum());
+        assertEquals(year, bean.year());
+        assertEquals(month, bean.month());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = SumYearMonth.with().build();
-        assertEquals(0, bean.getSum());
-        assertNull(bean.getYear());
-        assertNull(bean.getMonth());
+        assertEquals(0, bean.sum());
+        assertNull(bean.year());
+        assertNull(bean.month());
     }
 
     @Test
     void testToString() {
         var bean = SumYearMonth.with().build();
-        assertThat(bean.toString()).startsWith("SumYearMonth [");
+        assertThat(bean.toString()).startsWith("SumYearMonth[");
     }
 
 }

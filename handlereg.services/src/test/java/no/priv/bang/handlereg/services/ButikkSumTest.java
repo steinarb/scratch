@@ -27,21 +27,21 @@ class ButikkSumTest {
         var butikk = Butikk.with().butikknavn("Spar Fjellheimen").build();
         var sum = 2345;
         var bean = ButikkSum.with().butikk(butikk).sum(sum).build();
-        assertEquals(butikk, bean.getButikk());
-        assertEquals(sum, bean.getSum());
+        assertEquals(butikk, bean.butikk());
+        assertEquals(sum, bean.sum());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = ButikkSum.with().build();
-        assertNull(bean.getButikk());
-        assertEquals(0, bean.getSum());
+        assertNull(bean.butikk());
+        assertEquals(0, bean.sum());
     }
 
     @Test
     void testToString() {
         var bean = ButikkSum.with().build();
-        assertThat(bean.toString()).startsWith("ButikkSum [");
+        assertThat(bean.toString()).startsWith("ButikkSum[");
     }
 
 }

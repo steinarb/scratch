@@ -30,14 +30,14 @@ class NyFavorittTest {
             .brukernavn(username)
             .butikk(butikk)
             .build();
-        assertEquals(username, bean.getBrukernavn());
-        assertEquals(butikk, bean.getButikk());
+        assertEquals(username, bean.brukernavn());
+        assertEquals(butikk, bean.butikk());
     }
 
     @Test
     void testToString() {
         var bean = NyFavoritt.with().build();
-        assertThat(bean.toString()).startsWith("NyFavoritt [");
+        assertThat(bean.toString()).startsWith("NyFavoritt[");
     }
 
 }

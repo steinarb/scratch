@@ -34,27 +34,27 @@ class TransactionTest {
             .storeId(101)
             .belop(107.0)
             .build();
-        assertEquals(1, bean.getTransactionId());
-        assertEquals(now, bean.getHandletidspunkt());
-        assertEquals("Spar fjellheimen", bean.getButikk());
-        assertEquals(101, bean.getStoreId());
-        assertEquals(107.0, bean.getBelop(), 1.0);
+        assertEquals(1, bean.transactionId());
+        assertEquals(now, bean.handletidspunkt());
+        assertEquals("Spar fjellheimen", bean.butikk());
+        assertEquals(101, bean.storeId());
+        assertEquals(107.0, bean.belop(), 1.0);
     }
 
     @Test
     void testCreateWithNoargsConstructor() {
         var bean = Transaction.with().build();
-        assertEquals(-1, bean.getTransactionId());
-        assertNull(bean.getHandletidspunkt());
-        assertNull(bean.getButikk());
-        assertEquals(-1, bean.getStoreId());
-        assertEquals(0.0, bean.getBelop(), 1.0);
+        assertEquals(-1, bean.transactionId());
+        assertNull(bean.handletidspunkt());
+        assertNull(bean.butikk());
+        assertEquals(-1, bean.storeId());
+        assertEquals(0.0, bean.belop(), 1.0);
     }
 
     @Test
     void testToString() {
         var bean = Transaction.with().build();
-        assertThat(bean.toString()).startsWith("Transaction [");
+        assertThat(bean.toString()).startsWith("Transaction[");
     }
 
 }
