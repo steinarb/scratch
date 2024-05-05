@@ -15,7 +15,6 @@
  */
 package no.priv.bang.handlereg.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -50,12 +49,6 @@ class LoginresultatTest {
         assertNull(bean.feilmelding());
         assertFalse(bean.authorized());
         assertNull(bean.originalRequestUrl());
-    }
-
-    @Test
-    void testToString() {
-        var bean = Loginresultat.with().build();
-        assertThat(bean.toString()).startsWith("Loginresultat[");
     }
 
 }

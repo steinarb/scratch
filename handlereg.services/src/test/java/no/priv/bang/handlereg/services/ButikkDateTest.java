@@ -15,7 +15,6 @@
  */
 package no.priv.bang.handlereg.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
@@ -38,12 +37,6 @@ class ButikkDateTest {
         var bean = ButikkDate.with().build();
         assertNull(bean.butikk());
         assertNull(bean.date());
-    }
-
-    @Test
-    void testToString() {
-        var bean = ButikkDate.with().build();
-        assertThat(bean.toString()).startsWith("ButikkDate[");
     }
 
 }

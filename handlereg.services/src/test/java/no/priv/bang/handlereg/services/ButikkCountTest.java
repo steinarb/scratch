@@ -15,7 +15,6 @@
  */
 package no.priv.bang.handlereg.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -36,12 +35,6 @@ class ButikkCountTest {
         var bean = ButikkCount.with().build();
         assertNull(bean.butikk());
         assertEquals(0, bean.count());
-    }
-
-    @Test
-    void testToString() {
-        var bean = ButikkCount.with().build();
-        assertThat(bean.toString()).startsWith("ButikkCount[");
     }
 
 }

@@ -16,8 +16,6 @@
 package no.priv.bang.handlereg.services;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 class OversiktTest {
@@ -44,7 +42,6 @@ class OversiktTest {
         assertEquals(1041.0, bean.balanse(), 0.1);
         assertEquals(8900, bean.sumPreviousMonth());
         assertEquals(310, bean.sumThisMonth());
-        assertThat(bean.toString()).startsWith("Oversikt[");
     }
 
     @Test

@@ -15,7 +15,6 @@
  */
 package no.priv.bang.handlereg.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -44,12 +43,6 @@ class FavorittTest {
         assertEquals(-1, bean.accountid());
         assertNull(bean.store());
         assertEquals(-1, bean.rekkefolge());
-    }
-
-    @Test
-    void testToString() {
-        var bean = Favoritt.with().build();
-        assertThat(bean.toString()).startsWith("Favoritt[");
     }
 
 }

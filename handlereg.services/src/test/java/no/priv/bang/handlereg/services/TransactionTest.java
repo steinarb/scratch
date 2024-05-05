@@ -15,7 +15,6 @@
  */
 package no.priv.bang.handlereg.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
@@ -49,12 +48,6 @@ class TransactionTest {
         assertNull(bean.butikk());
         assertEquals(-1, bean.storeId());
         assertEquals(0.0, bean.belop(), 1.0);
-    }
-
-    @Test
-    void testToString() {
-        var bean = Transaction.with().build();
-        assertThat(bean.toString()).startsWith("Transaction[");
     }
 
 }

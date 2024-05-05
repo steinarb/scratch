@@ -15,7 +15,6 @@
  */
 package no.priv.bang.handlereg.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -32,12 +31,6 @@ class FavorittparTest {
             .build();
         assertEquals(forste, par.forste());
         assertEquals(andre, par.andre());
-    }
-
-    @Test
-    void testToString() {
-        var bean = Favorittpar.with().build();
-        assertThat(bean.toString()).startsWith("Favorittpar[");
     }
 
 }

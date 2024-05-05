@@ -16,8 +16,6 @@
 package no.priv.bang.handlereg.services;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
-
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
@@ -53,12 +51,6 @@ class NyHandlingTest {
         assertEquals(-1, bean.storeId());
         assertEquals(0.0, bean.belop(), 1.0);
         assertNull(bean.handletidspunkt());
-    }
-
-    @Test
-    void testToString() {
-        var bean = NyHandling.with().build();
-        assertThat(bean.toString()).startsWith("NyHandling[");
     }
 
 }

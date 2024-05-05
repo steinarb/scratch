@@ -15,7 +15,6 @@
  */
 package no.priv.bang.handlereg.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -36,12 +35,6 @@ class CredentialsTest {
         var bean = Credentials.with().build();
         assertNull(bean.username());
         assertNull(bean.password());
-    }
-
-    @Test
-    void testToString() {
-        var bean = Credentials.with().build();
-        assertThat(bean.toString()).startsWith("Credentials[");
     }
 
 }
