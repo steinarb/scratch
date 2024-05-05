@@ -71,7 +71,7 @@ import liquibase.changelog.ChangeLogParameters;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
 import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
@@ -2167,7 +2167,7 @@ class OldAlbumServiceProviderTest {
                     Scope.Attr.resourceAccessor.name(), new MockResourceAccessor(contentByFileName));
 
                 Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database)
+                            .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database)
                             .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "dumproutes.sql")
                             .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
                             .execute());
