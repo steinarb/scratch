@@ -25,7 +25,7 @@ export default function StatistikkSumyearmonth() {
                         </thead>
                         <tbody>
                             {sumyearmonth.map((sym) =>
-                                              <tr key={'year' + sym.year}>
+                                              <tr key={'year' + sym.year + sym.month}>
                                                   <td className="border border-slate-300">{sym.year}</td>
                                                   <td className="border border-slate-300">{sym.month}</td>
                                                   <td className="border border-slate-300">{sym.sum}</td>
