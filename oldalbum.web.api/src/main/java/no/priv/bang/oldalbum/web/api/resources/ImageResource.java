@@ -60,7 +60,7 @@ public class ImageResource {
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public ImageMetadata getMetadata(ImageRequest imageRequest) {
-        return oldalbum.readMetadata(imageRequest.getUrl());
+        return oldalbum.readMetadata(imageRequest.url());
     }
 
     @GET
@@ -69,7 +69,7 @@ public class ImageResource {
     public Response downloadAlbumEntry(@PathParam("albumEntryId") int albumEntryId) {
         try {
             var entry = oldalbum.getAlbumEntry(albumEntryId).orElseThrow(() -> new OldAlbumException(String.format("Couldn't find album entry from id=%d", albumEntryId)));
-            var lastModified = Optional.ofNullable(entry.getLastModified()).orElse(new Date());
+            var lastModified = Optional.ofNullable(entry.lastModified()).orElse(new Date());
             var filename = findFilenameFromAlbumEntryPath(entry);
             var streamingOutput = oldalbum.downloadAlbumEntry(albumEntryId);
             return Response.ok(streamingOutput)
@@ -108,11 +108,11 @@ public class ImageResource {
     }
 
     String findFilenameFromAlbumEntryPath(AlbumEntry entry) {
-        if (entry.isAlbum()) {
-            return findFileNamePartOfUrl(entry.getPath()) + ".zip";
+        if (entry.album()) {
+            return findFileNamePartOfUrl(entry.path()) + ".zip";
         }
 
-        return findFileNamePartOfUrl(entry.getImageUrl());
+        return findFileNamePartOfUrl(entry.imageUrl());
     }
 
     String findFileNamePartOfUrl(String imageUrl) {

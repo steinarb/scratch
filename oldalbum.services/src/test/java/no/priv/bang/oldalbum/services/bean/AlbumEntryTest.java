@@ -15,7 +15,6 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Date;
@@ -58,41 +57,40 @@ class AlbumEntryTest {
             .groupByYear(groupByYear)
             .childcount(childcount)
             .build();
-        assertEquals(id, bean.getId());
-        assertEquals(parent, bean.getParent());
-        assertEquals(path, bean.getPath());
-        assertEquals(album, bean.isAlbum());
-        assertEquals(title, bean.getTitle());
-        assertEquals(description, bean.getDescription());
-        assertEquals(imageUrl, bean.getImageUrl());
-        assertEquals(thumbnailUrl, bean.getThumbnailUrl());
-        assertEquals(sort, bean.getSort());
-        assertEquals(childcount, bean.getChildcount());
-        assertEquals(lastmodified, bean.getLastModified());
-        assertEquals(contenttype, bean.getContentType());
-        assertEquals(contentlength, bean.getContentLength());
-        assertEquals(requirelogin, bean.isRequireLogin());
-        assertEquals(groupByYear, bean.getGroupByYear());
-        assertThat(bean.toString()).startsWith("AlbumEntry [id=");
+        assertEquals(id, bean.id());
+        assertEquals(parent, bean.parent());
+        assertEquals(path, bean.path());
+        assertEquals(album, bean.album());
+        assertEquals(title, bean.title());
+        assertEquals(description, bean.description());
+        assertEquals(imageUrl, bean.imageUrl());
+        assertEquals(thumbnailUrl, bean.thumbnailUrl());
+        assertEquals(sort, bean.sort());
+        assertEquals(childcount, bean.childcount());
+        assertEquals(lastmodified, bean.lastModified());
+        assertEquals(contenttype, bean.contentType());
+        assertEquals(contentlength, bean.contentLength());
+        assertEquals(requirelogin, bean.requireLogin());
+        assertEquals(groupByYear, bean.groupByYear());
     }
 
     @Test
     void testAlbumEntryNoArgsConstructor() {
         var bean = AlbumEntry.with().build();
-        assertEquals(-1, bean.getId());
-        assertNull(bean.getPath());
-        assertFalse(bean.isAlbum());
-        assertNull(bean.getTitle());
-        assertNull(bean.getDescription());
-        assertNull(bean.getImageUrl());
-        assertNull(bean.getThumbnailUrl());
-        assertEquals(0, bean.getSort());
-        assertEquals(0, bean.getChildcount());
-        assertNull(bean.getLastModified());
-        assertNull(bean.getContentType());
-        assertEquals(0, bean.getContentLength());
-        assertFalse(bean.isRequireLogin());
-        assertNull(bean.getGroupByYear());
+        assertEquals(-1, bean.id());
+        assertNull(bean.path());
+        assertFalse(bean.album());
+        assertNull(bean.title());
+        assertNull(bean.description());
+        assertNull(bean.imageUrl());
+        assertNull(bean.thumbnailUrl());
+        assertEquals(0, bean.sort());
+        assertEquals(0, bean.childcount());
+        assertNull(bean.lastModified());
+        assertNull(bean.contentType());
+        assertEquals(0, bean.contentLength());
+        assertFalse(bean.requireLogin());
+        assertNull(bean.groupByYear());
     }
 
     @Test
@@ -115,21 +113,21 @@ class AlbumEntryTest {
             .childcount(4)
             .build();
         var bean = AlbumEntry.with(originalBean).build();
-        assertEquals(originalBean.getId(), bean.getId());
-        assertEquals(originalBean.getParent(), bean.getParent());
-        assertEquals(originalBean.getPath(), bean.getPath());
-        assertEquals(originalBean.isAlbum(), bean.isAlbum());
-        assertEquals(originalBean.getTitle(), bean.getTitle());
-        assertEquals(originalBean.getDescription(), bean.getDescription());
-        assertEquals(originalBean.getImageUrl(), bean.getImageUrl());
-        assertEquals(originalBean.getThumbnailUrl(), bean.getThumbnailUrl());
-        assertEquals(originalBean.getSort(), bean.getSort());
-        assertEquals(originalBean.getChildcount(), bean.getChildcount());
-        assertEquals(originalBean.getLastModified(), bean.getLastModified());
-        assertEquals(originalBean.getContentType(), bean.getContentType());
-        assertEquals(originalBean.getContentLength(), bean.getContentLength());
-        assertEquals(originalBean.isRequireLogin(), bean.isRequireLogin());
-        assertEquals(originalBean.getGroupByYear(), bean.getGroupByYear());
+        assertEquals(originalBean.id(), bean.id());
+        assertEquals(originalBean.parent(), bean.parent());
+        assertEquals(originalBean.path(), bean.path());
+        assertEquals(originalBean.album(), bean.album());
+        assertEquals(originalBean.title(), bean.title());
+        assertEquals(originalBean.description(), bean.description());
+        assertEquals(originalBean.imageUrl(), bean.imageUrl());
+        assertEquals(originalBean.thumbnailUrl(), bean.thumbnailUrl());
+        assertEquals(originalBean.sort(), bean.sort());
+        assertEquals(originalBean.childcount(), bean.childcount());
+        assertEquals(originalBean.lastModified(), bean.lastModified());
+        assertEquals(originalBean.contentType(), bean.contentType());
+        assertEquals(originalBean.contentLength(), bean.contentLength());
+        assertEquals(originalBean.requireLogin(), bean.requireLogin());
+        assertEquals(originalBean.groupByYear(), bean.groupByYear());
     }
 
 }

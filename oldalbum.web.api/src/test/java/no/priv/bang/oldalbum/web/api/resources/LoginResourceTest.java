@@ -59,9 +59,9 @@ class LoginResourceTest extends ShiroTestBase {
         resource.login(locale, credentials); // Ensure user is logged in
 
         var result = resource.loginCheck();
-        assertTrue(result.getSuccess());
-        assertTrue(result.isCanModifyAlbum());
-        assertTrue(result.isCanLogin());
+        assertTrue(result.success());
+        assertTrue(result.canModifyAlbum());
+        assertTrue(result.canLogin());
     }
 
     @Test
@@ -76,8 +76,8 @@ class LoginResourceTest extends ShiroTestBase {
         createSubjectAndBindItToThread();
 
         var result = resource.loginCheck();
-        assertFalse(result.getSuccess());
-        assertFalse(result.isCanModifyAlbum());
+        assertFalse(result.success());
+        assertFalse(result.canModifyAlbum());
     }
 
     @Test
@@ -90,9 +90,9 @@ class LoginResourceTest extends ShiroTestBase {
         createSubjectAndBindItToThread();
 
         var result = resource.loginCheck();
-        assertFalse(result.getSuccess());
-        assertFalse(result.isCanModifyAlbum());
-        assertFalse(result.isCanLogin());
+        assertFalse(result.success());
+        assertFalse(result.canModifyAlbum());
+        assertFalse(result.canLogin());
     }
 
     @Test
@@ -110,9 +110,9 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "";
         var result = resource.login(locale, credentials);
-        assertTrue(result.getSuccess());
-        assertTrue(result.isCanModifyAlbum());
-        assertNull(result.getOriginalRequestUri());
+        assertTrue(result.success());
+        assertTrue(result.canModifyAlbum());
+        assertNull(result.originalRequestUri());
     }
 
     @Test
@@ -140,9 +140,9 @@ class LoginResourceTest extends ShiroTestBase {
 
         var locale = "";
         var result = resource.login(locale, credentials);
-        assertTrue(result.getSuccess());
-        assertTrue(result.isCanModifyAlbum());
-        assertEquals("/slides/", result.getOriginalRequestUri());
+        assertTrue(result.success());
+        assertTrue(result.canModifyAlbum());
+        assertEquals("/slides/", result.originalRequestUri());
     }
 
     @Test
@@ -169,15 +169,15 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
 
         var clearRequestResult = resource.clearOriginalRequestUrl();
-        assertFalse(clearRequestResult.getSuccess());
-        assertFalse(clearRequestResult.isCanModifyAlbum());
-        assertNull(clearRequestResult.getOriginalRequestUri());
+        assertFalse(clearRequestResult.success());
+        assertFalse(clearRequestResult.canModifyAlbum());
+        assertNull(clearRequestResult.originalRequestUri());
 
         var locale = "";
         var result = resource.login(locale, credentials);
-        assertTrue(result.getSuccess());
-        assertTrue(result.isCanModifyAlbum());
-        assertNull(result.getOriginalRequestUri());
+        assertTrue(result.success());
+        assertTrue(result.canModifyAlbum());
+        assertNull(result.originalRequestUri());
     }
 
     @Test
@@ -195,8 +195,8 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "";
         var result = resource.login(locale, credentials);
-        assertTrue(result.getSuccess());
-        assertFalse(result.isCanModifyAlbum());
+        assertTrue(result.success());
+        assertFalse(result.canModifyAlbum());
     }
 
     @Test
@@ -216,8 +216,8 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "en_GB";
         var result = resource.login(locale, credentials);
-        assertFalse(result.getSuccess());
-        assertThat(result.getErrormessage()).startsWith("Wrong password");
+        assertFalse(result.success());
+        assertThat(result.errormessage()).startsWith("Wrong password");
     }
 
     @Test
@@ -237,7 +237,7 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "en_GB";
         var result = resource.login(locale, credentials);
-        assertThat(result.getErrormessage()).startsWith("Unknown account");
+        assertThat(result.errormessage()).startsWith("Unknown account");
     }
 
     @Test
@@ -257,7 +257,7 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "en_GB";
         var result = resource.login(locale, credentials);
-        assertThat(result.getErrormessage()).startsWith("Locked account");
+        assertThat(result.errormessage()).startsWith("Locked account");
     }
 
     @Test
@@ -281,7 +281,7 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "en_GB";
         var result = resource.login(locale, credentials);
-        assertThat(result.getErrormessage()).startsWith("Unknown login error");
+        assertThat(result.errormessage()).startsWith("Unknown login error");
     }
 
     @Test
@@ -326,9 +326,9 @@ class LoginResourceTest extends ShiroTestBase {
         var credentials = Credentials.with().username(username).password(password).build();
         var locale = "";
         var resultLogin = resource.login(locale, credentials);
-        assertTrue(resultLogin.getSuccess());
+        assertTrue(resultLogin.success());
         var resultLogout = resource.logout(credentials);
-        assertFalse(resultLogout.getSuccess());
+        assertFalse(resultLogout.success());
     }
 
 }

@@ -15,17 +15,7 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class ImageRequest extends Immutable { // NOSONAR Immutable handles added fields
-
-    private String url;
-
-    private ImageRequest() {}
-
-    public String getUrl() {
-        return url;
-    }
+public record ImageRequest(String url) {
 
     public static Builder with() {
         return new Builder();
@@ -37,9 +27,7 @@ public class ImageRequest extends Immutable { // NOSONAR Immutable handles added
         private Builder() {}
 
         public ImageRequest build() {
-            var imageRequest = new ImageRequest();
-            imageRequest.url = this.url;
-            return imageRequest;
+            return new ImageRequest(url);
         }
 
         public Builder url(String url) {

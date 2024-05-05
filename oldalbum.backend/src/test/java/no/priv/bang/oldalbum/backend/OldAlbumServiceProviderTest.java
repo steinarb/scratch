@@ -213,7 +213,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
         var entry = provider.getAlbumEntryFromPath("/moto/places/");
-        assertEquals(3, entry.getId());
+        assertEquals(3, entry.id());
     }
 
     @Test
@@ -304,10 +304,10 @@ class OldAlbumServiceProviderTest {
             .requireLogin(true)
             .build();
         var allroutes = provider.updateEntry(modifiedAlbum);
-        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
-        assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
-        assertEquals(modifiedAlbum.isRequireLogin(), updatedAlbum.isRequireLogin());
+        var updatedAlbum = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertEquals(modifiedAlbum.title(), updatedAlbum.title());
+        assertEquals(modifiedAlbum.description(), updatedAlbum.description());
+        assertEquals(modifiedAlbum.requireLogin(), updatedAlbum.requireLogin());
     }
 
     @Test
@@ -318,7 +318,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
 
-        var originalPicture = provider.fetchAllRoutes(null, false).stream().filter(r -> r.getId() == 5).findFirst().get();
+        var originalPicture = provider.fetchAllRoutes(null, false).stream().filter(r -> r.id() == 5).findFirst().get();
         var modifiedTitle = "New picture title";
         var modifiedDescription = "This is an updated description";
         var modifiedDate = Date.from(LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC));
@@ -330,11 +330,11 @@ class OldAlbumServiceProviderTest {
             .requireLogin(requireLogin)
             .build();
         var allroutes = provider.updateEntry(modifiedPicture);
-        var updatedPicture = allroutes.stream().filter(r -> r.getId() == 5).findFirst().get();
-        assertEquals(modifiedTitle, updatedPicture.getTitle());
-        assertEquals(modifiedDescription, updatedPicture.getDescription());
-        assertEquals(modifiedDate, updatedPicture.getLastModified());
-        assertEquals(requireLogin, updatedPicture.isRequireLogin());
+        var updatedPicture = allroutes.stream().filter(r -> r.id() == 5).findFirst().get();
+        assertEquals(modifiedTitle, updatedPicture.title());
+        assertEquals(modifiedDescription, updatedPicture.description());
+        assertEquals(modifiedDate, updatedPicture.lastModified());
+        assertEquals(requireLogin, updatedPicture.requireLogin());
     }
 
     @Test
@@ -347,20 +347,20 @@ class OldAlbumServiceProviderTest {
         provider.activate(Collections.emptyMap());
 
         var allroutes = provider.fetchAllRoutes(null, true);
-        var protectedAlbums = allroutes.stream().filter(r -> r.isAlbum()).filter(r -> r.isRequireLogin()).collect(Collectors.toList());
-        var protectedPictures = allroutes.stream().filter(r -> !r.isAlbum()).filter(r -> r.isRequireLogin()).collect(Collectors.toList());
+        var protectedAlbums = allroutes.stream().filter(r -> r.album()).filter(r -> r.requireLogin()).collect(Collectors.toList());
+        var protectedPictures = allroutes.stream().filter(r -> !r.album()).filter(r -> r.requireLogin()).collect(Collectors.toList());
 
         var protectedAlbum = protectedAlbums.get(0);
-        assertTrue(protectedAlbum.isRequireLogin());
-        var updatedAllroutesAfterUnprotectingAlbum = provider.toggleEntryPasswordProtection(protectedAlbum.getId());
-        var unprotectedAlbum = updatedAllroutesAfterUnprotectingAlbum.stream().filter(r -> r.getId() == protectedAlbum.getId()).findFirst().get();
-        assertThat(unprotectedAlbum.isRequireLogin()).isNotEqualTo(protectedAlbum.isRequireLogin());
+        assertTrue(protectedAlbum.requireLogin());
+        var updatedAllroutesAfterUnprotectingAlbum = provider.toggleEntryPasswordProtection(protectedAlbum.id());
+        var unprotectedAlbum = updatedAllroutesAfterUnprotectingAlbum.stream().filter(r -> r.id() == protectedAlbum.id()).findFirst().get();
+        assertThat(unprotectedAlbum.requireLogin()).isNotEqualTo(protectedAlbum.requireLogin());
 
         var protectedPicture = protectedPictures.get(0);
-        assertTrue(protectedPicture.isRequireLogin());
-        var updatedAllroutesAfterUnprotectingPicture = provider.toggleEntryPasswordProtection(protectedPicture.getId());
-        var unprotectedPicture = updatedAllroutesAfterUnprotectingPicture.stream().filter(r -> r.getId() == protectedAlbum.getId()).findFirst().get();
-        assertThat(unprotectedPicture.isRequireLogin()).isNotEqualTo(protectedPicture.isRequireLogin());
+        assertTrue(protectedPicture.requireLogin());
+        var updatedAllroutesAfterUnprotectingPicture = provider.toggleEntryPasswordProtection(protectedPicture.id());
+        var unprotectedPicture = updatedAllroutesAfterUnprotectingPicture.stream().filter(r -> r.id() == protectedAlbum.id()).findFirst().get();
+        assertThat(unprotectedPicture.requireLogin()).isNotEqualTo(protectedPicture.requireLogin());
     }
 
     @Test
@@ -390,23 +390,23 @@ class OldAlbumServiceProviderTest {
         // Verify that sort values are updated correctly when an album
         // entry is moved to a different album
         var allroutes = provider.fetchAllRoutes(null, false);
-        var destinationAlbum = allroutes.stream().filter(r -> "/moto/places/".equals(r.getPath())).findFirst().get();
-        var imageToMove = allroutes.stream().filter(r -> "/moto/vfr96/acirc3".equals(r.getPath())).findFirst().get();
-        var sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();
-        var sortValueOfLastItemInDestinationAlbum = allroutes.stream().filter(r -> "/moto/places/hove".equals(r.getPath())).findFirst().get().getSort();
+        var destinationAlbum = allroutes.stream().filter(r -> "/moto/places/".equals(r.path())).findFirst().get();
+        var imageToMove = allroutes.stream().filter(r -> "/moto/vfr96/acirc3".equals(r.path())).findFirst().get();
+        var sortValueOfNextImageInOriginalAlbum = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.path())).findFirst().get().sort();
+        var sortValueOfLastItemInDestinationAlbum = allroutes.stream().filter(r -> "/moto/places/hove".equals(r.path())).findFirst().get().sort();
 
         var movedImage = AlbumEntry.with(imageToMove)
-            .parent(destinationAlbum.getId())
+            .parent(destinationAlbum.id())
             .path("/moto/places/acirc3")
             .build();
         allroutes = provider.updateEntry(movedImage);
 
         // Verify that sort values in the original album have been adjusted
-        var sortValueOfNextImageInOriginalAlbumAfterMove = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.getPath())).findFirst().get().getSort();        assertThat(sortValueOfNextImageInOriginalAlbum).isGreaterThan(sortValueOfNextImageInOriginalAlbumAfterMove);
+        var sortValueOfNextImageInOriginalAlbumAfterMove = allroutes.stream().filter(r -> "/moto/vfr96/dirtroad".equals(r.path())).findFirst().get().sort();        assertThat(sortValueOfNextImageInOriginalAlbum).isGreaterThan(sortValueOfNextImageInOriginalAlbumAfterMove);
 
         // Verify that image is sorted last in the destination album
-        var imageInDestination = allroutes.stream().filter(r -> r.getId() == imageToMove.getId()).findFirst().get();
-        assertThat(imageInDestination.getSort()).isGreaterThan(sortValueOfLastItemInDestinationAlbum);
+        var imageInDestination = allroutes.stream().filter(r -> r.id() == imageToMove.id()).findFirst().get();
+        assertThat(imageInDestination.sort()).isGreaterThan(sortValueOfLastItemInDestinationAlbum);
     }
 
     @Test
@@ -457,14 +457,14 @@ class OldAlbumServiceProviderTest {
             .build();
         var allroutes = provider.addEntry(albumToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        var addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
-        assertNotEquals(albumToAdd.getId(), addedAlbum.getId()); // Placeholder ID is replaced with an actual database id
-        assertThat(addedAlbum.getId()).isPositive();
-        assertEquals(1, addedAlbum.getParent());
-        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
-        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
-        assertEquals(albumToAdd.isRequireLogin(), addedAlbum.isRequireLogin());
-        assertEquals(albumToAdd.getGroupByYear(), addedAlbum.getGroupByYear());
+        var addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.path())).findFirst().get();
+        assertNotEquals(albumToAdd.id(), addedAlbum.id()); // Placeholder ID is replaced with an actual database id
+        assertThat(addedAlbum.id()).isPositive();
+        assertEquals(1, addedAlbum.parent());
+        assertEquals(albumToAdd.title(), addedAlbum.title());
+        assertEquals(albumToAdd.description(), addedAlbum.description());
+        assertEquals(albumToAdd.requireLogin(), addedAlbum.requireLogin());
+        assertEquals(albumToAdd.groupByYear(), addedAlbum.groupByYear());
     }
 
     @Test
@@ -486,23 +486,23 @@ class OldAlbumServiceProviderTest {
             .imageUrl(imageUrl)
             .thumbnailUrl("https://www.bang.priv.no/sb/pics/misc/.icons/sylane4.gif")
             .sort(3)
-            .lastModified(metadata.getLastModified())
-            .contentType(metadata.getContentType())
-            .contentLength(metadata.getContentLength())
+            .lastModified(metadata.lastModified())
+            .contentType(metadata.contentType())
+            .contentLength(metadata.contentLength())
             .requireLogin(true)
             .build();
         var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        var addedPicture = allroutes.stream().filter(r -> "/sylane4".equals(r.getPath())).findFirst().get();
-        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
-        assertEquals(1, addedPicture.getParent());
-        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
-        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
-        assertEquals(pictureToAdd.getLastModified(), addedPicture.getLastModified());
-        assertEquals(pictureToAdd.getContentType(), addedPicture.getContentType());
-        assertEquals(pictureToAdd.getContentLength(), addedPicture.getContentLength());
-        assertEquals(pictureToAdd.isRequireLogin(), pictureToAdd.isRequireLogin());
-        assertNull(addedPicture.getGroupByYear());
+        var addedPicture = allroutes.stream().filter(r -> "/sylane4".equals(r.path())).findFirst().get();
+        assertNotEquals(pictureToAdd.id(), addedPicture.id()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.parent());
+        assertEquals(pictureToAdd.title(), addedPicture.title());
+        assertEquals(pictureToAdd.description(), addedPicture.description());
+        assertEquals(pictureToAdd.lastModified(), addedPicture.lastModified());
+        assertEquals(pictureToAdd.contentType(), addedPicture.contentType());
+        assertEquals(pictureToAdd.contentLength(), addedPicture.contentLength());
+        assertEquals(pictureToAdd.requireLogin(), pictureToAdd.requireLogin());
+        assertNull(addedPicture.groupByYear());
     }
 
     @Test
@@ -525,12 +525,12 @@ class OldAlbumServiceProviderTest {
             .build();
         var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
-        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
-        assertEquals(1, addedPicture.getParent());
-        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
-        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
-        assertNull(addedPicture.getLastModified());
+        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.path())).findFirst().get();
+        assertNotEquals(pictureToAdd.id(), addedPicture.id()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.parent());
+        assertEquals(pictureToAdd.title(), addedPicture.title());
+        assertEquals(pictureToAdd.description(), addedPicture.description());
+        assertNull(addedPicture.lastModified());
     }
 
     @Test
@@ -561,12 +561,12 @@ class OldAlbumServiceProviderTest {
             .build();
         var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
-        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
-        assertEquals(1, addedPicture.getParent());
-        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
-        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
-        assertNull(addedPicture.getLastModified());
+        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.path())).findFirst().get();
+        assertNotEquals(pictureToAdd.id(), addedPicture.id()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.parent());
+        assertEquals(pictureToAdd.title(), addedPicture.title());
+        assertEquals(pictureToAdd.description(), addedPicture.description());
+        assertNull(addedPicture.lastModified());
     }
 
     @Test
@@ -589,12 +589,12 @@ class OldAlbumServiceProviderTest {
             .build();
         var allroutes = provider.addEntry(pictureToAdd);
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
-        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.getPath())).findFirst().get();
-        assertNotEquals(pictureToAdd.getId(), addedPicture.getId()); // Placeholder ID is replaced with an actual database id
-        assertEquals(1, addedPicture.getParent());
-        assertEquals(pictureToAdd.getTitle(), addedPicture.getTitle());
-        assertEquals(pictureToAdd.getDescription(), addedPicture.getDescription());
-        assertNull(addedPicture.getLastModified());
+        var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.path())).findFirst().get();
+        assertNotEquals(pictureToAdd.id(), addedPicture.id()); // Placeholder ID is replaced with an actual database id
+        assertEquals(1, addedPicture.parent());
+        assertEquals(pictureToAdd.title(), addedPicture.title());
+        assertEquals(pictureToAdd.description(), addedPicture.description());
+        assertNull(addedPicture.lastModified());
     }
 
     @Test
@@ -645,7 +645,7 @@ class OldAlbumServiceProviderTest {
             .build();
         var allroutes = provider.deleteEntry(pictureToDelete);
         assertThat(allroutes).hasSizeLessThan(numberOfEntriesBeforeDelete);
-        var deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
+        var deletedPicture = allroutes.stream().filter(r -> r.id() == 7).findFirst();
         assertFalse(deletedPicture.isPresent());
     }
 
@@ -692,7 +692,7 @@ class OldAlbumServiceProviderTest {
         var selection = Arrays.asList(7);
         var allroutes = provider.deleteSelectedEntries(selection);
         assertThat(allroutes).hasSizeLessThan(numberOfEntriesBeforeDelete);
-        var deletedPicture = allroutes.stream().filter(r -> r.getId() == 7).findFirst();
+        var deletedPicture = allroutes.stream().filter(r -> r.id() == 7).findFirst();
         assertFalse(deletedPicture.isPresent());
     }
 
@@ -706,29 +706,29 @@ class OldAlbumServiceProviderTest {
 
         var allroutes = provider.fetchAllRoutes(null, false);
         // Find the first and second entries of the "vfr" album
-        var originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
-        assertEquals(1, originalFirstEntry.getSort());
-        var originalFirstEntryLastModifiedDate = originalFirstEntry.getLastModified();
-        var secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
-        assertEquals(2, secondEntry.getSort());
-        var originalSecondEntryLastModifiedDate = secondEntry.getLastModified();
+        var originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.path())).findFirst().get();
+        assertEquals(1, originalFirstEntry.sort());
+        var originalFirstEntryLastModifiedDate = originalFirstEntry.lastModified();
+        var secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.path())).findFirst().get();
+        assertEquals(2, secondEntry.sort());
+        var originalSecondEntryLastModifiedDate = secondEntry.lastModified();
 
         // Move from second to first
         allroutes = provider.moveEntryUp(secondEntry);
-        secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
-        assertEquals(1, secondEntry.getSort());
-        assertEquals(originalFirstEntryLastModifiedDate, secondEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
-        originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
-        assertEquals(2, originalFirstEntry.getSort());
-        assertEquals(originalSecondEntryLastModifiedDate, originalFirstEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
+        secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.path())).findFirst().get();
+        assertEquals(1, secondEntry.sort());
+        assertEquals(originalFirstEntryLastModifiedDate, secondEntry.lastModified(), "Expected lastModifiedTime to be swapped by move");
+        originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.path())).findFirst().get();
+        assertEquals(2, originalFirstEntry.sort());
+        assertEquals(originalSecondEntryLastModifiedDate, originalFirstEntry.lastModified(), "Expected lastModifiedTime to be swapped by move");
 
         // Corner case test: Trying to move up from the first entry of the album
         // This should have no effect (and should not crash)
         allroutes = provider.moveEntryUp(secondEntry);
-        secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.getPath())).findFirst().get();
-        assertEquals(1, secondEntry.getSort());
-        originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
-        assertEquals(2, originalFirstEntry.getSort());
+        secondEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc2".equals(r.path())).findFirst().get();
+        assertEquals(1, secondEntry.sort());
+        originalFirstEntry = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.path())).findFirst().get();
+        assertEquals(2, originalFirstEntry.sort());
     }
 
     @Test
@@ -758,30 +758,30 @@ class OldAlbumServiceProviderTest {
 
         var allroutes = provider.fetchAllRoutes(null, false);
         // Find the last and second to last entries of the "vfr" album
-        var numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.getPath())).findFirst().get().getChildcount();
-        var originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
-        assertEquals(numberOfAlbumentriesInAlbum, originalLastEntry.getSort());
-        var originalLastEntryLastModifiedDate = originalLastEntry.getLastModified();
-        var secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
-        assertEquals(numberOfAlbumentriesInAlbum - 1, secondToLastEntry.getSort());
-        var secondToLastEntryLastModifiedDate = secondToLastEntry.getLastModified();
+        var numberOfAlbumentriesInAlbum = allroutes.stream().filter(r -> "/moto/vfr96/".equals(r.path())).findFirst().get().childcount();
+        var originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.path())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum, originalLastEntry.sort());
+        var originalLastEntryLastModifiedDate = originalLastEntry.lastModified();
+        var secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.path())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum - 1, secondToLastEntry.sort());
+        var secondToLastEntryLastModifiedDate = secondToLastEntry.lastModified();
 
         // Move from second to last position to last position
         allroutes = provider.moveEntryDown(secondToLastEntry);
-        secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
-        assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.getSort());
-        assertEquals(originalLastEntryLastModifiedDate, secondToLastEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
-        originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
-        assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.getSort());
-        assertEquals(secondToLastEntryLastModifiedDate, originalLastEntry.getLastModified(), "Expected lastModifiedTime to be swapped by move");
+        secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.path())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.sort());
+        assertEquals(originalLastEntryLastModifiedDate, secondToLastEntry.lastModified(), "Expected lastModifiedTime to be swapped by move");
+        originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.path())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.sort());
+        assertEquals(secondToLastEntryLastModifiedDate, originalLastEntry.lastModified(), "Expected lastModifiedTime to be swapped by move");
 
         // Corner case test: Trying to move down from the last entry of the album
         // This should have no effect (and should not crash)
         allroutes = provider.moveEntryDown(secondToLastEntry);
-        secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.getPath())).findFirst().get();
-        assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.getSort());
-        originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.getPath())).findFirst().get();
-        assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.getSort());
+        secondToLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/vfr2".equals(r.path())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum, secondToLastEntry.sort());
+        originalLastEntry = allroutes.stream().filter(r -> "/moto/vfr96/wintervfr-ef".equals(r.path())).findFirst().get();
+        assertEquals(numberOfAlbumentriesInAlbum - 1, originalLastEntry.sort());
     }
 
     @Test
@@ -808,8 +808,8 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
         var allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtomoveentriesin/").album(true).build());
-        var albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/")).findFirst().get();
-        var albumid = albumToMoveEntriesIn.getId();
+        var albumToMoveEntriesIn = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/")).findFirst().get();
+        var albumid = albumToMoveEntriesIn.id();
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/a").album(false).sort(2).lastModified(parseDate("1967-04-10T11:27:31Z")).build());
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/e").album(true).sort(3).build());
@@ -817,40 +817,40 @@ class OldAlbumServiceProviderTest {
         allroutes = provider.addEntry(AlbumEntry.with().parent(albumid).path("/albumtomoveentriesin/c").album(false).sort(5).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
 
         // Verify that moving up over an image swaps the lastModifiedTime timestamp
-        var c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
-        var originalCLastModifiedDate = c.getLastModified();
-        var d = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/d")).findFirst().get();
-        var originalDLastModfiedDate = d.getLastModified();
+        var c = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
+        var originalCLastModifiedDate = c.lastModified();
+        var d = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/d")).findFirst().get();
+        var originalDLastModfiedDate = d.lastModified();
         allroutes = provider.moveEntryUp(c);
-        var cAfterMoveUp = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
-        assertEquals(originalDLastModfiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
-        var dAfterMoveUp = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/d")).findFirst().get();
-        assertEquals(originalCLastModifiedDate, dAfterMoveUp.getLastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
+        var cAfterMoveUp = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalDLastModfiedDate, cAfterMoveUp.lastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
+        var dAfterMoveUp = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/d")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, dAfterMoveUp.lastModified(), "Expected lastModifiedDate to be swapped when moving up over an image");
 
         // Verify that moving up over an album keeps the lastModifiedTime timestamp
-        c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
-        originalCLastModifiedDate = c.getLastModified();
+        c = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
+        originalCLastModifiedDate = c.lastModified();
         allroutes = provider.moveEntryUp(c);
-        cAfterMoveUp = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
-        assertEquals(originalCLastModifiedDate, cAfterMoveUp.getLastModified(), "Expected lastModifiedDate not to be swapped when moving up over an album");
+        cAfterMoveUp = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, cAfterMoveUp.lastModified(), "Expected lastModifiedDate not to be swapped when moving up over an album");
 
         // Verify that moving down over an image swaps the lastModifiedTime timestamp
-        var a = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
-        var originalALastModfiedDate = a.getLastModified();
-        c = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
-        originalCLastModifiedDate = c.getLastModified();
+        var a = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/a")).findFirst().get();
+        var originalALastModfiedDate = a.lastModified();
+        c = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
+        originalCLastModifiedDate = c.lastModified();
         allroutes = provider.moveEntryDown(a);
-        var aAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
-        assertEquals(originalCLastModifiedDate, aAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
-        var cAfterMoveDown = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/c")).findFirst().get();
-        assertEquals(originalALastModfiedDate, cAfterMoveDown.getLastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+        var aAfterMoveDown = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/a")).findFirst().get();
+        assertEquals(originalCLastModifiedDate, aAfterMoveDown.lastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
+        var cAfterMoveDown = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
+        assertEquals(originalALastModfiedDate, cAfterMoveDown.lastModified(), "Expected lastModifiedDate to be swapped when moving down over an image");
 
         // Verify that moving down over an album keeps the lastModifiedTime timestamp
-        a = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
-        originalALastModfiedDate = a.getLastModified();
+        a = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/a")).findFirst().get();
+        originalALastModfiedDate = a.lastModified();
         allroutes = provider.moveEntryDown(a);
-        aAfterMoveDown = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.getPath().equals("/albumtomoveentriesin/a")).findFirst().get();
-        assertEquals(originalALastModfiedDate, aAfterMoveDown.getLastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
+        aAfterMoveDown = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/a")).findFirst().get();
+        assertEquals(originalALastModfiedDate, aAfterMoveDown.lastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
     }
 
     @Test
@@ -880,7 +880,7 @@ class OldAlbumServiceProviderTest {
             .childcount(0)
             .build();
         var sort = provider.adjustSortValuesWhenMovingToDifferentAlbum(connection, updatedEntry);
-        assertEquals(updatedEntry.getSort(), sort);
+        assertEquals(updatedEntry.sort(), sort);
     }
 
     @Test
@@ -1070,11 +1070,11 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
-        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
-        var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
-        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
+        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.path())).findFirst().get();
+        var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id()).title(replacementTitle).description(replacementDescription).build();
+        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.description())).findFirst().get();
 
-        var streamingOutput = provider.downloadAlbumEntry(entry.getId());
+        var streamingOutput = provider.downloadAlbumEntry(entry.id());
         assertNotNull(streamingOutput);
         var downloadFile = Files.createTempFile("image", "jpg").toFile();
         try(var outputStream = new FileOutputStream(downloadFile)) {
@@ -1083,9 +1083,9 @@ class OldAlbumServiceProviderTest {
 
         var dummyConnection = mock(HttpURLConnection.class);
         var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
-        assertThat(metadata.getTitle()).startsWith(replacementTitle);
-        assertThat(metadata.getDescription()).startsWith(replacementDescription);
-        assertEquals(entry.getLastModified(), metadata.getLastModified());
+        assertThat(metadata.title()).startsWith(replacementTitle);
+        assertThat(metadata.description()).startsWith(replacementDescription);
+        assertEquals(entry.lastModified(), metadata.lastModified());
     }
 
     @Test
@@ -1098,9 +1098,9 @@ class OldAlbumServiceProviderTest {
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var albumentry = provider.getAlbumEntry(4).get();
-        var albumpictures = provider.getChildren(albumentry.getId());
+        var albumpictures = provider.getChildren(albumentry.id());
 
-        var streamingOutput = provider.downloadAlbumEntry(albumentry.getId());
+        var streamingOutput = provider.downloadAlbumEntry(albumentry.id());
         assertNotNull(streamingOutput);
 
         // Stream the album into a zip file
@@ -1110,9 +1110,9 @@ class OldAlbumServiceProviderTest {
         }
 
         // Check that zip members last modified time have been set to albumEntry values
-        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).getImageUrl());
+        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).imageUrl());
         var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
-        assertEquals(albumpictures.get(0).getLastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+        assertEquals(albumpictures.get(0).lastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
     }
 
     @Test
@@ -1125,8 +1125,8 @@ class OldAlbumServiceProviderTest {
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var albumentry = provider.getAlbumEntry(4).get();
-        var albumpictures = provider.getChildren(albumentry.getId());
-        var selectedentryIds = albumpictures.stream().map(e -> e.getId()).toList();
+        var albumpictures = provider.getChildren(albumentry.id());
+        var selectedentryIds = albumpictures.stream().map(e -> e.id()).toList();
 
         var streamingOutput = provider.downloadAlbumEntrySelection(selectedentryIds);
         assertNotNull(streamingOutput);
@@ -1138,9 +1138,9 @@ class OldAlbumServiceProviderTest {
         }
 
         // Check that zip members last modified time have been set to albumEntry values
-        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).getImageUrl());
+        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).imageUrl());
         var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
-        assertEquals(albumpictures.get(0).getLastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+        assertEquals(albumpictures.get(0).lastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
     }
 
     @Test
@@ -1155,11 +1155,11 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
-        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.getPath())).findFirst().get();
-        var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.getId()).title(replacementTitle).description(replacementDescription).build();
-        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.getDescription())).findFirst().get();
+        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.path())).findFirst().get();
+        var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id()).title(replacementTitle).description(replacementDescription).build();
+        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.description())).findFirst().get();
 
-        var streamingOutput = provider.downloadAlbumEntry(entry.getId());
+        var streamingOutput = provider.downloadAlbumEntry(entry.id());
         assertNotNull(streamingOutput);
         var downloadFile = Files.createTempFile("image", "jpg").toFile();
         try(var outputStream = new FileOutputStream(downloadFile)) {
@@ -1316,12 +1316,12 @@ class OldAlbumServiceProviderTest {
 
         var imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
         var metadata = provider.readMetadata(imageUrl);
-        assertEquals(200, metadata.getStatus());
-        assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
-        assertEquals("image/jpeg", metadata.getContentType());
-        assertThat(metadata.getContentLength()).isPositive();
-        assertThat(metadata.getTitle()).isNullOrEmpty();
-        assertThat(metadata.getDescription()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
+        assertEquals(200, metadata.status());
+        assertThat(metadata.lastModified()).isAfter(Date.from(Instant.EPOCH));
+        assertEquals("image/jpeg", metadata.contentType());
+        assertThat(metadata.contentLength()).isPositive();
+        assertThat(metadata.title()).isNullOrEmpty();
+        assertThat(metadata.description()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
     }
 
     @Test
@@ -1336,9 +1336,9 @@ class OldAlbumServiceProviderTest {
 
         var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime.jpg");
         assertNotNull(imageMetadata);
-        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
-        assertThat(imageMetadata.getTitle()).isNullOrEmpty();
-        assertThat(imageMetadata.getDescription()).startsWith("My VFR 750F");
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.lastModified());
+        assertThat(imageMetadata.title()).isNullOrEmpty();
+        assertThat(imageMetadata.description()).startsWith("My VFR 750F");
     }
 
     @Test
@@ -1353,9 +1353,9 @@ class OldAlbumServiceProviderTest {
 
         var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description.jpg");
         assertNotNull(imageMetadata);
-        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
-        assertThat(imageMetadata.getTitle()).startsWith("VFR at Arctic Circle");
-        assertThat(imageMetadata.getDescription()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.lastModified());
+        assertThat(imageMetadata.title()).startsWith("VFR at Arctic Circle");
+        assertThat(imageMetadata.description()).startsWith("My VFR 750F, in front of Polarsirkelsenteret.");
     }
 
     @Test
@@ -1370,9 +1370,9 @@ class OldAlbumServiceProviderTest {
 
         var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_exif_datetime_and_image_description_and_user_comment.jpg");
         assertNotNull(imageMetadata);
-        assertNotEquals(new Date(lastModifiedTime), imageMetadata.getLastModified());
-        assertThat(imageMetadata.getTitle()).startsWith("VFR at Arctic Circle");
-        assertThat(imageMetadata.getDescription()).startsWith("Honda VFR750F in Rana");
+        assertNotEquals(new Date(lastModifiedTime), imageMetadata.lastModified());
+        assertThat(imageMetadata.title()).startsWith("VFR at Arctic Circle");
+        assertThat(imageMetadata.description()).startsWith("Honda VFR750F in Rana");
     }
 
     @Test
@@ -1387,8 +1387,8 @@ class OldAlbumServiceProviderTest {
 
         var imageMetadata = provider.readMetadata("http://localhost/logback.xml");
         assertNotNull(imageMetadata);
-        assertNull(imageMetadata.getTitle());
-        assertNull(imageMetadata.getDescription());
+        assertNull(imageMetadata.title());
+        assertNull(imageMetadata.description());
     }
 
     @Test
@@ -1600,7 +1600,7 @@ class OldAlbumServiceProviderTest {
             .requireLogin(true)
             .build();
         var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
-        var parentId = entriesBeforeBatchAdd.get(0).getId();
+        var parentId = entriesBeforeBatchAdd.get(0).id();
 
         // Do the batch import
         var request = BatchAddPicturesRequest.with()
@@ -1613,13 +1613,13 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that a second import will continue to increase the sort value
         var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
-        var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
     }
 
@@ -1664,7 +1664,7 @@ class OldAlbumServiceProviderTest {
             .requireLogin(false)
             .build();
         var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
-        var parentId = entriesBeforeBatchAdd.get(1).getId();
+        var parentId = entriesBeforeBatchAdd.get(1).id();
 
         // Do the batch import
         var defaultTitle = "Daisy";
@@ -1679,16 +1679,16 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that description of first imported image is content of description txt file
         // and check that the title starts with the default title of the batch import
-        var firstImage = entriesAfterBatchAdd.stream().filter(ent -> ent.getParent() == parentId).findFirst().get();
+        var firstImage = entriesAfterBatchAdd.stream().filter(ent -> ent.parent() == parentId).findFirst().get();
         var expectedDescription = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"), StandardCharsets.UTF_8);
-        assertEquals(expectedDescription, firstImage.getDescription());
-        assertThat(firstImage.getTitle()).startsWith(defaultTitle);
+        assertEquals(expectedDescription, firstImage.description());
+        assertThat(firstImage.title()).startsWith(defaultTitle);
     }
 
     @Test
@@ -1732,7 +1732,7 @@ class OldAlbumServiceProviderTest {
             .requireLogin(false)
             .build();
         var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
-        var parentId = entriesBeforeBatchAdd.get(1).getId();
+        var parentId = entriesBeforeBatchAdd.get(1).id();
 
         // Do the batch import
         var request = BatchAddPicturesRequest.with()
@@ -1745,16 +1745,16 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that description of first imported image is content of description txt file
         // and check that the title starts with the default title of the batch import
-        var firstImage = entriesAfterBatchAdd.stream().filter(ent -> ent.getParent() == parentId).findFirst().get();
+        var firstImage = entriesAfterBatchAdd.stream().filter(ent -> ent.parent() == parentId).findFirst().get();
         var expectedDescription = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"), StandardCharsets.UTF_8);
-        assertEquals(expectedDescription, firstImage.getDescription());
-        assertThat(firstImage.getTitle()).isNull();
+        assertEquals(expectedDescription, firstImage.description());
+        assertThat(firstImage.title()).isNull();
     }
 
     @Test
@@ -1795,7 +1795,7 @@ class OldAlbumServiceProviderTest {
             .requireLogin(true)
             .build();
         var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
-        var parentId = entriesBeforeBatchAdd.get(0).getId();
+        var parentId = entriesBeforeBatchAdd.get(0).id();
 
         // Do the batch import
         var request = BatchAddPicturesRequest.with()
@@ -1808,13 +1808,13 @@ class OldAlbumServiceProviderTest {
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
         // Check that sort is incremented during batch import
-        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).min().getAsInt();
-        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that a second import will continue to increase the sort value
         var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
-        var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.getParent() == parentId).mapToInt(AlbumEntry::getSort).max().getAsInt();
+        var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
     }
 
@@ -1996,15 +1996,15 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
         var allroutes = provider.addEntry(AlbumEntry.with().parent(1).path("/albumtosort/").album(true).build());
-        var albumToSort = allroutes.stream().filter(r -> r.getPath().equals("/albumtosort/")).findFirst().get();
-        var albumid = albumToSort.getId();
+        var albumToSort = allroutes.stream().filter(r -> r.path().equals("/albumtosort/")).findFirst().get();
+        var albumid = albumToSort.id();
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/b").album(false).sort(1).lastModified(parseDate("1971-02-25T13:13:22Z")).build());
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/a").album(false).sort(2).lastModified(parseDate("1967-04-10T11:27:31Z")).build());
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/d").album(false).sort(3).lastModified(parseDate("2022-12-24T17:10:11Z")).build());
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/c").album(false).sort(4).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
         allroutes = provider.sortByDate(albumid);
-        var albumentries = allroutes.stream().filter(r -> r.getParent() == albumid).sorted(Comparator.comparingInt(AlbumEntry::getSort)).collect(Collectors.toList());
-        var albumentrypaths = albumentries.stream().map(e -> e.getPath()).collect(Collectors.toList());
+        var albumentries = allroutes.stream().filter(r -> r.parent() == albumid).sorted(Comparator.comparingInt(AlbumEntry::sort)).collect(Collectors.toList());
+        var albumentrypaths = albumentries.stream().map(e -> e.path()).collect(Collectors.toList());
         assertThat(albumentrypaths).containsExactly("/a", "/b", "/c", "/d");
     }
 

@@ -15,32 +15,7 @@ package no.priv.bang.oldalbum.services.bean;
  * under the License.
  */
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable handles added fields
-
-    private int parent;
-    private String batchAddUrl;
-    private Integer importYear;
-    private String defaultTitle;
-
-    public int getParent() {
-        return parent;
-    }
-
-    public String getBatchAddUrl() {
-        return batchAddUrl;
-    }
-
-    public Integer getImportYear() {
-        return this.importYear;
-    }
-
-    public String getDefaultTitle() {
-        return defaultTitle;
-    }
-
-    private BatchAddPicturesRequest() { }
+public record BatchAddPicturesRequest(int parent, String batchAddUrl, Integer importYear, String defaultTitle) {
 
     public static Builder with() {
         return new Builder();
@@ -56,12 +31,7 @@ public class BatchAddPicturesRequest extends Immutable { // NOSONAR Immutable ha
         private String defaultTitle;
 
         public BatchAddPicturesRequest build() {
-            var bean = new BatchAddPicturesRequest();
-            bean.parent = this.parent;
-            bean.batchAddUrl = this.batchAddUrl;
-            bean.importYear = this.importYear;
-            bean.defaultTitle = this.defaultTitle;
-            return bean;
+            return new BatchAddPicturesRequest(parent, batchAddUrl, importYear, defaultTitle);
         }
 
         public Builder parent(int parent) {

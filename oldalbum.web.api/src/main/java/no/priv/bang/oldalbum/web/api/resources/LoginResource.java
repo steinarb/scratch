@@ -87,7 +87,7 @@ public class LoginResource {
         var subject = SecurityUtils.getSubject();
         var originalRequestUri = findOriginalRequestUri().orElse(null);
 
-        var token = new UsernamePasswordToken(credentials.getUsername(), credentials.getPassword().toCharArray(), true);
+        var token = new UsernamePasswordToken(credentials.username(), credentials.password().toCharArray(), true);
         var canLogin = shiroRoleOldalbumadminExists();
         try {
             subject.login(token);

@@ -37,9 +37,9 @@ class AlbumentryResourceTest {
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
         resource.oldalbum = oldalbum;
         var allroutes = resource.modifyalbum(modifiedAlbum);
-        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertEquals(modifiedAlbum.getTitle(), updatedAlbum.getTitle());
-        assertEquals(modifiedAlbum.getDescription(), updatedAlbum.getDescription());
+        var updatedAlbum = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertEquals(modifiedAlbum.title(), updatedAlbum.title());
+        assertEquals(modifiedAlbum.description(), updatedAlbum.description());
     }
 
     @Test
@@ -50,9 +50,9 @@ class AlbumentryResourceTest {
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
         resource.oldalbum = oldalbum;
         var allroutes = resource.addalbum(albumToAdd);
-        var addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.getPath())).findFirst().get();
-        assertEquals(albumToAdd.getTitle(), addedAlbum.getTitle());
-        assertEquals(albumToAdd.getDescription(), addedAlbum.getDescription());
+        var addedAlbum = allroutes.stream().filter(r -> "/newalbum/".equals(r.path())).findFirst().get();
+        assertEquals(albumToAdd.title(), addedAlbum.title());
+        assertEquals(albumToAdd.description(), addedAlbum.description());
     }
 
     @Test
@@ -63,9 +63,9 @@ class AlbumentryResourceTest {
         when(oldalbum.updateEntry(any())).thenReturn(Arrays.asList(modifiedPicture));
         resource.oldalbum = oldalbum;
         var allroutes = resource.modifypicture(modifiedPicture);
-        var updatedPicture = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertEquals(modifiedPicture.getTitle(), updatedPicture.getTitle());
-        assertEquals(modifiedPicture.getDescription(), updatedPicture.getDescription());
+        var updatedPicture = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertEquals(modifiedPicture.title(), updatedPicture.title());
+        assertEquals(modifiedPicture.description(), updatedPicture.description());
     }
 
     @Test
@@ -75,9 +75,9 @@ class AlbumentryResourceTest {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.toggleEntryPasswordProtection(anyInt())).thenReturn(Arrays.asList(pictureWithToggledPasswordProtection));
         resource.oldalbum = oldalbum;
-        var allroutes = resource.togglepasswordprotection(pictureWithToggledPasswordProtection.getId());
-        var updatedPicture = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertTrue(updatedPicture.isRequireLogin());
+        var allroutes = resource.togglepasswordprotection(pictureWithToggledPasswordProtection.id());
+        var updatedPicture = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertTrue(updatedPicture.requireLogin());
     }
 
     @Test
@@ -88,9 +88,9 @@ class AlbumentryResourceTest {
         when(oldalbum.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
         resource.oldalbum = oldalbum;
         var allroutes = resource.addpicture(pictureToAdd);
-        var updatedPicture = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.getPath())).findFirst().get();
-        assertEquals(pictureToAdd.getTitle(), updatedPicture.getTitle());
-        assertEquals(pictureToAdd.getDescription(), updatedPicture.getDescription());
+        var updatedPicture = allroutes.stream().filter(r -> "/moto/vfr96/acirc1".equals(r.path())).findFirst().get();
+        assertEquals(pictureToAdd.title(), updatedPicture.title());
+        assertEquals(pictureToAdd.description(), updatedPicture.description());
     }
 
     @Test
@@ -149,8 +149,8 @@ class AlbumentryResourceTest {
         when(oldalbum.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
         resource.oldalbum = oldalbum;
         var allroutes = resource.moveEntryUp(albumToMove);
-        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertThat(albumToMove.getSort()).isGreaterThan(updatedAlbum.getSort());
+        var updatedAlbum = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertThat(albumToMove.sort()).isGreaterThan(updatedAlbum.sort());
     }
 
     @Test
@@ -162,8 +162,8 @@ class AlbumentryResourceTest {
         when(oldalbum.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));
         resource.oldalbum = oldalbum;
         var allroutes = resource.moveEntryDown(albumToMove);
-        var updatedAlbum = allroutes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertThat(albumToMove.getSort()).isLessThan(updatedAlbum.getSort());
+        var updatedAlbum = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertThat(albumToMove.sort()).isLessThan(updatedAlbum.sort());
     }
 
 }

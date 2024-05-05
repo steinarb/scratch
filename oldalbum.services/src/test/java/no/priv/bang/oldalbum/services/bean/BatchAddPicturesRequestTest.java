@@ -33,19 +33,19 @@ class BatchAddPicturesRequestTest {
             .importYear(importYear)
             .defaultTitle(defaultTitle)
             .build();
-        assertEquals(parent, bean.getParent());
-        assertEquals(batchAddUrl, bean.getBatchAddUrl());
-        assertEquals(importYear, bean.getImportYear());
-        assertEquals(defaultTitle, bean.getDefaultTitle());
+        assertEquals(parent, bean.parent());
+        assertEquals(batchAddUrl, bean.batchAddUrl());
+        assertEquals(importYear, bean.importYear());
+        assertEquals(defaultTitle, bean.defaultTitle());
     }
 
     @Test
     void testBuildBeanWithDefaults() {
         var bean = BatchAddPicturesRequest.with().build();
-        assertEquals(0, bean.getParent());
-        assertNull(bean.getBatchAddUrl());
-        assertNull(bean.getImportYear());
-        assertNull(bean.getDefaultTitle());
+        assertEquals(0, bean.parent());
+        assertNull(bean.batchAddUrl());
+        assertNull(bean.importYear());
+        assertNull(bean.defaultTitle());
     }
 
 }

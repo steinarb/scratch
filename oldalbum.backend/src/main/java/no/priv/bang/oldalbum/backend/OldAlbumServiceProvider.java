@@ -163,7 +163,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 var imageQuery = "select * from albumentries where album=false and parent=? order by localpath";
                 allroutes.add(album);
                 try (var statement = connection.prepareStatement(imageQuery)) {
-                    statement.setInt(1, album.getId());
+                    statement.setInt(1, album.id());
                     try (var results = statement.executeQuery()) {
                         while (results.next()) {
                             var route = unpackAlbumEntry(results);
@@ -206,12 +206,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             var childrenOfAlbumRequiringLoginThatDoNotRequireLogin = new ArrayList<AlbumEntry>();
             addAlbumEntriesThatDoNotRequireLoginButHasAParentThatRequiresLogin(childrenOfAlbumRequiringLoginThatDoNotRequireLogin, connection);
             for(var entry : childrenOfAlbumRequiringLoginThatDoNotRequireLogin) {
-                urls.put(entry.getPath(), "anon");
+                urls.put(entry.path(), "anon");
             }
 
             var protectedAlbums = findProtectedAlbums(connection);
             for(var album : protectedAlbums) {
-                urls.put(album.getPath() + "**", "authc");
+                urls.put(album.path() + "**", "authc");
             }
         } catch (SQLException e) {
             logger.error("Failed to find the list of shiro protected urls", e);
@@ -327,24 +327,24 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
-        var id = modifiedEntry.getId();
+        var id = modifiedEntry.id();
         var sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=?, group_by_year=? where albumentry_id=?";
         try(var connection = datasource.getConnection()) {
             var sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
             try(var statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, modifiedEntry.getParent());
-                statement.setString(2, modifiedEntry.getPath());
-                statement.setString(3, modifiedEntry.getTitle());
-                statement.setString(4, modifiedEntry.getDescription());
-                statement.setString(5, modifiedEntry.getImageUrl());
-                statement.setString(6, modifiedEntry.getThumbnailUrl());
+                statement.setInt(1, modifiedEntry.parent());
+                statement.setString(2, modifiedEntry.path());
+                statement.setString(3, modifiedEntry.title());
+                statement.setString(4, modifiedEntry.description());
+                statement.setString(5, modifiedEntry.imageUrl());
+                statement.setString(6, modifiedEntry.thumbnailUrl());
                 statement.setTimestamp(7, getLastModifiedTimestamp(modifiedEntry));
                 statement.setInt(8, sort);
-                statement.setBoolean(9, modifiedEntry.isRequireLogin());
-                if (modifiedEntry.getGroupByYear() == null) {
+                statement.setBoolean(9, modifiedEntry.requireLogin());
+                if (modifiedEntry.groupByYear() == null) {
                     statement.setNull(10, Types.BOOLEAN);
                 } else {
-                    statement.setBoolean(10, modifiedEntry.getGroupByYear());
+                    statement.setBoolean(10, modifiedEntry.groupByYear());
                 }
                 statement.setInt(11, id);
                 statement.executeUpdate();
@@ -384,25 +384,25 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> addEntry(AlbumEntry addedEntry) {
         var sql = "insert into albumentries (parent, localpath, album, title, description, imageUrl, thumbnailUrl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        var path = addedEntry.getPath();
+        var path = addedEntry.path();
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, addedEntry.getParent());
+                statement.setInt(1, addedEntry.parent());
                 statement.setString(2, path);
-                statement.setBoolean(3, addedEntry.isAlbum());
-                statement.setString(4, addedEntry.getTitle());
-                statement.setString(5, addedEntry.getDescription());
-                statement.setString(6, addedEntry.getImageUrl());
-                statement.setString(7, addedEntry.getThumbnailUrl());
-                statement.setInt(8, addedEntry.getSort());
+                statement.setBoolean(3, addedEntry.album());
+                statement.setString(4, addedEntry.title());
+                statement.setString(5, addedEntry.description());
+                statement.setString(6, addedEntry.imageUrl());
+                statement.setString(7, addedEntry.thumbnailUrl());
+                statement.setInt(8, addedEntry.sort());
                 statement.setTimestamp(9, getLastModifiedTimestamp(addedEntry));
-                statement.setString(10, addedEntry.getContentType());
-                statement.setInt(11, addedEntry.getContentLength());
-                statement.setBoolean(12, addedEntry.isRequireLogin());
-                if (addedEntry.getGroupByYear() == null) {
+                statement.setString(10, addedEntry.contentType());
+                statement.setInt(11, addedEntry.contentLength());
+                statement.setBoolean(12, addedEntry.requireLogin());
+                if (addedEntry.groupByYear() == null) {
                     statement.setNull(13, Types.BOOLEAN);
                 } else {
-                    statement.setBoolean(13, addedEntry.getGroupByYear());
+                    statement.setBoolean(13, addedEntry.groupByYear());
                 }
                 statement.executeUpdate();
             }
@@ -429,10 +429,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     void deleteSingleAlbumEntry(AlbumEntry deletedEntry) {
-        var id = deletedEntry.getId();
+        var id = deletedEntry.id();
         var sql = "delete from albumentries where albumentry_id=?";
-        var parentOfDeleted = deletedEntry.getParent();
-        var sortOfDeleted = deletedEntry.getSort();
+        var parentOfDeleted = deletedEntry.parent();
+        var sortOfDeleted = deletedEntry.sort();
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, id);
@@ -447,9 +447,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> moveEntryUp(AlbumEntry movedEntry) {
-        var sort = movedEntry.getSort();
+        var sort = movedEntry.sort();
         if (sort > 1) {
-            var entryId = movedEntry.getId();
+            var entryId = movedEntry.id();
             try(var connection = datasource.getConnection()) {
                 findPreviousEntryInTheSameAlbum(connection, movedEntry, sort)
                     .ifPresent(previousEntry -> swapSortAndModifiedTimes(connection, movedEntry, previousEntry));
@@ -463,10 +463,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public List<AlbumEntry> moveEntryDown(AlbumEntry movedEntry) {
-        var sort = movedEntry.getSort();
-        var entryId = movedEntry.getId();
+        var sort = movedEntry.sort();
+        var entryId = movedEntry.id();
         try(var connection = datasource.getConnection()) {
-            var numberOfEntriesInAlbum = findNumberOfEntriesInAlbum(connection, movedEntry.getParent());
+            var numberOfEntriesInAlbum = findNumberOfEntriesInAlbum(connection, movedEntry.parent());
             if (sort < numberOfEntriesInAlbum) {
                 findNextEntryInTheSameAlbum(connection, movedEntry, sort)
                     .ifPresent(nextEntry -> swapSortAndModifiedTimes(connection, movedEntry, nextEntry));
@@ -518,16 +518,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) {
-        var originalSortvalue = modifiedEntry.getSort();
-        return getEntry(connection, modifiedEntry.getId()).map(entryBeforeUpdate -> {
-                var originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.getParent() : 0;
-                if (modifiedEntry.getParent() == originalParent) {
+        var originalSortvalue = modifiedEntry.sort();
+        return getEntry(connection, modifiedEntry.id()).map(entryBeforeUpdate -> {
+                var originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.parent() : 0;
+                if (modifiedEntry.parent() == originalParent) {
                     return originalSortvalue;
                 }
 
-                var originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.getSort() : 0;
+                var originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.sort() : 0;
                 adjustSortValuesAfterEntryIsRemoved(connection, originalParent, originalSort);
-                var destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.getParent());
+                var destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.parent());
                 return destinationChildCount + 1;
             }).orElse(originalSortvalue);
     }
@@ -555,7 +555,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort - 1);
-            statement.setInt(2, movedEntry.getParent());
+            statement.setInt(2, movedEntry.parent());
             try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     previousEntryId = Optional.of(unpackAlbumEntry(result));
@@ -571,7 +571,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort + 1);
-            statement.setInt(2, movedEntry.getParent());
+            statement.setInt(2, movedEntry.parent());
             try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     nextEntryId = Optional.of(unpackAlbumEntry(result));
@@ -602,7 +602,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     public StreamingOutput downloadAlbumEntry(int albumEntryId) {
         var albumEntry = getAlbumEntry(albumEntryId)
             .orElseThrow(() -> new OldAlbumException(String.format("Unable to find album entry matching id=%d in database", albumEntryId)));
-        if (albumEntry.isAlbum()) {
+        if (albumEntry.album()) {
             return createStreamingZipFileForAlbumContent(albumEntry);
         } else {
             return downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry);
@@ -632,7 +632,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 try(var zipOut = new ZipOutputStream(output)) {
-                    for (var child : getChildren(albumEntry.getId())) {
+                    for (var child : getChildren(albumEntry.id())) {
                         var imageAndWriter = downloadAndReadImageAndCreateWriter(child);
                         writeImageWithModifiedMetadataToZipArchive(zipOut, child, imageAndWriter);
                     }
@@ -642,9 +642,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     private void writeImageWithModifiedMetadataToZipArchive(ZipOutputStream zipArchive, AlbumEntry albumEntry, ImageAndWriter imageAndWriter) throws IOException {
-        var filename = findFileNamePartOfUrl(albumEntry.getImageUrl());
+        var filename = findFileNamePartOfUrl(albumEntry.imageUrl());
         var entry = new ZipEntry(filename);
-        entry.setLastModifiedTime(FileTime.fromMillis(albumEntry.getLastModified().getTime()));
+        entry.setLastModifiedTime(FileTime.fromMillis(albumEntry.lastModified().getTime()));
         zipArchive.putNextEntry(entry);
         writeImageWithModifiedMetadataToOutputStream(zipArchive, imageAndWriter.writer(), imageAndWriter.image(), albumEntry);
     }
@@ -655,9 +655,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     ImageAndWriter downloadAndReadImageAndCreateWriter(AlbumEntry albumEntry) {
-        var imageUrl = albumEntry.getImageUrl();
+        var imageUrl = albumEntry.imageUrl();
         if (imageUrl == null || imageUrl.isEmpty()) {
-            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d, imageUrl is missing", albumEntry.getId()));
+            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d, imageUrl is missing", albumEntry.id()));
         }
 
         ImageAndWriter imageAndWriter = null;
@@ -673,11 +673,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     var image = reader.readAll(0, null);
                     imageAndWriter = new ImageAndWriter(image, writer);
                 } else {
-                    throw new OldAlbumException(String.format("Album entry matching id=%d with url=\"%s\" not recognizable as an image. Download failed", albumEntry.getId(), albumEntry.getImageUrl()));
+                    throw new OldAlbumException(String.format("Album entry matching id=%d with url=\"%s\" not recognizable as an image. Download failed", albumEntry.id(), albumEntry.imageUrl()));
                 }
             }
         } catch (IOException e) {
-            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.getId(), albumEntry.getImageUrl()), e);
+            throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.id(), albumEntry.imageUrl()), e);
         }
 
         return imageAndWriter;
@@ -711,18 +711,18 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) throws IOException {
         var entries = new ArrayList<Entry>();
-        if (albumEntry.getLastModified() != null) {
+        if (albumEntry.lastModified() != null) {
             var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
             entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formattedDateTime));
             entries.add(new TIFFEntry(EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime));
         }
 
-        if (!StringUtil.isEmpty(albumEntry.getTitle())) {
-            entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.getTitle()));
+        if (!StringUtil.isEmpty(albumEntry.title())) {
+            entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.title()));
         }
 
-        if (!StringUtil.isEmpty(albumEntry.getDescription())) {
-            entries.add(new TIFFEntry(EXIF.TAG_USER_COMMENT, formatExifUserComment(albumEntry.getDescription())));
+        if (!StringUtil.isEmpty(albumEntry.description())) {
+            entries.add(new TIFFEntry(EXIF.TAG_USER_COMMENT, formatExifUserComment(albumEntry.description())));
         }
 
         if (entries.isEmpty()) {
@@ -746,7 +746,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     String formatLastModifiedTimeAsExifDateString(AlbumEntry albumEntry) {
         var exifDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
         exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
-        return exifDateTimeFormat.format(albumEntry.getLastModified());
+        return exifDateTimeFormat.format(albumEntry.lastModified());
     }
 
     public byte[] formatExifUserComment(String userComment) {
@@ -768,17 +768,17 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     void setJfifCommentFromAlbumEntryDescription(IIOMetadataNode markerSequence, AlbumEntry albumEntry) {
-        if (StringUtil.isEmpty(albumEntry.getDescription())) {
+        if (StringUtil.isEmpty(albumEntry.description())) {
             return;
         }
 
         var comList = markerSequence.getElementsByTagName("com");
         if (comList.getLength() > 0) {
             var com = (IIOMetadataNode) comList.item(0);
-            com.setAttribute("comment", albumEntry.getDescription());
+            com.setAttribute("comment", albumEntry.description());
         } else {
             var com = new IIOMetadataNode("com");
-            com.setAttribute("comment", albumEntry.getDescription());
+            com.setAttribute("comment", albumEntry.description());
             markerSequence.appendChild(com);
         }
     }
@@ -943,13 +943,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         var document = loadAndParseIndexHtml(request);
-        getAlbumEntry(request.getParent()).ifPresent(parent -> {
-                var sort = findHighestSortValueInParentAlbum(request.getParent());
+        getAlbumEntry(request.parent()).ifPresent(parent -> {
+                var sort = findHighestSortValueInParentAlbum(request.parent());
                 var links = document.select("a");
                 for (var link: links) {
                     if (hrefIsJpeg(link.attr("href"))) {
                         ++sort;
-                        var picture = createPictureFromUrl(link, parent, sort, request.getImportYear(), request.getDefaultTitle());
+                        var picture = createPictureFromUrl(link, parent, sort, request.importYear(), request.defaultTitle());
                         addEntry(picture);
                     }
                 }
@@ -982,7 +982,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     for (var albumEntry : entriesToSort) {
                         ++sort;
                         statement.setInt(1, sort);
-                        statement.setInt(2, albumEntry.getId());
+                        statement.setInt(2, albumEntry.id());
                         statement.addBatch();
                     }
                     statement.executeBatch();
@@ -1019,18 +1019,18 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear, String defaultTitle) {
         var basename = findBasename(link);
-        var path = parent.getPath() + basename;
+        var path = parent.path() + basename;
         var imageUrl = link.absUrl("href");
         var thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
         var lastModified = findLastModifiedDate(metadata, importYear);
-        var contenttype = metadata != null ? metadata.getContentType() : null;
-        var contentlength = metadata != null ? metadata.getContentLength() : 0;
+        var contenttype = metadata != null ? metadata.contentType() : null;
+        var contentlength = metadata != null ? metadata.contentLength() : 0;
         var title = !stringIsNullOrBlank(defaultTitle) ? defaultTitle : safeGetTitleFromMetadata(metadata);
-        var description = metadata != null ? metadata.getDescription() : null;
+        var description = metadata != null ? metadata.description() : null;
         return AlbumEntry.with()
             .album(false)
-            .parent(parent.getId())
+            .parent(parent.id())
             .path(path)
             .imageUrl(imageUrl)
             .thumbnailUrl(thumbnailUrl)
@@ -1040,7 +1040,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .contentLength(contentlength)
             .title(title)
             .description(description)
-            .requireLogin(parent.isRequireLogin())
+            .requireLogin(parent.requireLogin())
             .sort(sort)
             .build();
     }
@@ -1050,15 +1050,15 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     String safeGetTitleFromMetadata(ImageMetadata metadata) {
-        return Optional.ofNullable(metadata).map(ImageMetadata::getTitle).orElse(null);
+        return Optional.ofNullable(metadata).map(ImageMetadata::title).orElse(null);
     }
 
     Date findLastModifiedDate(ImageMetadata metadata, Integer importYear) {
         if (importYear == null) {
-            return metadata != null ? metadata.getLastModified() : null;
+            return metadata != null ? metadata.lastModified() : null;
         }
 
-        var rawDate = metadata != null && metadata.getLastModified() != null ? LocalDateTime.ofInstant(metadata.getLastModified().toInstant(), ZoneId.systemDefault()) : LocalDateTime.now();
+        var rawDate = metadata != null && metadata.lastModified() != null ? LocalDateTime.ofInstant(metadata.lastModified().toInstant(), ZoneId.systemDefault()) : LocalDateTime.now();
         var adjustedDate = rawDate.withYear(importYear);
         return Date.from(adjustedDate.atZone(ZoneId.systemDefault()).toInstant());
     }
@@ -1106,7 +1106,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     private Document loadAndParseIndexHtml(BatchAddPicturesRequest request) {
         Document document = null;
         try {
-            var connection = getConnectionFactory().connect(request.getBatchAddUrl());
+            var connection = getConnectionFactory().connect(request.batchAddUrl());
             connection.setRequestMethod("GET");
             var statuscode = connection.getResponseCode();
             if (statuscode != 200) {
@@ -1114,9 +1114,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
 
             document = Jsoup.parse(connection.getInputStream(), "UTF-8", "");
-            document.setBaseUri(request.getBatchAddUrl());
+            document.setBaseUri(request.batchAddUrl());
         } catch (IOException e) {
-            throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.getBatchAddUrl()), e);
+            throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.batchAddUrl()), e);
         }
 
         return document;
@@ -1124,8 +1124,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private Timestamp getLastModifiedTimestamp(AlbumEntry albumentry) {
         Timestamp lastmodified = null;
-        if (albumentry.getLastModified() != null) {
-            lastmodified = Timestamp.from(Instant.ofEpochMilli(albumentry.getLastModified().getTime()));
+        if (albumentry.lastModified() != null) {
+            lastmodified = Timestamp.from(Instant.ofEpochMilli(albumentry.lastModified().getTime()));
         }
 
         return lastmodified;
@@ -1145,21 +1145,21 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private void swapSortAndModifiedTimes(Connection connection, AlbumEntry movedEntry, AlbumEntry neighbourEntry) {
         if (atLeastOneEntryIsAlbum(movedEntry, neighbourEntry)) {
-            swapSortValues(connection, movedEntry.getId(), neighbourEntry.getSort(), neighbourEntry.getId(), movedEntry.getSort());
+            swapSortValues(connection, movedEntry.id(), neighbourEntry.sort(), neighbourEntry.id(), movedEntry.sort());
         } else {
             swapSortAndLastModifiedValues(
                 connection,
-                movedEntry.getId(),
-                neighbourEntry.getSort(),
-                neighbourEntry.getLastModified(),
-                neighbourEntry.getId(),
-                movedEntry.getSort(),
-                movedEntry.getLastModified());
+                movedEntry.id(),
+                neighbourEntry.sort(),
+                neighbourEntry.lastModified(),
+                neighbourEntry.id(),
+                movedEntry.sort(),
+                movedEntry.lastModified());
         }
     }
 
     boolean atLeastOneEntryIsAlbum(AlbumEntry movedEntry, AlbumEntry neighbourEntry) {
-        return movedEntry.isAlbum() || neighbourEntry.isAlbum();
+        return movedEntry.album() || neighbourEntry.album();
     }
 
     void swapSortValues(Connection connection, int entryId, int newIndex, int neighbourEntryId, int newIndexOfNeighbourEntry) {

@@ -93,7 +93,7 @@ public class AlbumentryResource {
     @Consumes(APPLICATION_JSON)
     @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> sortAlbumByDate(AlbumEntry request) {
-        return oldalbum.sortByDate(request.getId());
+        return oldalbum.sortByDate(request.id());
     }
 
     @Path("deleteentry")

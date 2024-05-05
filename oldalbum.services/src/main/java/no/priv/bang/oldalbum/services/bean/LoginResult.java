@@ -15,42 +15,14 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class LoginResult extends Immutable { // NOSONAR Immutable handles added fields
-
-    private boolean success;
-    private String username;
-    private String errormessage;
-    private boolean canModifyAlbum;
-    private boolean canLogin;
-    private String originalRequestUri;
-
-    private LoginResult() {}
-
-    public boolean getSuccess() {
-        return success;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getErrormessage() {
-        return errormessage;
-    }
-
-    public boolean isCanModifyAlbum() {
-        return canModifyAlbum;
-    }
-
-    public boolean isCanLogin() {
-        return canLogin;
-    }
-
-    public String getOriginalRequestUri() {
-        return this.originalRequestUri;
-    }
+public record LoginResult(
+    boolean success,
+    String username,
+    String errormessage,
+    boolean canModifyAlbum,
+    boolean canLogin,
+    String originalRequestUri)
+{
 
     public static Builder with() {
         return new Builder();
@@ -67,14 +39,7 @@ public class LoginResult extends Immutable { // NOSONAR Immutable handles added 
         private Builder() {}
 
         public LoginResult build() {
-            var loginResult = new LoginResult();
-            loginResult.success = this.success;
-            loginResult.username = this.username;
-            loginResult.errormessage = this.errormessage;
-            loginResult.canModifyAlbum = this.canModifyAlbum;
-            loginResult.canLogin = this.canLogin;
-            loginResult.originalRequestUri = this.originalRequestUri;
-            return loginResult;
+            return new LoginResult(success, username, errormessage, canModifyAlbum, canLogin, originalRequestUri);
         }
 
         public Builder success(boolean success) {

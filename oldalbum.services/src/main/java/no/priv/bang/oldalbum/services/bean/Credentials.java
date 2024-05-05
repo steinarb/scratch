@@ -15,22 +15,7 @@
  */
 package no.priv.bang.oldalbum.services.bean;
 
-import no.priv.bang.beans.immutable.Immutable;
-
-public class Credentials extends Immutable { // NOSONAR Immutable handles added fields
-
-    private String username;
-    private String password;
-
-    private Credentials() {}
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
+public record Credentials(String username, String password) {
 
     public static Builder with() {
         return new Builder();
@@ -43,10 +28,7 @@ public class Credentials extends Immutable { // NOSONAR Immutable handles added 
         private Builder() {}
 
         public Credentials build() {
-            var credentials = new Credentials();
-            credentials.username = this.username;
-            credentials.password = this.password;
-            return credentials;
+            return new Credentials(username, password);
         }
 
         public Builder username(String username) {

@@ -51,10 +51,10 @@ class ImageResourceTest {
         resource.oldalbum = backendService;
         var url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         var metadata = resource.getMetadata(ImageRequest.with().url(url).build());
-        assertEquals(200, metadata.getStatus());
-        assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
-        assertEquals("image/jpeg", metadata.getContentType());
-        assertThat(metadata.getContentLength()).isPositive();
+        assertEquals(200, metadata.status());
+        assertThat(metadata.lastModified()).isAfter(Date.from(Instant.EPOCH));
+        assertEquals("image/jpeg", metadata.contentType());
+        assertThat(metadata.contentLength()).isPositive();
     }
 
     @Test

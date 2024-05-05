@@ -106,7 +106,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         var loginresult = mapper.readValue(getBinaryContent(response), LoginResult.class);
-        assertTrue(loginresult.isCanLogin());
+        assertTrue(loginresult.canLogin());
     }
 
     @Test
@@ -124,7 +124,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         var loginresult = mapper.readValue(getBinaryContent(response), LoginResult.class);
-        assertTrue(loginresult.isCanLogin());
+        assertTrue(loginresult.canLogin());
     }
 
     @Test
@@ -194,7 +194,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         when(backendService.toggleEntryPasswordProtection((not(eq(0))))).thenReturn(Arrays.asList(pictureWithToggledPasswordProtection));
         var useradmin = mock(UserManagementService.class);
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
-        var request = buildGetUrl(String.format("/togglepasswordprotection/%d", pictureWithToggledPasswordProtection.getId()));
+        var request = buildGetUrl(String.format("/togglepasswordprotection/%d", pictureWithToggledPasswordProtection.id()));
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
         loginUser("jad", "1ad");
@@ -212,7 +212,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         when(backendService.toggleEntryPasswordProtection((not(eq(0))))).thenReturn(Arrays.asList(pictureWithToggledPasswordProtection));
         var useradmin = mock(UserManagementService.class);
         var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
-        var request = buildGetUrl(String.format("/togglepasswordprotection/%d", pictureWithToggledPasswordProtection.getId()));
+        var request = buildGetUrl(String.format("/togglepasswordprotection/%d", pictureWithToggledPasswordProtection.id()));
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
         servlet.service(request, response);
@@ -350,8 +350,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         var routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
-        var updatedAlbum = routes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertThat(albumToMove.getSort()).isGreaterThan(updatedAlbum.getSort());
+        var updatedAlbum = routes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertThat(albumToMove.sort()).isGreaterThan(updatedAlbum.sort());
     }
 
     @Test
@@ -372,8 +372,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         var routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
-        var updatedAlbum = routes.stream().filter(r -> r.getId() == 2).findFirst().get();
-        assertThat(albumToMove.getSort()).isLessThan(updatedAlbum.getSort());
+        var updatedAlbum = routes.stream().filter(r -> r.id() == 2).findFirst().get();
+        assertThat(albumToMove.sort()).isLessThan(updatedAlbum.sort());
     }
 
     @Test
@@ -480,10 +480,10 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         var metadata = mapper.readValue(getBinaryContent(response), ImageMetadata.class);
-        assertEquals(200, metadata.getStatus());
-        assertThat(metadata.getLastModified()).isAfter(Date.from(Instant.EPOCH));
-        assertEquals("image/jpeg", metadata.getContentType());
-        assertThat(metadata.getContentLength()).isPositive();
+        assertEquals(200, metadata.status());
+        assertThat(metadata.lastModified()).isAfter(Date.from(Instant.EPOCH));
+        assertEquals("image/jpeg", metadata.contentType());
+        assertThat(metadata.contentLength()).isPositive();
     }
 
     @Test
@@ -584,8 +584,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         assertEquals(500, response.getStatus());
         assertEquals("application/json", response.getContentType());
         var errorMessage = mapper.readValue(response.getOutputStreamBinaryContent(), ErrorMessage.class);
-        assertEquals(500, errorMessage.getStatus());
-        assertThat(errorMessage.getMessage()).startsWith("Unknown locale");
+        assertEquals(500, errorMessage.status());
+        assertThat(errorMessage.message()).startsWith("Unknown locale");
     }
 
     private HttpServletRequest buildPostUrl(String resource, Object body) throws Exception {

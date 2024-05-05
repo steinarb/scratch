@@ -16,42 +16,15 @@
 package no.priv.bang.oldalbum.services.bean;
 
 import java.util.Date;
-import no.priv.bang.beans.immutable.Immutable;
 
-public class ImageMetadata extends Immutable { // NOSONAR Immutable handles added fields
-
-    private int status;
-    private Date lastModified;
-    private String contentType;
-    private int contentLength;
-    private String title;
-    private String description;
-
-    private ImageMetadata() {}
-
-    public int getStatus() {
-        return status;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public int getContentLength() {
-        return contentLength;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
+public record ImageMetadata(
+    int status,
+    Date lastModified,
+    String contentType,
+    int contentLength,
+    String title,
+    String description)
+{
 
     public static Builder with() {
         return new Builder();
@@ -68,14 +41,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         private Builder() {}
 
         public ImageMetadata build() {
-            var imageMetadata = new ImageMetadata();
-            imageMetadata.status = this.status;
-            imageMetadata.lastModified = this.lastModified;
-            imageMetadata.contentType = this.contentType;
-            imageMetadata.contentLength = this.contentLength;
-            imageMetadata.title = this.title;
-            imageMetadata.description = this.description;
-            return imageMetadata;
+            return new ImageMetadata(status, lastModified, contentType, contentLength, title, description);
         }
 
         public Builder status(int status) {

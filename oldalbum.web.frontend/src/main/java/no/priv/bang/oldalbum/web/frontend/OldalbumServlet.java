@@ -125,27 +125,27 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     private void setLastModifiedHeader(HttpServletResponse response, AlbumEntry entry) {
-        if (entry != null && entry.getLastModified() != null) {
-            response.setDateHeader("Last-Modified", entry.getLastModified().toInstant().toEpochMilli());
+        if (entry != null && entry.lastModified() != null) {
+            response.setDateHeader("Last-Modified", entry.lastModified().toInstant().toEpochMilli());
         }
     }
 
     void addOpenGraphHeaderElements(Document html, AlbumEntry entry) {
         if (entry != null) {
-            setTitleIfNotEmpty(html, entry.getTitle());
-            setDescriptionIfNotEmpty(html, entry.getDescription());
-            addMetaTagIfNotEmpty(html, "og:title", entry.getTitle());
-            addMetaTagIfNotEmpty(html, "og:description", entry.getDescription());
-            addMetaTagIfNotEmpty(html, "og:image", entry.getImageUrl());
+            setTitleIfNotEmpty(html, entry.title());
+            setDescriptionIfNotEmpty(html, entry.description());
+            addMetaTagIfNotEmpty(html, "og:title", entry.title());
+            addMetaTagIfNotEmpty(html, "og:description", entry.description());
+            addMetaTagIfNotEmpty(html, "og:image", entry.imageUrl());
             addMetaTagIfNotEmpty(html, "twitter:card", "summary_large_image");
-            addMetaTagIfNotEmpty(html, "twitter:title", entry.getTitle());
-            addMetaTagIfNotEmpty(html, "twitter:description", entry.getDescription());
-            addMetaTagIfNotEmpty(html, "twitter:image", entry.getImageUrl());
-            if (entry.isAlbum()) {
-                var children = oldalbum.getChildren(entry.getId());
+            addMetaTagIfNotEmpty(html, "twitter:title", entry.title());
+            addMetaTagIfNotEmpty(html, "twitter:description", entry.description());
+            addMetaTagIfNotEmpty(html, "twitter:image", entry.imageUrl());
+            if (entry.album()) {
+                var children = oldalbum.getChildren(entry.id());
                 if (!children.isEmpty()) {
                     for(AlbumEntry child : children) {
-                        addMetaTagIfNotEmpty(html, "og:image", child.getImageUrl());
+                        addMetaTagIfNotEmpty(html, "og:image", child.imageUrl());
                     }
                 }
             }

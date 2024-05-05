@@ -25,13 +25,13 @@ class ImageRequestTest {
     void test() {
         var url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         var bean = ImageRequest.with().url(url).build();
-        assertEquals(url, bean.getUrl());
+        assertEquals(url, bean.url());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = ImageRequest.with().build();
-        assertNull(bean.getUrl());
+        assertNull(bean.url());
     }
 
 }

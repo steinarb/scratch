@@ -37,23 +37,23 @@ class LoginResultTest {
             .canLogin(canLogin)
             .originalRequestUri(originalRequestUri)
             .build();
-        assertTrue(bean.getSuccess());
-        assertEquals(username, bean.getUsername());
-        assertEquals(errormessage, bean.getErrormessage());
-        assertTrue(bean.isCanModifyAlbum());
-        assertTrue(bean.isCanLogin());
-        assertEquals(originalRequestUri, bean.getOriginalRequestUri());
+        assertTrue(bean.success());
+        assertEquals(username, bean.username());
+        assertEquals(errormessage, bean.errormessage());
+        assertTrue(bean.canModifyAlbum());
+        assertTrue(bean.canLogin());
+        assertEquals(originalRequestUri, bean.originalRequestUri());
     }
 
     @Test
     void testNoargsConstructor() {
         var bean = LoginResult.with().build();
-        assertFalse(bean.getSuccess());
-        assertNull(bean.getUsername());
-        assertNull(bean.getErrormessage());
-        assertFalse(bean.isCanModifyAlbum());
-        assertFalse(bean.isCanLogin());
-        assertNull(bean.getOriginalRequestUri());
+        assertFalse(bean.success());
+        assertNull(bean.username());
+        assertNull(bean.errormessage());
+        assertFalse(bean.canModifyAlbum());
+        assertFalse(bean.canLogin());
+        assertNull(bean.originalRequestUri());
     }
 
 }
