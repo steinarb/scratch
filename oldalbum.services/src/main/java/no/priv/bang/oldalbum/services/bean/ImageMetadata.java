@@ -53,11 +53,11 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         return description;
     }
 
-    public static ImageMetadataBuilder with() {
-        return new ImageMetadataBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class ImageMetadataBuilder {
+    public static class Builder {
         private int status;
         private Date lastModified;
         private String contentType;
@@ -65,7 +65,7 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
         private String title;
         private String description;
 
-        private ImageMetadataBuilder() {}
+        private Builder() {}
 
         public ImageMetadata build() {
             var imageMetadata = new ImageMetadata();
@@ -78,32 +78,32 @@ public class ImageMetadata extends Immutable { // NOSONAR Immutable handles adde
             return imageMetadata;
         }
 
-        public ImageMetadataBuilder status(int status) {
+        public Builder status(int status) {
             this.status = status;
             return this;
         }
 
-        public ImageMetadataBuilder lastModified(Date lastModified) {
+        public Builder lastModified(Date lastModified) {
             this.lastModified = lastModified;
             return this;
         }
 
-        public ImageMetadataBuilder contentType(String contentType) {
+        public Builder contentType(String contentType) {
             this.contentType = contentType;
             return this;
         }
 
-        public ImageMetadataBuilder contentLength(int contentLength) {
+        public Builder contentLength(int contentLength) {
             this.contentLength = contentLength;
             return this;
         }
 
-        public ImageMetadataBuilder title(String title) {
+        public Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public ImageMetadataBuilder description(String description) {
+        public Builder description(String description) {
             this.description = description;
             return this;
         }

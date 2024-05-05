@@ -52,11 +52,11 @@ public class LoginResult extends Immutable { // NOSONAR Immutable handles added 
         return this.originalRequestUri;
     }
 
-    public static LoginResultBuilder with() {
-        return new LoginResultBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class LoginResultBuilder {
+    public static class Builder {
         private boolean success;
         private String username;
         private String errormessage;
@@ -64,7 +64,7 @@ public class LoginResult extends Immutable { // NOSONAR Immutable handles added 
         private boolean canLogin;
         private String originalRequestUri;
 
-        private LoginResultBuilder() {}
+        private Builder() {}
 
         public LoginResult build() {
             var loginResult = new LoginResult();
@@ -77,32 +77,32 @@ public class LoginResult extends Immutable { // NOSONAR Immutable handles added 
             return loginResult;
         }
 
-        public LoginResultBuilder success(boolean success) {
+        public Builder success(boolean success) {
             this.success = success;
             return this;
         }
 
-        public LoginResultBuilder username(String username) {
+        public Builder username(String username) {
             this.username = username;
             return this;
         }
 
-        public LoginResultBuilder errormessage(String errormessage) {
+        public Builder errormessage(String errormessage) {
             this.errormessage = errormessage;
             return this;
         }
 
-        public LoginResultBuilder canModifyAlbum(boolean canModifyAlbum) {
+        public Builder canModifyAlbum(boolean canModifyAlbum) {
             this.canModifyAlbum = canModifyAlbum;
             return this;
         }
 
-        public LoginResultBuilder canLogin(boolean canLogin) {
+        public Builder canLogin(boolean canLogin) {
             this.canLogin = canLogin;
             return this;
         }
 
-        public LoginResultBuilder originalRequestUri(String originalRequestUri) {
+        public Builder originalRequestUri(String originalRequestUri) {
             this.originalRequestUri = originalRequestUri;
             return this;
         }

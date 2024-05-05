@@ -99,7 +99,7 @@ import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.BatchAddPicturesRequest;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
-import no.priv.bang.oldalbum.services.bean.ImageMetadata.ImageMetadataBuilder;
+import no.priv.bang.oldalbum.services.bean.ImageMetadata.Builder;
 import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 @Component(immediate = true, property= { "defaultlocale=nb_NO" })
@@ -826,7 +826,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    private void readAndParseImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, HttpURLConnection connection, InputStream inputStream) {
+    private void readAndParseImageMetadata(String imageUrl, final Builder metadataBuilder, HttpURLConnection connection, InputStream inputStream) {
         try(var input = ImageIO.createImageInputStream(inputStream)) {
             metadataBuilder.lastModified(new Date(connection.getLastModified()));
             var readers = ImageIO.getImageReaders(input);
@@ -848,7 +848,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    void readExifImageMetadata(String imageUrl, final ImageMetadataBuilder metadataBuilder, List<JPEGSegment> exifSegment) {
+    void readExifImageMetadata(String imageUrl, final Builder metadataBuilder, List<JPEGSegment> exifSegment) {
         exifSegment.stream().map(s -> s.data()).findFirst().ifPresent(exifData -> {
                 try {
                     exifData.read();
@@ -860,7 +860,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             });
     }
 
-    private void extractMetadataFromExifTags(final ImageMetadataBuilder metadataBuilder, CompoundDirectory exif, String imageUrl) {
+    private void extractMetadataFromExifTags(final Builder metadataBuilder, CompoundDirectory exif, String imageUrl) {
         for (var entry : exif) {
             if (entry.getIdentifier().equals(EXIF_DATETIME)) {
                 extractExifDatetime(metadataBuilder, entry, imageUrl);
@@ -879,7 +879,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    void extractExifDatetime(final ImageMetadataBuilder metadataBuilder, Entry entry, String imageUrl) {
+    void extractExifDatetime(final Builder metadataBuilder, Entry entry, String imageUrl) {
         try {
             var exifDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
             exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
@@ -924,7 +924,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private void ifDescriptionIsEmptyTryLookingForInstaloaderTxtDescriptionFile(
         String imageUrl,
-        ImageMetadataBuilder metadataBuilder)
+        Builder metadataBuilder)
     {
         if (metadataBuilder.descriptionIsNullOrEmpty()) {
             var descriptionTxtUrl = convertJpegUrlToTxtUrl(imageUrl);

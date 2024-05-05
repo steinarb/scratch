@@ -27,14 +27,14 @@ public class ImageRequest extends Immutable { // NOSONAR Immutable handles added
         return url;
     }
 
-    public static ImageRequestBuilder with() {
-        return new ImageRequestBuilder();
+    public static Builder with() {
+        return new Builder();
     }
 
-    public static class ImageRequestBuilder {
+    public static class Builder {
         private String url;
 
-        private ImageRequestBuilder() {}
+        private Builder() {}
 
         public ImageRequest build() {
             var imageRequest = new ImageRequest();
@@ -42,7 +42,7 @@ public class ImageRequest extends Immutable { // NOSONAR Immutable handles added
             return imageRequest;
         }
 
-        public ImageRequestBuilder url(String url) {
+        public Builder url(String url) {
             this.url = url;
             return this;
         }
