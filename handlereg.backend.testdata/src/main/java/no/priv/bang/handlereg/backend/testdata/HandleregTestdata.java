@@ -48,7 +48,7 @@ public class HandleregTestdata {
     }
 
     void addRolesForTestusers() {
-        var handleregbruker = useradmin.getRoles().stream().filter(r -> HANDLEREGBRUKER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
+        var handleregbruker = useradmin.getRoles().stream().filter(r -> HANDLEREGBRUKER_ROLE.equals(r.rolename())).findFirst().get(); // NOSONAR testkode
         var jod = useradmin.getUser("jod");
         useradmin.addUserRoles(UserRoles.with().user(jod).roles(Arrays.asList(handleregbruker)).build());
         var jad = useradmin.getUser("jad");

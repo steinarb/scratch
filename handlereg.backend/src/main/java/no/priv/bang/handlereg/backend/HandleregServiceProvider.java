@@ -126,9 +126,9 @@ public class HandleregServiceProvider implements HandleregService {
                         return Oversikt.with()
                             .accountid(userid)
                             .brukernavn(username)
-                            .email(user.getEmail())
-                            .fornavn(user.getFirstname())
-                            .etternavn(user.getLastname())
+                            .email(user.email())
+                            .fornavn(user.firstname())
+                            .etternavn(user.lastname())
                             .balanse(balanse)
                             .sumPreviousMonth(sumPreviousMonth)
                             .sumThisMonth(sumThisMonth)
@@ -557,7 +557,7 @@ public class HandleregServiceProvider implements HandleregService {
     private void addRolesIfNotpresent() {
         var handleregbruker = HANDLEREGBRUKER_ROLE;
         var roles = useradmin.getRoles();
-        var existingRole = roles.stream().filter(r -> handleregbruker.equals(r.getRolename())).findFirst();
+        var existingRole = roles.stream().filter(r -> handleregbruker.equals(r.rolename())).findFirst();
         if (!existingRole.isPresent()) {
             useradmin.addRole(Role.with().id(-1).rolename(handleregbruker).description("Bruker av applikasjonen handlereg").build());
         }
