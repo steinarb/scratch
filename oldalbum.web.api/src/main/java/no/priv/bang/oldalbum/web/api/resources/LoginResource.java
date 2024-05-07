@@ -149,7 +149,7 @@ public class LoginResource {
     }
 
     private boolean shiroRoleOldalbumadminExists() {
-        return useradmin.getRoles().stream().anyMatch(r -> "oldalbumadmin".equals(r.getRolename()));
+        return useradmin.getRoles().stream().anyMatch(r -> "oldalbumadmin".equals(r.rolename()));
     }
 
     private Optional<String> findOriginalRequestUri() {

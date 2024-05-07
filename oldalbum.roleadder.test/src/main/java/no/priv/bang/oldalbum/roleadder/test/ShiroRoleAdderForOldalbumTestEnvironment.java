@@ -58,7 +58,7 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
             var user = User.with().userid(0).username(adminusername).email("admin@company.com").firstname("Ad").lastname("Min").build();
             var newUserWithPasswords = UserAndPasswords.with().user(user).password1(adminpassword).password2(adminpassword).build();
             var users = useradmin.addUser(newUserWithPasswords);
-            Optional<User> adminOpt = users.isEmpty() ? Optional.empty() : users.stream().filter(u -> adminusername.equals(u.getUsername())).findFirst();
+            Optional<User> adminOpt = users.isEmpty() ? Optional.empty() : users.stream().filter(u -> adminusername.equals(u.username())).findFirst();
             admin = adminOpt.isEmpty() ? null : adminOpt.get();
         } else {
             var userAndPasswords = UserAndPasswords.with().user(admin).password1(adminpassword).password2(adminpassword).build();
@@ -69,7 +69,7 @@ public class ShiroRoleAdderForOldalbumTestEnvironment {
     }
 
     public Role addOldalbumadminRole() {
-        var existingrole = useradmin.getRoles().stream().filter(r -> "oldalbumadmin".equals(r.getRolename())).findFirst();
+        var existingrole = useradmin.getRoles().stream().filter(r -> "oldalbumadmin".equals(r.rolename())).findFirst();
         if (existingrole.isPresent()) {
             return existingrole.get();
         }

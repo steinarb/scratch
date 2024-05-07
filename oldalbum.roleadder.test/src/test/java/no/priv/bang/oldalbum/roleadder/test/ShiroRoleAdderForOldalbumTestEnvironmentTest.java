@@ -87,8 +87,8 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
         var role = roleadder.addOldalbumadminRole();
-        assertEquals("oldalbumadmin", role.getRolename());
-        assertEquals("Created by oldalbum.roleadder.test", role.getDescription());
+        assertEquals("oldalbumadmin", role.rolename());
+        assertEquals("Created by oldalbum.roleadder.test", role.description());
     }
 
     @Test
@@ -99,8 +99,8 @@ class ShiroRoleAdderForOldalbumTestEnvironmentTest {
         var roleadder = new ShiroRoleAdderForOldalbumTestEnvironment();
         roleadder.addUseradmin(useradmin);
         var role = roleadder.addOldalbumadminRole();
-        assertEquals("oldalbumadmin", role.getRolename());
-        assertEquals("Already exists", role.getDescription());
+        assertEquals("oldalbumadmin", role.rolename());
+        assertEquals("Already exists", role.description());
     }
 
     @Test
