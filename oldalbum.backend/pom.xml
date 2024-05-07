@@ -38,11 +38,6 @@
             <artifactId>jsoup</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.beans</groupId>
-            <artifactId>beans.immutable</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.jdbc</groupId>
             <artifactId>jdbc.sqldumper</artifactId>
             <scope>provided</scope>

@@ -56,11 +56,6 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.beans</groupId>
-            <artifactId>beans.immutable</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.services</artifactId>
             <version>${project.version}</version>
