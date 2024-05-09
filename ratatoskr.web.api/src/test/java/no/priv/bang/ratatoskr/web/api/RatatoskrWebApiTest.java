@@ -135,7 +135,7 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterIncrementStepBean.class);
-        assertEquals(incrementStepValue, bean.getCounterIncrementStep());
+        assertEquals(incrementStepValue, bean.counterIncrementStep());
     }
 
     @Test
@@ -174,7 +174,7 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterIncrementStepBean.class);
-        assertEquals(incrementStepValue, bean.getCounterIncrementStep());
+        assertEquals(incrementStepValue, bean.counterIncrementStep());
     }
 
     @Test
@@ -213,7 +213,7 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterBean.class);
-        assertEquals(counterValue, bean.getCounter());
+        assertEquals(counterValue, bean.counter());
     }
 
     @Test
@@ -246,7 +246,7 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterBean.class);
-        assertEquals(counterValue, bean.getCounter());
+        assertEquals(counterValue, bean.counter());
     }
 
     @Test
@@ -313,7 +313,7 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
         var bean = mapper.readValue(response.getOutputStreamBinaryContent(), CounterBean.class);
-        assertEquals(counterValue, bean.getCounter());
+        assertEquals(counterValue, bean.counter());
     }
 
     @Test
