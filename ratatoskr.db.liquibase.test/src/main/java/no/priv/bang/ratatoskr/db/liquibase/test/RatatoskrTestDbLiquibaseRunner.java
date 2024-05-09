@@ -21,9 +21,7 @@ import javax.sql.DataSource;
 import org.ops4j.pax.jdbc.hook.PreHook;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import liquibase.Liquibase;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.exception.LiquibaseException;
 import no.priv.bang.ratatoskr.db.liquibase.RatatoskrLiquibase;
 
 @Component(immediate=true, property = "name=ratatoskrdb")
@@ -46,7 +44,9 @@ public class RatatoskrTestDbLiquibaseRunner implements PreHook {
         }
 
         try (var connect = datasource.getConnection()) {
-            insertMockData(connect);
+            insertMockData(connect, ratatoskrLiquibase);
+        } catch (Exception e) {
+            throw new SQLException("Error inserting ratatoskr test database mock data", e);
         }
 
         try (var connect = datasource.getConnection()) {
@@ -58,15 +58,8 @@ public class RatatoskrTestDbLiquibaseRunner implements PreHook {
         }
     }
 
-    public void insertMockData(Connection connect) throws SQLException {
-        var databaseConnection = new JdbcConnection(connect);
-        try(var classLoaderResourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader())) {
-            try(var liquibase = new Liquibase("sql/data/db-changelog.xml", classLoaderResourceAccessor, databaseConnection)) {
-                liquibase.update("");
-            }
-        } catch (Exception e) {
-            throw new SQLException("Error inserting ratatoskr test database mock data", e);
-        }
+    public void insertMockData(Connection connect, RatatoskrLiquibase ratatoskrLiquibase) throws LiquibaseException {
+        ratatoskrLiquibase.applyLiquibaseChangelist(connect, "sql/data/db-changelog.xml", getClass().getClassLoader());
     }
 
 }

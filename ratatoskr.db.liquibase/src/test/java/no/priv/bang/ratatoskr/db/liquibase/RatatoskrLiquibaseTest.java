@@ -80,38 +80,6 @@ class RatatoskrLiquibaseTest {
         assertThat(ex.getMessage()).startsWith("java.lang.Exception");
     }
 
-    @Test
-    void testForceReleaseLocks() throws Exception {
-        var connection = createConnection("ratatoskr");
-        var ratatoskrLiquibase = new RatatoskrLiquibase();
-        assertDoesNotThrow(() -> ratatoskrLiquibase.forceReleaseLocks(connection));
-    }
-
-    @Test
-    void testForceReleaseLocksWhenConnectionFails() throws Exception {
-        var connection = spy(createConnection("ratatoskr3"));
-        // A Derby JDBC connection wrapped in a Mockito spy() fails om Connection.setAutoClosable()
-
-        var ratatoskrLiquibase = new RatatoskrLiquibase();
-        var ex = assertThrows(
-            LiquibaseException.class,
-            () -> ratatoskrLiquibase.forceReleaseLocks(connection));
-        assertThat(ex.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
-    }
-
-    @Test
-    void testForceReleaseLocksWhenConnectionFailsOnClose() throws Exception {
-        var connection = spy(createConnection("ratatoskr4"));
-        doNothing().when(connection).setAutoCommit(anyBoolean());
-        doThrow(Exception.class).when(connection).close();
-
-        var ratatoskrLiquibase = new RatatoskrLiquibase();
-        var ex = assertThrows(
-            LiquibaseException.class,
-            () -> ratatoskrLiquibase.forceReleaseLocks(connection));
-        assertThat(ex.getMessage()).startsWith("java.lang.Exception");
-    }
-
     private void addAccounts(Connection connection) throws Exception {
         addAccount(connection, "admin");
     }

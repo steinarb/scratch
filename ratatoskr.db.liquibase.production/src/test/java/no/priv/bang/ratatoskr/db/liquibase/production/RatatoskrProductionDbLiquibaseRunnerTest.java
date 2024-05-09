@@ -86,7 +86,7 @@ class RatatoskrProductionDbLiquibaseRunnerTest {
         var e = assertThrows(
             SQLException.class,
             () -> runner.prepare(datasource));
-        assertThat(e.getMessage()).startsWith("Failed to insert initial data in ratatoskr PostgreSQL database");
+        assertThat(e.getMessage()).startsWith("Failed to insert initial data into ratatoskr PostgreSQL database");
     }
 
 
