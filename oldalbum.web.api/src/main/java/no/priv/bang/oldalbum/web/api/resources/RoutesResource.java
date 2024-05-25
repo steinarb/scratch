@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Steinar Bang
+ * Copyright 2020-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class RoutesResource {
     public List<AlbumEntry> allroutes() {
         var subject = SecurityUtils.getSubject();
         var username = (String) subject.getPrincipal();
-        var isLoggedIn = subject.isAuthenticated() || subject.isRemembered();
+        var isLoggedIn = subject.isAuthenticated();
         return oldAlbumService.fetchAllRoutes(username, isLoggedIn);
     }
 
