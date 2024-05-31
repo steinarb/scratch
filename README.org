@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2024-05-31 Fri 21:42> |   2.0.0 | Use shiro 2.0.1 and new record-based API of the UserService OSGi service                                       |
 | <2024-04-06 Sat 13:30> |  1.9.28 | Use liquibase 4.27.0 and build with node.js 20.12.0 and karaf 4.4.5                                            |
 | <2024-03-25 Mon 20:13> |  1.9.27 | Possible to unprotect protected pictures when sharing them, dynamic shiro protection of albums and pictures    |
 | <2024-03-02 Sat 11:33> |  1.9.26 | Use postgresql jdbc 42.7.2                                                                                     |
