@@ -53,6 +53,13 @@ import static no.priv.bang.handlereg.services.HandleregConstants.*;
 @Component(service=HandleregService.class, immediate=true)
 public class HandleregServiceProvider implements HandleregService {
 
+    private static final String STORE_NAME = "store_name";
+    private static final String REKKEFOLGE = "rekkefolge";
+    private static final String GRUPPE = "gruppe";
+    private static final String TRANSACTION_ID = "transaction_id";
+    private static final String ACCOUNT_ID = "account_id";
+    private static final String STORE_ID = "store_id";
+    private static final String AGGREGATE_AMOUNT = "aggregate_amount";
     private Logger logger;
     private DataSource datasource;
     private UserManagementService useradmin;
@@ -94,10 +101,10 @@ public class HandleregServiceProvider implements HandleregService {
             {
                 try (var results = statement.executeQuery()) {
                     if (results.last()) {
-                        sumThisMonth = results.getDouble(1);
+                        sumThisMonth = results.getDouble(AGGREGATE_AMOUNT);
                     }
                     if (results.previous()) {
-                        sumPreviousMonth = results.getDouble(1);
+                        sumPreviousMonth = results.getDouble(AGGREGATE_AMOUNT);
                     }
                 }
             }
@@ -109,8 +116,8 @@ public class HandleregServiceProvider implements HandleregService {
                 statement.setString(1, brukernavn);
                 try(var results = statement.executeQuery()) {
                     if (results.next()) {
-                        lastTransactionAmount = results.getDouble(1);
-                        lastTransactionStore = results.getInt(2);
+                        lastTransactionAmount = results.getDouble("transaction_amount");
+                        lastTransactionStore = results.getInt(STORE_ID);
                     }
                 }
             }
@@ -119,9 +126,9 @@ public class HandleregServiceProvider implements HandleregService {
                 statement.setString(1, brukernavn);
                 try(var results = statement.executeQuery()) {
                     if (results.next()) {
-                        var userid = results.getInt(1);
-                        var username = results.getString(2);
-                        var balanse = results.getDouble(3);
+                        var userid = results.getInt(ACCOUNT_ID);
+                        var username = results.getString("username");
+                        var balanse = results.getDouble("balance");
                         var user = useradmin.getUser(username);
                         return Oversikt.with()
                             .accountid(userid)
@@ -157,11 +164,11 @@ public class HandleregServiceProvider implements HandleregService {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var transaction = Transaction.with()
-                            .transactionId(results.getInt(1))
-                            .handletidspunkt(new Date(results.getTimestamp(2).getTime()))
-                            .butikk(results.getString(3))
-                            .storeId(results.getInt(4))
-                            .belop(results.getDouble(5))
+                            .transactionId(results.getInt(TRANSACTION_ID))
+                            .handletidspunkt(new Date(results.getTimestamp("transaction_time").getTime()))
+                            .butikk(results.getString(STORE_NAME))
+                            .storeId(results.getInt(STORE_ID))
+                            .belop(results.getDouble("transaction_amount"))
                             .build();
                         handlinger.add(transaction);
                     }
@@ -204,10 +211,10 @@ public class HandleregServiceProvider implements HandleregService {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var butikk = Butikk.with()
-                            .storeId(results.getInt(1))
-                            .butikknavn(results.getString(2))
-                            .gruppe(results.getInt(3))
-                            .rekkefolge(results.getInt(4))
+                            .storeId(results.getInt(STORE_ID))
+                            .butikknavn(results.getString(STORE_NAME))
+                            .gruppe(results.getInt(GRUPPE))
+                            .rekkefolge(results.getInt(REKKEFOLGE))
                             .build();
                         butikker.add(butikk);
                     }
@@ -273,14 +280,14 @@ public class HandleregServiceProvider implements HandleregService {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var butikk = Butikk.with()
-                            .storeId(results.getInt(1))
-                            .butikknavn(results.getString(2))
-                            .gruppe(results.getInt(3))
-                            .rekkefolge(results.getInt(4))
+                            .storeId(results.getInt(STORE_ID))
+                            .butikknavn(results.getString(STORE_NAME))
+                            .gruppe(results.getInt(GRUPPE))
+                            .rekkefolge(results.getInt(REKKEFOLGE))
                             .build();
                         var butikkSum = ButikkSum.with()
                             .butikk(butikk)
-                            .sum(results.getDouble(5))
+                            .sum(results.getDouble("totalbelop"))
                             .build();
                         sumOverButikk.add(butikkSum);
                     }
@@ -302,14 +309,14 @@ public class HandleregServiceProvider implements HandleregService {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var butikk = Butikk.with()
-                            .storeId(results.getInt(1))
-                            .butikknavn(results.getString(2))
-                            .gruppe(results.getInt(3))
-                            .rekkefolge(results.getInt(4))
+                            .storeId(results.getInt(STORE_ID))
+                            .butikknavn(results.getString(STORE_NAME))
+                            .gruppe(results.getInt(GRUPPE))
+                            .rekkefolge(results.getInt(REKKEFOLGE))
                             .build();
                         var butikkSum = ButikkCount.with()
                             .butikk(butikk)
-                            .count(results.getLong(5))
+                            .count(results.getLong("antallbesok"))
                             .build();
                         antallHandlerIButikk.add(butikkSum);
                     }
@@ -331,14 +338,14 @@ public class HandleregServiceProvider implements HandleregService {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var butikk = Butikk.with()
-                            .storeId(results.getInt(1))
-                            .butikknavn(results.getString(2))
-                            .gruppe(results.getInt(3))
-                            .rekkefolge(results.getInt(4))
+                            .storeId(results.getInt(STORE_ID))
+                            .butikknavn(results.getString(STORE_NAME))
+                            .gruppe(results.getInt(GRUPPE))
+                            .rekkefolge(results.getInt(REKKEFOLGE))
                             .build();
                         var butikkSum = ButikkDate.with()
                             .butikk(butikk)
-                            .date(new Date(results.getTimestamp(5).getTime()))
+                            .date(new Date(results.getTimestamp("handletid").getTime()))
                             .build();
                         sisteHandelIButikk.add(butikkSum);
                     }
@@ -359,8 +366,8 @@ public class HandleregServiceProvider implements HandleregService {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var sumMonth = SumYear.with()
-                            .sum(results.getDouble(1))
-                            .year(Year.of(results.getInt(2)))
+                            .sum(results.getDouble(AGGREGATE_AMOUNT))
+                            .year(Year.of(results.getInt("aggregate_year")))
                             .build();
                         totaltHandlebelopPrAar.add(sumMonth);
                     }
@@ -381,9 +388,9 @@ public class HandleregServiceProvider implements HandleregService {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var sumMonth = SumYearMonth.with()
-                            .sum(results.getDouble(1))
-                            .year(Year.of(results.getInt(2)))
-                            .month(Month.of(results.getInt(3)))
+                            .sum(results.getDouble(AGGREGATE_AMOUNT))
+                            .year(Year.of(results.getInt("aggregate_year")))
+                            .month(Month.of(results.getInt("aggregate_month")))
                             .build();
                         totaltHandlebelopPrAarOgMaaned.add(sumMonth);
                     }
@@ -399,23 +406,23 @@ public class HandleregServiceProvider implements HandleregService {
     @Override
     public List<Favoritt> finnFavoritter(String brukernavn) {
         var favoritter = new ArrayList<Favoritt>();
-        var sql = "select * from accounts a join favourites f on a.account_id=f.account_id join stores s on f.store_id=s.store_id where a.username=? order by f.rekkefolge";
+        var sql = "select s.store_id, s.store_name, s.gruppe, s.rekkefolge as store_rekkefolge, f.favourite_id, f.account_id, f.rekkefolge favourite_rekkefolge from accounts a join favourites f on a.account_id=f.account_id join stores s on f.store_id=s.store_id where a.username=? order by f.rekkefolge";
         try (var connection = datasource.getConnection()) {
             try (var statement = connection.prepareStatement(sql)) {
                 statement.setString(1, brukernavn);
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var butikk = Butikk.with()
-                            .storeId(results.getInt(7))
-                            .butikknavn(results.getString(8))
-                            .gruppe(results.getInt(9))
-                            .rekkefolge(results.getInt(10))
+                            .storeId(results.getInt(STORE_ID))
+                            .butikknavn(results.getString(STORE_NAME))
+                            .gruppe(results.getInt(GRUPPE))
+                            .rekkefolge(results.getInt("store_rekkefolge"))
                             .build();
                         var favoritt = Favoritt.with()
-                            .favouriteid(results.getInt(3))
-                            .accountid(results.getInt(4))
+                            .favouriteid(results.getInt("favourite_id"))
+                            .accountid(results.getInt(ACCOUNT_ID))
                             .store(butikk)
-                            .rekkefolge(results.getInt(6))
+                            .rekkefolge(results.getInt("favourite_rekkefolge"))
                             .build();
                         favoritter.add(favoritt);
                     }
@@ -493,7 +500,7 @@ public class HandleregServiceProvider implements HandleregService {
                 statement.setInt(1, gruppe);
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
-                        var sortorderValueOfLastStore = results.getInt(1);
+                        var sortorderValueOfLastStore = results.getInt(REKKEFOLGE);
                         return sortorderValueOfLastStore + 10;
                     }
                 }
@@ -509,23 +516,23 @@ public class HandleregServiceProvider implements HandleregService {
 
     List<Favoritt> finnFavoritterMedAccountid(int accountid) {
         var favoritter = new ArrayList<Favoritt>();
-        var sql = "select * from favourites f join stores s on f.store_id=s.store_id where f.account_id=? order by f.rekkefolge";
+        var sql = "select s.store_id, s.store_name, s.gruppe as store_gruppe, s.rekkefolge as store_rekkefolge, f.favourite_id, f.account_id, f.rekkefolge as favourite_rekkefolge from favourites f join stores s on f.store_id=s.store_id where f.account_id=? order by f.rekkefolge";
         try (var connection = datasource.getConnection()) {
             try (var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, accountid);
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var butikk = Butikk.with()
-                            .storeId(results.getInt(5))
-                            .butikknavn(results.getString(6))
-                            .gruppe(results.getInt(7))
-                            .rekkefolge(results.getInt(8))
+                            .storeId(results.getInt(STORE_ID))
+                            .butikknavn(results.getString(STORE_NAME))
+                            .gruppe(results.getInt("store_gruppe"))
+                            .rekkefolge(results.getInt("store_rekkefolge"))
                             .build();
                         var favoritt = Favoritt.with()
-                            .favouriteid(results.getInt(1))
-                            .accountid(results.getInt(2))
+                            .favouriteid(results.getInt("favourite_id"))
+                            .accountid(results.getInt(ACCOUNT_ID))
                             .store(butikk)
-                            .rekkefolge(results.getInt(4))
+                            .rekkefolge(results.getInt("favourite_rekkefolge"))
                             .build();
                         favoritter.add(favoritt);
                     }
@@ -545,7 +552,7 @@ public class HandleregServiceProvider implements HandleregService {
             statement.setString(1, brukernavn);
             try (var results = statement.executeQuery()) {
                 while(results.next()) {
-                    return results.getInt(6);
+                    return results.getInt(REKKEFOLGE);
                 }
             }
         } catch (SQLException e) {
