@@ -95,7 +95,7 @@ public class HandleregServiceProvider implements HandleregService {
             //
             // Therefore we have to iterate backwards through the resultset.
             try (var statement = connection.prepareStatement(
-                     "select * from sum_over_month_view",
+                     "select aggregate_amount from sum_over_month_view",
                      ResultSet.TYPE_SCROLL_INSENSITIVE,
                      ResultSet.CONCUR_READ_ONLY))
             {
@@ -205,7 +205,7 @@ public class HandleregServiceProvider implements HandleregService {
     @Override
     public List<Butikk> finnButikker() {
         var butikker = new ArrayList<Butikk>();
-        var sql = "select * from stores where not deaktivert order by gruppe, rekkefolge";
+        var sql = "select store_id, store_name, gruppe, rekkefolge from stores where not deaktivert order by gruppe, rekkefolge";
         try (var connection = datasource.getConnection()) {
             try (var statement = connection.prepareStatement(sql)) {
                 try (var results = statement.executeQuery()) {
@@ -362,7 +362,7 @@ public class HandleregServiceProvider implements HandleregService {
     public List<SumYear> totaltHandlebelopPrAar() {
         var totaltHandlebelopPrAar = new ArrayList<SumYear>();
         try (var connection = datasource.getConnection()) {
-            try (var statement = connection.prepareStatement("select * from sum_over_year_view")) {
+            try (var statement = connection.prepareStatement("select aggregate_amount, aggregate_year from sum_over_year_view")) {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var sumMonth = SumYear.with()
@@ -384,7 +384,7 @@ public class HandleregServiceProvider implements HandleregService {
     public List<SumYearMonth> totaltHandlebelopPrAarOgMaaned() {
         var totaltHandlebelopPrAarOgMaaned = new ArrayList<SumYearMonth>();
         try (var connection = datasource.getConnection()) {
-            try (var statement = connection.prepareStatement("select * from sum_over_month_view")) {
+            try (var statement = connection.prepareStatement("select aggregate_amount, aggregate_year, aggregate_month from sum_over_month_view")) {
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
                         var sumMonth = SumYearMonth.with()
@@ -547,7 +547,7 @@ public class HandleregServiceProvider implements HandleregService {
     }
 
     int finnSisteRekkefolgeIBrukersFavoritter(Connection connection, String brukernavn) {
-        var sql = "select * from accounts a join favourites f on a.account_id=f.account_id where a.username=? order by f.rekkefolge desc";
+        var sql = "select rekkefolge from accounts a join favourites f on a.account_id=f.account_id where a.username=? order by f.rekkefolge desc";
         try (var statement = connection.prepareStatement(sql)) {
             statement.setString(1, brukernavn);
             try (var results = statement.executeQuery()) {
