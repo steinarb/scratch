@@ -48,7 +48,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.metadata.IIOMetadataNode;
@@ -347,8 +346,8 @@ class OldAlbumServiceProviderTest {
         provider.activate(Collections.emptyMap());
 
         var allroutes = provider.fetchAllRoutes(null, true);
-        var protectedAlbums = allroutes.stream().filter(r -> r.album()).filter(r -> r.requireLogin()).collect(Collectors.toList());
-        var protectedPictures = allroutes.stream().filter(r -> !r.album()).filter(r -> r.requireLogin()).collect(Collectors.toList());
+        var protectedAlbums = allroutes.stream().filter(r -> r.album()).filter(r -> r.requireLogin()).toList();
+        var protectedPictures = allroutes.stream().filter(r -> !r.album()).filter(r -> r.requireLogin()).toList();
 
         var protectedAlbum = protectedAlbums.get(0);
         assertTrue(protectedAlbum.requireLogin());
@@ -2003,8 +2002,8 @@ class OldAlbumServiceProviderTest {
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/d").album(false).sort(3).lastModified(parseDate("2022-12-24T17:10:11Z")).build());
         provider.addEntry(AlbumEntry.with().parent(albumid).path("/c").album(false).sort(4).lastModified(parseDate("2014-10-12T10:39:40Z")).build());
         allroutes = provider.sortByDate(albumid);
-        var albumentries = allroutes.stream().filter(r -> r.parent() == albumid).sorted(Comparator.comparingInt(AlbumEntry::sort)).collect(Collectors.toList());
-        var albumentrypaths = albumentries.stream().map(e -> e.path()).collect(Collectors.toList());
+        var albumentries = allroutes.stream().filter(r -> r.parent() == albumid).sorted(Comparator.comparingInt(AlbumEntry::sort)).toList();
+        var albumentrypaths = albumentries.stream().map(e -> e.path()).toList();
         assertThat(albumentrypaths).containsExactly("/a", "/b", "/c", "/d");
     }
 
