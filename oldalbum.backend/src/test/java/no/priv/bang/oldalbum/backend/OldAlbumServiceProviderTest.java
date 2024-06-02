@@ -830,7 +830,7 @@ class OldAlbumServiceProviderTest {
         c = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
         originalCLastModifiedDate = c.lastModified();
         allroutes = provider.moveEntryUp(c);
-        cAfterMoveUp = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
+        cAfterMoveUp = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/c")).findFirst().get();
         assertEquals(originalCLastModifiedDate, cAfterMoveUp.lastModified(), "Expected lastModifiedDate not to be swapped when moving up over an album");
 
         // Verify that moving down over an image swaps the lastModifiedTime timestamp
@@ -848,7 +848,7 @@ class OldAlbumServiceProviderTest {
         a = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/a")).findFirst().get();
         originalALastModfiedDate = a.lastModified();
         allroutes = provider.moveEntryDown(a);
-        aAfterMoveDown = albumToMoveEntriesIn = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/a")).findFirst().get();
+        aAfterMoveDown = allroutes.stream().filter(r -> r.path().equals("/albumtomoveentriesin/a")).findFirst().get();
         assertEquals(originalALastModfiedDate, aAfterMoveDown.lastModified(), "Expected lastModifiedDate not to be swapped when moving down over an album");
     }
 
@@ -1640,7 +1640,7 @@ class OldAlbumServiceProviderTest {
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"));
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"));
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
+        connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
@@ -1708,7 +1708,7 @@ class OldAlbumServiceProviderTest {
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"));
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"));
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
+        connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
