@@ -15,6 +15,7 @@
  */
 package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
+import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -113,7 +114,7 @@ class OldAlbumSchemeTest {
                     assertEquals(contenttype, result.getString(11));
                     assertEquals(size, result.getInt(12));
                 } else {
-                    fail(String.format("Didn't find albumentry with id=d", id));
+                    fail(format("Didn't find albumentry with id=%d", id));
                 }
             }
         }

@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.db.liquibase;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -116,7 +117,7 @@ class OldAlbumLiquibaseTest {
                     assertEquals(contenttype, result.getString(11));
                     assertEquals(size, result.getInt(12));
                 } else {
-                    fail(String.format("Didn't find albumentry with id=d", id));
+                    fail(format("Didn't find albumentry with id=%d", id));
                 }
             }
         }
@@ -140,7 +141,7 @@ class OldAlbumLiquibaseTest {
                 if (result.next()) {
                     assertThrows(SQLException.class, () -> result.getBoolean("require_login"));
                 } else {
-                    fail(String.format("Didn't find albumentry with id=d", id));
+                    fail(format("Didn't find albumentry with id=%d", id));
                 }
             }
         }
@@ -154,7 +155,7 @@ class OldAlbumLiquibaseTest {
                 if (result.next()) {
                     assertThrows(SQLException.class, () -> result.getBoolean("group_by_year"));
                 } else {
-                    fail(String.format("Didn't find albumentry with id=d", id));
+                    fail(format("Didn't find albumentry with id=%d", id));
                 }
             }
         }
@@ -178,7 +179,7 @@ class OldAlbumLiquibaseTest {
                 if (result.next()) {
                     assertEquals(requireLogin, result.getBoolean("require_login"));
                 } else {
-                    fail(String.format("Didn't find albumentry with id=d", id));
+                    fail(format("Didn't find albumentry with id=%d", id));
                 }
             }
         }
@@ -192,7 +193,7 @@ class OldAlbumLiquibaseTest {
                 if (result.next()) {
                     assertEquals(requireLogin, result.getBoolean("group_by_year"));
                 } else {
-                    fail(String.format("Didn't find albumentry with id=d", id));
+                    fail(format("Didn't find albumentry with id=%d", id));
                 }
             }
         }
