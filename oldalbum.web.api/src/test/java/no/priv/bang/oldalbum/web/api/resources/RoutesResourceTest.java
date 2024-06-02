@@ -80,10 +80,10 @@ class RoutesResourceTest extends ShiroTestBase {
 
     @Test
     void testDumpSqlWhenNotLoggedIn() {
-        var backendService = mock(OldAlbumService.class);
-        when(backendService.dumpDatabaseSql(null, false)).thenReturn(dumpedroutes);
+        var mockedBackendService = mock(OldAlbumService.class);
+        when(mockedBackendService.dumpDatabaseSql(null, false)).thenReturn(dumpedroutes);
         var resource = new RoutesResource();
-        resource.oldAlbumService = backendService;
+        resource.oldAlbumService = mockedBackendService;
         createSubjectAndBindItToThread();
         var sql = resource.dumpSql();
         assertThat(sql).contains("--liquibase formatted sql");
@@ -91,10 +91,10 @@ class RoutesResourceTest extends ShiroTestBase {
 
     @Test
     void testDumpSqlWhenLoggedIn() {
-        var backendService = mock(OldAlbumService.class);
-        when(backendService.dumpDatabaseSql("jad", true)).thenReturn(dumpedroutes);
+        var mockedBackendService = mock(OldAlbumService.class);
+        when(mockedBackendService.dumpDatabaseSql("jad", true)).thenReturn(dumpedroutes);
         var resource = new RoutesResource();
-        resource.oldAlbumService = backendService;
+        resource.oldAlbumService = mockedBackendService;
         createSubjectAndBindItToThread();
         loginUser("jad", "1ad");
         var sql = resource.dumpSql();

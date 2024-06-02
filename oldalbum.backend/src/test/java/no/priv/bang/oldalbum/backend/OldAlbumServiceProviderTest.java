@@ -1540,9 +1540,9 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenThrow(SQLException.class);
         var connection = mock(Connection.class);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
-        var datasource = mock(DataSource.class);
-        when(datasource.getConnection()).thenReturn(connection);
-        provider.setDataSource(datasource);
+        var mockedDatasource = mock(DataSource.class);
+        when(mockedDatasource.getConnection()).thenReturn(connection);
+        provider.setDataSource(mockedDatasource);
 
         provider.dumpDatabaseSql(null, false);
         assertThat(logservice.getLogmessages()).isNotEmpty();

@@ -414,9 +414,9 @@ class OldalbumServletTest {
     }
 
     protected WebSubject createSubjectAndBindItToThread(WebSecurityManager webSecurityManager, HttpServletRequest request, HttpServletResponse response) {
-        var subject = new WebSubject.Builder(webSecurityManager, request, response).buildWebSubject();
-        ThreadContext.bind(subject);
-        return subject;
+        var webSubject = new WebSubject.Builder(webSecurityManager, request, response).buildWebSubject();
+        ThreadContext.bind(webSubject);
+        return webSubject;
     }
 
     public static WebSecurityManager getSecurityManager() {
