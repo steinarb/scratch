@@ -370,7 +370,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
 
             try(var statement = connection.prepareStatement("update albumentries set require_login=? where albumentry_id=?")) {
-                statement.setBoolean(1, !requireLogin);
+                statement.setBoolean(1, !Boolean.TRUE.equals(requireLogin));
                 statement.setInt(2, albumEntryId);
                 statement.executeUpdate();
             }
