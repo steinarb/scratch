@@ -160,7 +160,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
 
             for (var album : albums) {
-                var imageQuery = "select * from albumentries where album=false and parent=? order by localpath";
+                var imageQuery = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where album=false and parent=? order by localpath";
                 allroutes.add(album);
                 try (var statement = connection.prepareStatement(imageQuery)) {
                     statement.setInt(1, album.id());
@@ -266,7 +266,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     @Override
     public AlbumEntry getAlbumEntryFromPath(String path) {
-        var sql = "select * from albumentries where localpath=?";
+        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where localpath=?";
         try (var connection = datasource.getConnection()) {
             try (var statement = connection.prepareStatement(sql)) {
                 statement.setString(1, path);
@@ -287,7 +287,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> getChildren(int parent) {
         var children = new ArrayList<AlbumEntry>();
-        var sql = "select * from albumentries where parent=?";
+        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where parent=?";
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, parent);
@@ -308,7 +308,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     List<AlbumEntry> findSelectedentries(List<Integer> selectedentryIds) {
         var selectedentries = new ArrayList<AlbumEntry>();
         var selectedentryIdGroup = selectedentryIds.stream().map(Object::toString).collect(Collectors.joining(","));
-        var sql = String.format("select * from albumentries where albumentry_id in (%s)", selectedentryIdGroup);
+        var sql = String.format("select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where albumentry_id in (%s)", selectedentryIdGroup);
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.createStatement()) {
                 try(var results = statement.executeQuery(sql)) {
@@ -488,7 +488,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void dumpDatabaseSqlToOutputStream(boolean isLoggedn, OutputStream outputStream) {
         var sqldumper = new ResultSetSqlDumper();
-        var sql = "select * from albumentries where (not require_login or (require_login and require_login=?)) order by albumentry_id";
+        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where (not require_login or (require_login and require_login=?)) order by albumentry_id";
         try (var connection = datasource.getConnection()) {
             try (var statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isLoggedn);
@@ -552,7 +552,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     Optional<AlbumEntry> findPreviousEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
         Optional<AlbumEntry> previousEntryId = Optional.empty();
-        var findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
+        var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort=? and parent=?";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort - 1);
             statement.setInt(2, movedEntry.parent());
@@ -568,7 +568,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
         Optional<AlbumEntry> nextEntryId = Optional.empty();
-        var findPreviousEntrySql = "select * from albumentries where sort=? and parent=?";
+        var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort=? and parent=?";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
             statement.setInt(1, sort + 1);
             statement.setInt(2, movedEntry.parent());
@@ -583,7 +583,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     Optional<AlbumEntry> getEntry(Connection connection, int id) {
-        var sql = "select * from albumentries where albumentry_id=?";
+        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where albumentry_id=?";
         try(var statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try(var result = statement.executeQuery()) {
@@ -963,7 +963,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         try {
             var entriesToSort = new ArrayList<AlbumEntry>();
             try (var connection = datasource.getConnection()) {
-                var sql = "select * from albumentries where parent=? order by lastmodified";
+                var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where parent=? order by lastmodified";
                 try (var statement = connection.prepareStatement(sql)) {
                     statement.setInt(1, albumid);
                     try (var results = statement.executeQuery()) {
