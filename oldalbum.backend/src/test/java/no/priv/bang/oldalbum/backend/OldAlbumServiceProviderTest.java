@@ -985,7 +985,7 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testFindNumberOfEntriesInAlbumEmptyResultSet() throws Exception {
+    void testFindNumberOfEntriesInAlbumEmptyResultSet() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
@@ -1026,7 +1026,7 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testGetEntryWhenEntryNotFound() throws Exception {
+    void testGetEntryWhenEntryNotFound() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
@@ -1988,7 +1988,7 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testSortAlbumEntriesByDate() throws Exception {
+    void testSortAlbumEntriesByDate() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
@@ -2146,7 +2146,7 @@ class OldAlbumServiceProviderTest {
         return emptyDatasource;
     }
 
-    static DataSource createNewTestDatabase(String databasename) throws Exception, SQLException {
+    static DataSource createNewTestDatabase(String databasename) throws Exception {
         var database = createEmptyBase(databasename);
         var logservice = new MockLogService();
         var preHook = new OldAlbumDerbyTestDatabase();

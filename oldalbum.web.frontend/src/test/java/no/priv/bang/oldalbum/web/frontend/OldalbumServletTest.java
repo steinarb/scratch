@@ -361,7 +361,7 @@ class OldalbumServletTest {
     }
 
     @Test
-    void testDoGetRoutesWhenNotLoggedIn() throws Exception {
+    void testDoGetRoutesWhenNotLoggedIn() {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/path1", "/path2"));
         when(oldalbum.getPaths(true)).thenReturn(Arrays.asList("/path1", "/path2", "/path3"));
@@ -378,7 +378,7 @@ class OldalbumServletTest {
     }
 
     @Test
-    void testDoGetRoutesWhenLoggedIn() throws Exception {
+    void testDoGetRoutesWhenLoggedIn() {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/path1", "/path2"));
         when(oldalbum.getPaths(true)).thenReturn(Arrays.asList("/path1", "/path2", "/path3"));

@@ -177,7 +177,7 @@ class OldAlbumUrlInitDatabaseTest {
     }
 
     @Test
-    void testInsertDataWithNoInitialDataUrl() throws Exception {
+    void testInsertDataWithNoInitialDataUrl() {
         var datasource = mock(DataSource.class);
         var logservice = new MockLogService();
         var component = new OldAlbumUrlInitDatabase();
