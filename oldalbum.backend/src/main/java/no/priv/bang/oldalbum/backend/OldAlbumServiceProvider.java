@@ -243,7 +243,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 statement.setBoolean(1, isLoggedIn);
                 try (var results = statement.executeQuery()) {
                     while(results.next()) {
-                        paths.add(results.getString(1));
+                        paths.add(results.getString("localpath"));
                     }
                 }
             }
@@ -506,9 +506,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private void addSqlToAdjustThePrimaryKeyGeneratorAfterImport(OutputStream outputStream, Connection connection) throws SQLException, IOException {
         try (var statement = connection.createStatement()) {
-            try (var results = statement.executeQuery("select max(albumentry_id) from albumentries")) {
+            try (var results = statement.executeQuery("select max(albumentry_id) as max_albumentry_id from albumentries")) {
                 while(results.next()) {
-                    var lastIdInDump = results.getInt(1);
+                    var lastIdInDump = results.getInt("max_albumentry_id");
                     try(var writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
                         writer.write(String.format("ALTER TABLE albumentries ALTER COLUMN albumentry_id RESTART WITH %d;%n", lastIdInDump + 1));
                     }
