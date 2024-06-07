@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2023 Steinar Bang
+ * Copyright 2021-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package no.priv.bang.sampleapp.db.liquibase;
 import java.sql.Connection;
 import java.util.Map;
 
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.Liquibase;
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -42,15 +45,9 @@ public class SampleappLiquibase {
 
     public void applyLiquibaseChangelist(Connection connection, String changelistClasspathResource, ClassLoader classLoader) throws LiquibaseException {
         try (var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
-            Map<String, Object> scopeObjects = Map.of(
-                Scope.Attr.database.name(), database,
-                Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(classLoader));
-
-            Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                        .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database)
-                        .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, changelistClasspathResource)
-                        .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
-                        .execute());
+            try(var liquibase = new Liquibase(changelistClasspathResource, new ClassLoaderResourceAccessor(classLoader), database)) {
+                liquibase.update(new Contexts(), new LabelExpression());
+            }
         } catch (LiquibaseException e) {
             throw e;
         } catch (Exception e) {
