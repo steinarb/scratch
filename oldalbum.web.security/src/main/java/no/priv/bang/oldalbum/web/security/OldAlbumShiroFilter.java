@@ -82,6 +82,7 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter implements Reloadab
 
     boolean loadShiroConfiguration() {
         logger.info("Configuring shiro filter");
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader()); // Set class loader that can find PassThruAuthenticationFilter for the Shiro INI parser
         var environment = new OldAlbumWebEnvironment(oldalbum);
         environment.setIni(INI_FILE);
         environment.setServletContext(getServletContext());
