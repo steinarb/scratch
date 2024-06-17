@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.handlereg.db.liquibase.HandleregLiquibase;
 import no.priv.bang.handlereg.services.HandleregException;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
@@ -72,6 +73,7 @@ class HandleregDerbyTestDatabaseTest {
     @Test
     void testFailWhenInsertingMockDataBecauseNoSchema() throws Exception {
         var connection = createDataSource("handlereg2").getConnection();
+        var liquibase = new HandleregLiquibase();
 
         var logservice = new MockLogService();
         var runner = new HandleregTestDbLiquibaseRunner();
@@ -79,7 +81,7 @@ class HandleregDerbyTestDatabaseTest {
         runner.activate();
         var e = assertThrows(
             HandleregException.class,
-            () -> runner.insertMockData(connection));
+            () -> runner.insertMockData(connection, liquibase));
         assertThat(e.getMessage()).startsWith("Error inserting mock data in handlereg derby test database");
     }
 

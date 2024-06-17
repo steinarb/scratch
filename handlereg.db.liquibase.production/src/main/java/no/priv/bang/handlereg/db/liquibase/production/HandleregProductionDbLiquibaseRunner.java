@@ -15,12 +15,8 @@
  */
 package no.priv.bang.handlereg.db.liquibase.production;
 
-import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.hook.PreHook;
@@ -31,15 +27,7 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
 import liquibase.Scope;
-import liquibase.Scope.ScopedRunner;
 import liquibase.ThreadLocalScopeManager;
-import liquibase.changelog.ChangeLogParameters;
-import liquibase.command.CommandScope;
-import liquibase.command.core.UpdateCommandStep;
-import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.handlereg.db.liquibase.HandleregLiquibase;
 import no.priv.bang.handlereg.services.HandleregException;
 
@@ -69,7 +57,7 @@ public class HandleregProductionDbLiquibaseRunner implements PreHook {
         }
 
         try (Connection connect = datasource.getConnection()) {
-            insertMockData(connect);
+            insertMockData(connect, handleregLiquibase);
         }
 
         try (var connect = datasource.getConnection()) {
@@ -79,17 +67,9 @@ public class HandleregProductionDbLiquibaseRunner implements PreHook {
         }
     }
 
-    public void insertMockData(Connection connect) {
-        try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
-            Map<String, Object> scopeObjects = Map.of(
-                Scope.Attr.database.name(), database,
-                Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
-
-            Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                        .addArgumentValue(DATABASE_ARG, database)
-                        .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "sql/data/db-changelog.xml")
-                        .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
-                        .execute());
+    public void insertMockData(Connection connect, HandleregLiquibase liquibase) {
+        try {
+            liquibase.applyLiquibaseChangelist(connect, "sql/data/db-changelog.xml", getClass().getClassLoader());
         } catch (Exception e) {
             throw new HandleregException("Error inserting initial data in handlereg postgresql database", e);
         }
