@@ -16,8 +16,6 @@
 package no.priv.bang.oldalbum.db.liquibase.production;
 
 import java.sql.SQLException;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.ops4j.pax.jdbc.hook.PreHook;
@@ -28,16 +26,7 @@ import org.osgi.service.log.LogService;
 
 import liquibase.Scope;
 import liquibase.ThreadLocalScopeManager;
-import liquibase.Scope.ScopedRunner;
-import liquibase.changelog.ChangeLogParameters;
-import liquibase.command.CommandScope;
-import liquibase.command.core.UpdateCommandStep;
-import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
-import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
 
@@ -58,41 +47,30 @@ public class OldAlbumProductionDatabase implements PreHook {
 
     @Override
     public void prepare(DataSource datasource) throws SQLException {
-        createInitialSchema(datasource);
-        insertInitialData(datasource);
-        updateSchema(datasource);
+        var oldalbumLiquibase = new OldAlbumLiquibase();
+        createInitialSchema(datasource, oldalbumLiquibase);
+        insertInitialData(datasource, oldalbumLiquibase);
+        updateSchema(datasource, oldalbumLiquibase);
     }
 
-    void createInitialSchema(DataSource datasource) throws SQLException {
+    void createInitialSchema(DataSource datasource, OldAlbumLiquibase oldalbumLiquibase) throws SQLException {
         try (var connect = datasource.getConnection()) {
-            var oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.createInitialSchema(connect);
         } catch (Exception e) {
             logger.error("Error creating oldalbum production database", e);
         }
     }
 
-    void insertInitialData(DataSource datasource) throws SQLException {
+    void insertInitialData(DataSource datasource, OldAlbumLiquibase liquibase) throws SQLException {
         try (var connect = datasource.getConnection()) {
-            try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connect))) {
-                Map<String, Object> scopeObjects = Map.of(
-                    Scope.Attr.database.name(), database,
-                    Scope.Attr.resourceAccessor.name(), new ClassLoaderResourceAccessor(getClass().getClassLoader()));
-
-                Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
-                            .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database)
-                            .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "oldalbum/sql/data/db-changelog.xml")
-                            .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
-                            .execute());
-            }
+            liquibase.applyLiquibaseChangeLog(connect, "oldalbum/sql/data/db-changelog.xml", getClass().getClassLoader());
         } catch (Exception e) {
             logger.error("Error populating database with initial data", e);
         }
     }
 
-    private void updateSchema(DataSource datasource) throws SQLException {
+    private void updateSchema(DataSource datasource, OldAlbumLiquibase oldalbumLiquibase) throws SQLException {
         try (var connect = datasource.getConnection()) {
-            var oldalbumLiquibase = new OldAlbumLiquibase();
             oldalbumLiquibase.updateSchema(connect);
         } catch (LiquibaseException e) {
             logger.error("Error updating schema of oldalbum production database", e);

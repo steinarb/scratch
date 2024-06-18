@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumProductionDatabaseTest {
@@ -53,10 +54,11 @@ class OldAlbumProductionDatabaseTest {
         when(connection.getMetaData()).thenThrow(SQLException.class);
         when(datasource.getConnection()).thenReturn(connection);
         var logservice = new MockLogService();
+        var liquibase = new OldAlbumLiquibase();
         var hook = new OldAlbumProductionDatabase();
         hook.setLogService(logservice);
         hook.activate();
-        hook.createInitialSchema(datasource);
+        hook.createInitialSchema(datasource, liquibase);
         assertEquals(1, logservice.getLogmessages().size());
     }
 
@@ -64,9 +66,10 @@ class OldAlbumProductionDatabaseTest {
     void testInsertMockDataWithLiquibaseException() throws Exception {
         var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
         var logservice = new MockLogService();
+        var liquibase = new OldAlbumLiquibase();
         var hook = new OldAlbumProductionDatabase();
         hook.setLogService(logservice);
-        hook.insertInitialData(datasource);
+        hook.insertInitialData(datasource, liquibase);
         assertEquals(1, logservice.getLogmessages().size());
     }
 
