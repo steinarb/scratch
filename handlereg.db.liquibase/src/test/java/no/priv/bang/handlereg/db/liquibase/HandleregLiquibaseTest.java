@@ -16,9 +16,6 @@
 package no.priv.bang.handlereg.db.liquibase;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import java.sql.Connection;
 import java.io.PrintWriter;
 
@@ -32,9 +29,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-
-import liquibase.exception.LiquibaseException;
-import no.priv.bang.handlereg.services.HandleregException;
 
 class HandleregLiquibaseTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
@@ -60,34 +54,6 @@ class HandleregLiquibaseTest {
         try(var connection = createConnection("handlereg")) {
             handleregLiquibase.updateSchema(connection);
         }
-    }
-
-    @Test
-    void testCreateSchemaWithDatabaseError() throws Exception {
-        var connection = spy(createConnection("handlereg2"));
-        // The wrapped JDBC connection throws SQLException on setAutoCommit(anyBoolean());
-
-        var handleregLiquibase = new HandleregLiquibase();
-
-        var e = assertThrows(
-            LiquibaseException.class,
-            () -> handleregLiquibase.createInitialSchema(connection));
-        assertThat(e.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
-    }
-
-    @Test
-    void testCreateSchemaWithErrorOnClose() throws Exception {
-        var connection = spy(createConnection("handlereg3"));
-        doNothing().when(connection).setAutoCommit(anyBoolean());
-        doThrow(Exception.class).when(connection).close();
-
-        var handleregLiquibase = new HandleregLiquibase();
-
-
-        var e = assertThrows(
-            HandleregException.class,
-            () -> handleregLiquibase.createInitialSchema(connection));
-        assertThat(e.getMessage()).startsWith("Error closing resource when applying Liquibase changelist for handlereg database");
     }
 
     @Disabled("Pseudo-test that imports legacy data and turns them into SQL files that can be imported into an SQL database")

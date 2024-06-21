@@ -15,24 +15,11 @@
  */
 package no.priv.bang.handlereg.db.liquibase;
 
-import static liquibase.Scope.Attr.resourceAccessor;
-import static liquibase.command.core.UpdateCommandStep.CHANGELOG_FILE_ARG;
-import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
-
 import java.sql.Connection;
-import java.util.Map;
-
-import liquibase.Scope;
-import liquibase.command.CommandScope;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
-import no.priv.bang.handlereg.services.HandleregException;
+import no.priv.bang.karaf.liquibase.runner.LiquibaseClassPathChangeLogRunner;
 
-public class HandleregLiquibase {
+public class HandleregLiquibase extends LiquibaseClassPathChangeLogRunner {
 
     public void createInitialSchema(Connection connection) throws LiquibaseException {
         applyLiquibaseChangelist(connection, "handlereg-db-changelog/db-changelog-1.0.0.xml");
@@ -44,27 +31,6 @@ public class HandleregLiquibase {
 
     private void applyLiquibaseChangelist(Connection connection, String changelistClasspathResource) throws LiquibaseException {
         applyLiquibaseChangelist(connection, changelistClasspathResource, getClass().getClassLoader());
-    }
-
-    public void applyLiquibaseChangelist(Connection connection, String changelistClasspathResource, ClassLoader classLoader) throws LiquibaseException {
-        try(var database = findCorrectDatabaseImplementation(connection)) {
-            Scope.child(scopeObjectsWithClassPathResourceAccessor(classLoader), () -> new CommandScope("update")
-                .addArgumentValue(DATABASE_ARG, database)
-                .addArgumentValue(CHANGELOG_FILE_ARG, changelistClasspathResource)
-                .execute());
-        } catch (LiquibaseException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new HandleregException("Error closing resource when applying Liquibase changelist for handlereg database", e);
-        }
-    }
-
-    private Database findCorrectDatabaseImplementation(Connection connection) throws DatabaseException {
-        return DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-    }
-
-    private Map<String, Object> scopeObjectsWithClassPathResourceAccessor(ClassLoader classLoader) {
-        return Map.of(resourceAccessor.name(), new ClassLoaderResourceAccessor(classLoader));
     }
 
 }
