@@ -17,9 +17,6 @@ package no.priv.bang.oldalbum.db.liquibase;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static java.lang.String.format;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -32,8 +29,6 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
-
-import liquibase.exception.LiquibaseException;
 
 class OldAlbumLiquibaseTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
@@ -65,33 +60,6 @@ class OldAlbumLiquibaseTest {
             assertAlbumEntriesHasRequireLoginFlag(connection);
             assertAlbumEntriesHasGroupByYearFlag(connection);
         }
-    }
-
-    @Test
-    void testCreateSchemaWithDatabaseFailure() throws Exception {
-        var realdb = createDatasource("oldalbum1");
-        var connection = spy(realdb.getConnection());
-        // Wrapping Connection in a spy() makes it throw SQLException on setAutoCommit()
-
-        var oldAlbumLiquibase = new OldAlbumLiquibase();
-        var e = assertThrows(
-            LiquibaseException.class,
-            () -> oldAlbumLiquibase.createInitialSchema(connection));
-        assertThat(e.getMessage()).startsWith("java.sql.SQLException: Cannot set Autocommit On when in a nested connection");
-    }
-
-    @Test
-    void testCreateSchemaWithAuthoClosableCloseFailure() throws Exception {
-        var realdb = createDatasource("oldalbum2");
-        var connection = spy(realdb.getConnection());
-        doNothing().when(connection).setAutoCommit(anyBoolean());
-        doThrow(Exception.class).when(connection).close();
-
-        var oldAlbumLiquibase = new OldAlbumLiquibase();
-        var e = assertThrows(
-            LiquibaseException.class,
-            () -> oldAlbumLiquibase.createInitialSchema(connection));
-        assertThat(e.getMessage()).startsWith("Error closing resource");
     }
 
     private void assertAlbumEntries(Connection connection) throws Exception {

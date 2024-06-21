@@ -15,23 +15,11 @@
  */
 package no.priv.bang.oldalbum.db.liquibase;
 
-import static liquibase.Scope.Attr.resourceAccessor;
-import static liquibase.command.core.UpdateCommandStep.CHANGELOG_FILE_ARG;
-import static liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep.DATABASE_ARG;
-
 import java.sql.Connection;
-import java.util.Map;
-
-import liquibase.Scope;
-import liquibase.command.CommandScope;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
+import no.priv.bang.karaf.liquibase.runner.LiquibaseClassPathChangeLogRunner;
 
-public class OldAlbumLiquibase {
+public class OldAlbumLiquibase extends LiquibaseClassPathChangeLogRunner {
 
     public void createInitialSchema(Connection connection) throws LiquibaseException {
         applyLiquibaseChangeLog(connection, "oldalbum/changelog01.xml");
@@ -42,28 +30,7 @@ public class OldAlbumLiquibase {
     }
 
     private void applyLiquibaseChangeLog(Connection connection, String changelogClasspathResource) throws LiquibaseException {
-        applyLiquibaseChangeLog(connection, changelogClasspathResource, getClass().getClassLoader());
-    }
-
-    public void applyLiquibaseChangeLog(Connection connection, String changelogClasspathResource, ClassLoader classLoader) throws LiquibaseException {
-        try(var database = findCorrectDatabaseImplementation(connection)) {
-            Scope.child(scopeObjectsWithClassPathResourceAccessor(classLoader), () -> new CommandScope("update")
-                .addArgumentValue(DATABASE_ARG, database)
-                .addArgumentValue(CHANGELOG_FILE_ARG, changelogClasspathResource)
-                .execute());
-        } catch (LiquibaseException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new LiquibaseException("Error closing resource", e);
-        }
-    }
-
-    Database findCorrectDatabaseImplementation(Connection connection) throws DatabaseException {
-        return DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-    }
-
-    Map<String, Object> scopeObjectsWithClassPathResourceAccessor(ClassLoader classLoader) {
-        return Map.of(resourceAccessor.name(), new ClassLoaderResourceAccessor(classLoader));
+        applyLiquibaseChangelist(connection, changelogClasspathResource, getClass().getClassLoader());
     }
 
 }

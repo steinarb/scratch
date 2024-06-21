@@ -63,7 +63,7 @@ public class OldAlbumProductionDatabase implements PreHook {
 
     void insertInitialData(DataSource datasource, OldAlbumLiquibase liquibase) throws SQLException {
         try (var connect = datasource.getConnection()) {
-            liquibase.applyLiquibaseChangeLog(connect, "oldalbum/sql/data/db-changelog.xml", getClass().getClassLoader());
+            liquibase.applyLiquibaseChangelist(connect, "oldalbum/sql/data/db-changelog.xml", getClass().getClassLoader());
         } catch (Exception e) {
             logger.error("Error populating database with initial data", e);
         }

@@ -64,7 +64,7 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
 
     void insertMockData(DataSource datasource, OldAlbumLiquibase liquibase) throws SQLException {
         try (var connect = datasource.getConnection()) {
-            liquibase.applyLiquibaseChangeLog(connect, "oldalbum/sql/data/db-changelog.xml", getClass().getClassLoader());
+            liquibase.applyLiquibaseChangelist(connect, "oldalbum/sql/data/db-changelog.xml", getClass().getClassLoader());
         } catch (Exception e) {
             logger.error("Error populating oldalbum derby test database with dummy data", e);
         }
@@ -80,7 +80,7 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
 
     private void insertAdditionalMockDataAfterSchemaChange(DataSource datasource, OldAlbumLiquibase liquibase) throws SQLException {
         try (var connect = datasource.getConnection()) {
-            liquibase.applyLiquibaseChangeLog(connect, "oldalbum/sql/data/db-changelog-02.xml", getClass().getClassLoader());
+            liquibase.applyLiquibaseChangelist(connect, "oldalbum/sql/data/db-changelog-02.xml", getClass().getClassLoader());
         } catch (Exception e) {
             logger.error("Error populating oldalbum derby test database with additional dummy data after schema update", e);
         }
