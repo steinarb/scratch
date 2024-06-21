@@ -78,6 +78,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>no.priv.bang.karaf</groupId>
+            <artifactId>karaf.liquibase.runner</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase</artifactId>
             <version>${project.version}</version>
