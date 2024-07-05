@@ -24,8 +24,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
-import liquibase.Scope;
-import liquibase.ThreadLocalScopeManager;
 import liquibase.exception.LiquibaseException;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.osgi.service.adapters.logservice.LoggerAdapter;
@@ -42,7 +40,6 @@ public class OldAlbumDerbyTestDatabase implements PreHook {
     @Activate
     public void activate() {
         // Called when the component is activated
-        Scope.setScopeManager(new ThreadLocalScopeManager());
     }
 
     @Override
