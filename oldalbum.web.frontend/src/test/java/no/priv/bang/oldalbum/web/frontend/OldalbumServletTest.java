@@ -90,14 +90,15 @@ class OldalbumServletTest {
         assertEquals(SC_OK, response.getStatus());
         assertEquals("text/html", response.getContentType());
         assertThat(response.getBufferSize()).isPositive();
-        assertThat(response.getOutputStreamContent()).contains("og:url");
-        assertThat(response.getOutputStreamContent()).contains("og:title");
-        assertThat(response.getOutputStreamContent()).contains("twitter:card");
-        assertThat(response.getOutputStreamContent()).contains("twitter:title");
-        assertThat(response.getOutputStreamContent()).contains("og:description");
-        assertThat(response.getOutputStreamContent()).contains("twitter:description");
-        assertThat(response.getOutputStreamContent()).contains("og:image");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:image");
+        assertThat(response.getOutputStreamContent())
+            .contains("og:url")
+            .contains("og:title")
+            .contains("twitter:card")
+            .contains("twitter:title")
+            .contains("og:description")
+            .contains("twitter:description")
+            .contains("og:image")
+            .doesNotContain("twitter:image");
     }
 
     @Test
@@ -139,14 +140,15 @@ class OldalbumServletTest {
         assertEquals(SC_OK, response.getStatus());
         assertEquals("text/html", response.getContentType());
         assertThat(response.getBufferSize()).isPositive();
-        assertThat(response.getOutputStreamContent()).contains("og:url");
-        assertThat(response.getOutputStreamContent()).contains("og:title");
-        assertThat(response.getOutputStreamContent()).contains("twitter:card");
-        assertThat(response.getOutputStreamContent()).contains("twitter:title");
-        assertThat(response.getOutputStreamContent()).contains("og:description");
-        assertThat(response.getOutputStreamContent()).contains("twitter:description");
-        assertThat(response.getOutputStreamContent()).contains("og:image");
-        assertThat(response.getOutputStreamContent()).contains("twitter:image");
+        assertThat(response.getOutputStreamContent())
+            .contains("og:url")
+            .contains("og:title")
+            .contains("twitter:card")
+            .contains("twitter:title")
+            .contains("og:description")
+            .contains("twitter:description")
+            .contains("og:image")
+            .contains("twitter:image");
     }
 
     @Test
@@ -175,14 +177,15 @@ class OldalbumServletTest {
         assertEquals(SC_OK, response.getStatus());
         assertEquals("text/html", response.getContentType());
         assertThat(response.getBufferSize()).isPositive();
-        assertThat(response.getOutputStreamContent()).contains("og:url");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:title");
-        assertThat(response.getOutputStreamContent()).contains("twitter:card");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:title");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:description");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:description");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:image");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:image");
+        assertThat(response.getOutputStreamContent())
+            .contains("og:url")
+            .doesNotContain("og:title")
+            .contains("twitter:card")
+            .doesNotContain("twitter:title")
+            .doesNotContain("og:description")
+            .doesNotContain("twitter:description")
+            .doesNotContain("og:image")
+            .doesNotContain("twitter:image");
     }
 
     @Test
@@ -211,13 +214,14 @@ class OldalbumServletTest {
         assertEquals(SC_OK, response.getStatus());
         assertEquals("text/html", response.getContentType());
         assertThat(response.getBufferSize()).isPositive();
-        assertThat(response.getOutputStreamContent()).contains("og:url");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:title");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:title");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:description");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:description");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:image");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:image");
+        assertThat(response.getOutputStreamContent())
+            .contains("og:url")
+            .doesNotContain("og:title")
+            .doesNotContain("twitter:title")
+            .doesNotContain("og:description")
+            .doesNotContain("twitter:description")
+            .doesNotContain("og:image")
+            .doesNotContain("twitter:image");
     }
 
     @Test
@@ -244,13 +248,14 @@ class OldalbumServletTest {
         assertEquals(SC_OK, response.getStatus());
         assertEquals("text/html", response.getContentType());
         assertThat(response.getBufferSize()).isPositive();
-        assertThat(response.getOutputStreamContent()).contains("og:url");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:title");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:title");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:description");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:description");
-        assertThat(response.getOutputStreamContent()).doesNotContain("og:image");
-        assertThat(response.getOutputStreamContent()).doesNotContain("twitter:image");
+        assertThat(response.getOutputStreamContent())
+            .contains("og:url")
+            .doesNotContain("og:title")
+            .doesNotContain("twitter:title")
+            .doesNotContain("og:description")
+            .doesNotContain("twitter:description")
+            .doesNotContain("og:image")
+            .doesNotContain("twitter:image");
     }
 
     @Test
