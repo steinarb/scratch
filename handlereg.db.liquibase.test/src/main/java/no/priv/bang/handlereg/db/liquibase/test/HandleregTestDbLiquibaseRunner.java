@@ -25,8 +25,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
-import liquibase.Scope;
-import liquibase.ThreadLocalScopeManager;
 import liquibase.exception.LiquibaseException;
 import no.priv.bang.handlereg.db.liquibase.HandleregLiquibase;
 import no.priv.bang.handlereg.services.HandleregException;
@@ -44,7 +42,6 @@ public class HandleregTestDbLiquibaseRunner implements PreHook {
     @Activate
     public void activate() {
         // Called after all injections have been satisfied and before the PreHook service is exposed
-        Scope.setScopeManager(new ThreadLocalScopeManager());
     }
 
     @Override
