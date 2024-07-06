@@ -203,6 +203,14 @@ public class OldalbumServlet extends FrontendServlet {
         oldalbum.getAlbumEntry(entry.parent()).ifPresent(parent -> {
             navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText("Up"));
         });
+        navigationLinks.appendText(" ");
+        oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> {
+            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText("Prev"));
+        });
+        navigationLinks.appendText(" ");
+        oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> {
+            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText("Next"));
+        });
         return navigationLinks;
     }
 
