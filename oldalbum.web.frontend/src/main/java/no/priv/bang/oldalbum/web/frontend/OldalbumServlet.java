@@ -181,6 +181,8 @@ public class OldalbumServlet extends FrontendServlet {
         ofNullable(entry).ifPresent(e -> {
             if (!e.album()) {
                 renderPicture(request, html, e);
+            } else {
+                renderAlbum(request, html, e);
             }
         });
     }
@@ -193,8 +195,16 @@ public class OldalbumServlet extends FrontendServlet {
             .appendChild(description(entry));
     }
 
+    void renderAlbum(HttpServletRequest request, Document html, AlbumEntry entry) {
+        var root = html.body().getElementsByAttributeValue("id", "root").first();
+        root.appendChild(title(entry))
+            .appendChild(description(entry))
+            .appendChild(navigationLinks(request, entry))
+            .appendChild(thumbnails(request, entry));
+    }
+
     Element title(AlbumEntry entry) {
-        return new Element("h1").appendText(entry.title());
+        return new Element("h1").appendText(ofNullable(entry.title()).orElse(""));
     }
 
     Element navigationLinks(HttpServletRequest request, AlbumEntry entry) {
@@ -219,8 +229,24 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element description(AlbumEntry entry) {
-        var em = new Element("em").appendText(entry.description());
+        var em = new Element("em").appendText(ofNullable(entry.description()).orElse(""));
         return new Element("p").appendChild(em);
+    }
+
+    Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
+        var div = new Element("div");
+        var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/+$", "") : request.getRequestURI().replace(entry.path(), "");
+        for (var child : oldalbum.getChildren(entry.id())) {
+            div.appendChild(thumbnail(servletContextPath, child));
+        }
+
+        return div;
+    }
+
+    Element thumbnail(String servletContextPath, AlbumEntry child) {
+        var thumbnailImage = new Element("img").attr("src", child.thumbnailUrl());
+        var a = new Element("a").attr("href", servletContextPath + child.path()).appendChild(thumbnailImage).appendText(child.title());
+        return new Element("p").appendChild(a);
     }
 
     protected Document loadHtmlFile(String htmlFile) throws IOException {
