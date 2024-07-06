@@ -15,6 +15,8 @@
  */
 package no.priv.bang.oldalbum.backend;
 
+import static java.lang.String.format;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -260,6 +262,28 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             return getEntry(connection, albumEntryId);
         } catch (SQLException e) {
             logger.warn("Failed to find parent album for batch add of pictures", e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<AlbumEntry> getPreviousAlbumEntry(int albumEntryId) {
+        try (var connection = datasource.getConnection()) {
+            return getEntry(connection, albumEntryId)
+                .flatMap(entry -> findPreviousEntryInTheSameAlbum(connection, entry, entry.sort()));
+        } catch (SQLException e) {
+            logger.warn(format("Database failure when finding previous album entry for %d", albumEntryId), e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<AlbumEntry> getNextAlbumEntry(int albumEntryId) {
+        try (var connection = datasource.getConnection()) {
+            return getEntry(connection, albumEntryId)
+                .flatMap(entry -> findNextEntryInTheSameAlbum(connection, entry, entry.sort()));
+        } catch (SQLException e) {
+            logger.warn(format("Database failure when finding next album entry for %d", albumEntryId), e);
             return Optional.empty();
         }
     }
@@ -520,16 +544,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     int adjustSortValuesWhenMovingToDifferentAlbum(Connection connection, AlbumEntry modifiedEntry) {
         var originalSortvalue = modifiedEntry.sort();
         return getEntry(connection, modifiedEntry.id()).map(entryBeforeUpdate -> {
-                var originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.parent() : 0;
-                if (modifiedEntry.parent() == originalParent) {
-                    return originalSortvalue;
-                }
+            var originalParent = entryBeforeUpdate != null ? entryBeforeUpdate.parent() : 0;
+            if (modifiedEntry.parent() == originalParent) {
+                return originalSortvalue;
+            }
 
-                var originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.sort() : 0;
-                adjustSortValuesAfterEntryIsRemoved(connection, originalParent, originalSort);
-                var destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.parent());
-                return destinationChildCount + 1;
-            }).orElse(originalSortvalue);
+            var originalSort = entryBeforeUpdate != null ? entryBeforeUpdate.sort() : 0;
+            adjustSortValuesAfterEntryIsRemoved(connection, originalParent, originalSort);
+            var destinationChildCount = findNumberOfEntriesInAlbum(connection, modifiedEntry.parent());
+            return destinationChildCount + 1;
+        }).orElse(originalSortvalue);
     }
 
     int findNumberOfEntriesInAlbum(Connection connection, int parentid) {
@@ -550,7 +574,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return numberOfEntriesInAlbum;
     }
 
-    Optional<AlbumEntry> findPreviousEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
+    Optional<AlbumEntry> findPreviousEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) {
         Optional<AlbumEntry> previousEntryId = Optional.empty();
         var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort=? and parent=?";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
@@ -561,12 +585,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     previousEntryId = Optional.of(unpackAlbumEntry(result));
                 }
             }
+        } catch (SQLException e) {
+            sneakyThrows(e);
         }
 
         return previousEntryId;
     }
 
-    Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) throws SQLException {
+    Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) {
         Optional<AlbumEntry> nextEntryId = Optional.empty();
         var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort=? and parent=?";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
@@ -577,6 +603,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     nextEntryId = Optional.of(unpackAlbumEntry(result));
                 }
             }
+        } catch (SQLException e) {
+            sneakyThrows(e);
         }
 
         return nextEntryId;
@@ -850,14 +878,14 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void readExifImageMetadata(String imageUrl, final Builder metadataBuilder, List<JPEGSegment> exifSegment) {
         exifSegment.stream().map(s -> s.data()).findFirst().ifPresent(exifData -> {
-                try {
-                    exifData.read();
-                    var exif = (CompoundDirectory) new TIFFReader().read(ImageIO.createImageInputStream(exifData));
-                    extractMetadataFromExifTags(metadataBuilder, exif, imageUrl);
-                } catch (IOException e) {
-                    throw new OldAlbumException(String.format("Error reading EXIF data of %s",  imageUrl), e);
-                }
-            });
+            try {
+                exifData.read();
+                var exif = (CompoundDirectory) new TIFFReader().read(ImageIO.createImageInputStream(exifData));
+                extractMetadataFromExifTags(metadataBuilder, exif, imageUrl);
+            } catch (IOException e) {
+                throw new OldAlbumException(String.format("Error reading EXIF data of %s",  imageUrl), e);
+            }
+        });
     }
 
     private void extractMetadataFromExifTags(final Builder metadataBuilder, CompoundDirectory exif, String imageUrl) {
@@ -919,7 +947,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                         throw new NoSuchElementException();
                     return (IIOMetadataNode) nodeList.item(index++);
                 }
-            };
+        };
     }
 
     private void ifDescriptionIsEmptyTryLookingForInstaloaderTxtDescriptionFile(
@@ -944,16 +972,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     public List<AlbumEntry> batchAddPictures(BatchAddPicturesRequest request) {
         var document = loadAndParseIndexHtml(request);
         getAlbumEntry(request.parent()).ifPresent(parent -> {
-                var sort = findHighestSortValueInParentAlbum(request.parent());
-                var links = document.select("a");
-                for (var link: links) {
-                    if (hrefIsJpeg(link.attr("href"))) {
-                        ++sort;
-                        var picture = createPictureFromUrl(link, parent, sort, request.importYear(), request.defaultTitle());
-                        addEntry(picture);
-                    }
+            var sort = findHighestSortValueInParentAlbum(request.parent());
+            var links = document.select("a");
+            for (var link: links) {
+                if (hrefIsJpeg(link.attr("href"))) {
+                    ++sort;
+                    var picture = createPictureFromUrl(link, parent, sort, request.importYear(), request.defaultTitle());
+                    addEntry(picture);
                 }
-            });
+            }
+        });
 
         return fetchAllRoutes(null, true); // All edits are logged in
     }
@@ -1266,11 +1294,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         if (connectionFactory == null) {
             connectionFactory = new HttpConnectionFactory() {
 
-                    @Override
-                    public HttpURLConnection connect(String url) throws IOException {
-                        return (HttpURLConnection) new URL(url).openConnection();
-                    }
-                };
+                @Override
+                public HttpURLConnection connect(String url) throws IOException {
+                    return (HttpURLConnection) new URL(url).openConnection();
+                }
+            };
         }
         return connectionFactory;
     }
@@ -1297,4 +1325,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return map;
     }
 
+    // Trick to make compiler stop complaining about unhandled checked exceptions in lambdas
+    // run from Optional.flatMap (the exceptions are handled in the code containing the optional).
+    @SuppressWarnings("unchecked")
+    public static <E extends Throwable> void sneakyThrows(Throwable e) throws E {
+        throw (E) e;
+    }
 }

@@ -88,10 +88,12 @@ class OldAlbumServiceProviderTest {
     private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     private static DataSource datasource;
+    private static DataSource unmodifiedDataSource;
 
     @BeforeAll
     static void setupDataSource() throws Exception {
         datasource = createNewTestDatabase("oldalbum");
+        unmodifiedDataSource = createNewTestDatabase("oldalbum5");
     }
 
     @Test
@@ -241,6 +243,93 @@ class OldAlbumServiceProviderTest {
         assertNull(entry);
         assertEquals(1, logservice.getLogmessages().size());
         assertThat(logservice.getLogmessages().get(0)).contains("Failed to find albumentry with path");
+    }
+
+    @Test
+    void testGetPreviousAlbumEntry( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var expectedPreviousEntry = provider.getAlbumEntry(5).get();
+        var previousEntry = provider.getPreviousAlbumEntry(6);
+        assertThat(previousEntry).isNotEmpty().hasValue(expectedPreviousEntry);
+    }
+
+    @Test
+    void testGetPreviousAlbumEntryWhenNoPreviousEntry( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var previousEntry = provider.getPreviousAlbumEntry(5);
+        assertThat(previousEntry).isEmpty();
+    }
+
+    @Test
+    void testGetPreviousAlbumEntryForNonExistingCurrentEntry( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var previousEntry = provider.getPreviousAlbumEntry(500);
+        assertThat(previousEntry).isEmpty();
+    }
+
+    @Test
+    void testGetPreviousAlbumEntryWithDatabaseFailure( ) throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate(Collections.emptyMap());
+        assertThat(logservice.getLogmessages()).isEmpty(); // Check precondition
+        var previousEntry = provider.getPreviousAlbumEntry(5);
+        assertThat(previousEntry).isEmpty();
+        assertThat(logservice.getLogmessages()).hasSize(1); // Error has been logged
+    }
+
+    @Test
+    void testGetNextAlbumEntry( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var expectedNextEntry = provider.getAlbumEntry(7).get();
+        var nextEntry = provider.getNextAlbumEntry(6);
+        assertThat(nextEntry).isNotEmpty().hasValue(expectedNextEntry);
+    }
+
+    @Test
+    void testGetNextAlbumEntryForNonExistingCurrentEntry( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var nextEntry = provider.getNextAlbumEntry(800);
+        assertThat(nextEntry).isEmpty();
+    }
+
+    @Test
+    void testGetNextAlbumEntryWithDatabaseFailure() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasourceThrowsSqlException = mock(DataSource.class);
+        when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
+        provider.setDataSource(datasourceThrowsSqlException);
+        provider.activate(Collections.emptyMap());
+        assertThat(logservice.getLogmessages()).isEmpty(); // Check precondition
+        var nextEntry = provider.getNextAlbumEntry(8);
+        assertThat(nextEntry).isEmpty();
+        assertThat(logservice.getLogmessages()).hasSize(1); // Error has been logged
     }
 
     @Test
@@ -1011,6 +1100,17 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testFindPreviousEntryInTheSameAlbumWithSQLExceptionThrown() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
+
+        assertThrows(SQLException.class, () -> provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2));
+    }
+
+    @Test
     void testFindNextEntryInTheSameAlbumResultSet() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
@@ -1023,6 +1123,17 @@ class OldAlbumServiceProviderTest {
 
         var nextEntry = provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
         assertThat(nextEntry).isEmpty();
+    }
+
+    @Test
+    void testFindNextEntryInTheSameAlbumWithSQLExceptionThrown() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
+
+        assertThrows(SQLException.class, () -> provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2));
     }
 
     @Test
