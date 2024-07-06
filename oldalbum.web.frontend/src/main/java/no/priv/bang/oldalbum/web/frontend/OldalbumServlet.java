@@ -18,11 +18,14 @@ package no.priv.bang.oldalbum.web.frontend;
 import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static java.util.Optional.ofNullable;
 import static javax.servlet.http.HttpServletResponse.*;
 
 import org.apache.shiro.SecurityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -107,6 +110,7 @@ public class OldalbumServlet extends FrontendServlet {
         var html = loadHtmlFile(resource);
         addMetaTagIfNotEmpty(html, "og:url", request.getRequestURL().toString());
         addOpenGraphHeaderElements(html, entry);
+        renderEntry(html, entry);
         html.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         try(var body = response.getOutputStream()) {
             body.print(html.outerHtml());
@@ -171,6 +175,34 @@ public class OldalbumServlet extends FrontendServlet {
         if (content != null && !content.isEmpty()) {
             html.head().appendElement("meta").attr(propertyAttribute, property).attr("content", content);
         }
+    }
+
+    void renderEntry(Document html, AlbumEntry entry) {
+        ofNullable(entry).ifPresent(e -> {
+            if (!e.album()) {
+                renderPicture(html, e);
+            }
+        });
+    }
+
+    void renderPicture(Document html, AlbumEntry entry) {
+        var root = html.body().getElementsByAttributeValue("id", "root").first();
+        root.appendChild(title(entry))
+            .appendChild(img(entry))
+            .appendChild(description(entry));
+    }
+
+    Element title(AlbumEntry entry) {
+        return new Element("h1").appendText(entry.title());
+    }
+
+    Element img(AlbumEntry entry) {
+        return new Element("img").attr("src", entry.imageUrl());
+    }
+
+    Element description(AlbumEntry entry) {
+        var em = new Element("em").appendText(entry.description());
+        return new Element("p").appendChild(em);
     }
 
     protected Document loadHtmlFile(String htmlFile) throws IOException {

@@ -148,7 +148,10 @@ class OldalbumServletTest {
             .contains("og:description")
             .contains("twitter:description")
             .contains("og:image")
-            .contains("twitter:image");
+            .contains("twitter:image")
+            .contains("<h1>" + entry.title())
+            .contains("src=\"" + entry.imageUrl())
+            .contains("<p><em>" + entry.description());
     }
 
     @Test
