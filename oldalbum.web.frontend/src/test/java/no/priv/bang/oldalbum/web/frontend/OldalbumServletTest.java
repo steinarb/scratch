@@ -30,6 +30,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +46,7 @@ import org.apache.shiro.web.subject.WebSubject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Optional.of;
 import static javax.servlet.http.HttpServletResponse.*;
 
 class OldalbumServletTest {
@@ -120,6 +122,8 @@ class OldalbumServletTest {
             .contentLength(71072)
             .build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
+        var album = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("Motorcyle meeting places").description("Places motorcylists meet").sort(1).childcount(4).build();
+        when(oldalbum.getAlbumEntry(anyInt())).thenReturn(of(album));
         var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
@@ -130,8 +134,8 @@ class OldalbumServletTest {
         servlet.activate();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
-        when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
+        when(request.getRequestURI()).thenReturn("/oldalbum/moto/places/grava1");
+        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/places/grava1"));
         when(request.getPathInfo()).thenReturn("/moto/");
         var response = new MockHttpServletResponse();
 
@@ -150,6 +154,7 @@ class OldalbumServletTest {
             .contains("og:image")
             .contains("twitter:image")
             .contains("<h1>" + entry.title())
+            .contains("href=\"/oldalbum" + album.path())
             .contains("src=\"" + entry.imageUrl())
             .contains("<p><em>" + entry.description());
     }

@@ -110,7 +110,7 @@ public class OldalbumServlet extends FrontendServlet {
         var html = loadHtmlFile(resource);
         addMetaTagIfNotEmpty(html, "og:url", request.getRequestURL().toString());
         addOpenGraphHeaderElements(html, entry);
-        renderEntry(html, entry);
+        renderEntry(request, html, entry);
         html.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         try(var body = response.getOutputStream()) {
             body.print(html.outerHtml());
@@ -177,23 +177,33 @@ public class OldalbumServlet extends FrontendServlet {
         }
     }
 
-    void renderEntry(Document html, AlbumEntry entry) {
+    void renderEntry(HttpServletRequest request, Document html, AlbumEntry entry) {
         ofNullable(entry).ifPresent(e -> {
             if (!e.album()) {
-                renderPicture(html, e);
+                renderPicture(request, html, e);
             }
         });
     }
 
-    void renderPicture(Document html, AlbumEntry entry) {
+    void renderPicture(HttpServletRequest request, Document html, AlbumEntry entry) {
         var root = html.body().getElementsByAttributeValue("id", "root").first();
         root.appendChild(title(entry))
+            .appendChild(navigationLinks(request, entry))
             .appendChild(img(entry))
             .appendChild(description(entry));
     }
 
     Element title(AlbumEntry entry) {
         return new Element("h1").appendText(entry.title());
+    }
+
+    Element navigationLinks(HttpServletRequest request, AlbumEntry entry) {
+        var navigationLinks = new Element("p");
+        var servletContextPath = request.getRequestURI().replace(entry.path(), "");
+        oldalbum.getAlbumEntry(entry.parent()).ifPresent(parent -> {
+            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText("Up"));
+        });
+        return navigationLinks;
     }
 
     Element img(AlbumEntry entry) {
