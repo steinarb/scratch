@@ -19,6 +19,7 @@ import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -234,7 +235,7 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
-        var div = new Element("div");
+        var div = new Element("ul");
         var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/+$", "") : request.getRequestURI().replace(entry.path(), "");
         for (var child : oldalbum.getChildren(entry.id())) {
             div.appendChild(thumbnail(servletContextPath, child));
@@ -244,9 +245,42 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element thumbnail(String servletContextPath, AlbumEntry child) {
-        var thumbnailImage = new Element("img").attr("src", child.thumbnailUrl());
-        var a = new Element("a").attr("href", servletContextPath + child.path()).appendChild(thumbnailImage).appendText(child.title());
-        return new Element("p").appendChild(a);
+        var resourceName = findLastPartOfPath(child);
+        var img = new Element("img").attr("src", child.thumbnailUrl());
+        var thumbnailImage = new Element("div").appendChild(img);
+        var titleText = !isNullOrBlank(child.title()) ? child.title() : resourceName;
+        var title = new Element("h3").appendText(titleText);
+        var description = new Element("p").appendText(child.description());
+        var dateAndSize = new Element("p").appendText(formatDateAndSize(child));
+        var sub = new Element("div").appendChild(description).appendChild(dateAndSize);
+        var text = new Element("div").appendChild(title).appendChild(sub);
+        var a = new Element("a").attr("href", servletContextPath + child.path()).attr("name", resourceName).appendChild(thumbnailImage).appendChild(text);
+        return new Element("li").appendChild(a);
+    }
+
+    boolean isNullOrBlank(String text) {
+        return ofNullable(text).map(String::isBlank).orElse(true);
+    }
+
+    String findLastPartOfPath(AlbumEntry child) {
+        return ofNullable(child.path()).map(path -> {
+            var elements = path.split("/");
+            return (elements.length > 0) ? elements[elements.length - 1] : "";
+        }).orElse("");
+    }
+
+    String formatDateAndSize(AlbumEntry child) {
+        var lastModifiedDate = ofNullable(child.lastModified()).map(lastModified -> format("%tF ", lastModified)).orElse("");
+        var contentLength = child.contentLength() > 0 ? child.contentLength() : 0;
+        if (contentLength / 1000000.0 > 1) {
+            return format("%s%dMB", lastModifiedDate, Math.round(contentLength / 1000000.0));
+        } else if (contentLength / 1000.0 > 1) {
+            return format("%s%dkB", lastModifiedDate, Math.round(contentLength / 1000.0));
+        } else if (contentLength > 0) {
+            return format("%s%dB", lastModifiedDate, contentLength);
+        } else {
+            return lastModifiedDate;
+        }
     }
 
     protected Document loadHtmlFile(String htmlFile) throws IOException {

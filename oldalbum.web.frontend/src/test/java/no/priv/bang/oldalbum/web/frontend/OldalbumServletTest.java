@@ -16,7 +16,7 @@
 package no.priv.bang.oldalbum.web.frontend;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -45,6 +45,7 @@ import org.apache.shiro.web.subject.WebSubject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.String.format;
 import static java.util.Optional.of;
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -426,6 +427,97 @@ class OldalbumServletTest {
         var routes = servlet.getRoutes();
 
         assertThat(routes).hasSize(6 + 3);
+    }
+
+    @Test
+    void testIsNullOrBlankOnNull() {
+        var servlet = new OldalbumServlet();
+        assertTrue(servlet.isNullOrBlank(null));
+    }
+
+    @Test
+    void testIsNullOrBlankOnEmpty() {
+        var servlet = new OldalbumServlet();
+        assertTrue(servlet.isNullOrBlank(""));
+    }
+
+    @Test
+    void testIsNullOrBlankOnBlank() {
+        var servlet = new OldalbumServlet();
+        assertTrue(servlet.isNullOrBlank(" "));
+    }
+
+    @Test
+    void testIsNullOrBlankOnNonEmpty() {
+        var servlet = new OldalbumServlet();
+        assertFalse(servlet.isNullOrBlank("xyzzy"));
+    }
+
+    @Test
+    void testFindLastPartOfPath() {
+        var servlet = new OldalbumServlet();
+        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().path("/moto/vfr96/acirc1").build())).isEqualTo("acirc1");
+    }
+
+    @Test
+    void testFindLastPartOfPathWithNullPath() {
+        var servlet = new OldalbumServlet();
+        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().build())).isEqualTo("");
+    }
+
+    @Test
+    void testFindLastPartOfPathWithEmptyPath() {
+        var servlet = new OldalbumServlet();
+        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().path("").build())).isEqualTo("");
+    }
+
+    @Test
+    void testFindLastPartOfPathWithRandomString() {
+        var servlet = new OldalbumServlet();
+        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().path("xyzzy").build())).isEqualTo("xyzzy");
+    }
+
+    @Test
+    void testFormatDateAndSizeOnJustCurrentDate() {
+        var servlet = new OldalbumServlet();
+        var now = new Date();
+        var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().lastModified(now).build());
+        assertThat(formattedNow).isEqualTo(format("%tF ", now));
+    }
+
+    @Test
+    void testFormatDateAndSizeOnNullDate() {
+        var servlet = new OldalbumServlet();
+        var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().build());
+        assertThat(formattedNow).isEqualTo("");
+    }
+
+    @Test
+    void testFormatDateAndSizeOn1BFileWithNullDate() {
+        var servlet = new OldalbumServlet();
+        var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().contentLength(1).build());
+        assertThat(formattedNow).isEqualTo("1B");
+    }
+
+    @Test
+    void testFormatDateAndSizeOn84kBFileWithNullDate() {
+        var servlet = new OldalbumServlet();
+        var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().contentLength(84323).build());
+        assertThat(formattedNow).isEqualTo("84kB");
+    }
+
+    @Test
+    void testFormatDateAndSizeOn7MBFileWithNullDate() {
+        var servlet = new OldalbumServlet();
+        var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().contentLength(6718072).build());
+        assertThat(formattedNow).isEqualTo("7MB");
+    }
+
+    @Test
+    void testFormatDateAndSizeOnNegativeSizeFileWithNullDate() {
+        var servlet = new OldalbumServlet();
+        var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().contentLength(-1).build());
+        assertThat(formattedNow).isEqualTo("");
     }
 
     protected void loginUser(String username, String password) {
