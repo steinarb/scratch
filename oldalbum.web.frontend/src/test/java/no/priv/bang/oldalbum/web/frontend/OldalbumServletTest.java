@@ -30,6 +30,8 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +48,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.of;
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -475,6 +478,39 @@ class OldalbumServletTest {
     void testFindLastPartOfPathWithRandomString() {
         var servlet = new OldalbumServlet();
         assertThat(servlet.findLastPartOfPath(AlbumEntry.with().path("xyzzy").build())).isEqualTo("xyzzy");
+    }
+
+    @Test
+    void testFindFirstImageInAlbumChild() {
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getChildren(anyInt()))
+            .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+        assertThat(servlet.findFirstImageInAlbumChild(AlbumEntry.with().build())).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+    }
+
+    @Test
+    void testFindFirstImageInAlbumChildWhenImageInIndirectChild() {
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getChildren(anyInt()))
+            .thenReturn(List.of(AlbumEntry.with().album(true).build()))
+            .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+        assertThat(servlet.findFirstImageInAlbumChild(AlbumEntry.with().build())).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+    }
+
+    @Test
+    void testFindFirstImageInAlbumChildWhenNoImageInChildren() {
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getChildren(anyInt()))
+            .thenReturn(List.of(AlbumEntry.with().album(true).build()))
+            .thenReturn(List.of(AlbumEntry.with().album(true).build()))
+            .thenReturn(emptyList());
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+        assertThat(servlet.findFirstImageInAlbumChild(AlbumEntry.with().build())).isEmpty();
     }
 
     @Test

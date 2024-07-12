@@ -246,7 +246,8 @@ public class OldalbumServlet extends FrontendServlet {
 
     Element thumbnail(String servletContextPath, AlbumEntry child) {
         var resourceName = findLastPartOfPath(child);
-        var img = new Element("img").attr("src", child.thumbnailUrl());
+        var thumbnailUrl = child.album() ? findFirstImageInAlbumChild(child) : child.thumbnailUrl();
+        var img = new Element("img").attr("src", thumbnailUrl);
         var thumbnailImage = new Element("div").appendChild(img);
         var titleText = !isNullOrBlank(child.title()) ? child.title() : resourceName;
         var title = new Element("h3").appendText(titleText);
@@ -267,6 +268,16 @@ public class OldalbumServlet extends FrontendServlet {
             var elements = path.split("/");
             return (elements.length > 0) ? elements[elements.length - 1] : "";
         }).orElse("");
+    }
+
+    String findFirstImageInAlbumChild(AlbumEntry child) {
+        var children = oldalbum.getChildren(child.id());
+        var firstImage = children.stream().filter(a -> !a.album()).findFirst();
+        if (firstImage.isPresent()) {
+            return firstImage.get().thumbnailUrl();
+        }
+
+        return children.stream().filter(a -> a.album()).findFirst().map(this::findFirstImageInAlbumChild).orElse("");
     }
 
     String formatDateAndSize(AlbumEntry child) {
