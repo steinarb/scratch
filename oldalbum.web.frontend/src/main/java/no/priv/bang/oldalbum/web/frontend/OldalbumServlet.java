@@ -245,18 +245,22 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element thumbnail(String servletContextPath, AlbumEntry child) {
+        var resourceUrl = servletContextPath + child.path();
         var resourceName = findLastPartOfPath(child);
         var thumbnailUrl = child.album() ? findFirstImageInAlbumChild(child) : child.thumbnailUrl();
-        var img = new Element("img").attr("src", thumbnailUrl);
-        var thumbnailImage = new Element("div").appendChild(img);
+        var img = new Element("img").attr("src", thumbnailUrl).attr("alt", "");
         var titleText = !isNullOrBlank(child.title()) ? child.title() : resourceName;
-        var title = new Element("h3").appendText(titleText);
+        var titleLink = new Element("a").attr("href", resourceUrl).appendText(titleText);
+        var title = new Element("h3").appendChild(titleLink);
         var description = new Element("p").appendText(child.description());
         var dateAndSize = new Element("p").appendText(formatDateAndSize(child));
-        var sub = new Element("div").appendChild(description).appendChild(dateAndSize);
-        var text = new Element("div").appendChild(title).appendChild(sub);
-        var a = new Element("a").attr("href", servletContextPath + child.path()).attr("name", resourceName).appendChild(thumbnailImage).appendChild(text);
-        return new Element("li").appendChild(a);
+        var aImg = new Element("a").attr("href", resourceUrl).attr("name", resourceName)
+            .appendChild(img);
+        return new Element("li")
+            .appendChild(aImg)
+            .appendChild(title)
+            .appendChild(description)
+            .appendChild(dateAndSize);
     }
 
     boolean isNullOrBlank(String text) {
