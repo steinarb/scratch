@@ -235,7 +235,7 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
-        var div = new Element("ul").attr("class", "list img-list");
+        var div = new Element("ul");
         var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/+$", "") : request.getRequestURI().replace(entry.path(), "");
         for (var child : oldalbum.getChildren(entry.id())) {
             div.appendChild(thumbnail(servletContextPath, child));
@@ -248,14 +248,14 @@ public class OldalbumServlet extends FrontendServlet {
         var resourceName = findLastPartOfPath(child);
         var thumbnailUrl = child.album() ? findFirstImageInAlbumChild(child) : child.thumbnailUrl();
         var img = new Element("img").attr("src", thumbnailUrl);
-        var thumbnailImage = new Element("div").attr("class", "li-img").appendChild(img);
+        var thumbnailImage = new Element("div").appendChild(img);
         var titleText = !isNullOrBlank(child.title()) ? child.title() : resourceName;
-        var title = new Element("h3").attr("class", "li-head").appendText(titleText);
+        var title = new Element("h3").appendText(titleText);
         var description = new Element("p").appendText(child.description());
         var dateAndSize = new Element("p").appendText(formatDateAndSize(child));
-        var sub = new Element("div").attr("class", "li-sub").appendChild(description).appendChild(dateAndSize);
-        var text = new Element("div").attr("class", "li-text").appendChild(title).appendChild(sub);
-        var a = new Element("a").attr("class", "inner").attr("href", servletContextPath + child.path()).attr("name", resourceName).appendChild(thumbnailImage).appendChild(text);
+        var sub = new Element("div").appendChild(description).appendChild(dateAndSize);
+        var text = new Element("div").appendChild(title).appendChild(sub);
+        var a = new Element("a").attr("href", servletContextPath + child.path()).attr("name", resourceName).appendChild(thumbnailImage).appendChild(text);
         return new Element("li").appendChild(a);
     }
 
