@@ -205,7 +205,10 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element title(AlbumEntry entry) {
-        return new Element("h1").appendText(ofNullable(entry.title()).orElse(""));
+        return new Element("h1")
+            .appendText(ofNullable(entry.title())
+                .map(t -> t.isBlank() ? findLastPartOfPath(entry) : t)
+                .orElseGet(() -> findLastPartOfPath(entry)));
     }
 
     Element navigationLinks(HttpServletRequest request, AlbumEntry entry) {
