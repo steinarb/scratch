@@ -110,8 +110,8 @@ class OldalbumServletTest {
             .contains("twitter:description")
             .contains("og:image")
             .doesNotContain("twitter:image")
-            .contains("<h1>" + entry.title())
-            .contains("<p><em>" + entry.description())
+            .contains("<h1 class=\"image-title\">" + entry.title())
+            .contains("<p class=\"image-description\">" + entry.description())
             .contains("href=\"/oldalbum" + album.path())
             .contains("href=\"/oldalbum" + prevEntry.path())
             .contains("href=\"/oldalbum" + nextEntry.path());
@@ -174,12 +174,12 @@ class OldalbumServletTest {
             .contains("twitter:description")
             .contains("og:image")
             .contains("twitter:image")
-            .contains("<h1>" + entry.title())
+            .contains("<h1 class=\"image-title\">" + entry.title())
             .contains("href=\"/oldalbum" + album.path())
             .contains("href=\"/oldalbum" + prevEntry.path())
             .contains("href=\"/oldalbum" + nextEntry.path())
             .contains("src=\"" + entry.imageUrl())
-            .contains("<p><em>" + entry.description());
+            .contains("<p class=\"image-description\">" + entry.description());
     }
 
     @Test

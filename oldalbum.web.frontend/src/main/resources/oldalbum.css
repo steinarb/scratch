@@ -1,0 +1,56 @@
+body {
+    background-color: white;
+}
+
+h1.image-title {
+    background-color: lightgray;
+    text-align: center;
+    padding-top: 10px;
+}
+
+p.image-navbar {
+    background-color: lightgray;
+    padding-bottom: 10px;
+}
+
+p.image-description {
+    background-color: lightyellow;
+    margin: 5px;
+    padding: 5px;
+    font-style: oblique;
+}
+
+img.image-responsive {
+    max-width: 100%;
+    height: auto;
+    text-align: center;
+}
+
+ul.thumbnail-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+li.album-item {
+    margin: 5px;
+    border-color: black;
+    border-style: solid;
+    padding: 5px;
+    min-height: 80px;
+}
+
+a.album-item-link {
+    text-decoration: none;
+}
+
+img.album-item-thumbnail {
+    float: left;
+    display: block;
+    height: 100%;
+    margin-right: 5px;
+}
+
+p.album-item-description {
+    font-style: oblique;
+}
