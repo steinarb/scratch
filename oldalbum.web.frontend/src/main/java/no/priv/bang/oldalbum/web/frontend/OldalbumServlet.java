@@ -284,7 +284,7 @@ public class OldalbumServlet extends FrontendServlet {
         var title = new Element("h3").appendText(titleText);
         var description = new Element("p")
             .attr(CLASS, "album-item-description")
-            .appendText(child.description());
+            .appendText(ofNullable(child.description()).orElse(""));
         var dateAndSize = new Element("p").appendText(formatDateAndSize(child));
         var sub = new Element("div").appendChild(description).appendChild(dateAndSize);
         var text = new Element("div")
