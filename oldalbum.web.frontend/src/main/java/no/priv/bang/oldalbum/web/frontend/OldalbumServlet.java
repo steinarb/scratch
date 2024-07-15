@@ -265,7 +265,7 @@ public class OldalbumServlet extends FrontendServlet {
 
     Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
         var div = new Element("ul").attr(CLASS, "thumbnail-list");
-        var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/+$", "") : request.getRequestURI().replace(entry.path(), "");
+        var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/$", "") : request.getRequestURI().replace(entry.path(), "");
         for (var child : oldalbum.getChildren(entry.id(), false)) {
             div.appendChild(thumbnail(servletContextPath, child));
         }
