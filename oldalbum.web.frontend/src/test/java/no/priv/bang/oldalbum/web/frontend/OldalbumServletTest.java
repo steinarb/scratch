@@ -500,13 +500,13 @@ class OldalbumServletTest {
     @Test
     void testFindLastPartOfPathWithNullPath() {
         var servlet = new OldalbumServlet();
-        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().build())).isEqualTo("");
+        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().build())).isEmpty();
     }
 
     @Test
     void testFindLastPartOfPathWithEmptyPath() {
         var servlet = new OldalbumServlet();
-        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().path("").build())).isEqualTo("");
+        assertThat(servlet.findLastPartOfPath(AlbumEntry.with().path("").build())).isEmpty();
     }
 
     @Test
@@ -560,7 +560,7 @@ class OldalbumServletTest {
     void testFormatDateAndSizeOnNullDate() {
         var servlet = new OldalbumServlet();
         var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().build());
-        assertThat(formattedNow).isEqualTo("");
+        assertThat(formattedNow).isEmpty();
     }
 
     @Test
@@ -588,7 +588,7 @@ class OldalbumServletTest {
     void testFormatDateAndSizeOnNegativeSizeFileWithNullDate() {
         var servlet = new OldalbumServlet();
         var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().contentLength(-1).build());
-        assertThat(formattedNow).isEqualTo("");
+        assertThat(formattedNow).isEmpty();
     }
 
     protected void loginUser(String username, String password) {
