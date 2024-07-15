@@ -234,9 +234,16 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element description(AlbumEntry entry) {
-        var description = new Element("p").attr("class", "image-description")
-            .appendText(ofNullable(entry.description()).orElse(""));
-        var dateAndSize = new Element("p").appendText(formatDateAndSize(entry));
+        var descriptionText = ofNullable(entry.description()).orElse("");
+        var dateAndSizeText = formatDateAndSize(entry);
+        if (descriptionText.isBlank() && dateAndSizeText.isBlank()) {
+            return new Element("div");
+        }
+
+        var description = new Element("p")
+            .attr("class", "image-description")
+            .appendText(descriptionText);
+        var dateAndSize = new Element("p").appendText(dateAndSizeText);
         return new Element("div")
             .attr("class", "image-description-box")
             .appendChild(description)

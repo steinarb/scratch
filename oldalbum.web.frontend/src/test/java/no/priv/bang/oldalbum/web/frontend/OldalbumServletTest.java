@@ -433,6 +433,30 @@ class OldalbumServletTest {
     }
 
     @Test
+    void testDescriptionWhenNoDescriptionTestAndDate() {
+        var servlet = new OldalbumServlet();
+        var emptyAlbumEntry = AlbumEntry.with().build();
+        var description = servlet.description(emptyAlbumEntry);
+        assertThat(description.children()).isEmpty();
+    }
+
+    @Test
+    void testDescriptionWhenDescriptionButNoTestAndDate() {
+        var servlet = new OldalbumServlet();
+        var emptyAlbumEntry = AlbumEntry.with().description("Description").build();
+        var description = servlet.description(emptyAlbumEntry);
+        assertThat(description.children()).isNotEmpty();
+    }
+
+    @Test
+    void testDescriptionWhenNoDescriptionButWithADate() {
+        var servlet = new OldalbumServlet();
+        var emptyAlbumEntry = AlbumEntry.with().lastModified(new Date()).build();
+        var description = servlet.description(emptyAlbumEntry);
+        assertThat(description.children()).isNotEmpty();
+    }
+
+    @Test
     void testIsNullOrBlankOnNull() {
         var servlet = new OldalbumServlet();
         assertTrue(servlet.isNullOrBlank(null));
