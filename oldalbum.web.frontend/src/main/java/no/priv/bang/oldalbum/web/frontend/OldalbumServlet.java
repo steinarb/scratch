@@ -226,13 +226,9 @@ public class OldalbumServlet extends FrontendServlet {
             navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText(up));
         });
         navigationLinks.appendText(" ");
-        oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> {
-            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev));
-        });
+        oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev)));
         navigationLinks.appendText(" ");
-        oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> {
-            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next));
-        });
+        oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next)));
         return navigationLinks;
     }
 
