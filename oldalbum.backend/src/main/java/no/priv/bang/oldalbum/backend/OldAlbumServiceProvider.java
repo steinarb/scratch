@@ -309,12 +309,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
-    public List<AlbumEntry> getChildren(int parent) {
+    public List<AlbumEntry> getChildren(int parent, boolean isLoggedIn) {
         var children = new ArrayList<AlbumEntry>();
-        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where parent=?";
+        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where parent=? and (not require_login or (require_login and require_login=?))";
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, parent);
+                statement.setBoolean(2, isLoggedIn);
                 try(var results = statement.executeQuery()) {
                     while(results.next()) {
                         var child = unpackAlbumEntry(results);
@@ -660,7 +661,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 try(var zipOut = new ZipOutputStream(output)) {
-                    for (var child : getChildren(albumEntry.id())) {
+                    for (var child : getChildren(albumEntry.id(), false)) {
                         var imageAndWriter = downloadAndReadImageAndCreateWriter(child);
                         writeImageWithModifiedMetadataToZipArchive(zipOut, child, imageAndWriter);
                     }

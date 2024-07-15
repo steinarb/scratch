@@ -80,7 +80,7 @@ class OldalbumServletTest {
         var hove1 = AlbumEntry.with().id(6).parent(2).path("/moto/places/hove1").album(false).title("Hove fjellgaard").description("Meeting place in Ål in Hallingdal").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(4).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         var album1 = AlbumEntry.with().id(7).parent(2).path("/moto/places/album1").album(true).title("Sub album").description("In another album resides other pictures").sort(5).childcount(0).build();
         var children = Arrays.asList(grava1, grava2, grava3, album1, hove1);
-        when(oldalbum.getChildren(anyInt())).thenReturn(children);
+        when(oldalbum.getChildren(anyInt(), anyBoolean())).thenReturn(children);
         var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
@@ -483,7 +483,7 @@ class OldalbumServletTest {
     @Test
     void testFindFirstImageInAlbumChild() {
         var oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getChildren(anyInt()))
+        when(oldalbum.getChildren(anyInt(), anyBoolean()))
             .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
         var servlet = new OldalbumServlet();
         servlet.setOldalbumService(oldalbum);
@@ -493,7 +493,7 @@ class OldalbumServletTest {
     @Test
     void testFindFirstImageInAlbumChildWhenImageInIndirectChild() {
         var oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getChildren(anyInt()))
+        when(oldalbum.getChildren(anyInt(), anyBoolean()))
             .thenReturn(List.of(AlbumEntry.with().album(true).build()))
             .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
         var servlet = new OldalbumServlet();
@@ -504,7 +504,7 @@ class OldalbumServletTest {
     @Test
     void testFindFirstImageInAlbumChildWhenNoImageInChildren() {
         var oldalbum = mock(OldAlbumService.class);
-        when(oldalbum.getChildren(anyInt()))
+        when(oldalbum.getChildren(anyInt(), anyBoolean()))
             .thenReturn(List.of(AlbumEntry.with().album(true).build()))
             .thenReturn(List.of(AlbumEntry.with().album(true).build()))
             .thenReturn(emptyList());

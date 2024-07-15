@@ -42,7 +42,7 @@ public interface OldAlbumService {
 
     AlbumEntry getAlbumEntryFromPath(String path);
 
-    List<AlbumEntry> getChildren(int parent);
+    List<AlbumEntry> getChildren(int parent, boolean isLoggedIn);
 
     List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry);
 

@@ -43,7 +43,7 @@ class OldAlbumServiceTest {
         var entry = service.getAlbumEntryFromPath(path);
         assertNull(entry);
         var parent = 2;
-        var children = service.getChildren(parent);
+        var children = service.getChildren(parent, false);
         assertEquals(0, children.size());
         var modifiedEntry = AlbumEntry.with().build();
         var updatedRoutesOnModifiedEntry = service.updateEntry(modifiedEntry);

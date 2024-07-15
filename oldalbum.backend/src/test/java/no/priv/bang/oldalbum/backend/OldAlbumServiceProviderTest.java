@@ -333,14 +333,27 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testFetchChildren() {
+    void testGetChildren() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
-        provider.setDataSource(datasource);
+        provider.setDataSource(unmodifiedDataSource);
         provider.activate(Collections.emptyMap());
-        var children = provider.getChildren(3);
-        assertThat(children).hasSizeGreaterThanOrEqualTo(3);
+        var children = provider.getChildren(3, false);
+        assertThat(children).hasSize(4);
+    }
+
+    @Test
+    void testGetChildrenOnProtectedChildren() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var children = provider.getChildren(1, false);
+        assertThat(children).hasSize(1);
+        var protectedChildren = provider.getChildren(1, true);
+        assertThat(protectedChildren).hasSize(2);
     }
 
     @Test
@@ -352,7 +365,7 @@ class OldAlbumServiceProviderTest {
         when(datasourceThrowsSqlException.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
-        var children = provider.getChildren(3);
+        var children = provider.getChildren(3, false);
         assertEquals(0, children.size());
         assertEquals(1, logservice.getLogmessages().size());
     }
@@ -1208,7 +1221,7 @@ class OldAlbumServiceProviderTest {
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var albumentry = provider.getAlbumEntry(4).get();
-        var albumpictures = provider.getChildren(albumentry.id());
+        var albumpictures = provider.getChildren(albumentry.id(), false);
 
         var streamingOutput = provider.downloadAlbumEntry(albumentry.id());
         assertNotNull(streamingOutput);
@@ -1235,7 +1248,7 @@ class OldAlbumServiceProviderTest {
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
         var albumentry = provider.getAlbumEntry(4).get();
-        var albumpictures = provider.getChildren(albumentry.id());
+        var albumpictures = provider.getChildren(albumentry.id(), false);
         var selectedentryIds = albumpictures.stream().map(e -> e.id()).toList();
 
         var streamingOutput = provider.downloadAlbumEntrySelection(selectedentryIds);

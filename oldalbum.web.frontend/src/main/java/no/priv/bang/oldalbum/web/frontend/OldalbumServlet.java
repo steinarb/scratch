@@ -147,7 +147,7 @@ public class OldalbumServlet extends FrontendServlet {
             addMetaTagIfNotEmpty(html, "twitter:description", entry.description());
             addMetaTagIfNotEmpty(html, "twitter:image", entry.imageUrl());
             if (entry.album()) {
-                var children = oldalbum.getChildren(entry.id());
+                var children = oldalbum.getChildren(entry.id(), false);
                 if (!children.isEmpty()) {
                     for(AlbumEntry child : children) {
                         addMetaTagIfNotEmpty(html, "og:image", child.imageUrl());
@@ -247,7 +247,7 @@ public class OldalbumServlet extends FrontendServlet {
     Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
         var div = new Element("ul").attr("class", "thumbnail-list");
         var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/+$", "") : request.getRequestURI().replace(entry.path(), "");
-        for (var child : oldalbum.getChildren(entry.id())) {
+        for (var child : oldalbum.getChildren(entry.id(), false)) {
             div.appendChild(thumbnail(servletContextPath, child));
         }
 
@@ -293,7 +293,7 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     String findFirstImageInAlbumChild(AlbumEntry child) {
-        var children = oldalbum.getChildren(child.id());
+        var children = oldalbum.getChildren(child.id(), false);
         var firstImage = children.stream().filter(a -> !a.album()).findFirst();
         if (firstImage.isPresent()) {
             return firstImage.get().thumbnailUrl();
