@@ -52,6 +52,7 @@ import no.priv.bang.servlet.frontend.FrontendServlet;
 @HttpWhiteboardServletName("oldalbum")
 @HttpWhiteboardServletPattern("/*")
 public class OldalbumServlet extends FrontendServlet {
+    private static final String CLASS = "class";
     private static final long serialVersionUID = -2378206477575636399L;
     private OldAlbumService oldalbum; // NOSONAR set by OSGi dependency injection and not touched after that
 
@@ -207,7 +208,7 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element title(AlbumEntry entry) {
-        return new Element("h1").attr("class", "image-title")
+        return new Element("h1").attr(CLASS, "image-title")
             .appendText(ofNullable(entry.title())
                 .map(t -> t.isBlank() ? findLastPartOfPath(entry) : t)
                 .orElseGet(() -> findLastPartOfPath(entry)));
@@ -218,7 +219,7 @@ public class OldalbumServlet extends FrontendServlet {
         var up = oldalbum.displayText("up", locale);
         var prev = oldalbum.displayText("previous", locale);
         var next = oldalbum.displayText("next", locale);
-        var navigationLinks = new Element("p").attr("class", "image-navbar");
+        var navigationLinks = new Element("p").attr(CLASS, "image-navbar");
         var servletContextPath = request.getRequestURI().replace(entry.path(), "");
         oldalbum.getAlbumEntry(entry.parent()).ifPresent(parent -> {
             var fragment = findLastPartOfPath(entry);
@@ -245,7 +246,7 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element img(AlbumEntry entry) {
-        return new Element("img").attr("class", "image-responsive").attr("src", entry.imageUrl());
+        return new Element("img").attr(CLASS, "image-responsive").attr("src", entry.imageUrl());
     }
 
     Element description(AlbumEntry entry) {
@@ -256,18 +257,18 @@ public class OldalbumServlet extends FrontendServlet {
         }
 
         var description = new Element("p")
-            .attr("class", "image-description")
+            .attr(CLASS, "image-description")
             .appendText(descriptionText);
         var dateAndSize = new Element("p").appendText(dateAndSizeText);
         return new Element("div")
-            .attr("class", "image-description-box")
+            .attr(CLASS, "image-description-box")
             .appendChild(description)
             .appendChild(dateAndSize);
 
     }
 
     Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
-        var div = new Element("ul").attr("class", "thumbnail-list");
+        var div = new Element("ul").attr(CLASS, "thumbnail-list");
         var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/+$", "") : request.getRequestURI().replace(entry.path(), "");
         for (var child : oldalbum.getChildren(entry.id(), false)) {
             div.appendChild(thumbnail(servletContextPath, child));
@@ -280,27 +281,27 @@ public class OldalbumServlet extends FrontendServlet {
         var resourceName = findLastPartOfPath(child);
         var thumbnailUrl = child.album() ? findFirstImageInAlbumChild(child) : child.thumbnailUrl();
         var img = new Element("img")
-            .attr("class", "album-item-thumbnail")
+            .attr(CLASS, "album-item-thumbnail")
             .attr("src", thumbnailUrl);
         var thumbnailImage = new Element("div").appendChild(img);
         var titleText = !isNullOrBlank(child.title()) ? child.title() : resourceName;
         var title = new Element("h3").appendText(titleText);
         var description = new Element("p")
-            .attr("class", "album-item-description")
+            .attr(CLASS, "album-item-description")
             .appendText(child.description());
         var dateAndSize = new Element("p").appendText(formatDateAndSize(child));
         var sub = new Element("div").appendChild(description).appendChild(dateAndSize);
         var text = new Element("div")
-            .attr("class", "album-item-text")
+            .attr(CLASS, "album-item-text")
             .appendChild(title)
             .appendChild(sub);
         var a = new Element("a")
-            .attr("class", "album-item-link")
+            .attr(CLASS, "album-item-link")
             .attr("href", servletContextPath + child.path())
             .attr("name", resourceName)
             .appendChild(thumbnailImage)
             .appendChild(text);
-        return new Element("li").attr("class", "album-item").appendChild(a);
+        return new Element("li").attr(CLASS, "album-item").appendChild(a);
     }
 
     boolean isNullOrBlank(String text) {
