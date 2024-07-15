@@ -34,6 +34,7 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -81,6 +82,7 @@ class OldalbumServletTest {
         var album1 = AlbumEntry.with().id(7).parent(2).path("/moto/places/album1").album(true).title("Sub album").description("In another album resides other pictures").sort(5).childcount(0).build();
         var children = Arrays.asList(grava1, grava2, grava3, album1, hove1);
         when(oldalbum.getChildren(anyInt(), anyBoolean())).thenReturn(children);
+        when(oldalbum.displayText(anyString(), anyString())).thenReturn("Up");
         var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
@@ -94,6 +96,8 @@ class OldalbumServletTest {
         when(request.getRequestURI()).thenReturn("/oldalbum/moto/places/");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/places/"));
         when(request.getPathInfo()).thenReturn("/moto/");
+        Cookie[] cookies = {};
+        when(request.getCookies()).thenReturn(cookies);
         var response = new MockHttpServletResponse();
 
         servlet.service(request, response);
@@ -145,6 +149,7 @@ class OldalbumServletTest {
         when(oldalbum.getPreviousAlbumEntry(anyInt())).thenReturn(of(prevEntry));
         var nextEntry = AlbumEntry.with().id(5).parent(2).path("/moto/places/grava3").album(false).title("Tyrigrava").description("On gamle Mossevei").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(2).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         when(oldalbum.getNextAlbumEntry(anyInt())).thenReturn(of(nextEntry));
+        when(oldalbum.displayText(anyString(), anyString())).thenReturn("Up");
         var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
@@ -158,6 +163,8 @@ class OldalbumServletTest {
         when(request.getRequestURI()).thenReturn("/oldalbum/moto/places/grava1");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/places/grava1"));
         when(request.getPathInfo()).thenReturn("/moto/");
+        Cookie[] cookies = {};
+        when(request.getCookies()).thenReturn(cookies);
         var response = new MockHttpServletResponse();
 
         servlet.service(request, response);
@@ -201,6 +208,8 @@ class OldalbumServletTest {
         when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
         when(request.getPathInfo()).thenReturn("/moto/");
+        Cookie[] cookies = {};
+        when(request.getCookies()).thenReturn(cookies);
         var response = new MockHttpServletResponse();
 
         servlet.service(request, response);
@@ -238,6 +247,8 @@ class OldalbumServletTest {
         when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/moto/");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/moto/"));
         when(request.getPathInfo()).thenReturn("/moto/");
+        Cookie[] cookies = {};
+        when(request.getCookies()).thenReturn(cookies);
         var response = new MockHttpServletResponse();
 
         servlet.service(request, response);

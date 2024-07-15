@@ -16,10 +16,12 @@
 package no.priv.bang.oldalbum.web.frontend;
 
 import javax.servlet.Servlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static java.lang.String.format;
+import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -212,21 +214,34 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element navigationLinks(HttpServletRequest request, AlbumEntry entry) {
+        String locale = getLocale(request);
+        var up = oldalbum.displayText("up", locale);
+        var prev = oldalbum.displayText("previous", locale);
+        var next = oldalbum.displayText("next", locale);
         var navigationLinks = new Element("p").attr("class", "image-navbar");
         var servletContextPath = request.getRequestURI().replace(entry.path(), "");
         oldalbum.getAlbumEntry(entry.parent()).ifPresent(parent -> {
             var fragment = findLastPartOfPath(entry);
-            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText("Up"));
+            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText(up));
         });
         navigationLinks.appendText(" ");
         oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> {
-            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText("Prev"));
+            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev));
         });
         navigationLinks.appendText(" ");
         oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> {
-            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText("Next"));
+            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next));
         });
         return navigationLinks;
+    }
+
+    String getLocale(HttpServletRequest request) {
+        final Cookie[] emptyCookies = {};
+        return of(ofNullable(request.getCookies()).orElse(emptyCookies)).stream()
+            .filter(c -> "locale".equals(c.getName()))
+            .map(Cookie::getValue)
+            .findFirst()
+            .orElse("en_GB");
     }
 
     Element img(AlbumEntry entry) {
