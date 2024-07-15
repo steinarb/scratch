@@ -55,6 +55,14 @@ img.album-item-thumbnail {
     margin-right: 5px;
 }
 
+img.album-item-fullsize-thumbnail {
+    float: left;
+    display: block;
+    height: 75px;
+    width: auto;
+    margin-right: 5px;
+}
+
 p.album-item-description {
     font-style: oblique;
 }

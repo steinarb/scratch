@@ -516,24 +516,96 @@ class OldalbumServletTest {
     }
 
     @Test
+    void testThumbnailOnImageWithThumbnail() {
+        var oldalbum = mock(OldAlbumService.class);
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+
+        var child = AlbumEntry.with()
+            .imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg")
+            .thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif")
+            .build();
+        var li = servlet.thumbnail("oldalbum", child);
+        var img = li.selectXpath("//img").first();
+        assertThat(img.attribute("src").getValue()).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+        assertThat(img.attribute("class").getValue()).isEqualTo("album-item-thumbnail");
+    }
+
+    @Test
+    void testThumbnailOnImageWithoutThumbnail() {
+        var oldalbum = mock(OldAlbumService.class);
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+
+        var child = AlbumEntry.with()
+            .imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg")
+            .build();
+        var li = servlet.thumbnail("oldalbum", child);
+        var img = li.selectXpath("//img").first();
+        assertThat(img.attribute("src").getValue()).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg");
+        assertThat(img.attribute("class").getValue()).isEqualTo("album-item-fullsize-thumbnail");
+    }
+
+    @Test
+    void testThumbnailOnAlbumChildWithThumbnail() {
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getChildren(anyInt(), anyBoolean()))
+            .thenReturn(List.of(AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+
+        var child = AlbumEntry.with().album(true).build();
+        var li = servlet.thumbnail("oldalbum", child);
+        var img = li.selectXpath("//img").first();
+        assertThat(img.attribute("src").getValue()).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+        assertThat(img.attribute("class").getValue()).isEqualTo("album-item-thumbnail");
+    }
+
+    @Test
+    void testThumbnailOnAlbumChildWithoutThumbnail() {
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getChildren(anyInt(), anyBoolean()))
+            .thenReturn(List.of(AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg").build()));
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+
+        var child = AlbumEntry.with().album(true).build();
+        var li = servlet.thumbnail("oldalbum", child);
+        var img = li.selectXpath("//img").first();
+        assertThat(img.attribute("src").getValue()).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg");
+        assertThat(img.attribute("class").getValue()).isEqualTo("album-item-fullsize-thumbnail");
+    }
+
+    @Test
     void testFindFirstImageInAlbumChild() {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getChildren(anyInt(), anyBoolean()))
-            .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
+            .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()))
+            .thenReturn(emptyList());
         var servlet = new OldalbumServlet();
         servlet.setOldalbumService(oldalbum);
         assertThat(servlet.findFirstImageInAlbumChild(AlbumEntry.with().build())).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
     }
 
     @Test
-    void testFindFirstImageInAlbumChildWhenImageInIndirectChild() {
+    void testFindFirstImageInAlbumChildWhenFullsizeImageInDirectChild() {
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.getChildren(anyInt(), anyBoolean()))
+            .thenReturn(List.of(AlbumEntry.with().build(), AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
+        var servlet = new OldalbumServlet();
+        servlet.setOldalbumService(oldalbum);
+        assertThat(servlet.findFirstFullsizeImageInAlbumChild(AlbumEntry.with().build())).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+    }
+
+    @Test
+    void testFindFirstImageInAlbumChildWhenFullsizeImageInIndirectChild() {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getChildren(anyInt(), anyBoolean()))
             .thenReturn(List.of(AlbumEntry.with().album(true).build()))
-            .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
+            .thenReturn(List.of(AlbumEntry.with().album(true).build(), AlbumEntry.with().imageUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").build()));
         var servlet = new OldalbumServlet();
         servlet.setOldalbumService(oldalbum);
-        assertThat(servlet.findFirstImageInAlbumChild(AlbumEntry.with().build())).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
+        assertThat(servlet.findFirstFullsizeImageInAlbumChild(AlbumEntry.with().build())).isEqualTo("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif");
     }
 
     @Test

@@ -275,9 +275,13 @@ public class OldalbumServlet extends FrontendServlet {
 
     Element thumbnail(String servletContextPath, AlbumEntry child) {
         var resourceName = findLastPartOfPath(child);
-        var thumbnailUrl = child.album() ? findFirstImageInAlbumChild(child) : child.thumbnailUrl();
+        var fullSizeThumbnail = child.album() ? isNullOrBlank(findFirstImageInAlbumChild(child)) : isNullOrBlank(child.thumbnailUrl());
+        var thumbnailUrl = child.album() ?
+            findFirstThumbnailOrFullSizeImageInAlbumChild(child, fullSizeThumbnail) :
+            findThumbnailOrFullSizeImage(child, fullSizeThumbnail);
+        var thumbnailClass = fullSizeThumbnail ? "album-item-fullsize-thumbnail" : "album-item-thumbnail";
         var img = new Element("img")
-            .attr(CLASS, "album-item-thumbnail")
+            .attr(CLASS, thumbnailClass)
             .attr("src", thumbnailUrl);
         var thumbnailImage = new Element("div").appendChild(img);
         var titleText = !isNullOrBlank(child.title()) ? child.title() : resourceName;
@@ -300,6 +304,14 @@ public class OldalbumServlet extends FrontendServlet {
         return new Element("li").attr(CLASS, "album-item").appendChild(a);
     }
 
+    String findThumbnailOrFullSizeImage(AlbumEntry child, boolean fullSizeThumbnail) {
+        return fullSizeThumbnail ? child.imageUrl() : child.thumbnailUrl();
+    }
+
+    String findFirstThumbnailOrFullSizeImageInAlbumChild(AlbumEntry child, boolean fullSizeThumbnail) {
+        return fullSizeThumbnail ? findFirstFullsizeImageInAlbumChild(child) : findFirstImageInAlbumChild(child);
+    }
+
     boolean isNullOrBlank(String text) {
         return ofNullable(text).map(String::isBlank).orElse(true);
     }
@@ -313,12 +325,22 @@ public class OldalbumServlet extends FrontendServlet {
 
     String findFirstImageInAlbumChild(AlbumEntry child) {
         var children = oldalbum.getChildren(child.id(), false);
-        var firstImage = children.stream().filter(a -> !a.album()).findFirst();
+        var firstImage = children.stream().filter(a -> !a.album() && !isNullOrBlank(a.thumbnailUrl())).findFirst();
         if (firstImage.isPresent()) {
             return firstImage.get().thumbnailUrl();
         }
 
         return children.stream().filter(a -> a.album()).findFirst().map(this::findFirstImageInAlbumChild).orElse("");
+    }
+
+    String findFirstFullsizeImageInAlbumChild(AlbumEntry child) {
+        var children = oldalbum.getChildren(child.id(), false);
+        var firstImage = children.stream().filter(a -> !a.album() && !isNullOrBlank(a.imageUrl())).findFirst();
+        if (firstImage.isPresent()) {
+            return firstImage.get().imageUrl();
+        }
+
+        return children.stream().filter(a -> a.album()).findFirst().map(this::findFirstFullsizeImageInAlbumChild).orElse("");
     }
 
     String formatDateAndSize(AlbumEntry child) {
