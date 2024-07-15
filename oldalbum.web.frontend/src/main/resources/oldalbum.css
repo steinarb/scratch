@@ -13,10 +13,14 @@ p.image-navbar {
     padding-bottom: 10px;
 }
 
-p.image-description {
+div.image-description-box {
     background-color: lightyellow;
     margin: 5px;
     padding: 5px;
+    font-style: oblique;
+}
+
+p.image-description {
     font-style: oblique;
 }
 
