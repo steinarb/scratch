@@ -215,7 +215,8 @@ public class OldalbumServlet extends FrontendServlet {
         var navigationLinks = new Element("p").attr("class", "image-navbar");
         var servletContextPath = request.getRequestURI().replace(entry.path(), "");
         oldalbum.getAlbumEntry(entry.parent()).ifPresent(parent -> {
-            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText("Up"));
+            var fragment = findLastPartOfPath(entry);
+            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText("Up"));
         });
         navigationLinks.appendText(" ");
         oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> {
