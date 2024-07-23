@@ -1839,12 +1839,12 @@ class OldAlbumServiceProviderTest {
         var connectionFactory = mock(HttpConnectionFactory.class);
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
-        var connectionStubbing = when(connection.getInputStream());
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/instaloader_dump_directory_list_nginx_index.html"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"));
-        connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
+        when(connection.getInputStream())
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/instaloader_dump_directory_list_nginx_index.html"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
@@ -1907,12 +1907,12 @@ class OldAlbumServiceProviderTest {
         var connectionFactory = mock(HttpConnectionFactory.class);
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
-        var connectionStubbing = when(connection.getInputStream());
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/instaloader_dump_directory_list_nginx_index.html"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"));
-        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"));
-        connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
+        when(connection.getInputStream())
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("html/instaloader_dump_directory_list_nginx_index.html"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-22_07-48-41_UTC.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/2013-07-23_18-50-21_UTC.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-23_18-50-21_UTC.txt"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
