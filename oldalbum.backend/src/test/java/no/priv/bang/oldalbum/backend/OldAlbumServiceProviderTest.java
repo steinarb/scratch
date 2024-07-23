@@ -39,6 +39,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -569,13 +570,22 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testAddEntryWithPicture() {
+    void testAddEntryWithPicture() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
         provider.setDataSource(datasource);
         provider.activate(Collections.emptyMap());
         var numberOfEntriesBeforeAdd = provider.fetchAllRoutes(null, false).size();
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
         var imageUrl = "https://www.bang.priv.no/sb/pics/misc/sylane4.jpg";
         var metadata = provider.readMetadata(imageUrl);
         var pictureToAdd = AlbumEntry.with()
@@ -1197,6 +1207,14 @@ class OldAlbumServiceProviderTest {
         var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id()).title(replacementTitle).description(replacementDescription).build();
         var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.description())).findFirst().get();
 
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
         var streamingOutput = provider.downloadAlbumEntry(entry.id());
         assertNotNull(streamingOutput);
         var downloadFile = Files.createTempFile("image", "jpg").toFile();
@@ -1222,6 +1240,27 @@ class OldAlbumServiceProviderTest {
         provider.activate(Collections.emptyMap());
         var albumentry = provider.getAlbumEntry(4).get();
         var albumpictures = provider.getChildren(albumentry.id(), false);
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream())
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
 
         var streamingOutput = provider.downloadAlbumEntry(albumentry.id());
         assertNotNull(streamingOutput);
@@ -1251,6 +1290,27 @@ class OldAlbumServiceProviderTest {
         var albumpictures = provider.getChildren(albumentry.id(), false);
         var selectedentryIds = albumpictures.stream().map(e -> e.id()).toList();
 
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream())
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
         var streamingOutput = provider.downloadAlbumEntrySelection(selectedentryIds);
         assertNotNull(streamingOutput);
 
@@ -1278,6 +1338,15 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasource);
         provider.setImageIOService(imageIOService);
         provider.activate(Collections.emptyMap());
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
         var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.path())).findFirst().get();
         var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id()).title(replacementTitle).description(replacementDescription).build();
         var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.description())).findFirst().get();
@@ -1432,10 +1501,21 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
-    void testReadImageMetadata() {
+    void testReadImageMetadata() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        when(connection.getLastModified()).thenReturn(ZonedDateTime.now().toEpochSecond());
+        when(connection.getContentType()).thenReturn("image/jpeg");
+        when(connection.getHeaderField("Content-Length")).thenReturn("71072");
+        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
 
         var imageUrl = "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg";
         var metadata = provider.readMetadata(imageUrl);
