@@ -1,7 +1,6 @@
 import { takeLatest, select, put } from 'redux-saga/effects';
 import {
     LOGIN_CHECK_RECEIVE,
-    LOGIN_RECEIVE,
     LOGOUT_RECEIVE,
     TOGGLE_EDIT_MODE_ON,
     TOGGLE_EDIT_MODE_OFF,
@@ -11,7 +10,6 @@ import {
 
 export default function* showEditControlSaga() {
     yield takeLatest(LOGIN_CHECK_RECEIVE, modifyShowEditControlFlag);
-    yield takeLatest(LOGIN_RECEIVE, modifyShowEditControlFlag);
     yield takeLatest(LOGOUT_RECEIVE, modifyShowEditControlFlag);
     yield takeLatest(TOGGLE_EDIT_MODE_ON, modifyShowEditControlFlag);
     yield takeLatest(TOGGLE_EDIT_MODE_OFF, modifyShowEditControlFlag);

@@ -20,23 +20,13 @@ import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.InternalServerErrorException;
-
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.apache.shiro.web.subject.WebSubject;
-import static org.assertj.core.api.Assertions.*;
-
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.junit.jupiter.api.Test;
-
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import no.priv.bang.oldalbum.backend.OldAlbumServiceProvider;
 import no.priv.bang.oldalbum.services.bean.Credentials;
 import no.priv.bang.oldalbum.web.api.ShiroTestBase;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
@@ -54,9 +44,9 @@ class LoginResourceTest extends ShiroTestBase {
         var username = "admin";
         var password = "admin";
         createSubjectAndBindItToThread();
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "";
-        resource.login(locale, credentials); // Ensure user is logged in
+        var subject = SecurityUtils.getSubject();
+        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
 
         var result = resource.loginCheck();
         assertTrue(result.success());
@@ -96,222 +86,6 @@ class LoginResourceTest extends ShiroTestBase {
     }
 
     @Test
-    void testLogin() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var resource = new LoginResource();
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "admin";
-        var password = "admin";
-        createSubjectAndBindItToThread();
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "";
-        var result = resource.login(locale, credentials);
-        assertTrue(result.success());
-        assertTrue(result.canModifyAlbum());
-        assertNull(result.originalRequestUri());
-    }
-
-    @Test
-    void testLoginWithOriginalRequestUri() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var originalRequestUri = "/oldalbum/slides/";
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var session = mock(HttpSession.class);
-        var request = new MockHttpServletRequest();
-        request.setSession(session);
-        request.setMethod("GET");
-        request.setRequestURL("http://localhost:8181" + originalRequestUri);
-        request.setRequestURI(originalRequestUri);
-        var response = new MockHttpServletResponse();
-
-        var resource = new LoginResource();
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "admin";
-        var password = "admin";
-        createSubjectAndBindItToThread(request, response);
-        var credentials = Credentials.with().username(username).password(password).build();
-
-        var locale = "";
-        var result = resource.login(locale, credentials);
-        assertTrue(result.success());
-        assertTrue(result.canModifyAlbum());
-        assertEquals("/slides/", result.originalRequestUri());
-    }
-
-    @Test
-    void testLoginWithClearedOriginalRequestUri() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var originalRequestUri = "/oldalbum/slides/";
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var session = mock(HttpSession.class);
-        var request = new MockHttpServletRequest();
-        request.setSession(session);
-        request.setMethod("GET");
-        request.setRequestURL("http://localhost:8181" + originalRequestUri);
-        request.setRequestURI(originalRequestUri);
-        var response = new MockHttpServletResponse();
-
-        var resource = new LoginResource();
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "admin";
-        var password = "admin";
-        createSubjectAndBindItToThread(request, response);
-        var credentials = Credentials.with().username(username).password(password).build();
-
-        var clearRequestResult = resource.clearOriginalRequestUrl();
-        assertFalse(clearRequestResult.success());
-        assertFalse(clearRequestResult.canModifyAlbum());
-        assertNull(clearRequestResult.originalRequestUri());
-
-        var locale = "";
-        var result = resource.login(locale, credentials);
-        assertTrue(result.success());
-        assertTrue(result.canModifyAlbum());
-        assertNull(result.originalRequestUri());
-    }
-
-    @Test
-    void testLoginModifyNotAllowed() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var resource = new LoginResource();
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "jd";
-        var password = "johnnyBoi";
-        createSubjectAndBindItToThread();
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "";
-        var result = resource.login(locale, credentials);
-        assertTrue(result.success());
-        assertFalse(result.canModifyAlbum());
-    }
-
-    @Test
-    void testLoginWrongPassword() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var resource = new LoginResource();
-        resource.setLogservice(logservice);
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "jd";
-        var password = "feil";
-        createSubjectAndBindItToThread();
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "en_GB";
-        var result = resource.login(locale, credentials);
-        assertFalse(result.success());
-        assertThat(result.errormessage()).startsWith("Wrong password");
-    }
-
-    @Test
-    void testLoginUknownUser() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var resource = new LoginResource();
-        resource.setLogservice(logservice);
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "jdd";
-        var password = "feil";
-        createSubjectAndBindItToThread();
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "en_GB";
-        var result = resource.login(locale, credentials);
-        assertThat(result.errormessage()).startsWith("Unknown account");
-    }
-
-    @Test
-    void testLoginLockedUser() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var resource = new LoginResource();
-        resource.setLogservice(logservice);
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "lockeduser";
-        var password = "lockpw";
-        createSubjectAndBindItToThread();
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "en_GB";
-        var result = resource.login(locale, credentials);
-        assertThat(result.errormessage()).startsWith("Locked account");
-    }
-
-    @Test
-    void testLoginGenericAuthenticationException() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var resource = new LoginResource();
-        resource.setLogservice(logservice);
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "lockeduser";
-        var password = "lockpw";
-        var securityManager = mock(WebSecurityManager.class);
-        var subject = mock(WebSubject.class);
-        doThrow(AuthenticationException.class).when(subject).login(any());
-        when(securityManager.createSubject(any())).thenReturn(subject);
-        createSubjectAndBindItToThread(securityManager);
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "en_GB";
-        var result = resource.login(locale, credentials);
-        assertThat(result.errormessage()).startsWith("Unknown login error");
-    }
-
-    @Test
-    void testLoginInternalServerError() {
-        var oldalbum = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
-        when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var resource = new LoginResource();
-        resource.setLogservice(logservice);
-        resource.useradmin = useradmin;
-        resource.oldalbum = oldalbum;
-        var username = "lockeduser";
-        var password = "lockpw";
-        var securityManager = mock(WebSecurityManager.class);
-        var subject = mock(WebSubject.class);
-        doThrow(RuntimeException.class).when(subject).login(any());
-        when(securityManager.createSubject(any())).thenReturn(subject);
-        createSubjectAndBindItToThread(securityManager);
-        var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "";
-        assertThrows(InternalServerErrorException.class, () -> {
-                resource.login(locale, credentials);
-            });
-        assertThat(logservice.getLogmessages()).isNotEmpty();
-        assertThat(logservice.getLogmessages().get(0)).contains("Login error: internal server error");
-    }
-
-    @Test
     void testLogout() {
         var oldalbum = new OldAlbumServiceProvider();
         var useradmin = mock(UserManagementService.class);
@@ -324,9 +98,9 @@ class LoginResourceTest extends ShiroTestBase {
         var password = "johnnyBoi";
         createSubjectAndBindItToThread();
         var credentials = Credentials.with().username(username).password(password).build();
-        var locale = "";
-        var resultLogin = resource.login(locale, credentials);
-        assertTrue(resultLogin.success());
+        var subject = SecurityUtils.getSubject();
+        var token = new UsernamePasswordToken(username, password.toCharArray(), true);
+        subject.login(token);
         var resultLogout = resource.logout(credentials);
         assertFalse(resultLogout.success());
     }

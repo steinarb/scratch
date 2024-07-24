@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.web.security.resources;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -37,6 +38,8 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.web.util.SavedRequest;
+import org.apache.shiro.web.util.WebUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.FormElement;
 import org.osgi.service.log.LogService;
@@ -63,8 +66,9 @@ public class LoginResource extends HtmlTemplateResource {
     @Path("/login")
     @Produces(MediaType.TEXT_HTML)
     public Response getLogin(@QueryParam("originalUri") String originalUri) {
+        var originalRequestUri = findOriginalRequestUri().orElse(originalUri);
         var html = loadHtmlFile(LOGIN_HTML, logservice);
-        fillFormValues(html, originalUri);
+        fillFormValues(html, originalRequestUri);
 
         return Response.status(Response.Status.OK).entity(html.html()).build();
     }
@@ -157,6 +161,11 @@ public class LoginResource extends HtmlTemplateResource {
     void updateOriginalUri(FormElement form, String originalUri) {
         var originalUriHidden = form.select("input[id=originalUri]");
         originalUriHidden.val(originalUri);
+    }
+
+    private Optional<String> findOriginalRequestUri() {
+        return Optional.ofNullable(WebUtils.getSavedRequest(null))
+            .map(SavedRequest::getRequestURI);
     }
 
 }

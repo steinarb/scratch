@@ -2,7 +2,6 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     ALLROUTES_FAILURE,
     LOGIN_CHECK_FAILURE,
-    LOGIN_FAILURE,
     LOGOUT_FAILURE,
     SAVE_MODIFIED_ALBUM_FAILURE,
     SAVE_ADDED_ALBUM_FAILURE,
@@ -20,7 +19,6 @@ const errorsReducer = createReducer({}, builder => {
     builder
         .addCase(ALLROUTES_FAILURE, (state, action) => ({ ...state, allroutes: action.payload }))
         .addCase(LOGIN_CHECK_FAILURE, (state, action) => ({ ...state, logincheck: action.payload }))
-        .addCase(LOGIN_FAILURE, (state, action) => ({ ...state, login: action.payload }))
         .addCase(LOGOUT_FAILURE, (state, action) => ({ ...state, logout: action.payload }))
         .addCase(SAVE_MODIFIED_ALBUM_FAILURE, (state, action) => ({ ...state, modifiedAlbum: action.payload }))
         .addCase(SAVE_ADDED_ALBUM_FAILURE, (state, action) => ({ ...state, addedAlbum: action.payload }))

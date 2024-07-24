@@ -1,15 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 import { stringify } from 'qs';
 import { LOGOUT_REQUEST } from '../reduxactions';
 
-export default function LoginLogoutButton(props) {
-    const { item } = props;
+export default function LoginLogoutButton() {
     const text = useSelector(state => state.displayTexts);
     const loggedIn = useSelector(state => state.loggedIn);
     const username = useSelector(state => state.username);
     const canLogin = useSelector(state => state.canLogin);
+    const routerBasename = useSelector(state => state.router.basename);
     const dispatch = useDispatch();
 
     if (!canLogin) {
@@ -22,7 +21,8 @@ export default function LoginLogoutButton(props) {
                 </span>);
     }
 
-    const returnpath = item.path || '/';
-    const loginpath = '/login?' + stringify({ returnpath });
-    return(<span className="alert" role="alert">{text.notloggedin} <NavLink className="alert-link" to={loginpath}>{text.login}</NavLink></span>);
+    const originalUri = window.location.href;
+    const basename = routerBasename == '/' ? '' : routerBasename;
+    const loginpath = basename + '/auth/login?' + stringify({ originalUri });
+    return(<span className="alert" role="alert">{text.notloggedin} <a className="alert-link" href={loginpath}>{text.login}</a></span>);
 }

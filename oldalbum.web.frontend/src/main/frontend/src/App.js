@@ -5,7 +5,6 @@ import { HistoryRouter as Router } from "redux-first-history/rr6";
 import './App.css';
 import Album from './components/Album';
 import Picture from './components/Picture';
-import Login from './components/Login';
 import Unauthorized from './components/Unauthorized';
 import ModifyAlbum from './components/ModifyAlbum';
 import AddAlbum from './components/AddAlbum';
@@ -24,7 +23,6 @@ export default function App(props) {
             <Router history={history} basename={basename}>
                 <Routes >
                     { allroutes.map((item, index) => <Route exact key={index} path={item.path} element={albumOrPicture(item)} />) }
-                    <Route exact key="login" path="/login" element={<Login/>} />
                     <Route exact key="unauthorized" path="/unauthorized" element={<Unauthorized/>} />
                     <Route key="modifyalbum" path="/modifyalbum" element={<ModifyAlbum/>} />
                     <Route key="addalbum" path="/addalbum" element={<AddAlbum/>} />

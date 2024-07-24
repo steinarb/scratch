@@ -15,27 +15,16 @@
  */
 package no.priv.bang.oldalbum.web.api.resources;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.util.SavedRequest;
 import org.apache.shiro.web.util.WebUtils;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
@@ -81,45 +70,6 @@ public class LoginResource {
             .build();
     }
 
-    @POST
-    @Path("/login")
-    public LoginResult login(@QueryParam("locale")String locale, Credentials credentials) {
-        var subject = SecurityUtils.getSubject();
-        var originalRequestUri = findOriginalRequestUri().orElse(null);
-
-        var token = new UsernamePasswordToken(credentials.username(), credentials.password().toCharArray(), true);
-        var canLogin = shiroRoleOldalbumadminExists();
-        try {
-            subject.login(token);
-            var canModifyAlbum = checkIfUserCanModifyAlbum(subject);
-            return LoginResult.with()
-                .success(true)
-                .username((String) subject.getPrincipal())
-                .errormessage("")
-                .canModifyAlbum(canModifyAlbum)
-                .canLogin(canLogin)
-                .originalRequestUri(originalRequestUri)
-                .build();
-        } catch(UnknownAccountException e) {
-            logger.warn("Login error: unknown account", e);
-            return LoginResult.with().success(false).errormessage(oldalbum.displayText("unknownaccount", locale)).canModifyAlbum(false).canLogin(canLogin).build();
-        } catch (IncorrectCredentialsException  e) {
-            logger.warn("Login error: wrong password", e);
-            return LoginResult.with().success(false).errormessage(oldalbum.displayText("wrongpassword", locale)).canModifyAlbum(false).canLogin(canLogin).build();
-        } catch (LockedAccountException  e) {
-            logger.warn("Login error: locked account", e);
-            return LoginResult.with().success(false).errormessage(oldalbum.displayText("lockedaccount", locale)).canModifyAlbum(false).canLogin(canLogin).build();
-        } catch (AuthenticationException e) {
-            logger.warn("Login error: general authentication error", e);
-            return LoginResult.with().success(false).errormessage(oldalbum.displayText("unknownloginerror", locale)).canModifyAlbum(false).canLogin(canLogin).build();
-        } catch (Exception e) {
-            logger.error("Login error: internal server error", e);
-            throw new InternalServerErrorException();
-        } finally {
-            token.clear();
-        }
-    }
-
     @GET
     @Path("/logout")
     public LoginResult logout(Credentials credentials) {
@@ -150,12 +100,6 @@ public class LoginResource {
 
     private boolean shiroRoleOldalbumadminExists() {
         return useradmin.getRoles().stream().anyMatch(r -> "oldalbumadmin".equals(r.rolename()));
-    }
-
-    private Optional<String> findOriginalRequestUri() {
-        return Optional.ofNullable(WebUtils.getSavedRequest(null))
-            .map(SavedRequest::getRequestURI)
-            .map(u -> u.replace("/oldalbum", ""));
     }
 
 }
