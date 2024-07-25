@@ -195,6 +195,7 @@ class OldalbumServletTest {
         when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
         var entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
+        when(oldalbum.displayText(anyString(), anyString())).thenReturn("");
         var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
@@ -234,6 +235,7 @@ class OldalbumServletTest {
         when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
         var entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("").description("").imageUrl("").thumbnailUrl("").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
+        when(oldalbum.displayText(anyString(), anyString())).thenReturn("");
         var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);

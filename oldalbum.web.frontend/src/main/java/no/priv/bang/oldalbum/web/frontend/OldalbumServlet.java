@@ -19,6 +19,7 @@ import javax.servlet.Servlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.UriBuilder;
 
 import static java.lang.String.format;
 import static java.util.List.of;
@@ -40,9 +41,10 @@ import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.osgi.service.log.LogService;import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.servlet.frontend.FrontendServlet;
@@ -220,7 +222,7 @@ public class OldalbumServlet extends FrontendServlet {
         var prev = oldalbum.displayText("previous", locale);
         var next = oldalbum.displayText("next", locale);
         var navigationLinks = new Element("p").attr(CLASS, "image-navbar");
-        var servletContextPath = request.getRequestURI().replace(entry.path(), "");
+        var servletContextPath = findServletContext(request, entry);
         oldalbum.getAlbumEntry(entry.parent()).ifPresent(parent -> {
             var fragment = findLastPartOfPath(entry);
             navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText(up));
@@ -229,16 +231,17 @@ public class OldalbumServlet extends FrontendServlet {
         oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev)));
         navigationLinks.appendText(" ");
         oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next)));
+        navigationLinks.appendText(" ");
+        navigationLinks.appendChild(loginLink(request, locale, entry));
         return navigationLinks;
     }
 
-    String getLocale(HttpServletRequest request) {
-        final Cookie[] emptyCookies = {};
-        return of(ofNullable(request.getCookies()).orElse(emptyCookies)).stream()
-            .filter(c -> "locale".equals(c.getName()))
-            .map(Cookie::getValue)
-            .findFirst()
-            .orElse("en_GB");
+    Element loginLink(HttpServletRequest request, String locale, AlbumEntry entry) {
+        var loginText =  oldalbum.displayText("login", locale);
+        var originalUrl = urlEncode(request.getRequestURL().toString());
+        var servletContext = findServletContext(request, entry);
+        var loginUrl = UriBuilder.fromPath(servletContext + "/auth/login").queryParam("originalUri", originalUrl).build().toASCIIString();
+        return new Element("a").attr("href", loginUrl).appendText(loginText);
     }
 
     Element img(AlbumEntry entry) {
@@ -265,7 +268,7 @@ public class OldalbumServlet extends FrontendServlet {
 
     Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
         var div = new Element("ul").attr(CLASS, "thumbnail-list");
-        var servletContextPath = "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/$", "") : request.getRequestURI().replace(entry.path(), "");
+        var servletContextPath = findServletContext(request, entry);
         for (var child : oldalbum.getChildren(entry.id(), false)) {
             div.appendChild(thumbnail(servletContextPath, child));
         }
@@ -367,8 +370,37 @@ public class OldalbumServlet extends FrontendServlet {
         return getClass().getClassLoader().getResourceAsStream(resource);
     }
 
+    static String findServletContext(HttpServletRequest request, AlbumEntry entry) {
+        return "/".equals(entry.path()) ? request.getRequestURI().replaceAll("/$", "") : request.getRequestURI().replace(entry.path(), "");
+    }
+
+    static String urlEncode(String stringToEncode) {
+        try {
+            return URLEncoder.encode(stringToEncode, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            sneakyThrows(e); // Will never happen because "UTF-8" is a constant
+        }
+
+        return stringToEncode; // Will never be reached since sneakyThrows() will throw
+    }
+
+    static String getLocale(HttpServletRequest request) {
+        final Cookie[] emptyCookies = {};
+        return of(ofNullable(request.getCookies()).orElse(emptyCookies)).stream()
+            .filter(c -> "locale".equals(c.getName()))
+            .map(Cookie::getValue)
+            .findFirst()
+            .orElse("en_GB");
+    }
+
     static boolean nullOrEmpty(String s) {
         return s == null || s.isBlank();
     }
 
+    // Trick to make compiler stop complaining about unhandled checked exceptions
+    // (which is truly annoying clutter where the exception quite possible can't happen)
+    @SuppressWarnings("unchecked")
+    public static <E extends Throwable> void sneakyThrows(Throwable e) throws E {
+        throw (E) e;
+    }
 }
