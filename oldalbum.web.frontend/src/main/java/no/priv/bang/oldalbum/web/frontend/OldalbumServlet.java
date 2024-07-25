@@ -221,19 +221,16 @@ public class OldalbumServlet extends FrontendServlet {
         var up = oldalbum.displayText("up", locale);
         var prev = oldalbum.displayText("previous", locale);
         var next = oldalbum.displayText("next", locale);
-        var navigationLinks = new Element("p").attr(CLASS, "image-navbar");
+        var navigationLinks = new Element("ul");
         var servletContextPath = findServletContext(request, entry);
         oldalbum.getAlbumEntry(entry.parent()).ifPresent(parent -> {
             var fragment = findLastPartOfPath(entry);
-            navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText(up));
+            navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText(up)));
         });
-        navigationLinks.appendText(" ");
-        oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev)));
-        navigationLinks.appendText(" ");
-        oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next)));
-        navigationLinks.appendText(" ");
-        navigationLinks.appendChild(loginLink(request, locale, entry));
-        return navigationLinks;
+        oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev))));
+        oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next))));
+        navigationLinks.appendChild(new Element("li").attr(CLASS, "float-right").appendChild(loginLink(request, locale, entry)));
+        return new Element("nav").attr(CLASS, "image-navbar").appendChild(navigationLinks);
     }
 
     Element loginLink(HttpServletRequest request, String locale, AlbumEntry entry) {
