@@ -269,7 +269,8 @@ public class OldalbumServlet extends FrontendServlet {
     Element thumbnails(HttpServletRequest request, AlbumEntry entry) {
         var div = new Element("ul").attr(CLASS, "thumbnail-list");
         var servletContextPath = findServletContext(request, entry);
-        for (var child : oldalbum.getChildren(entry.id(), false)) {
+        var isLoggedIn = SecurityUtils.getSubject().isAuthenticated();
+        for (var child : oldalbum.getChildren(entry.id(), isLoggedIn)) {
             div.appendChild(thumbnail(servletContextPath, child));
         }
 
