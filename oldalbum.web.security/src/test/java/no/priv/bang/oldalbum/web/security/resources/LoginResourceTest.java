@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
-import no.priv.bang.oldalbum.web.security.ShiroTestBase;
+import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class LoginResourceTest extends ShiroTestBase {

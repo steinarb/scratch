@@ -34,6 +34,7 @@ import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
 
+import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldalbumLoginServletTest extends ShiroTestBase {

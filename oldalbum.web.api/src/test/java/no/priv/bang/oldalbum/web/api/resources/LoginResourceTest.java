@@ -26,11 +26,10 @@ import org.junit.jupiter.api.Test;
 
 import no.priv.bang.oldalbum.backend.OldAlbumServiceProvider;
 import no.priv.bang.oldalbum.services.bean.Credentials;
-import no.priv.bang.oldalbum.web.api.ShiroTestBase;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
-class LoginResourceTest extends ShiroTestBase {
+class LoginResourceTest extends no.priv.bang.oldalbum.testutilities.ShiroTestBase {
 
     @Test
     void testLoginCheck() {

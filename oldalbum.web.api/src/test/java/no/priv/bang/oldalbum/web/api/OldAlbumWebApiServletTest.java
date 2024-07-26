@@ -66,6 +66,7 @@ import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.ImageRequest;
 import no.priv.bang.oldalbum.services.bean.LocaleBean;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
+import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
 import no.priv.bang.oldalbum.web.api.resources.ErrorMessage;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
@@ -382,12 +383,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var entry = AlbumEntry.with().id(albumEntryId).album(false).path("/moto/places/grava1").imageUrl(imageUrl).lastModified(lastModifiedDate).build();
         var streamingOutput = new StreamingOutput() {
 
-                @Override
-                public void write(OutputStream output) throws IOException, WebApplicationException {
-                    var inputStream = getClass().getClassLoader().getResourceAsStream("allroutes.json");
-                    inputStream.transferTo(output);
-                }
-            };
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                var inputStream = getClass().getClassLoader().getResourceAsStream("allroutes.json");
+                inputStream.transferTo(output);
+            }
+        };
         var backend = mock(OldAlbumService.class);
         when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.of(entry));
         when(backend.downloadAlbumEntry(anyInt())).thenReturn(streamingOutput);
@@ -431,12 +432,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var album = AlbumEntry.with().id(albumId).parent(2).album(true).path("/moto/vfr96/").title("My VFR750F in 1996").description("In may 1996, I bought a 1995 VFR750F, registered in october 1995, with 3400km on the clock when I bought it. This picture archive, contains pictures from my first (but hopefully not last) season, on a VFR.").build();
         var streamingOutput = new StreamingOutput() {
 
-                @Override
-                public void write(OutputStream output) throws IOException, WebApplicationException {
-                    var inputStream = getClass().getClassLoader().getResourceAsStream("allroutes.json");
-                    inputStream.transferTo(output);
-                }
-            };
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                var inputStream = getClass().getClassLoader().getResourceAsStream("allroutes.json");
+                inputStream.transferTo(output);
+            }
+        };
         var backend = mock(OldAlbumService.class);
         when(backend.getAlbumEntry(albumId)).thenReturn(Optional.of(album));
         when(backend.downloadAlbumEntrySelection(anyList())).thenReturn(streamingOutput);

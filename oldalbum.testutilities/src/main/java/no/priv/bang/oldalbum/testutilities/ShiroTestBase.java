@@ -101,7 +101,7 @@ public class ShiroTestBase {
     public static WebSecurityManager getSecurityManager() {
         if (securitymanager == null) {
             var environment = new IniWebEnvironment();
-            environment.setIni(Ini.fromResourcePath("classpath:test.shiro.ini"));
+            environment.setIni(Ini.fromResourcePath("classpath:testutilities.shiro.ini"));
             environment.init();
             securitymanager = environment.getWebSecurityManager();
             realm = findRealmFromSecurityManager(securitymanager);

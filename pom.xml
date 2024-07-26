@@ -29,6 +29,7 @@
     <description>Displaying albums from the 90-ies in a modern way</description>
 
     <modules>
+        <module>oldalbum.testutilities</module>
         <module>oldalbum.services</module>
         <module>oldalbum.roleadder.test</module>
         <module>oldalbum.db.liquibase</module>
@@ -54,6 +55,9 @@
             **/OldAlbumProductionDatabase.java,
             **/AlbumEntry.java,
         </sonar.cpd.exclusions>
+        <sonar.coverage.exclusions>
+            **/oldalbum.testutilities/src/**/*.java
+        </sonar.coverage.exclusions>
         <sonar.issue.ignore.multicriteria>e1, e2</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S6813</sonar.issue.ignore.multicriteria.e1.ruleKey>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/oldalbum.web.api/**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>

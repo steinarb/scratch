@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
-import no.priv.bang.oldalbum.web.api.ShiroTestBase;
+import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
 
 class RoutesResourceTest extends ShiroTestBase {
     final static ObjectMapper mapper = new ObjectMapper();
