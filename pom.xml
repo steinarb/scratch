@@ -54,6 +54,8 @@
             **/OldAlbumDerbyTestDatabase.java,
             **/OldAlbumProductionDatabase.java,
             **/AlbumEntry.java,
+            **/HtmlTemplateResource.java,
+            **/SettingsPageResource.java,
         </sonar.cpd.exclusions>
         <sonar.coverage.exclusions>
             **/oldalbum.testutilities/src/**/*.java

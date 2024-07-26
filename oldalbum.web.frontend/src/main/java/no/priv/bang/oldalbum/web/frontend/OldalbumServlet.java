@@ -229,8 +229,15 @@ public class OldalbumServlet extends FrontendServlet {
         });
         oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev))));
         oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next))));
+        navigationLinks.appendChild(new Element("li").appendChild(settingsLink(request, servletContextPath)));
         navigationLinks.appendChild(new Element("li").attr(CLASS, "float-right").appendChild(loginLink(request, locale, entry)));
         return new Element("nav").attr(CLASS, "image-navbar").appendChild(navigationLinks);
+    }
+
+    Element settingsLink(HttpServletRequest request, String servletContextPath) {
+        var originalUrl = urlEncode(request.getRequestURL().toString());
+        var settingsUrl = UriBuilder.fromPath(servletContextPath + "/pages/settings").queryParam("originalUri", originalUrl).build().toASCIIString();
+        return new Element("a").attr("href", settingsUrl).appendText("Settings");
     }
 
     Element loginLink(HttpServletRequest request, String locale, AlbumEntry entry) {
