@@ -227,8 +227,17 @@ public class OldalbumServlet extends FrontendServlet {
             var fragment = findLastPartOfPath(entry);
             navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path() + "#" + fragment).appendText(up)));
         });
-        oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(prev))));
-        oldalbum.getNextAlbumEntry(entry.id()).ifPresent(parent -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + parent.path()).appendText(next))));
+        var isLoggedIn = SecurityUtils.getSubject().isAuthenticated();
+        oldalbum.getPreviousAlbumEntry(entry.id()).ifPresent(previous -> {
+            if (!previous.requireLogin() || (previous.requireLogin() && isLoggedIn)) {
+                navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + previous.path()).appendText(prev)));
+            }
+        });
+        oldalbum.getNextAlbumEntry(entry.id()).ifPresent(nextItem -> {
+            if (!nextItem.requireLogin() || (nextItem.requireLogin() && isLoggedIn)) {
+                navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + nextItem.path()).appendText(next)));
+            }
+        });
         navigationLinks.appendChild(new Element("li").appendChild(settingsLink(request, servletContextPath)));
         navigationLinks.appendChild(new Element("li").attr(CLASS, "float-right").appendChild(loginLink(request, locale, entry)));
         return new Element("nav").attr(CLASS, "image-navbar").appendChild(navigationLinks);
