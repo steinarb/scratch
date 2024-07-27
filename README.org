@@ -224,6 +224,34 @@ If you want your album to be read-only, it's possible to disable the login and t
   docker run -p 8101:8101 -p 8181:8181  -e "ALLOW_MODIFY=false" -e "DATABASE_CONTENT_URL=https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql" -d steinarb/oldalbum:latest
 #+end_example
 
+** Non-JavaScript version
+The oldalbum website is a [[https://react.dev][react.js]] webapp.
+
+Prior to version 2.1.0, what met browsers without JavaScript when opening https://oldalbum.bang.priv.no was the text
+#+begin_example
+  This webpage requires javascript in the browser!
+#+end_example
+
+Since one reason for creating oldalbum in the first place, was to have shareable URLs with OpenGraph headers, it has felt a little off not to have that URL part of a web site that can be crawled and walked to see the pictures.
+
+So the plan was to at least have a simple server side rendered web page that linked albums and pictures in the same way as the react.js webapp.
+
+And then earlier in 2024, [[https://dillo-browser.github.io/dillo.org.html][the dillo browser was resurrected]] and [[https://dillo-browser.github.io/release/3.1.0/][dillo 3.1.0 was released]] and provided a graphical browser with CSS support but no javascript and the decision was made to target dillo 3.1.0 and what it currently supports of CSS.
+
+What's supported in the non-JavaScript version, is:
+ 1. Navigation through albums and pictures
+ 2. Shareable URLs with OpenGraph metadata
+ 3. Download links for albums and pictures
+ 4. The possibility to log in to see protected pictures and albums (requires cookies to be enabled in dillo, cookies are disabled by default i cookies)
+
+What is in the react.js version and not supported in the non-JavaScript version is edit functionality:
+ 1. No functionality to add albums and pictures
+ 2. No functionality to delete albums and pictures
+ 3. No functionality to edit picture metadata
+ 4. No functionality to modify album sort order
+
+For this one needs now (and in the foreseeable future) a browser that can run react.js.
+
 ** License
 
 This software is licensed under Apache Public License v 2.0.
