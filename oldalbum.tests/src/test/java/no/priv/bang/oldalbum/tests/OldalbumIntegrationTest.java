@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 public class OldalbumIntegrationTest extends KarafTestSupport {
 
     @Configuration
+    @Override
     public Option[] config() {
         final var handleregFeatureRepo = maven().groupId("no.priv.bang.oldalbum").artifactId("karaf").version("LATEST").type("xml").classifier("features");
         var options = new Option[] {
