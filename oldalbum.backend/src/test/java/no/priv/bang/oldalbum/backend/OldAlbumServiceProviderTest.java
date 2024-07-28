@@ -2468,8 +2468,7 @@ class OldAlbumServiceProviderTest {
 
     long findLastModifiedTimeOfClasspathResource(String classpathResource) throws IOException, URISyntaxException {
         var imageFileAttributes = Files.readAttributes(Path.of(getClass().getClassLoader().getResource(classpathResource).toURI()), BasicFileAttributes.class);
-        var lastModifiedTime = imageFileAttributes.lastModifiedTime().toMillis();
-        return lastModifiedTime;
+        return imageFileAttributes.lastModifiedTime().toMillis();
     }
 
 }
