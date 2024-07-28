@@ -13,7 +13,7 @@ function AlbumEntryOfTypePicture(props) {
     const { entry, className='' } = props;
     const title = pictureTitle(entry);
     const metadata = formatMetadata(entry);
-    const anchor = 'entry' + entry.id.toString();
+    const anchor = entry.path.split('/').pop();
 
     return (
         <div id={anchor} className={className + ' col-sm-12 col-md-4 col-lg-3 col-xxl-2 mb-1 album-entry album-scroll-below-fixed-header'}>

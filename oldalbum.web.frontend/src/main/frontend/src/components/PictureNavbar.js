@@ -12,7 +12,7 @@ import LoginLogoutButton from './LoginLogoutButton';
 export default function PictureNavbar(props) {
     const { className, item, parent, title } = props;
     const text = useSelector(state => state.displayTexts);
-    const anchor = 'entry' + item.id.toString();
+    const anchor = item.path.split('/').pop();
 
     return (
         <div className={className}>

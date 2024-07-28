@@ -18,7 +18,9 @@ export default function AlbumEntryOfTypeAlbum(props) {
     const widthInCols =  noOfThumbnails===2 ?
           ' col-sm-12 col-md-4 col-lg-3 col-xl-3 col-xxl-2' :
           ' col-sm-12 col-md-7 col-lg-6 col-xl-4 col-xxl-3';
-    const anchor = 'entry' + entry.id.toString();
+    const pathFragments = entry.path.split('/');
+    pathFragments.pop(); // Remove empty element caused by trailing slash
+    const anchor = pathFragments.pop();
 
     return (
         <div id={anchor} className={className + widthInCols + ' album-entry-album mx-1 my-1 album-scroll-below-fixed-header'}>

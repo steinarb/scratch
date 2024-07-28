@@ -44,7 +44,9 @@ export default function Album(props) {
     const targetId = hash.substr(1);
     const dispatch = useDispatch();
     const title = pictureTitle(item);
-    const anchor = 'entry' + item.id.toString();
+    const pathFragments = item.path.split('/');
+    pathFragments.pop(); // Remove empty element caused by trailing slash
+    const anchor = pathFragments.pop();
     const swipeHandlers = useSwipeable({
         onSwipedLeft: () => next && dispatch(push(next.path)),
         onSwipedRight: () => previous && dispatch(push(previous.path)),
