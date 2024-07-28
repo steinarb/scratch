@@ -32,7 +32,7 @@ import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 class LocalizationResourceTest {
-    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private static final Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     @Test
     void testDefaultLocale() {

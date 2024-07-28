@@ -39,7 +39,7 @@ import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
 
 class RoutesResourceTest extends ShiroTestBase {
-    final static ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = new ObjectMapper();
     private OldAlbumService backendService;
     private static List<AlbumEntry> allroutes;
     private static List<AlbumEntry> allPublicRoutes;

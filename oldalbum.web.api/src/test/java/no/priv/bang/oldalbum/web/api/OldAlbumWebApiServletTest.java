@@ -73,10 +73,10 @@ import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 class OldAlbumWebApiServletTest extends ShiroTestBase {
-    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
-    private final static Locale EN_UK = Locale.forLanguageTag("en-uk");
+    private static final Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private static final Locale EN_UK = Locale.forLanguageTag("en-uk");
 
-    final static ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = new ObjectMapper();
     private static List<AlbumEntry> allroutes;
     static String dumpedroutes = loadClasspathResourceIntoString("dumproutes.sql");
 

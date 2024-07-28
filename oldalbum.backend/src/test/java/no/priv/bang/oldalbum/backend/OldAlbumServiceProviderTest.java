@@ -86,7 +86,7 @@ import no.priv.bang.oldalbum.services.bean.LocaleBean;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumServiceProviderTest {
-    private final static Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private static final Locale NB_NO = Locale.forLanguageTag("nb-no");
 
     private static DataSource datasource;
     private static DataSource unmodifiedDataSource;
