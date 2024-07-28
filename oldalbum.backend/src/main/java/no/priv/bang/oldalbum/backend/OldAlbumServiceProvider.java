@@ -311,7 +311,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> getChildren(int parent, boolean isLoggedIn) {
         var children = new ArrayList<AlbumEntry>();
-        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where parent=? and (not require_login or (require_login and require_login=?))";
+        var sql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where parent=? and (not require_login or (require_login and require_login=?)) order by sort asc";
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, parent);
