@@ -33,7 +33,7 @@ import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumDerbyTestDatabaseTest {
-    private static final int EXPECTED_NUMBER_OF_ALBUMENTRIES = 24;
+    private static final int EXPECTED_NUMBER_OF_ALBUMENTRIES = 26;
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
 
     @Test

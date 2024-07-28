@@ -108,7 +108,7 @@ class OldAlbumServiceProviderTest {
 
         // First check all routes not requiring login
         var allroutesNotRequiringLogin = provider.fetchAllRoutes(null, false);
-        assertThat(allroutesNotRequiringLogin).hasSize(22);
+        assertThat(allroutesNotRequiringLogin).hasSize(24);
 
         // Then check that all routes including those that require login has at least 3 more entries
         var allroutesIncludingThoseRequiringLogin = provider.fetchAllRoutes(null, true);
@@ -352,9 +352,9 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(unmodifiedDataSource);
         provider.activate(Collections.emptyMap());
         var children = provider.getChildren(1, false);
-        assertThat(children).hasSize(1);
+        assertThat(children).hasSize(2);
         var protectedChildren = provider.getChildren(1, true);
-        assertThat(protectedChildren).hasSize(2);
+        assertThat(protectedChildren).hasSize(3);
     }
 
     @Test
