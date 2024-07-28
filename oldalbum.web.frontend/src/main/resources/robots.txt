@@ -1,0 +1,3 @@
+Disallow /auth/
+Disallow /pages/settings/
+Disallow /api/image/download/
