@@ -1233,7 +1233,7 @@ class OldAlbumServiceProviderTest {
         provider.activate(Collections.emptyMap());
 
         var e = assertThrows(OldAlbumException.class, () -> provider.downloadAlbumEntry(999));
-        assertThat(e.getMessage()).startsWith("Unable to find album entry matching id=");;
+        assertThat(e.getMessage()).startsWith("Unable to find album entry matching id=");
     }
 
     @Test
