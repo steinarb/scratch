@@ -60,7 +60,7 @@
         <sonar.coverage.exclusions>
             **/oldalbum.testutilities/src/**/*.java
         </sonar.coverage.exclusions>
-        <sonar.issue.ignore.multicriteria>e1, e2, e3, e4</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria>e1, e2, e3, e4, e5</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S6813</sonar.issue.ignore.multicriteria.e1.ruleKey>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/oldalbum.web.api/**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
         <sonar.issue.ignore.multicriteria.e2.ruleKey>java:S5976</sonar.issue.ignore.multicriteria.e2.ruleKey>
@@ -69,6 +69,8 @@
         <sonar.issue.ignore.multicriteria.e3.resourceKey>**/oldalbum.testutilities/**/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
         <sonar.issue.ignore.multicriteria.e4.ruleKey>java:S112</sonar.issue.ignore.multicriteria.e4.ruleKey>
         <sonar.issue.ignore.multicriteria.e4.resourceKey>**/oldalbum.testutilities/**/*.java</sonar.issue.ignore.multicriteria.e4.resourceKey>
+        <sonar.issue.ignore.multicriteria.e5.ruleKey>java:S5976</sonar.issue.ignore.multicriteria.e5.ruleKey>
+        <sonar.issue.ignore.multicriteria.e5.resourceKey>**/oldalbum.backend/src/test/**/*.java</sonar.issue.ignore.multicriteria.e5.resourceKey>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 

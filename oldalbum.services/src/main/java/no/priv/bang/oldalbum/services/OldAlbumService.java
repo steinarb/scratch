@@ -37,8 +37,8 @@ public interface OldAlbumService {
     List<String> getPaths(boolean isLoggedIn);
 
     Optional<AlbumEntry> getAlbumEntry(int albumEntryId);
-    Optional<AlbumEntry> getPreviousAlbumEntry(int albumEntryId);
-    Optional<AlbumEntry> getNextAlbumEntry(int albumEntryId);
+    Optional<AlbumEntry> getPreviousAlbumEntry(int albumEntryId, boolean isLoggedIn);
+    Optional<AlbumEntry> getNextAlbumEntry(int albumEntryId, boolean isLoggedIn);
 
     AlbumEntry getAlbumEntryFromPath(String path);
 

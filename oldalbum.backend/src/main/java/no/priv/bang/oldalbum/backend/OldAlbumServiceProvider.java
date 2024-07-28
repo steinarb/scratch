@@ -267,10 +267,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
-    public Optional<AlbumEntry> getPreviousAlbumEntry(int albumEntryId) {
+    public Optional<AlbumEntry> getPreviousAlbumEntry(int albumEntryId, boolean isLoggedIn) {
         try (var connection = datasource.getConnection()) {
             return getEntry(connection, albumEntryId)
-                .flatMap(entry -> findPreviousEntryInTheSameAlbum(connection, entry, entry.sort()));
+                .flatMap(entry -> findPreviousEntryInTheSameAlbum(connection, entry, entry.sort(), isLoggedIn));
         } catch (SQLException e) {
             logger.warn(format("Database failure when finding previous album entry for %d", albumEntryId), e);
             return Optional.empty();
@@ -278,10 +278,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     @Override
-    public Optional<AlbumEntry> getNextAlbumEntry(int albumEntryId) {
+    public Optional<AlbumEntry> getNextAlbumEntry(int albumEntryId, boolean isLoggedIn) {
         try (var connection = datasource.getConnection()) {
             return getEntry(connection, albumEntryId)
-                .flatMap(entry -> findNextEntryInTheSameAlbum(connection, entry, entry.sort()));
+                .flatMap(entry -> findNextEntryInTheSameAlbum(connection, entry, entry.sort(), isLoggedIn));
         } catch (SQLException e) {
             logger.warn(format("Database failure when finding next album entry for %d", albumEntryId), e);
             return Optional.empty();
@@ -476,7 +476,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         if (sort > 1) {
             var entryId = movedEntry.id();
             try(var connection = datasource.getConnection()) {
-                findPreviousEntryInTheSameAlbum(connection, movedEntry, sort)
+                findPreviousEntryInTheSameAlbum(connection, movedEntry, sort, true)
                     .ifPresent(previousEntry -> swapSortAndModifiedTimes(connection, movedEntry, previousEntry));
             } catch (SQLException e) {
                 logger.error(String.format("Failed to move album entry with id \"%d\"", entryId), e);
@@ -493,7 +493,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         try(var connection = datasource.getConnection()) {
             var numberOfEntriesInAlbum = findNumberOfEntriesInAlbum(connection, movedEntry.parent());
             if (sort < numberOfEntriesInAlbum) {
-                findNextEntryInTheSameAlbum(connection, movedEntry, sort)
+                findNextEntryInTheSameAlbum(connection, movedEntry, sort, true)
                     .ifPresent(nextEntry -> swapSortAndModifiedTimes(connection, movedEntry, nextEntry));
             }
         } catch (Exception e) {
@@ -575,12 +575,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return numberOfEntriesInAlbum;
     }
 
-    Optional<AlbumEntry> findPreviousEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) {
+    Optional<AlbumEntry> findPreviousEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort, boolean isLoggedIn) {
         Optional<AlbumEntry> previousEntryId = Optional.empty();
-        var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort=? and parent=?";
+        var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort<? and parent=? and (not require_login or (require_login and require_login=?)) order by sort desc";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
-            statement.setInt(1, sort - 1);
+            statement.setInt(1, sort);
             statement.setInt(2, movedEntry.parent());
+            statement.setBoolean(3, isLoggedIn);
             try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     previousEntryId = Optional.of(unpackAlbumEntry(result));
@@ -593,12 +594,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return previousEntryId;
     }
 
-    Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort) {
+    Optional<AlbumEntry> findNextEntryInTheSameAlbum(Connection connection, AlbumEntry movedEntry, int sort, boolean isLoggedIn) {
         Optional<AlbumEntry> nextEntryId = Optional.empty();
-        var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort=? and parent=?";
+        var findPreviousEntrySql = "select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where sort>? and parent=? and (not require_login or (require_login and require_login=?)) order by sort asc";
         try(var statement = connection.prepareStatement(findPreviousEntrySql)) {
-            statement.setInt(1, sort + 1);
+            statement.setInt(1, sort);
             statement.setInt(2, movedEntry.parent());
+            statement.setBoolean(3, isLoggedIn);
             try(var result = statement.executeQuery()) {
                 if (result.next()) {
                     nextEntryId = Optional.of(unpackAlbumEntry(result));

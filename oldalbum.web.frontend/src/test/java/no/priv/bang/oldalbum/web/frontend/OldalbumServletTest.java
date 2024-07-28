@@ -72,9 +72,9 @@ class OldalbumServletTest {
         var album = AlbumEntry.with().id(1).parent(1).path("/moto/").album(true).title("Motorcyle pictures").description("Two wheeled wonders").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntry(anyInt())).thenReturn(of(album));
         var prevEntry = AlbumEntry.with().id(4).parent(1).path("/moto/vfr96/").album(true).title("My VFR750F in 1996").description("In may 1996, I bought a 1995 VFR750F, registered in october 1995").sort(1).childcount(13).build();
-        when(oldalbum.getPreviousAlbumEntry(anyInt())).thenReturn(of(prevEntry));
+        when(oldalbum.getPreviousAlbumEntry(anyInt(), anyBoolean())).thenReturn(of(prevEntry));
         var nextEntry = AlbumEntry.with().id(14).parent(1).path("/moto/vfr96/").album(true).title("FJ 1100").description("The bike in question is a 1986 Yamaha FJ 1100, with 52000km on the clock").sort(1).childcount(5).build();
-        when(oldalbum.getNextAlbumEntry(anyInt())).thenReturn(of(nextEntry));
+        when(oldalbum.getNextAlbumEntry(anyInt(), anyBoolean())).thenReturn(of(nextEntry));
         var grava1 = AlbumEntry.with().id(3).parent(2).path("/moto/places/grava1").album(false).title("Tyrigrava").description("On gamle Mossevei").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         var grava2 = AlbumEntry.with().id(4).parent(2).path("/moto/places/grava2").album(false).title("Tyrigrava south view").description("View from the south").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava2.gif").sort(2).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         var grava3 = AlbumEntry.with().id(5).parent(2).path("/moto/places/grava3").album(false).title("Tyrigrava Wednesday").description("Huge number of motorcyles on Wednesdays").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(3).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
@@ -146,9 +146,9 @@ class OldalbumServletTest {
         var album = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("Motorcyle meeting places").description("Places motorcylists meet").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntry(anyInt())).thenReturn(of(album));
         var prevEntry = AlbumEntry.with().id(4).parent(2).path("/moto/places/grava2").album(false).title("Tyrigrava").description("On gamle Mossevei").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava2.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava2.gif").sort(2).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
-        when(oldalbum.getPreviousAlbumEntry(anyInt())).thenReturn(of(prevEntry));
+        when(oldalbum.getPreviousAlbumEntry(anyInt(), anyBoolean())).thenReturn(of(prevEntry));
         var nextEntry = AlbumEntry.with().id(5).parent(2).path("/moto/places/grava3").album(false).title("Tyrigrava").description("On gamle Mossevei").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(2).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
-        when(oldalbum.getNextAlbumEntry(anyInt())).thenReturn(of(nextEntry));
+        when(oldalbum.getNextAlbumEntry(anyInt(), anyBoolean())).thenReturn(of(nextEntry));
         when(oldalbum.displayText(anyString(), anyString())).thenReturn("Up");
         var logservice = new MockLogService();
         var servlet = new OldalbumServlet();

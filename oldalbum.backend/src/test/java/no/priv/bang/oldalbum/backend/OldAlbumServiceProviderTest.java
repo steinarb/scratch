@@ -254,7 +254,31 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(unmodifiedDataSource);
         provider.activate(Collections.emptyMap());
         var expectedPreviousEntry = provider.getAlbumEntry(5).get();
-        var previousEntry = provider.getPreviousAlbumEntry(6);
+        var previousEntry = provider.getPreviousAlbumEntry(6, false);
+        assertThat(previousEntry).isNotEmpty().hasValue(expectedPreviousEntry);
+    }
+
+    @Test
+    void testGetPreviousAlbumEntryWhenNotLoggedInAndIntermediateIsPasswordProtected( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var expectedPreviousEntry = provider.getAlbumEntry(2).get();
+        var previousEntry = provider.getPreviousAlbumEntry(25, false);
+        assertThat(previousEntry).isNotEmpty().hasValue(expectedPreviousEntry);
+    }
+
+    @Test
+    void testGetPreviousAlbumEntryWhenLoggedInAndIntermediateIsPasswordProtected( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var expectedPreviousEntry = provider.getAlbumEntry(22).get();
+        var previousEntry = provider.getPreviousAlbumEntry(25, true);
         assertThat(previousEntry).isNotEmpty().hasValue(expectedPreviousEntry);
     }
 
@@ -265,7 +289,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(unmodifiedDataSource);
         provider.activate(Collections.emptyMap());
-        var previousEntry = provider.getPreviousAlbumEntry(5);
+        var previousEntry = provider.getPreviousAlbumEntry(5, false);
         assertThat(previousEntry).isEmpty();
     }
 
@@ -276,7 +300,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(unmodifiedDataSource);
         provider.activate(Collections.emptyMap());
-        var previousEntry = provider.getPreviousAlbumEntry(500);
+        var previousEntry = provider.getPreviousAlbumEntry(500, false);
         assertThat(previousEntry).isEmpty();
     }
 
@@ -290,7 +314,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
         assertThat(logservice.getLogmessages()).isEmpty(); // Check precondition
-        var previousEntry = provider.getPreviousAlbumEntry(5);
+        var previousEntry = provider.getPreviousAlbumEntry(5, false);
         assertThat(previousEntry).isEmpty();
         assertThat(logservice.getLogmessages()).hasSize(1); // Error has been logged
     }
@@ -303,8 +327,32 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(unmodifiedDataSource);
         provider.activate(Collections.emptyMap());
         var expectedNextEntry = provider.getAlbumEntry(7).get();
-        var nextEntry = provider.getNextAlbumEntry(6);
+        var nextEntry = provider.getNextAlbumEntry(6, false);
         assertThat(nextEntry).isNotEmpty().hasValue(expectedNextEntry);
+    }
+
+    @Test
+    void testGetNextAlbumEntryWhenNotLoggedInAndIntermediateIsPasswordProtected( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var expectedNextEntry = provider.getAlbumEntry(25).get();
+        var previousEntry = provider.getNextAlbumEntry(2, false);
+        assertThat(previousEntry).isNotEmpty().hasValue(expectedNextEntry);
+    }
+
+    @Test
+    void testGetNextAlbumEntryWhenLoggedInAndIntermediateIsPasswordProtected( ) {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(unmodifiedDataSource);
+        provider.activate(Collections.emptyMap());
+        var expectedNextEntry = provider.getAlbumEntry(22).get();
+        var previousEntry = provider.getNextAlbumEntry(2, true);
+        assertThat(previousEntry).isNotEmpty().hasValue(expectedNextEntry);
     }
 
     @Test
@@ -314,7 +362,7 @@ class OldAlbumServiceProviderTest {
         provider.setLogService(logservice);
         provider.setDataSource(unmodifiedDataSource);
         provider.activate(Collections.emptyMap());
-        var nextEntry = provider.getNextAlbumEntry(800);
+        var nextEntry = provider.getNextAlbumEntry(800, false);
         assertThat(nextEntry).isEmpty();
     }
 
@@ -328,7 +376,7 @@ class OldAlbumServiceProviderTest {
         provider.setDataSource(datasourceThrowsSqlException);
         provider.activate(Collections.emptyMap());
         assertThat(logservice.getLogmessages()).isEmpty(); // Check precondition
-        var nextEntry = provider.getNextAlbumEntry(8);
+        var nextEntry = provider.getNextAlbumEntry(8, false);
         assertThat(nextEntry).isEmpty();
         assertThat(logservice.getLogmessages()).hasSize(1); // Error has been logged
     }
@@ -1118,7 +1166,7 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        var previousEntry = provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
+        var previousEntry = provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2, true);
         assertThat(previousEntry).isEmpty();
     }
 
@@ -1130,7 +1178,7 @@ class OldAlbumServiceProviderTest {
         var connection = mock(Connection.class);
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
 
-        assertThrows(SQLException.class, () -> provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2));
+        assertThrows(SQLException.class, () -> provider.findPreviousEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2, true));
     }
 
     @Test
@@ -1144,7 +1192,7 @@ class OldAlbumServiceProviderTest {
         when(statement.executeQuery()).thenReturn(results);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
-        var nextEntry = provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2);
+        var nextEntry = provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2, true);
         assertThat(nextEntry).isEmpty();
     }
 
@@ -1156,7 +1204,7 @@ class OldAlbumServiceProviderTest {
         var connection = mock(Connection.class);
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
 
-        assertThrows(SQLException.class, () -> provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2));
+        assertThrows(SQLException.class, () -> provider.findNextEntryInTheSameAlbum(connection, AlbumEntry.with().build(), 2, true));
     }
 
     @Test
