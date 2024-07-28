@@ -1372,7 +1372,6 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testDownloadAlbumEntryOnImageThatIsATextFile() throws Exception {
-        // TODO endre testen til det tittelen sier at den skal være
         var replacementTitle = "Replacement title";
         var replacementDescription = "Replacement description";
         var provider = new OldAlbumServiceProvider();
@@ -1387,20 +1386,17 @@ class OldAlbumServiceProviderTest {
         var connectionFactory = mock(HttpConnectionFactory.class);
         var connection = mock(HttpURLConnection.class);
         when(connection.getResponseCode()).thenReturn(200);
-        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("txt/2013-07-22_07-48-41_UTC.txt"));
         when(connectionFactory.connect(anyString())).thenReturn(connection);
         provider.setConnectionFactory(connectionFactory);
 
         var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.path())).findFirst().get();
         var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id()).title(replacementTitle).description(replacementDescription).build();
         var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.description())).findFirst().get();
+        var id = entry.id();
 
-        var streamingOutput = provider.downloadAlbumEntry(entry.id());
-        assertNotNull(streamingOutput);
-        var downloadFile = Files.createTempFile("image", "jpg").toFile();
-        try(var outputStream = new FileOutputStream(downloadFile)) {
-            streamingOutput.write(outputStream);
-        }
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadAlbumEntry(id));
+        assertThat(e.getMessage()).endsWith("Download failed");
     }
 
     @Test
