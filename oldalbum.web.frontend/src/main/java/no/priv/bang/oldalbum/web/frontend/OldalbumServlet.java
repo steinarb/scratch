@@ -230,9 +230,21 @@ public class OldalbumServlet extends FrontendServlet {
         var isLoggedIn = SecurityUtils.getSubject().isAuthenticated();
         oldalbum.getPreviousAlbumEntry(entry.id(), isLoggedIn).ifPresent(previous -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + previous.path()).appendText(prev))));
         oldalbum.getNextAlbumEntry(entry.id(), isLoggedIn).ifPresent(nextItem -> navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", servletContextPath + nextItem.path()).appendText(next))));
+        if (entryIsPictureOrAlbumWithPictures(entry)) {
+            navigationLinks.appendChild(new Element("li").appendChild(downloadLink(entry, locale, servletContextPath)));
+        }
         navigationLinks.appendChild(new Element("li").appendChild(settingsLink(request, servletContextPath)));
         navigationLinks.appendChild(new Element("li").attr(CLASS, "float-right").appendChild(loginLink(request, locale, entry)));
         return new Element("nav").attr(CLASS, "image-navbar").appendChild(navigationLinks);
+    }
+
+    Element downloadLink(AlbumEntry entry, String locale, String servletContextPath) {
+        var label = entry.album() ? oldalbum.displayText("downloadalbum", locale) : oldalbum.displayText("downloadpicture", locale);
+        var url = format("%s/api/image/download/%s", servletContextPath, entry.id());
+        var downloadName = entry.album() ? findLastPartOfPath(entry) + ".zip" : findLastPartOfPath(entry) + ".jpg";
+        return new Element("a").attr("href", url).attr("download", downloadName).attr("target", "_blank").attr("rel", "noopener noreferrer")
+            .appendChild(new Element("span").attr(CLASS, "oi oi-data-transfer-download").attr("title", "data transfer download").attr("aria-hidden", "true"))
+            .appendText(label);
     }
 
     Element settingsLink(HttpServletRequest request, String servletContextPath) {
@@ -374,6 +386,21 @@ public class OldalbumServlet extends FrontendServlet {
 
     InputStream getClasspathResource(String resource) {
         return getClass().getClassLoader().getResourceAsStream(resource);
+    }
+
+    boolean entryIsPictureOrAlbumWithPictures(AlbumEntry entry) {
+        if (entry.album()) {
+            var children = oldalbum.getChildren(entry.id(), false);
+            for (var child : children) {
+                if (!child.album()) {
+                    return true;
+                }
+            }
+
+            return false;
+        } else {
+            return true;
+        }
     }
 
     static String findServletContext(HttpServletRequest request, AlbumEntry entry) {
