@@ -69,6 +69,7 @@ public class LoginResource extends HtmlTemplateResource {
         var originalRequestUri = findOriginalRequestUri().orElse(originalUri);
         var html = loadHtmlFile(LOGIN_HTML, logservice);
         fillFormValues(html, originalRequestUri);
+        setCancelButtonUri(html, originalRequestUri);
 
         return Response.status(Response.Status.OK).entity(html.html()).build();
     }
@@ -90,24 +91,28 @@ public class LoginResource extends HtmlTemplateResource {
             logger.warn(LOGIN_ERROR + message, e);
             var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
             fillFormValues(html, originalUri, username, password);
+            setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (IncorrectCredentialsException  e) {
             var message = "wrong password";
             logger.warn(LOGIN_ERROR + message, e);
             var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
             fillFormValues(html, originalUri, username, password);
+            setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (LockedAccountException  e) {
             var message = "locked account";
             logger.warn(LOGIN_ERROR + message, e);
             var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
             fillFormValues(html, originalUri, username, password);
+            setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (AuthenticationException e) {
             var message = "general authentication error";
             logger.warn(LOGIN_ERROR + message, e);
             var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
             fillFormValues(html, originalUri, username, password);
+            setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (Exception e) {
             logger.error("Login error: internal server error", e);
@@ -166,6 +171,11 @@ public class LoginResource extends HtmlTemplateResource {
     private Optional<String> findOriginalRequestUri() {
         return Optional.ofNullable(WebUtils.getSavedRequest(null))
             .map(SavedRequest::getRequestURI);
+    }
+
+    private void setCancelButtonUri(Document html, String originalRequestUri) {
+        var cancelButton = html.select("a[id=cancel-button]").get(0);
+        cancelButton.attr("href", originalRequestUri);
     }
 
 }
