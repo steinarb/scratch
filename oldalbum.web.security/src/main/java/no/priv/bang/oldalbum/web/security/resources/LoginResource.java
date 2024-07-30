@@ -130,17 +130,6 @@ public class LoginResource extends HtmlTemplateResource {
         return redirectUrl;
     }
 
-    URI findRedirectLocation() {
-        if (httpHeaders != null) {
-            var originLocation = httpHeaders.getHeaderString("Origin");
-            if (originLocation != null) {
-                return URI.create(originLocation);
-            }
-        }
-
-        return URI.create("../..");
-    }
-
     private FormElement fillFormValues(Document html, String originalUri) {
         var form = findForm(html);
         updateOriginalUri(form, originalUri);
