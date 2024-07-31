@@ -127,10 +127,10 @@ public class OldalbumServlet extends FrontendServlet {
     protected void handleResourceNotFound(HttpServletResponse response, String resource) throws IOException {
         response.setStatus(SC_NOT_FOUND);
         response.setContentType("text/html");
+        var html = loadHtmlFile("index.html");
+        replaceRootWithNotFoundMessage(html);
         try(var responseBody = response.getOutputStream()) {
-            try(var resourceFromClasspath = getClass().getClassLoader().getResourceAsStream("index.html")) {
-                copyStream(resourceFromClasspath, responseBody);
-            }
+            responseBody.print(html.outerHtml());
         }
     }
 
@@ -183,6 +183,13 @@ public class OldalbumServlet extends FrontendServlet {
         }
     }
 
+    private void replaceRootWithNotFoundMessage(Document html) {
+        var root = html.body().getElementsByAttributeValue("id", "root").first();
+        root.appendChild(title("Not found!")
+            .appendChild(navWithUpLink())
+            .appendChild(new Element("p").appendText("The web page you were looking for cannot be found.")));
+    }
+
     void renderEntry(HttpServletRequest request, Document html, AlbumEntry entry) {
         ofNullable(entry).ifPresent(e -> {
             if (!e.album()) {
@@ -210,10 +217,19 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     Element title(AlbumEntry entry) {
-        return new Element("h1").attr(CLASS, "image-title")
-            .appendText(ofNullable(entry.title())
-                .map(t -> t.isBlank() ? findLastPartOfPath(entry) : t)
-                .orElseGet(() -> findLastPartOfPath(entry)));
+        return title(ofNullable(entry.title())
+            .map(t -> t.isBlank() ? findLastPartOfPath(entry) : t)
+            .orElseGet(() -> findLastPartOfPath(entry)));
+    }
+
+    Element title(String text) {
+        return new Element("h1").attr(CLASS, "image-title").appendText(text);
+    }
+
+    Element navWithUpLink() {
+        var navigationLinks = new Element("ul");
+        navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", "/").appendText("Up")));
+        return new Element("nav").attr(CLASS, "image-navbar").appendChild(navigationLinks);
     }
 
     Element navigationLinks(HttpServletRequest request, AlbumEntry entry) {
