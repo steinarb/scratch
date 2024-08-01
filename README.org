@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2024-08-01 Thu 17:01> |   2.1.1 | Use liquibase 4.29.0, add cancel button to login and get 404 response for non-JavaScript                       |
 | <2024-07-28 Sun 21:48> |   2.1.0 | Render on browsers without JavaScript (tested on dillo 3.1.0)                                                  |
 | <2024-07-05 Fri 20:18> |   2.0.1 | Use liquibase 4.28.0                                                                                           |
 | <2024-05-31 Fri 21:42> |   2.0.0 | Use shiro 2.0.1 and new record-based API of the UserService OSGi service                                       |
