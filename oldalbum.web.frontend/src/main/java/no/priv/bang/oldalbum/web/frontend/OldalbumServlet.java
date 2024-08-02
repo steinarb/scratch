@@ -124,11 +124,11 @@ public class OldalbumServlet extends FrontendServlet {
     }
 
     @Override
-    protected void handleResourceNotFound(HttpServletResponse response, String resource) throws IOException {
+    protected void handleResourceNotFound(HttpServletRequest request, HttpServletResponse response, String resource) throws IOException {
         response.setStatus(SC_NOT_FOUND);
         response.setContentType("text/html");
         var html = loadHtmlFile("index.html");
-        replaceRootWithNotFoundMessage(html);
+        replaceRootWithNotFoundMessage(html, request);
         try(var responseBody = response.getOutputStream()) {
             responseBody.print(html.outerHtml());
         }
@@ -183,10 +183,10 @@ public class OldalbumServlet extends FrontendServlet {
         }
     }
 
-    private void replaceRootWithNotFoundMessage(Document html) {
+    private void replaceRootWithNotFoundMessage(Document html, HttpServletRequest request) {
         var root = html.body().getElementsByAttributeValue("id", "root").first();
         root.appendChild(title("Not found!")
-            .appendChild(navWithUpLink())
+            .appendChild(navWithUpLink(request))
             .appendChild(new Element("p").appendText("The web page you were looking for cannot be found.")));
     }
 
@@ -226,9 +226,10 @@ public class OldalbumServlet extends FrontendServlet {
         return new Element("h1").attr(CLASS, "image-title").appendText(text);
     }
 
-    Element navWithUpLink() {
+    Element navWithUpLink(HttpServletRequest request) {
+        var top = request.getContextPath() + "/";
         var navigationLinks = new Element("ul");
-        navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", "/").appendText("Up")));
+        navigationLinks.appendChild(new Element("li").appendChild(new Element("a").attr("href", top).appendText("Up")));
         return new Element("nav").attr(CLASS, "image-navbar").appendChild(navigationLinks);
     }
 
