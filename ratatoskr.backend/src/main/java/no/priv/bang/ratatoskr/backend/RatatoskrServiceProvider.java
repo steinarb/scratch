@@ -38,9 +38,11 @@ import org.osgi.service.log.Logger;
 
 import no.priv.bang.ratatoskr.services.RatatoskrService;
 import no.priv.bang.ratatoskr.services.beans.Account;
+import no.priv.bang.ratatoskr.services.beans.Actor;
 import no.priv.bang.ratatoskr.services.beans.CounterBean;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
+import no.priv.bang.ratatoskr.services.beans.Message;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
@@ -128,6 +130,35 @@ public class RatatoskrServiceProvider implements RatatoskrService {
         }
 
         return accounts;
+    }
+
+    @Override
+    public Actor findActor(String id) {
+        return Actor.with().id(id).build();
+    }
+
+    @Override
+    public List<Message> listInbox(Actor actor) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Message> postToInbox(Actor actor, Message message) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Message> listOutbox(Actor actor) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Message> postToOutbox(Actor actor, Message message) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override

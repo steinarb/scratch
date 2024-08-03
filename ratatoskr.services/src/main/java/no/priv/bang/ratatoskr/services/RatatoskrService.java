@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Steinar Bang
+ * Copyright 2023-2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,25 @@ import java.util.Map;
 import java.util.Optional;
 
 import no.priv.bang.ratatoskr.services.beans.Account;
+import no.priv.bang.ratatoskr.services.beans.Actor;
 import no.priv.bang.ratatoskr.services.beans.CounterBean;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
+import no.priv.bang.ratatoskr.services.beans.Message;
 
 public interface RatatoskrService {
 
     public List<Account> getAccounts();
+
+    Actor findActor(String id);
+
+    List<Message> listInbox(Actor actor);
+
+    List<Message> postToInbox(Actor actor, Message message);
+
+    List<Message> listOutbox(Actor actor);
+
+    List<Message> postToOutbox(Actor actor, Message message);
 
     public Optional<CounterIncrementStepBean> getCounterIncrementStep(String username);
 

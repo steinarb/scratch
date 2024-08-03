@@ -171,6 +171,22 @@ class RatatoskrServiceProviderTest {
     }
 
     @Test
+    void testFindActor() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var actor = provider.findActor("https://kenzoishii.example.com/");
+        assertThat(actor)
+            .hasFieldOrPropertyWithValue("id", "https://kenzoishii.example.com/");
+
+    }
+
+    @Test
     void testIncrementAndDecrement() {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
