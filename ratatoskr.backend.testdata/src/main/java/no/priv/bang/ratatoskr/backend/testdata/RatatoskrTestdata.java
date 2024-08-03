@@ -49,7 +49,7 @@ public class RatatoskrTestdata {
     }
 
     void addRolesForTestusers() {
-        var ratatoskruser = useradmin.getRoles().stream().filter(r -> RATATOSKRUSER_ROLE.equals(r.getRolename())).findFirst().get(); // NOSONAR testkode
+        var ratatoskruser = useradmin.getRoles().stream().filter(r -> RATATOSKRUSER_ROLE.equals(r.rolename())).findFirst().get(); // NOSONAR testkode
         var jad = useradmin.getUser("jad");
         useradmin.addUserRoles(UserRoles.with().user(jad).roles(Arrays.asList(ratatoskruser)).build());
     }

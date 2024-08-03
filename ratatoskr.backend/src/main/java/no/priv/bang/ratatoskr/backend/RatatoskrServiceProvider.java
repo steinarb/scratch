@@ -288,7 +288,7 @@ public class RatatoskrServiceProvider implements RatatoskrService {
         var ratatoskroles = Map.of(
             RATATOSKRUSER_ROLE, "User of activitypub server ratatoskr",
             RATATOSKRADMIN_ROLE, "Administrator of activitypub server ratatoskr");
-        var existingroles = useradmin.getRoles().stream().map(Role::getRolename).collect(Collectors.toSet());
+        var existingroles = useradmin.getRoles().stream().map(Role::rolename).collect(Collectors.toSet());
         ratatoskroles.entrySet().stream()
             .filter(r -> !existingroles.contains(r.getKey()))
             .forEach(r ->  useradmin.addRole(Role.with().id(-1).rolename(r.getKey()).description(r.getValue()).build()));

@@ -63,7 +63,7 @@ class RatatoskrTestdataTest {
 
         @Override
         public Map<String, List<Role>> addUserRoles(UserRoles nyrolle) {
-            userroles.put(nyrolle.getUser().getUsername(), nyrolle.getRoles());
+            userroles.put(nyrolle.user().username(), nyrolle.roles());
             return userroles;
         }
     }
