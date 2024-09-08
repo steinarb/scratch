@@ -15,10 +15,11 @@
  */
 package no.priv.bang.ratatoskr.services.beans;
 
-public enum ActorType {
+public enum ActivityStreamObjectType {
     Application,
     Group,
     Organization,
     Person,
-    Service;
+    Service,
+    Link;
 }

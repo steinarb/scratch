@@ -21,11 +21,11 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ActorTest {
+public class PersonTest {
     static ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    void testCreateActor() {
+    void testCreatePerson() {
         var id = "http://localhost:8181/ratatoskr/ap/person/kenzoishii";
         var inbox = "http://localhost:8181/ratatoskr/ap/inbox/kenzoishii";
         var outbox = "http://localhost:8181/ratatoskr/ap/outbox/kenzoishii";
@@ -35,9 +35,9 @@ public class ActorTest {
         var streams = "http://localhost:8181/ratatoskr/ap/streams/kenzoishii";
         var preferredUsername = "kenzoishii";
         var endpoints = EndPoints.with().sharedInbox("http://localhost:8181/ratatoskr/ap/sharedinbox").build();
-        var actor = Actor.with()
+        var actor = Person.with()
             .id(id)
-            .type(ActorType.Person)
+            .type(ActivityStreamObjectType.Person)
             .inbox(inbox)
             .outbox(outbox)
             .following(following)
@@ -51,7 +51,7 @@ public class ActorTest {
         assertThat(actor)
             .isNotNull()
             .hasFieldOrPropertyWithValue("id", id)
-            .hasFieldOrPropertyWithValue("type", ActorType.Person)
+            .hasFieldOrPropertyWithValue("type", ActivityStreamObjectType.Person)
             .hasFieldOrPropertyWithValue("inbox", inbox)
             .hasFieldOrPropertyWithValue("outbox", outbox)
             .hasFieldOrPropertyWithValue("following", following)
@@ -66,7 +66,7 @@ public class ActorTest {
         var id = "http://localhost:8181/ratatoskr/ap/person/kenzoishii";
         var sharedInbox = "http://localhost:8181/ratatoskr/ap/sharedinbox";
         var endpoints = EndPoints.with().sharedInbox(sharedInbox).build();
-        var actor = Actor.with()
+        Actor actor = Person.with()
             .id(id)
             .endpoints(endpoints)
             .build();
@@ -76,10 +76,45 @@ public class ActorTest {
             .contains(id)
             .contains(sharedInbox)
             .doesNotContain("null");
-        var deserializedActor = mapper.readValue(json, Actor.class);
+        var deserializedActor = mapper.readValue(json, Person.class);
         assertThat(deserializedActor)
             .isEqualTo(actor)
             .hasFieldOrPropertyWithValue("context", "https://www.w3.org/ns/activitystreams");
+    }
+
+    @Test
+    void testActorOnPersonRecord() {
+        var id = "http://localhost:8181/ratatoskr/ap/person/kenzoishii";
+        var inbox = "http://localhost:8181/ratatoskr/ap/inbox/kenzoishii";
+        var outbox = "http://localhost:8181/ratatoskr/ap/outbox/kenzoishii";
+        var following = "http://localhost:8181/ratatoskr/ap/following/kenzoishii";
+        var followers = "http://localhost:8181/ratatoskr/ap/followers/kenzoishii";
+        var liked = "http://localhost:8181/ratatoskr/ap/liked/kenzoishii";
+        var streams = "http://localhost:8181/ratatoskr/ap/streams/kenzoishii";
+        var preferredUsername = "kenzoishii";
+        var endpoints = EndPoints.with().sharedInbox("http://localhost:8181/ratatoskr/ap/sharedinbox").build();
+        Actor object = Person.with()
+            .id(id)
+            .type(ActivityStreamObjectType.Person)
+            .inbox(inbox)
+            .outbox(outbox)
+            .following(following)
+            .followers(followers)
+            .liked(liked)
+            .streams(streams)
+            .preferredUsername(preferredUsername)
+            .endpoints(endpoints)
+            .build();
+
+        assertThat(object).isNotNull();
+        assertThat(object.id()).isEqualTo(id);
+        assertThat(object.type()).isEqualTo(ActivityStreamObjectType.Person);
+        assertThat(object.inbox()).isEqualTo(inbox);
+        assertThat(object.outbox()).isEqualTo(outbox);
+        assertThat(object.following()).isEqualTo(following);
+        assertThat(object.followers()).isEqualTo(followers);
+        assertThat(object.liked()).isEqualTo(liked);
+        assertThat(object.streams()).isEqualTo(streams);
     }
 
 }

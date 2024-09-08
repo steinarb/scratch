@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 Steinar Bang
+ * Copyright 2024 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,6 @@
  */
 package no.priv.bang.ratatoskr.services.beans;
 
-public sealed interface Actor extends ActivityStreamObject permits Person {
-    public String inbox();
-    public String outbox();
-    public String following();
-    public String followers();
-    public String liked();
-    public String streams();
-    public String preferredUsername();
+public sealed interface ActivityStreamObject extends LinkOrObject permits Actor {
+    public String id();
 }
