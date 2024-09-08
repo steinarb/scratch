@@ -219,6 +219,7 @@ under the License.
 <modules>  <module>ratatoskr.db.liquibase</module>
 <module>ratatoskr.db.liquibase.test</module>
 <module>ratatoskr.db.liquibase.production</module>
+<module>ratatoskr.asvocabulary</module>
 <module>ratatoskr.services</module>
 <module>ratatoskr.backend</module>
 <module>ratatoskr.backend.testdata</module>

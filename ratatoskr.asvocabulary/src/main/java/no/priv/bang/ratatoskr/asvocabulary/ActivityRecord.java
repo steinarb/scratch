@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.services.beans;
+package no.priv.bang.ratatoskr.asvocabulary;
 
-public enum ActorType {
-    Application,
-    Group,
-    Organization,
-    Person,
-    Service;
+import com.fasterxml.jackson.annotation.JsonGetter;
+
+public record ActivityRecord(
+    @JsonGetter("@context") Object context,
+    ActivityStreamObjectType type,
+    String id,
+    String name,
+    String summary,
+    LinkOrObject actor,
+    LinkOrObject target,
+    ActivityStreamObject object
+) implements Activity {
 }

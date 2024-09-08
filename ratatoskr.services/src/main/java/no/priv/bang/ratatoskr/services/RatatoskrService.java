@@ -20,8 +20,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import no.priv.bang.ratatoskr.asvocabulary.Actor;
 import no.priv.bang.ratatoskr.services.beans.Account;
-import no.priv.bang.ratatoskr.services.beans.Actor;
 import no.priv.bang.ratatoskr.services.beans.CounterBean;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;

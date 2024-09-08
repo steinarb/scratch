@@ -21,28 +21,15 @@ under the License.
         <artifactId>ratatoskr</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>ratatoskr.services</artifactId>
+    <artifactId>ratatoskr.asvocabulary</artifactId>
 
-    <name>ratatoskr OSGi service definitions</name>
+    <name>ratatoskr activitystreams vocabulary</name>
 
     <properties>
-        <karaf-feature-name>ratatoskr-services</karaf-feature-name>
+        <karaf-feature-name>ratatoskr-asvocabulary</karaf-feature-name>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>no.priv.bang.ratatoskr</groupId>
-            <artifactId>ratatoskr.asvocabulary</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.ratatoskr</groupId>
-            <artifactId>ratatoskr.asvocabulary</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>

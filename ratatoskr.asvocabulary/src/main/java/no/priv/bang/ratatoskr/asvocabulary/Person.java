@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.services.beans;
+package no.priv.bang.ratatoskr.asvocabulary;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
-public record Actor(
+public record Person(
     @JsonGetter("@context") Object context,
+    ActivityStreamObjectType type,
     String id,
-    ActorType type,
+    String name,
+    String summary,
     String inbox,
     String outbox,
     String following,
@@ -31,7 +33,7 @@ public record Actor(
     String liked,
     String streams,
     String preferredUsername,
-    EndPoints endpoints)
+    EndPoints endpoints) implements Actor
 {
 
     public static Builder with() {
@@ -41,7 +43,9 @@ public record Actor(
     public static class Builder {
         private Object context = "https://www.w3.org/ns/activitystreams";
         private String id;
-        private ActorType type;
+        private String name;
+        private String summary;
+        private ActivityStreamObjectType type;
         private String inbox;
         private String outbox;
         private String following;
@@ -51,11 +55,13 @@ public record Actor(
         private String preferredUsername;
         private EndPoints endpoints;
 
-        public Actor build() {
-            return new Actor(
+        public Person build() {
+            return new Person(
                 context,
-                id,
                 type,
+                id,
+                name,
+                summary,
                 inbox,
                 outbox,
                 following,
@@ -71,7 +77,7 @@ public record Actor(
             return this;
         }
 
-        public Builder type(ActorType type) {
+        public Builder type(ActivityStreamObjectType type) {
             this.type = type;
             return this;
         }

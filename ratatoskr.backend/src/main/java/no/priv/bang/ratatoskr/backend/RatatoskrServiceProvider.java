@@ -36,9 +36,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
+import no.priv.bang.ratatoskr.asvocabulary.Actor;
+import no.priv.bang.ratatoskr.asvocabulary.Person;
 import no.priv.bang.ratatoskr.services.RatatoskrService;
 import no.priv.bang.ratatoskr.services.beans.Account;
-import no.priv.bang.ratatoskr.services.beans.Actor;
 import no.priv.bang.ratatoskr.services.beans.CounterBean;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
@@ -134,7 +135,7 @@ public class RatatoskrServiceProvider implements RatatoskrService {
 
     @Override
     public Actor findActor(String id) {
-        return Actor.with().id(id).build();
+        return Person.with().id(id).build();
     }
 
     @Override

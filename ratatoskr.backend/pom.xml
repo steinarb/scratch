@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-Copyright 2023 Steinar Bang
+Copyright 2023-2024 Steinar Bang
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,6 +30,19 @@ under the License.
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>no.priv.bang.ratatoskr</groupId>
+            <artifactId>ratatoskr.asvocabulary</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.ratatoskr</groupId>
+            <artifactId>ratatoskr.asvocabulary</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
         <dependency>
             <groupId>no.priv.bang.ratatoskr</groupId>
             <artifactId>ratatoskr.services</artifactId>

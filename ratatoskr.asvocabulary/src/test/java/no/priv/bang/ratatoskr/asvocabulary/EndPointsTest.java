@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.services.beans;
+package no.priv.bang.ratatoskr.asvocabulary;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
