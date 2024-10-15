@@ -16,10 +16,29 @@
 package no.priv.bang.ratatoskr.services.beans;
 
 public enum ActivityStreamObjectType {
-    Application,
-    Group,
-    Organization,
-    Person,
-    Service,
-    Link;
+    Application(Names.APPLICATION),
+    Group(Names.GROUP),
+    Organization(Names.ORGANIZATION),
+    Person(Names.PERSON),
+    Service(Names.SERVICE),
+    Link(Names.LINK);
+
+    public class Names {
+        public static final String APPLICATION = "Application";
+        public static final String GROUP = "Group";
+        public static final String ORGANIZATION = "Organization";
+        public static final String PERSON = "Person";
+        public static final String SERVICE = "Service";
+        public static final String LINK = "Link";
+    }
+
+    private final String label;
+
+    private ActivityStreamObjectType(String label) {
+        this.label = label;
+    }
+
+    public String toString() {
+        return label;
+    }
 }

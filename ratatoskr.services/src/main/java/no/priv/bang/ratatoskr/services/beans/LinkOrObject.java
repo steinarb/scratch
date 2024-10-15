@@ -15,7 +15,16 @@
  */
 package no.priv.bang.ratatoskr.services.beans;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type" )
+@JsonSubTypes({
+    @Type(value = Person.class, name = ActivityStreamObjectType.Names.PERSON)
+})
 public sealed interface LinkOrObject permits Link, ActivityStreamObject {
+
     public ActivityStreamObjectType type();
 
 }

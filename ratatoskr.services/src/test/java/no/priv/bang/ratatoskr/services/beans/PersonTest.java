@@ -83,6 +83,27 @@ public class PersonTest {
     }
 
     @Test
+    void testSerializeAndDeserializeToBaseType() throws Exception {
+        var id = "http://localhost:8181/ratatoskr/ap/person/kenzoishii";
+        var sharedInbox = "http://localhost:8181/ratatoskr/ap/sharedinbox";
+        var endpoints = EndPoints.with().sharedInbox(sharedInbox).build();
+        Actor actor = Person.with()
+            .id(id)
+            .endpoints(endpoints)
+            .build();
+        var json = mapper.writeValueAsString(actor);
+        assertThat(json)
+            .contains("@context")
+            .contains(id)
+            .contains(sharedInbox)
+            .doesNotContain("null");
+        var deserializedActor = mapper.readValue(json, LinkOrObject.class);
+        assertThat(deserializedActor)
+            .isEqualTo(actor)
+            .hasFieldOrPropertyWithValue("context", "https://www.w3.org/ns/activitystreams");
+    }
+
+    @Test
     void testActorOnPersonRecord() {
         var id = "http://localhost:8181/ratatoskr/ap/person/kenzoishii";
         var inbox = "http://localhost:8181/ratatoskr/ap/inbox/kenzoishii";
