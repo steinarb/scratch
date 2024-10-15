@@ -21,7 +21,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type" )
 @JsonSubTypes({
-    @Type(value = Person.class, name = ActivityStreamObjectType.Names.PERSON)
+    @Type(value = Person.class, name = ActivityStreamObjectType.Names.PERSON),
+    @Type(value = Link.class, name = ActivityStreamObjectType.Names.LINK)
 })
 public sealed interface LinkOrObject permits Link, ActivityStreamObject {
 

@@ -104,6 +104,19 @@ public class PersonTest {
     }
 
     @Test
+    void testSerializeAndDeserializeLinkToBaseType() throws Exception {
+        var sharedInbox = "http://localhost:8181/ratatoskr/ap/sharedinbox";
+        LinkOrObject link = Link.with()
+            .href(sharedInbox)
+            .build();
+        var json = mapper.writeValueAsString(link);
+        var deserializedLink = mapper.readValue(json, LinkOrObject.class);
+        assertThat(deserializedLink)
+            .isEqualTo(link)
+            .hasFieldOrPropertyWithValue("context", "https://www.w3.org/ns/activitystreams");
+    }
+
+    @Test
     void testActorOnPersonRecord() {
         var id = "http://localhost:8181/ratatoskr/ap/person/kenzoishii";
         var inbox = "http://localhost:8181/ratatoskr/ap/inbox/kenzoishii";
