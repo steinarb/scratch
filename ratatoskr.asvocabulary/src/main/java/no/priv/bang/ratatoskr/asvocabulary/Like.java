@@ -43,6 +43,7 @@ public record Like(
     ZonedDateTime updated,
     LinkOrObject attachment,
     LinkOrObject audience,
+    @JsonDeserialize(converter = StringToLinkConverter.class)
     LinkOrObject to,
     LinkOrObject bcc,
     LinkOrObject bto,

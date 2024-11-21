@@ -2831,6 +2831,68 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample144() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_144.json"), LinkOrObject.class);
+        switch(object) {
+            case Collection collection -> {
+                assertThat(collection.summary()).isEqualTo("Activities in Project XYZ");
+                assertThat(collection.items()).hasSize(2);
+                switch(collection.items().get(0)) {
+                    case Create create -> {
+                        assertThat(create.summary()).isEqualTo("Sally created a note");
+                        assertThat(create.id()).isEqualTo("http://activities.example.com/1");
+                        switch(create.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                            default -> fail("Did not get the expected type for create.actor");
+                        }
+                        switch(create.object()) {
+                            case Note note -> {
+                                assertThat(note.summary()).isEqualTo("A note");
+                                assertThat(note.id()).isEqualTo("http://notes.example.com/1");
+                                assertThat(note.content()).isEqualTo("A note");
+                            }
+                            default -> fail("Did not get the expected type for create.object");
+                        }
+                        switch(create.audience()) {
+                            case Group group -> assertThat(group.name()).isEqualTo("Project XYZ Working Group");
+                            default -> fail("Did not get the expected type for create.audience");
+                        }
+                        switch(create.to()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://john.example.org");
+                            default -> fail("Did not get the expected type for create.to");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection.items[0]");
+                }
+                switch(collection.items().get(1)) {
+                    case Like like -> {
+                        assertThat(like.summary()).isEqualTo("John liked Sally's note");
+                        assertThat(like.id()).isEqualTo("http://activities.example.com/1");
+                        switch(like.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://john.example.org");
+                            default -> fail("Did not get the expected type for like.actor");
+                        }
+                        switch(like.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://notes.example.com/1");
+                            default -> fail("Did not get the expected type for like.object");
+                        }
+                        switch(like.audience()) {
+                            case Group group -> assertThat(group.name()).isEqualTo("Project XYZ Working Group");
+                            default -> fail("Did not get the expected type for like.audience");
+                        }
+                        switch(like.to()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                            default -> fail("Did not get the expected type for like.to");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection.items[1]");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
