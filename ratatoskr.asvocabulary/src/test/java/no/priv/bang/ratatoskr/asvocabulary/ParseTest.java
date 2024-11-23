@@ -18,6 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.Test;
@@ -2937,6 +2939,40 @@ public class ParseTest {
                         }
                     }
                     default -> fail("Did not get the expected type for collection.items[1]");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
+    @Test
+    void testParseExample146() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_146.json"), LinkOrObject.class);
+        switch(object) {
+            case Create create -> {
+                assertThat(create.summary()).isEqualTo("Sally became a friend of Matt");
+                switch (create.actor()) {
+                    case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                    default -> fail("Did not get the expected type for create.actor");
+                }
+                switch (create.object()) {
+                    case Relationship relationship -> {
+                        switch (relationship.subject()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                            default -> fail("Did not get the expected type for relationship.subject");
+                        }
+                        switch (relationship.relationship()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://purl.org/vocab/relationship/friendOf");
+                            default -> fail("Did not get the expected type for relationship.relationship");
+                        }
+                        switch (relationship.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://matt.example.org");
+                            default -> fail("Did not get the expected type for relationship.object");
+                        }
+                        assertThat(relationship.startTime()).isEqualTo(LocalDateTime.parse("2015-04-21T12:34:56").atZone(ZoneId.of("UTC")));
+
+                    }
+                    default -> fail("Did not get the expected type for create.object");
                 }
             }
             default -> fail("Did not get the expected type when parsing");

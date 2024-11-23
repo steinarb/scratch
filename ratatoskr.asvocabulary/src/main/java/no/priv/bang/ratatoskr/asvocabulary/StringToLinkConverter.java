@@ -29,9 +29,8 @@ public class StringToLinkConverter extends StdConverter<Object, LinkOrObject> {
         try {
             return convertListMember(value);
         } catch (Exception e) {
-            if (value instanceof Map<?,?>) {
-                var map = (Map<?,?>)value;
-                return new UntypedObject(
+            return switch(value) {
+                case Map<?,?> map ->  new UntypedObject(
                     null,
                     ActivityStreamObjectType.Untyped,
                     (String)map.get("name"),
@@ -40,12 +39,9 @@ public class StringToLinkConverter extends StdConverter<Object, LinkOrObject> {
                     null,
                     null,
                     null);
-            } else if (value instanceof List<?>) {
-                var list = (List<?>)value;
-                return new LinkOrObjectList(list.stream().map(StringToLinkConverter::convertListMember).toList());
-            }
-
-            throw new IllegalArgumentException("Argument can't be parsed as a String or LinkOrObject", e);
+                case List<?> list -> new LinkOrObjectList(list.stream().map(StringToLinkConverter::convertListMember).toList());
+                default -> throw new IllegalArgumentException("Argument can't be parsed as a String or LinkOrObject", e);
+            };
         }
     }
 

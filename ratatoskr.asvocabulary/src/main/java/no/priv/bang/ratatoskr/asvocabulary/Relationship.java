@@ -36,6 +36,7 @@ public record Relationship(
     List<Link> url,
     LinkOrObject attributedTo,
     String duration,
+    @JsonDeserialize(converter = ToZonedDateTimeConverter.class)
     ZonedDateTime startTime,
     ZonedDateTime endTime,
     ZonedDateTime published,
@@ -54,9 +55,11 @@ public record Relationship(
     LinkOrObject preview,
     Collection replies,
     LinkOrObject tag,
+    @JsonDeserialize(converter = StringToLinkConverter.class)
     LinkOrObject subject,
     @JsonDeserialize(converter = StringToLinkConverter.class)
     LinkOrObject relationship,
+    @JsonDeserialize(converter = StringToLinkConverter.class)
     LinkOrObject object,
     LinkOrObject instrument,
     LinkOrObject result
