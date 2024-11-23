@@ -2893,6 +2893,56 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample145() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_145.json"), LinkOrObject.class);
+        switch(object) {
+            case Collection collection -> {
+                assertThat(collection.summary()).isEqualTo("Sally's friends list");
+                assertThat(collection.items()).hasSize(2);
+                switch(collection.items().get(0)) {
+                    case Relationship relationship -> {
+                        assertThat(relationship.summary()).isEqualTo("Sally is influenced by Joe");
+                        switch(relationship.subject()) {
+                            case Person person -> assertThat(person.name()).isEqualTo("Sally");
+                            default -> fail("Did not get the expected type for relationship.subject");
+                        }
+                        switch(relationship.relationship()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://purl.org/vocab/relationship/influencedBy");
+                            default -> fail("Did not get the expected type for relationship.relationship");
+                        }
+                        switch(relationship.object()) {
+                            case Person person -> {
+                                assertThat(person.name()).isEqualTo("Joe");
+                            }
+                            default -> fail("Did not get the expected type for relationship.object");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection.items[0]");
+                }
+                switch(collection.items().get(1)) {
+                    case Relationship relationship -> {
+                        assertThat(relationship.summary()).isEqualTo("Sally is a friend of Jane");
+                        switch(relationship.subject()) {
+                            case Person person -> assertThat(person.name()).isEqualTo("Sally");
+                            default -> fail("Did not get the expected type for relationship.subject");
+                        }
+                        switch(relationship.relationship()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://purl.org/vocab/relationship/friendOf");
+                            default -> fail("Did not get the expected type for relationship.relationship");
+                        }
+                        switch(relationship.object()) {
+                            case Person person -> assertThat(person.name()).isEqualTo("Jane");
+                            default -> fail("Did not get the expected type for relationship.object");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection.items[1]");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
