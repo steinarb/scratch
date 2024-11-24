@@ -3459,6 +3459,33 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample159() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_159.json"), LinkOrObject.class);
+        switch(object) {
+            case Move move -> {
+                assertThat(move.summary()).isEqualTo("Sally moved the sales figures from Folder A to Folder B");
+                switch(move.actor()) {
+                    case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                    default -> fail("Did not get the expected type for move.actor");
+                }
+                switch(move.object()) {
+                    case Document document -> assertThat(document.name()).isEqualTo("sales figures");
+                    default -> fail("Did not get the expected type for move.object");
+                }
+                switch(move.origin()) {
+                    case Collection collection -> assertThat(collection.name()).isEqualTo("Folder A");
+                    default -> fail("Did not get the expected type for move.origin");
+                }
+                switch(move.target()) {
+                    case Collection collection -> assertThat(collection.name()).isEqualTo("Folder B");
+                    default -> fail("Did not get the expected type for move.target");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
