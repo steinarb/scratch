@@ -3141,6 +3141,15 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample149() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_149.json"), LinkOrObject.class);
+        switch(object) {
+            case Place place -> assertThat(place.name()).isEqualTo("San Francisco, CA");
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
