@@ -3351,6 +3351,58 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample156() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_156.json"), LinkOrObject.class);
+        switch(object) {
+            case Collection collection -> {
+                assertThat(collection.summary()).isEqualTo("History of John's note");
+                assertThat(collection.items()).hasSize(2);
+                switch (collection.items().get(0)) {
+                    case Like like -> {
+                        assertThat(like.summary()).isEqualTo("Sally liked John's note");
+                        switch(like.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                            default -> fail("Did not get expected type for like.actor");
+                        }
+                        assertThat(like.id()).isEqualTo("http://activities.example.com/1");
+                        assertThat(like.published()).isEqualTo(ZonedDateTime.parse("2015-11-12T12:34:56Z"));
+                        switch(like.object()) {
+                            case Note note -> {
+                                assertThat(note.summary()).isEqualTo("John's note");
+                                assertThat(note.id()).isEqualTo("http://notes.example.com/1");
+                                switch(note.attributedTo()) {
+                                    case Link link -> assertThat(link.href()).isEqualTo("http://john.example.org");
+                                    default -> fail("Did not get expected type for note.attributedTo");
+                                }
+                                assertThat(note.content()).isEqualTo("My note");
+                            }
+                            default -> fail("Did not get the expected type for like.object");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection.orderedItems[0]");
+                }
+                switch (collection.items().get(1)) {
+                    case Undo undo -> {
+                        assertThat(undo.summary()).isEqualTo("Sally no longer likes John's note");
+                        assertThat(undo.id()).isEqualTo("http://activities.example.com/2");
+                        switch(undo.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                            default -> fail("Did not get expected type for undo.actor");
+                        }
+                        assertThat(undo.published()).isEqualTo(ZonedDateTime.parse("2015-12-11T21:43:56Z"));
+                        switch(undo.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://activities.example.com/1");
+                            default -> fail("Did not get expected type for undo.object");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection.orderedItems[1]");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
