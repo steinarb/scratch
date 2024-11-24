@@ -58,6 +58,7 @@ public record Note(
     LinkOrObject location,
     LinkOrObject preview,
     Collection replies,
+    @JsonDeserialize(converter = StringToLinkConverter.class)
     LinkOrObject tag
 ) implements ActivityStreamObject
 {

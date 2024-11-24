@@ -3427,6 +3427,38 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample158() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_158.json"), LinkOrObject.class);
+        switch(object) {
+            case Note note -> {
+                assertThat(note.name()).isEqualTo("A thank-you note");
+                assertThat(note.content()).isEqualTo("Thank you @sally for all your hard work! #givingthanks");
+                switch(note.tag()) {
+                    case LinkOrObjectList list -> {
+                        assertThat(list).hasSize(2);
+                        switch(list.get(0)) {
+                            case Mention mention -> {
+                                assertThat(mention.href()).isEqualTo("http://example.org/people/sally");
+                                assertThat(mention.name()).isEqualTo("@sally");
+                            }
+                            default -> fail("Did not get expected type for list[0]");
+                        }
+                        switch(list.get(1)) {
+                            case UntypedObject asobject -> {
+                                assertThat(asobject.id()).isEqualTo("http://example.org/tags/givingthanks");
+                                assertThat(asobject.name()).isEqualTo("#givingthanks");
+                            }
+                            default -> fail("Did not get expected type for list[1]");
+                        }
+                    }
+                    default -> fail("Did not get expected type for note.tag");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
