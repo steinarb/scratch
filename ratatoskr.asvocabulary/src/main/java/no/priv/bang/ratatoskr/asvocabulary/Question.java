@@ -61,6 +61,7 @@ public record Question(
     List<LinkOrObject> oneOf,
     @JsonDeserialize(converter = StringToLinkConverter.class)
     List<LinkOrObject> anyOf,
-    ZonedDateTime closed
+    ZonedDateTime closed,
+    LinkOrObject result
 ) implements IntransitiveActivity {
 }

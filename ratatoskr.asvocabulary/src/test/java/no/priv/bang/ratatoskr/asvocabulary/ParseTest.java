@@ -3217,6 +3217,80 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample154() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_154.json"), LinkOrObject.class);
+        switch(object) {
+            case Question question -> {
+                assertThat(question.name()).isEqualTo("A question about robots");
+                assertThat(question.id()).isEqualTo("http://polls.example.org/question/1");
+                assertThat(question.content()).isEqualTo("I'd like to build a robot to feed my cat. Which platform is best?");
+                switch(question.oneOf()) {
+                    case LinkOrObjectList list -> {
+                        switch(list.get(0)) {
+                            case UntypedObject asobject -> assertThat(asobject.name()).isEqualTo("arduino");
+                            default -> fail("Did not get the expected type for list[0]");
+                        }
+                        switch(list.get(1)) {
+                            case UntypedObject asobject -> assertThat(asobject.name()).isEqualTo("raspberry pi");
+                            default -> fail("Did not get the expected type for list[1]");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for question.oneOf");
+                }
+                assertThat(question.replies().totalItems()).isEqualTo(3);
+                assertThat(question.replies().items()).hasSize(3);
+                switch(question.replies().items().get(0)) {
+                    case UntypedObject asobject -> {
+                        switch(asobject.attributedTo()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                            default -> fail("Did not get the expected type for question.items[0].attributedTo");
+                        }
+                        switch(asobject.inReplyTo()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://polls.example.org/question/1");
+                            default -> fail("Did not get the expected type for question.items[0].inReplyTo");
+                        }
+                        assertThat(asobject.name()).isEqualTo("arduino");
+                    }
+                    default -> fail("Did not get the expected type for question.items[0]");
+                }
+                switch(question.replies().items().get(1)) {
+                    case UntypedObject asobject -> {
+                        switch(asobject.attributedTo()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://joe.example.org");
+                            default -> fail("Did not get the expected type for question.items[1].attributedTo");
+                        }
+                        switch(asobject.inReplyTo()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://polls.example.org/question/1");
+                            default -> fail("Did not get the expected type for question.items[1].inReplyTo");
+                        }
+                        assertThat(asobject.name()).isEqualTo("arduino");
+                    }
+                    default -> fail("Did not get the expected type for question.items[1]");
+                }
+                switch(question.replies().items().get(2)) {
+                    case UntypedObject asobject -> {
+                        switch(asobject.attributedTo()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://john.example.org");
+                            default -> fail("Did not get the expected type for question.items[2].attributedTo");
+                        }
+                        switch(asobject.inReplyTo()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://polls.example.org/question/1");
+                            default -> fail("Did not get the expected type for question.items[2].inReplyTo");
+                        }
+                        assertThat(asobject.name()).isEqualTo("raspberry pi");
+                    }
+                    default -> fail("Did not get the expected type for question.items[2]");
+                }
+                switch(question.result()) {
+                    case Note note -> assertThat(note.content()).isEqualTo("Users are favoriting &quot;arduino&quot; by a 33% margin.");
+                    default -> fail("Did not get the expected type for question.result");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }

@@ -55,7 +55,8 @@ public record Travel(
     LinkOrObject tag,
     LinkOrObject actor,
     LinkOrObject target,
-    LinkOrObject origin
+    LinkOrObject origin,
+    LinkOrObject result
 ) implements IntransitiveActivity
 {
 }

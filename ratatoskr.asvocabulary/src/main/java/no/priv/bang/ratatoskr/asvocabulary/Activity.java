@@ -18,5 +18,4 @@ package no.priv.bang.ratatoskr.asvocabulary;
 public sealed interface Activity extends IntransitiveActivity permits Accept, ActivityRecord, Add, Announce, Create, Delete, Follow, Ignore, Join, Leave, Like, Listen, Offer, Move, Read, Reject, Remove, Undo, Update, View, Flag, Dislike {
     LinkOrObject object();
     LinkOrObject instrument();
-    LinkOrObject result();
 }

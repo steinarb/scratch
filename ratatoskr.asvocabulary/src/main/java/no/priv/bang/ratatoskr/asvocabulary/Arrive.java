@@ -57,7 +57,8 @@ public record Arrive(
     @JsonDeserialize(converter = StringToLinkConverter.class)
     LinkOrObject actor,
     LinkOrObject target,
-    LinkOrObject origin
+    LinkOrObject origin,
+    LinkOrObject result
 ) implements IntransitiveActivity
 {
 }

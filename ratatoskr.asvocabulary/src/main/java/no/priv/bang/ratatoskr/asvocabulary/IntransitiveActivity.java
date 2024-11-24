@@ -20,5 +20,6 @@ public sealed interface IntransitiveActivity extends ActivityStreamObject permit
     LinkOrObject target();
     LinkOrObject origin();
     LinkOrObject location();
+    LinkOrObject result();
 
 }
