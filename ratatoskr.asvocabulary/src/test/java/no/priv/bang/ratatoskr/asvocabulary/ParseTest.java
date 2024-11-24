@@ -2979,6 +2979,45 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample147() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_147.json"), LinkOrObject.class);
+        switch(object) {
+            case Offer offer -> {
+                assertThat(offer.summary()).isEqualTo("Sally requested to be a friend of John");
+                assertThat(offer.id()).isEqualTo("http://example.org/connection-requests/123");
+                switch (offer.actor()) {
+                    case Link link -> assertThat(link.href()).isEqualTo("acct:sally@example.org");
+                    default -> fail("Did not get the expected type for offer.actor");
+                }
+                switch (offer.object()) {
+                    case Relationship relationship -> {
+                        assertThat(relationship.summary()).isEqualTo("Sally and John's friendship");
+                        assertThat(relationship.id()).isEqualTo("http://example.org/connections/123");
+                        switch (relationship.subject()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:sally@example.org");
+                            default -> fail("Did not get the expected type for relationship.subject");
+                        }
+                        switch (relationship.relationship()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://purl.org/vocab/relationship/friendOf");
+                            default -> fail("Did not get the expected type for relationship.relationship");
+                        }
+                        switch (relationship.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:john@example.org");
+                            default -> fail("Did not get the expected type for relationship.object");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for offer.object");
+                }
+                switch (offer.target()) {
+                    case Link link -> assertThat(link.href()).isEqualTo("acct:john@example.org");
+                    default -> fail("Did not get the expected type for offer.target");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
