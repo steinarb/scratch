@@ -28,6 +28,10 @@ public record UntypedObject(
     LinkOrObject actor,
     @JsonDeserialize(converter = StringToLinkConverter.class)
     LinkOrObject object,
-    LinkOrObject result
+    LinkOrObject result,
+    @JsonDeserialize(converter = StringToLinkConverter.class)
+    LinkOrObject inReplyTo,
+    @JsonDeserialize(converter = StringToLinkConverter.class)
+    LinkOrObject attributedTo
 ) implements LinkOrObject {
 }

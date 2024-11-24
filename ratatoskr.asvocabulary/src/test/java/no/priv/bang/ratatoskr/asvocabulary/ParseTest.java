@@ -3198,6 +3198,25 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample153() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_153.json"), LinkOrObject.class);
+        switch(object) {
+            case UntypedObject asobject -> {
+                switch (asobject.attributedTo()) {
+                    case Link link -> assertThat(link.href()).isEqualTo("http://sally.example.org");
+                    default -> fail("Did not get the expected type for asobject.attributedTo");
+                }
+                switch (asobject.inReplyTo()) {
+                    case Link link -> assertThat(link.href()).isEqualTo("http://polls.example.org/question/1");
+                    default -> fail("Did not get the expected type for asobject.inReplyTo");
+                }
+                assertThat(asobject.name()).isEqualTo("arduino");
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }

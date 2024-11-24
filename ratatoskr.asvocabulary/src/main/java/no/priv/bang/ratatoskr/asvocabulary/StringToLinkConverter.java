@@ -38,6 +38,8 @@ public class StringToLinkConverter extends StdConverter<Object, LinkOrObject> {
                     (String)map.get("summary"),
                     null,
                     null,
+                    null,
+                    null,
                     null);
                 case List<?> list -> new LinkOrObjectList(list.stream().map(StringToLinkConverter::convertListMember).toList());
                 default -> throw new IllegalArgumentException("Argument can't be parsed as a String or LinkOrObject", e);
