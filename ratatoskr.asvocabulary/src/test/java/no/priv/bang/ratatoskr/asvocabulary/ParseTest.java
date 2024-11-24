@@ -3163,6 +3163,19 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample151() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_151.json"), LinkOrObject.class);
+        switch(object) {
+            case Question question -> {
+                assertThat(question.name()).isEqualTo("A question about robots");
+                assertThat(question.id()).isEqualTo("http://help.example.org/question/1");
+                assertThat(question.content()).isEqualTo("I'd like to build a robot to feed my cat. Should I use Arduino or Raspberry Pi?");
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
