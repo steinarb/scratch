@@ -3403,6 +3403,30 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample157() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_157.json"), LinkOrObject.class);
+        switch(object) {
+            case Note note -> {
+                assertThat(note.name()).isEqualTo("A thank-you note");
+                assertThat(note.content())
+                    .isEqualTo("Thank you <a href='http://sally.example.org'>@sally</a>\nfor all your hard work!\n<a href='http://example.org/tags/givingthanks'>#givingthanks</a>");
+                switch(note.to()) {
+                    case Person person -> {
+                        assertThat(person.name()).isEqualTo("Sally");
+                        assertThat(person.id()).isEqualTo("http://sally.example.org");
+                    }
+                    default -> fail("Did not get expected type for note.to");
+                }
+                switch(note.tag()) {
+                    case UntypedObject asobject -> assertThat(asobject.name()).isEqualTo("#givingthanks");
+                    default -> fail("Did not get expected type for note.tag");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
