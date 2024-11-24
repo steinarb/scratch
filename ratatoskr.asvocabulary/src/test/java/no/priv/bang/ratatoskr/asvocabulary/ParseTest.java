@@ -3018,6 +3018,129 @@ public class ParseTest {
         }
     }
 
+    @Test
+    void testParseExample148() throws Exception {
+        LinkOrObject object = mapper.readValue(activityStreamsExample("example_148.json"), LinkOrObject.class);
+        switch(object) {
+            case Collection collection -> {
+                assertThat(collection.summary()).isEqualTo("Sally and John's relationship history");
+                assertThat(collection.items()).hasSize(5);
+                switch (collection.items().get(0)) {
+                    case Accept accept -> {
+                        assertThat(accept.summary()).isEqualTo("John accepted Sally's friend request");
+                        assertThat(accept.id()).isEqualTo("http://example.org/activities/122");
+                        switch (accept.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:john@example.org");
+                            default -> fail("Did not get the expected type for accept.actor");
+                        }
+                        switch (accept.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://example.org/connection-requests/123");
+                            default -> fail("Did not get the expected type for accept.object");
+                        }
+                        switch (accept.result()) {
+                            case LinkOrObjectList list -> {
+                                assertThat(list).hasSize(4);
+                                switch (list.get(0)) {
+                                    case Link link -> assertThat(link.href()).isEqualTo("http://example.org/activities/123");
+                                    default -> fail("Did not get the expected type for accept.object");
+                                }
+                                switch (list.get(1)) {
+                                    case Link link -> assertThat(link.href()).isEqualTo("http://example.org/activities/124");
+                                    default -> fail("Did not get the expected type for accept.object");
+                                }
+                                switch (list.get(2)) {
+                                    case Link link -> assertThat(link.href()).isEqualTo("http://example.org/activities/125");
+                                    default -> fail("Did not get the expected type for accept.object");
+                                }
+                                switch (list.get(3)) {
+                                    case Link link -> assertThat(link.href()).isEqualTo("http://example.org/activities/126");
+                                    default -> fail("Did not get the expected type for accept.object");
+                                }
+                            }
+                            default -> fail("Did not get the expected type for accept.result");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection[0]");
+                }
+                switch (collection.items().get(1)) {
+                    case Follow follow -> {
+                        assertThat(follow.summary()).isEqualTo("John followed Sally");
+                        assertThat(follow.id()).isEqualTo("http://example.org/activities/123");
+                        switch (follow.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:john@example.org");
+                            default -> fail("Did not get the expected type for follow.actor");
+                        }
+                        switch (follow.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:sally@example.org");
+                            default -> fail("Did not get the expected type for follow.object");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection[1]");
+                }
+                switch (collection.items().get(2)) {
+                    case Follow follow -> {
+                        assertThat(follow.summary()).isEqualTo("Sally followed John");
+                        assertThat(follow.id()).isEqualTo("http://example.org/activities/124");
+                        switch (follow.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:sally@example.org");
+                            default -> fail("Did not get the expected type for follow.actor");
+                        }
+                        switch (follow.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:john@example.org");
+                            default -> fail("Did not get the expected type for follow.object");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection[2]");
+                }
+                switch (collection.items().get(3)) {
+                    case Add add -> {
+                        assertThat(add.summary()).isEqualTo("John added Sally to his friends list");
+                        assertThat(add.id()).isEqualTo("http://example.org/activities/125");
+                        switch (add.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:john@example.org");
+                            default -> fail("Did not get the expected type for add.actor");
+                        }
+                        switch (add.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://example.org/connections/123");
+                            default -> fail("Did not get the expected type for add.object");
+                        }
+                        switch (add.target()) {
+                            case Collection collection1 -> {
+                                assertThat(collection1.summary()).isEqualTo("John's Connections");
+                                assertThat(collection1.items()).isNull();
+                            }
+                            default -> fail("Did not get the expected type for add.target");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection[3]");
+                }
+                switch (collection.items().get(4)) {
+                    case Add add -> {
+                        assertThat(add.summary()).isEqualTo("Sally added John to her friends list");
+                        assertThat(add.id()).isEqualTo("http://example.org/activities/126");
+                        switch (add.actor()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("acct:sally@example.org");
+                            default -> fail("Did not get the expected type for add.actor");
+                        }
+                        switch (add.object()) {
+                            case Link link -> assertThat(link.href()).isEqualTo("http://example.org/connections/123");
+                            default -> fail("Did not get the expected type for add.object");
+                        }
+                        switch (add.target()) {
+                            case Collection collection1 -> {
+                                assertThat(collection1.summary()).isEqualTo("Sally's Connections");
+                                assertThat(collection1.items()).isNull();
+                            }
+                            default -> fail("Did not get the expected type for add.target");
+                        }
+                    }
+                    default -> fail("Did not get the expected type for collection[4]");
+                }
+            }
+            default -> fail("Did not get the expected type when parsing");
+        }
+    }
+
     private InputStream activityStreamsExample(String classpathResource) {
         return this.getClass().getResourceAsStream("/json/activitystreams-vocabulary/" + classpathResource);
     }
