@@ -18,11 +18,17 @@ package no.priv.bang.ratatoskr.asvocabulary;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.util.StdConverter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class StringToLinkConverter extends StdConverter<Object, LinkOrObject> {
-    static ObjectMapper mapper = new ObjectMapper();
+    static ObjectMapper mapper = JsonMapper.builder()
+        .addModule(new JavaTimeModule())
+        .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
+        .build();
 
     @Override
     public LinkOrObject convert(Object value) {

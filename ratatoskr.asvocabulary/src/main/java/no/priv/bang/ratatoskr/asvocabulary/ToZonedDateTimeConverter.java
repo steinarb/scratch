@@ -18,11 +18,16 @@ package no.priv.bang.ratatoskr.asvocabulary;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.util.StdConverter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class ToZonedDateTimeConverter extends StdConverter<Object, ZonedDateTime> {
-    static ObjectMapper mapper = new ObjectMapper();
+    static ObjectMapper mapper = JsonMapper.builder()
+        .addModule(new JavaTimeModule())
+        .build();
 
     @Override
     public ZonedDateTime convert(Object value) {
