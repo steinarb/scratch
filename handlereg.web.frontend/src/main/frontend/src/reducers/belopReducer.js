@@ -1,13 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    BELOP_ENDRE,
-    NYHANDLING_LAGRET,
-} from '../actiontypes';
+import { BELOP_ENDRE } from '../actiontypes';
+import { api } from '../api';
 
 const belopReducer = createReducer(0, builder => {
     builder
         .addCase(BELOP_ENDRE, updateBelopOnKeyPress)
-        .addCase(NYHANDLING_LAGRET, () => 0);
+        .addMatcher(api.endpoints.postNyhandling.matchFulfilled, () => 0);
 });
 
 export default belopReducer;

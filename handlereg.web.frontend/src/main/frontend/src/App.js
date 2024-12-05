@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { useGetLogintilstandQuery } from './api';
 import { Routes, Route } from 'react-router-dom';
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 import './App.css';
@@ -21,6 +22,7 @@ import Unauthorized from './components/Unauthorized';
 
 export default function App(props) {
     const { history, basename } = props;
+    useGetLogintilstandQuery();
 
     return (
         <Router history={history} basename={basename}>

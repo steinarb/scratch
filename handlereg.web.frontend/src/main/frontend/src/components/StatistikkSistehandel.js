@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useGetSisteHandelQuery } from '../api';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
 export default function StatistikkSistehandel() {
-    const sistehandel = useSelector(state => state.sistehandel);
+    const { data: sistehandel = [] } = useGetSisteHandelQuery();
 
     return (
         <div>

@@ -1,10 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+    useGetOversiktQuery,
+    useGetHandlingerQuery,
+    useGetButikkerQuery,
+    usePostNyhandlingMutation,
+} from '../api';
+import {
     BELOP_ENDRE,
     HOME_BUTIKKNAVN_ENDRE,
     DATO_ENDRE,
-    NYHANDLING_REGISTRER,
 } from '../actiontypes';
 import { Container } from './bootstrap/Container';
 import { StyledLinkRight } from './bootstrap/StyledLinkRight';
@@ -12,16 +17,21 @@ import Kvittering from './Kvittering';
 
 
 export default function Home() {
-    const oversikt = useSelector(state => state.oversikt);
+    const { data: oversikt = {}, isSuccess: oversiktIsSuccess } = useGetOversiktQuery();
+    const { data: handlinger = [] } = useGetHandlingerQuery(oversikt.accountid, { skip: !oversiktIsSuccess });
     const username = oversikt.brukernavn;
-    const handlinger = useSelector(state => state.handlinger);
-    const butikker = useSelector(state => state.butikker);
+    const { data: butikker = [] } = useGetButikkerQuery();
+    const [ postNyhandling ] = usePostNyhandlingMutation();
     const storeId = useSelector(state => state.storeId);
     const butikknavn = useSelector(state => state.butikknavn);
     const handletidspunkt = useSelector(state => state.handletidspunkt);
     const handledato = handletidspunkt.split('T')[0];
     const belop = useSelector(state => state.belop).toString();
     const dispatch = useDispatch();
+
+    const onRegistrerHandlingClicked = async () => {
+        await postNyhandling({ storeId, belop, handletidspunkt, username })
+    }
 
     return (
         <div>
@@ -67,7 +77,7 @@ export default function Home() {
                                 id="valgt-butikk"
                                 name="valgt-butikk"
                                 value={butikknavn}
-                                onChange={e => dispatch(HOME_BUTIKKNAVN_ENDRE(e.target.value))}/>
+                                onChange={e => dispatch(HOME_BUTIKKNAVN_ENDRE({ navn: e.target.value, butikker }))}/>
                             <datalist id="butikker">
                                 <option key="-1" value="" />
                                 {butikker.map(butikk => <option key={butikk.storeId} value={butikk.butikknavn}/>)}
@@ -88,7 +98,7 @@ export default function Home() {
                     </div>
                     <div className="columns-2 mb-2">
                         <div className="w-full">&nbsp;</div>
-                        <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId, belop, handletidspunkt, username }))}>Registrer handling</button>
+                        <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" disabled={belop <= 0} onClick={onRegistrerHandlingClicked}>Registrer handling</button>
                     </div>
                 </form>
                 <Kvittering/>

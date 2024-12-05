@@ -1,10 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useGetOversiktQuery, useGetButikkerQuery } from '../api';
 
 export default function Kvittering() {
     const viskvittering = useSelector(state => state.viskvittering);
-    const oversikt = useSelector(state => state.oversikt);
-    const butikk = useSelector(state => state.butikker.find(b => b.storeId === oversikt.lastTransactionStore));
+    const { data: oversikt = {} } = useGetOversiktQuery();
+    const { data: butikker = [] } = useGetButikkerQuery();
+    const butikk = butikker.find(b => b.storeId === oversikt.lastTransactionStore) || {};
     if (!viskvittering) {
         return null;
     }

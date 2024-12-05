@@ -1,19 +1,31 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetOversiktQuery,
+    useGetButikkerQuery,
+    useGetFavoritterQuery,
+    usePostFavorittLeggtilMutation,
+} from '../api';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import {
     VELG_FAVORITTBUTIKK,
-    LEGG_TIL_FAVORITT,
 } from '../actiontypes';
 
 export default function FavoritterLeggTil() {
-    const butikker = useSelector(state => state.butikker);
-    const favoritter = useSelector(state => state.favoritter);
+    const { data: oversikt = {}, isSuccess: oversiktIsSuccess } = useGetOversiktQuery();
+    const { brukernavn } = oversikt;
+    const { data: butikker = [] } = useGetButikkerQuery();
+    const { data: favoritter = [] } = useGetFavoritterQuery(brukernavn, { skip: !oversiktIsSuccess });
     const favorittbutikk = useSelector(state => state.favorittbutikk);
+    const [ postFavorittLeggtil ] = usePostFavorittLeggtilMutation();
     const ledigeButikker = butikker.filter(butikk => !favoritter.find(fav => fav.store.storeId === butikk.storeId));
     const ingenButikkValgt = favorittbutikk === -1;
     const dispatch = useDispatch();
+
+    const onLeggTilFavorittClicked = async () => {
+        await postFavorittLeggtil({ brukernavn, butikk: { storeId: favorittbutikk }});
+    }
 
     return (
         <div>
@@ -32,7 +44,7 @@ export default function FavoritterLeggTil() {
                         { ledigeButikker.map(b => <option key={'butikk_' + b.storeId.toString()} value={b.storeId}>{b.butikknavn}</option>) }
                     </select>
                     <div>
-                        <button className="ms-1 mt-2 ps-4 pe-4 text-center block border border-blue-500 rounded py-2 bg-blue-500 hover:bg-blue-700 text-white" disabled={ingenButikkValgt} onClick={() => dispatch(LEGG_TIL_FAVORITT())}>Legg til favoritt</button>
+                        <button className="ms-1 mt-2 ps-4 pe-4 text-center block border border-blue-500 rounded py-2 bg-blue-500 hover:bg-blue-700 text-white" disabled={ingenButikkValgt} onClick={onLeggTilFavorittClicked}>Legg til favoritt</button>
                     </div>
                 </form>
             </Container>

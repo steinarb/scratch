@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useGetHandlingerButikkQuery } from '../api';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
 export default function StatistikkHandlingerbutikk() {
-    const handlingerbutikk = useSelector(state => state.handlingerbutikk);
+    const { data: handlingerbutikk = [] } = useGetHandlingerButikkQuery();
 
     return (
         <div>

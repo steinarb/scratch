@@ -1,9 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    VALGT_BUTIKK,
-    NYBUTIKK_LAGRET,
-    BUTIKK_LAGRET,
-} from '../actiontypes';
+import { VELG_BUTIKK } from '../actiontypes';
+import { api } from '../api';
 
 const defaultState = {
     storeId: -1,
@@ -13,9 +10,9 @@ const defaultState = {
 
 const butikkReducer = createReducer(defaultState, builder => {
     builder
-        .addCase(VALGT_BUTIKK, (state, action) => action.payload)
-        .addCase(NYBUTIKK_LAGRET, () => ({ ...defaultState }))
-        .addCase(BUTIKK_LAGRET, () => ({ ...defaultState }));
+        .addCase(VELG_BUTIKK, (state, action) => action.payload)
+        .addMatcher(api.endpoints.postNybutikk.matchFulfilled, () => ({ ...defaultState }))
+        .addMatcher(api.endpoints.postEndrebutikk.matchFulfilled, () => ({ ...defaultState }));
 });
 
 export default butikkReducer;

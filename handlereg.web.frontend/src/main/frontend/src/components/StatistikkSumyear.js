@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useGetSumYearQuery } from '../api';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
 export default function StatistikkSumyear() {
-    const sumyear = useSelector(state => state.sumyear);
+    const { data: sumyear = [] } = useGetSumYearQuery();
 
     return (
         <div>

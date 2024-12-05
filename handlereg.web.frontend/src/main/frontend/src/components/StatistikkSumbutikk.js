@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useGetSumButikkQuery } from '../api';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 
 export default function StatistikkSumbutikk() {
-    const sumbutikk = useSelector(state => state.sumbutikk);
+    const { data: sumbutikk = [] } = useGetSumButikkQuery();
 
     return (
         <div>

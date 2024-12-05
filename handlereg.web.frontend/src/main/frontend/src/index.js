@@ -1,22 +1,19 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import axios from 'axios';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { configureStore, Tuple } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { createReduxHistoryContext } from "redux-first-history";
 import { createBrowserHistory } from 'history';
 import createRootReducer from './reducers';
-import rootSaga from './sagas';
-import { SET_BASENAME, LOGINTILSTAND_HENT } from './actiontypes';
+import { api } from './api';
+import { SET_BASENAME } from './actiontypes';
+import listenerMiddleware from './listeners';
 
 const baseUrl = Array.from(document.scripts).map(s => s.src).filter(src => src.includes('assets/'))[0].replace(/\/assets\/.*/, '');
 const basename = new URL(baseUrl).pathname;
-axios.defaults.baseURL = baseUrl;
-const sagaMiddleware = createSagaMiddleware();
 const {
   createReduxHistory,
   routerMiddleware,
@@ -24,13 +21,10 @@ const {
 } = createReduxHistoryContext({ history: createBrowserHistory(), basename });
 const store = configureStore({
     reducer: createRootReducer(routerReducer),
-    middleware: () => new Tuple(sagaMiddleware, routerMiddleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(routerMiddleware).concat(api.middleware).prepend(listenerMiddleware.middleware),
 });
 store.dispatch(SET_BASENAME(basename));
-sagaMiddleware.run(rootSaga);
 const history = createReduxHistory(store);
-
-store.dispatch(LOGINTILSTAND_HENT());
 
 const container = document.getElementById('root');
 const root = createRoot(container);

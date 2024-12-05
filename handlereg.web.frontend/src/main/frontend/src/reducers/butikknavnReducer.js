@@ -1,23 +1,21 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-    HANDLINGER_MOTTA,
-    VALGT_BUTIKK,
+    VELG_BUTIKK,
     HOME_BUTIKKNAVN_ENDRE,
     BUTIKKNAVN_ENDRE,
-    NYBUTIKK_LAGRET,
-    BUTIKK_LAGRET,
 } from '../actiontypes';
+import { api } from '../api';
 
 const defaultState = '';
 
 const butikkReducer = createReducer(defaultState, builder => {
     builder
-        .addCase(HANDLINGER_MOTTA, (state, action) => finnSisteButikknavn(action.payload))
-        .addCase(VALGT_BUTIKK, (state, action) => action.payload.butikknavn)
-        .addCase(HOME_BUTIKKNAVN_ENDRE, (state, action) => action.payload)
+        .addMatcher(api.endpoints.getHandlinger.matchFulfilled, (state, action) => finnSisteButikknavn(action.payload))
+        .addCase(VELG_BUTIKK, (state, action) => action.payload.butikknavn)
+        .addCase(HOME_BUTIKKNAVN_ENDRE, (state, action) => action.payload.navn)
         .addCase(BUTIKKNAVN_ENDRE, (state, action) => action.payload)
-        .addCase(NYBUTIKK_LAGRET, () => (defaultState))
-        .addCase(BUTIKK_LAGRET, () => (defaultState));
+        .addMatcher(api.endpoints.postNybutikk.matchFulfilled, () => (defaultState))
+        .addMatcher(api.endpoints.postEndrebutikk.matchFulfilled, () => (defaultState));
 });
 
 export default butikkReducer;

@@ -1,19 +1,30 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetOversiktQuery,
+    useGetHandlingerQuery,
+    useGetFavoritterQuery,
+    usePostNyhandlingMutation,
+} from '../api';
 import { Container } from './bootstrap/Container';
 import { StyledLinkLeft } from './bootstrap/StyledLinkLeft';
 import Kvittering from './Kvittering';
 import {
     BELOP_ENDRE,
-    NYHANDLING_REGISTRER,
 } from '../actiontypes';
 
 export default function Hurtigregistrering() {
-    const username = useSelector(state => state.loginresultat.brukernavn);
-    const favoritter = useSelector(state => state.favoritter);
+    const { data: oversikt = {}, isSuccess: oversiktIsSuccess } = useGetOversiktQuery();
+    const { brukernavn: username } = oversikt;
+    const { data: favoritter = [] } = useGetFavoritterQuery(oversikt.brukernavn, { skip: !oversiktIsSuccess });
     const handletidspunkt = useSelector(state => state.handletidspunkt);
     const belop = useSelector(state => state.belop).toString();
+    const [ postNyhandling ] = usePostNyhandlingMutation();
     const dispatch = useDispatch();
+
+    const onStoreClicked = async (storeId) => {
+        await postNyhandling({ storeId, belop, handletidspunkt, username })
+    }
 
     return (
         <div>
@@ -29,7 +40,7 @@ export default function Hurtigregistrering() {
                         <input className="appearance-none w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 focus:outline-none focus:bg-white" id="amount" type="number" pattern="\d+" value={belop} onChange={e => dispatch(BELOP_ENDRE(e.target.value))} />
                     </div>
                     <Kvittering/>
-                    { favoritter.map(f => <button className="flex w-80 mb-1 ms-2 me-2 ps-4 text-center block border border-blue-500 rounded py-2 bg-blue-500 hover:bg-blue-700 text-white" key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} onClick={() => dispatch(NYHANDLING_REGISTRER({ storeId: f.store.storeId, belop, handletidspunkt, username }))}>{f.store.butikknavn}</button>) }
+                    { favoritter.map(f => <button className="flex w-80 mb-1 ms-2 me-2 ps-4 text-center block border border-blue-500 rounded py-2 bg-blue-500 hover:bg-blue-700 text-white" key={'favoritt_' + f.favouriteid.toString()} disabled={belop <= 0} onClick={() => onStoreClicked(f.store.storeId)}>{f.store.butikknavn}</button>) }
                 </form>
             </Container>
         </div>

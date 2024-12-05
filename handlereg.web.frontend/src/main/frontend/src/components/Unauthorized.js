@@ -1,14 +1,16 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-    LOGOUT_HENT,
-} from '../actiontypes';
+import { useSelector } from 'react-redux';
+import { useGetLogoutMutation } from '../api';
 import { Container } from './bootstrap/Container';
 
 
 export default function Unauthorized() {
     const loginresultat = useSelector(state => state.loginresultat);
-    const dispatch = useDispatch();
+    const [ getLogout ] = useGetLogoutMutation();
+
+    const onLogoutClicked = async () => {
+        await getLogout();
+    }
 
     return (
         <div>
@@ -24,7 +26,7 @@ export default function Unauthorized() {
                     <div>
                         <div/>
                         <div>
-                            <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => dispatch(LOGOUT_HENT())}>Logg ut</button>
+                            <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={onLogoutClicked}>Logg ut</button>
                         </div>
                     </div>
                 </form>
