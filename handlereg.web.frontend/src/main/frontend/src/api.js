@@ -22,7 +22,13 @@ export const api = createApi({
         getLogout: builder.mutation({ query: () => ({url: '/logout', method: 'GET' }) }),
         postNyhandling: builder.mutation({
             query: (body) => ({url: '/nyhandling', method: 'POST', body }),
-            invalidatesTags: ['Oversikt', 'Handlinger'],
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: postNyhandlingResult } = await queryFulfilled;
+                    dispatch(api.util.upsertQueryEntries('getOversikt', data, postNyhandlingResult));
+                } catch {}
+            },
+            invalidatesTags: ['Handlinger'],
         }),
         postEndrebutikk: builder.mutation({
             query: (body) => ({ url: '/endrebutikk', method: 'POST', body }),
