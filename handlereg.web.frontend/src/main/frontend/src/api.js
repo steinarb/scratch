@@ -12,7 +12,7 @@ export const api = createApi({
         getOversikt: builder.query({ query: () => '/oversikt' }),
         getHandlinger: builder.query({ query: (accountId) => '/handlinger/' + accountId.toString(), providesTags: ['Handlinger'] }),
         getButikker: builder.query({ query: () => '/butikker' }),
-        getFavoritter: builder.query({ query: (username) => '/favoritter?username=' + username, providesTags: ['Favoritter'] }),
+        getFavoritter: builder.query({ query: (username) => '/favoritter?username=' + username }),
         getSumButikk: builder.query({ query: () => '/statistikk/sumbutikk', providesTags: ['Handlinger'] }),
         getHandlingerButikk: builder.query({ query: () => '/statistikk/handlingerbutikk', providesTags: ['Handlinger'] }),
         getSisteHandel: builder.query({ query: () => '/statistikk/sistehandel', providesTags: ['Handlinger'] }),
@@ -50,7 +50,12 @@ export const api = createApi({
         }),
         postFavorittLeggtil: builder.mutation({
             query: (body) => ({ url: '/favoritt/leggtil', method: 'POST', body }),
-            invalidatesTags: ['Favoritter'],
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: postFavorittLeggtilResult } = await queryFulfilled;
+                    dispatch(api.util.updateQueryData('getFavoritter', body.brukernavn, (draft) => Object.assign(draft, postFavorittLeggtilResult)));
+                } catch {}
+            },
         }),
         postFavorittSlett: builder.mutation({
             query: (body) => ({ url: '/favoritt/slett', method: 'POST', body }),
