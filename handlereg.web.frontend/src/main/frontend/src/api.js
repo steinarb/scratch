@@ -11,7 +11,7 @@ export const api = createApi({
         getLogintilstand: builder.query({ query: () => '/logintilstand' }),
         getOversikt: builder.query({ query: () => '/oversikt' }),
         getHandlinger: builder.query({ query: (accountId) => '/handlinger/' + accountId.toString(), providesTags: ['Handlinger'] }),
-        getButikker: builder.query({ query: () => '/butikker', providesTags: ['Butikker'] }),
+        getButikker: builder.query({ query: () => '/butikker' }),
         getFavoritter: builder.query({ query: (username) => '/favoritter?username=' + username, providesTags: ['Favoritter'] }),
         getSumButikk: builder.query({ query: () => '/statistikk/sumbutikk', providesTags: ['Handlinger'] }),
         getHandlingerButikk: builder.query({ query: () => '/statistikk/handlingerbutikk', providesTags: ['Handlinger'] }),
@@ -35,14 +35,18 @@ export const api = createApi({
             async onQueryStarted(body, { dispatch, queryFulfilled }) {
                 try {
                     const { data: postEndrebutikkResult } = await queryFulfilled;
-                    console.log(dispatch);
-                    const updateResult = dispatch(api.util.updateQueryData('getButikker', undefined, (draft) => Object.assign(draft, postEndrebutikkResult)));
+                    dispatch(api.util.updateQueryData('getButikker', undefined, (draft) => Object.assign(draft, postEndrebutikkResult)));
                 } catch {}
             },
         }),
         postNybutikk: builder.mutation({
             query: (body) => ({ url: '/nybutikk', method: 'POST', body }),
-            invalidatesTags: ['Butikker'],
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: postNybutikkResult } = await queryFulfilled;
+                    dispatch(api.util.updateQueryData('getButikker', undefined, (draft) => Object.assign(draft, postNybutikkResult)));
+                } catch {}
+            },
         }),
         postFavorittLeggtil: builder.mutation({
             query: (body) => ({ url: '/favoritt/leggtil', method: 'POST', body }),
