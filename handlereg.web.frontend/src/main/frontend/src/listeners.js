@@ -30,7 +30,7 @@ listenerMiddleware.startListening({
         const { originalStatus } = payload || {};
         const statusCode = parseInt(originalStatus);
         if (statusCode === 401 || statusCode === 403) {
-            location.reload(true);
+            location.reload(true); // Will return to current location after the login process
         }
     }
 })
@@ -40,7 +40,7 @@ listenerMiddleware.startListening({
     effect: (action, listenerApi) => {
         if (!action.payload.suksess) {
             const basename = listenerApi.getState().basename;
-            location.href = basename + '/';
+            location.href = basename + '/'; // Setting app top location before going to login, to avoid ending up in "/unauthorized" after login
         }
     }
 })
@@ -48,7 +48,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
     type: LOCATION_CHANGE,
     effect: (action, listenerApi) => {
-        listenerApi.dispatch(VIS_KVITTERING(false));
+        listenerApi.dispatch(VIS_KVITTERING(false)); // Blank receit display when navigating in the app
     }
 })
 

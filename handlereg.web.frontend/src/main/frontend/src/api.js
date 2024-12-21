@@ -9,7 +9,7 @@ export const api = createApi({
     },
     endpoints: (builder) => ({
         getLogintilstand: builder.query({ query: () => '/logintilstand' }),
-        getOversikt: builder.query({ query: () => '/oversikt', providesTags: ['Oversikt'] }),
+        getOversikt: builder.query({ query: () => '/oversikt' }),
         getHandlinger: builder.query({ query: (accountId) => '/handlinger/' + accountId.toString(), providesTags: ['Handlinger'] }),
         getButikker: builder.query({ query: () => '/butikker', providesTags: ['Butikker'] }),
         getFavoritter: builder.query({ query: (username) => '/favoritter?username=' + username, providesTags: ['Favoritter'] }),
@@ -25,14 +25,20 @@ export const api = createApi({
             async onQueryStarted(body, { dispatch, queryFulfilled }) {
                 try {
                     const { data: postNyhandlingResult } = await queryFulfilled;
-                    dispatch(api.util.upsertQueryEntries('getOversikt', data, postNyhandlingResult));
+                    dispatch(api.util.upsertQueryEntries('getOversikt', body, (draft) => Object.assign(draft, postNyhandlingResult)));
                 } catch {}
             },
             invalidatesTags: ['Handlinger'],
         }),
         postEndrebutikk: builder.mutation({
             query: (body) => ({ url: '/endrebutikk', method: 'POST', body }),
-            invalidatesTags: ['Butikker'],
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: postEndrebutikkResult } = await queryFulfilled;
+                    console.log(dispatch);
+                    const updateResult = dispatch(api.util.updateQueryData('getButikker', undefined, (draft) => Object.assign(draft, postEndrebutikkResult)));
+                } catch {}
+            },
         }),
         postNybutikk: builder.mutation({
             query: (body) => ({ url: '/nybutikk', method: 'POST', body }),
