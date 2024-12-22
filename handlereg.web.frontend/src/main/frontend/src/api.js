@@ -9,10 +9,19 @@ export const api = createApi({
     },
     endpoints: (builder) => ({
         getLogintilstand: builder.query({ query: () => '/logintilstand' }),
-        getOversikt: builder.query({ query: () => '/oversikt' }),
+        getOversikt: builder.query({
+            query: () => '/oversikt',
+            merge: (currentCache, newItems) => currentCache.push(...newItems),
+        }),
         getHandlinger: builder.query({ query: (accountId) => '/handlinger/' + accountId.toString(), providesTags: ['Handlinger'] }),
-        getButikker: builder.query({ query: () => '/butikker' }),
-        getFavoritter: builder.query({ query: (username) => '/favoritter?username=' + username }),
+        getButikker: builder.query({
+            query: () => '/butikker',
+            merge: (currentCache, newItems) => currentCache.push(...newItems),
+        }),
+        getFavoritter: builder.query({
+            query: (username) => '/favoritter?username=' + username,
+            merge: (currentCache, newItems) => currentCache.push(...newItems),
+        }),
         getSumButikk: builder.query({ query: () => '/statistikk/sumbutikk', providesTags: ['Handlinger'] }),
         getHandlingerButikk: builder.query({ query: () => '/statistikk/handlingerbutikk', providesTags: ['Handlinger'] }),
         getSisteHandel: builder.query({ query: () => '/statistikk/sistehandel', providesTags: ['Handlinger'] }),
@@ -25,7 +34,7 @@ export const api = createApi({
             async onQueryStarted(body, { dispatch, queryFulfilled }) {
                 try {
                     const { data: postNyhandlingResult } = await queryFulfilled;
-                    dispatch(api.util.upsertQueryEntries('getOversikt', body, (draft) => Object.assign(draft, postNyhandlingResult)));
+                    dispatch(api.util.upsertQueryEntries([ { endpointName: 'getOversikt', arg: undefined, value: [ postNyhandlingResult ] } ]));
                 } catch {}
             },
             invalidatesTags: ['Handlinger'],
@@ -35,7 +44,7 @@ export const api = createApi({
             async onQueryStarted(body, { dispatch, queryFulfilled }) {
                 try {
                     const { data: postEndrebutikkResult } = await queryFulfilled;
-                    dispatch(api.util.updateQueryData('getButikker', undefined, (draft) => Object.assign(draft, postEndrebutikkResult)));
+                    dispatch(api.util.upsertQueryEntries([ { endpointName: 'getButikker', arg: undefined, value: postEndrebutikkResult } ]));
                 } catch {}
             },
         }),
@@ -44,7 +53,7 @@ export const api = createApi({
             async onQueryStarted(body, { dispatch, queryFulfilled }) {
                 try {
                     const { data: postNybutikkResult } = await queryFulfilled;
-                    dispatch(api.util.updateQueryData('getButikker', undefined, (draft) => Object.assign(draft, postNybutikkResult)));
+                    dispatch(api.util.upsertQueryEntries([ { endpointName: 'getButikker', arg: undefined, value: postNybutikkResult } ]));
                 } catch {}
             },
         }),
@@ -53,13 +62,20 @@ export const api = createApi({
             async onQueryStarted(body, { dispatch, queryFulfilled }) {
                 try {
                     const { data: postFavorittLeggtilResult } = await queryFulfilled;
-                    dispatch(api.util.updateQueryData('getFavoritter', body.brukernavn, (draft) => Object.assign(draft, postFavorittLeggtilResult)));
+                    dispatch(api.util.upsertQueryEntries([ { endpointName: 'getFavoritter', arg: body.brukernavn, value: postFavorittLeggtilResult } ]));
                 } catch {}
             },
         }),
         postFavorittSlett: builder.mutation({
             query: (body) => ({ url: '/favoritt/slett', method: 'POST', body }),
-            invalidatesTags: ['Favoritter'],
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: postFavorittSlettResult } = await queryFulfilled;
+                    dispatch(api.util.upsertQueryEntries([ { endpointName: 'getFavoritter', arg: body.brukernavn, value: postFavorittSlettResult } ]));
+                } catch(e) {
+                    console.log(e);
+                }
+            },
         }),
         postFavorittBytt: builder.mutation({
             query: (body) => ({ url: '/favoritter/bytt', method: 'POST', body }),

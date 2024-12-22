@@ -6,7 +6,7 @@ const loginresultatReducer = createReducer({ authorized: true }, builder => {
     builder
         .addMatcher(api.endpoints.postLogin.matchFulfilled, (state, action) => action.payload)
         .addMatcher(api.endpoints.getLogout.matchFulfilled, (state, action) => action.payload)
-        .addMatcher(api.endpoints.postLogin.matchFulfilled, (state, action) => action.payload);
+        .addMatcher(api.endpoints.getLogintilstand.matchFulfilled, (state, action) => action.payload);
 });
 
 export default loginresultatReducer;
