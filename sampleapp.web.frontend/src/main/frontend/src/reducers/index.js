@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { createReducer } from '@reduxjs/toolkit';
 import { api } from '../api';
-import counterIncrementStep from './counterIncrementStepReducer';
+import counterIncrementStep from './counterIncrementStepSlice';
 import username from './usernameReducer';
 import locale from './localeReducer';
 
