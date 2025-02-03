@@ -53,18 +53,31 @@ public class LiquibaseKarafFeatureIntegrationTest extends KarafTestSupport {
 
     @Test
     public void testLoadFeature() throws Exception {
+        System.err.println("testLoadFeature(1)");
         installAndAssertFeature("karaf-liquibase-sample-datasource-receiver");
+        System.err.println("testLoadFeature(2)");
         var service = getOsgiService(SampleLiquibaseDatasourceReceiverService.class);
+        System.err.println("testLoadFeature(3)");
         var initialAccounts = service.accounts();
+        System.err.println("testLoadFeature(4)");
         assertEquals(1, initialAccounts.size());
+        System.err.println("testLoadFeature(5)");
         var initialAccount = initialAccounts.get(0);
+        System.err.println("testLoadFeature(6)");
         assertEquals("jod", initialAccount.username());
+        System.err.println("testLoadFeature(7)");
         var newAccount = Account.with().username("jad").build();
+        System.err.println("testLoadFeature(8)");
         var accountsAfterAdd = service.addAccount(newAccount);
+        System.err.println("testLoadFeature(9)");
         assertEquals(2, accountsAfterAdd.size());
+        System.err.println("testLoadFeature(10)");
         var addedAccount = accountsAfterAdd.get(0);
+        System.err.println("testLoadFeature(11)");
         assertEquals(initialAccount.id() + 1, addedAccount.id());
+        System.err.println("testLoadFeature(12)");
         assertEquals("jad", addedAccount.username());
+        System.err.println("testLoadFeature(13)");
     }
 
 }
