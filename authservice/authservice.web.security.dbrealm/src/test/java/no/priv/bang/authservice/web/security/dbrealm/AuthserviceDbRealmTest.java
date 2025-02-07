@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -48,7 +49,7 @@ class AuthserviceDbRealmTest {
     void testGetAuthenticationInfo() {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         var authInfo = realm.getAuthenticationInfo(token);
         assertEquals(1, authInfo.getPrincipals().asList().size());
@@ -63,7 +64,7 @@ class AuthserviceDbRealmTest {
         var mockdatasource = mock(DataSource.class);
         when(mockdatasource.getConnection()).thenThrow(SQLException.class);
         realm.setDataSource(mockdatasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         assertThrows(AuthenticationException.class, () -> realm.getAuthenticationInfo(token));
     }
@@ -76,7 +77,7 @@ class AuthserviceDbRealmTest {
     void testGetAuthenticationInfoLockedUser() {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("lu", "1ad".toCharArray());
         assertThrows(LockedAccountException.class, () -> realm.getAuthenticationInfo(token));
     }
@@ -88,7 +89,7 @@ class AuthserviceDbRealmTest {
     void testFailingBecauseOfExcessiveLoginFailuresAndThenForBeingLocked() {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("jod", "1add".toCharArray());
 
         assertThrows(IncorrectCredentialsException.class, () -> realm.getAuthenticationInfo(token));
@@ -103,7 +104,7 @@ class AuthserviceDbRealmTest {
         when(mockedDatasource.getConnection()).thenThrow(SQLException.class);
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(mockedDatasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, () -> realm.registerLoginFailure("jad", null));
     }
@@ -116,7 +117,7 @@ class AuthserviceDbRealmTest {
     void testGetAuthenticationInfoWrongPassword() {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("jad", "1add".toCharArray());
 
         assertThrows(IncorrectCredentialsException.class, () -> realm.getAuthenticationInfo(token));
@@ -131,7 +132,7 @@ class AuthserviceDbRealmTest {
     void testGetAuthenticationInfoWrongUsername() {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("jadd", "1ad".toCharArray());
 
         assertThrows(UnknownAccountException.class, () -> realm.getAuthenticationInfo(token));
@@ -160,7 +161,7 @@ class AuthserviceDbRealmTest {
     void testGetRolesForUsers() {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("jad", "1ad".toCharArray());
         var authenticationInfoForUser = realm.getAuthenticationInfo(token);
 
@@ -179,7 +180,7 @@ class AuthserviceDbRealmTest {
     void testGetRolesForAdministrators() {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken("on", "ola12".toCharArray());
         var authenticationInfoForUser = realm.getAuthenticationInfo(token);
 

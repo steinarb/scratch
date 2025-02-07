@@ -71,7 +71,7 @@ class UserManagementServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         var user = provider.getUser(username);
@@ -91,7 +91,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         assertThrows(AuthserviceException.class, () -> provider.getUser(username));
@@ -107,7 +107,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         assertThrows(AuthserviceException.class, () -> provider.getUser(username));
@@ -119,7 +119,7 @@ class UserManagementServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         var roles = provider.getRolesForUser(username);
@@ -134,7 +134,7 @@ class UserManagementServiceProviderTest {
         var mockdatasource = mock(DataSource.class);
         when(mockdatasource.getConnection()).thenThrow(AuthserviceException.class);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         assertThrows(AuthserviceException.class, () -> provider.getRolesForUser(username));
@@ -146,7 +146,7 @@ class UserManagementServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         var permissions = provider.getPermissionsForUser(username);
@@ -161,7 +161,7 @@ class UserManagementServiceProviderTest {
         var mockdatasource = mock(DataSource.class);
         when(mockdatasource.getConnection()).thenThrow(SQLException.class);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         assertThrows(AuthserviceException.class, () -> provider.getPermissionsForUser(username));
@@ -177,7 +177,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, provider::getUsers);
     }
@@ -192,7 +192,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var dummy = User.with().build();
         assertThrows(AuthserviceException.class, () -> provider.modifyUser(dummy));
@@ -204,7 +204,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var users = provider.getUsers();
         assertThat(users).isNotEmpty();
@@ -222,7 +222,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var users = provider.getUsers();
         var user = users.get(0);
@@ -240,7 +240,7 @@ class UserManagementServiceProviderTest {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken(user.username(), newPassword.toCharArray());
         var authenticationInfoForUser = realm.getAuthenticationInfo(token);
         assertEquals(1, authenticationInfoForUser.getPrincipals().asList().size());
@@ -252,7 +252,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var users = provider.getUsers();
         var user = users.get(0);
@@ -271,7 +271,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var users = provider.getUsers();
         var user = users.get(0);
@@ -285,7 +285,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var users = provider.getUsers();
         var user = users.get(0);
@@ -303,7 +303,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var passwords = UserAndPasswords.with()
             .password1("secret")
@@ -322,7 +322,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var user = User.with()
             .userid(100)
@@ -345,7 +345,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var user = User.with()
             .userid(100)
@@ -368,7 +368,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var usersBeforeAddingOne = provider.getUsers();
         var newUser = User.with()
@@ -392,7 +392,7 @@ class UserManagementServiceProviderTest {
         var realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
         realm.setCredentialsMatcher(createSha256HashMatcher(1024));
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         var token = new UsernamePasswordToken(user.username(), newUserPassword.toCharArray());
         var authenticationInfoForUser = realm.getAuthenticationInfo(token);
         assertEquals(1, authenticationInfoForUser.getPrincipals().asList().size());
@@ -404,7 +404,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var newUser = User.with()
             .userid(-1)
@@ -435,7 +435,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenReturn(statement);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var newUser = User.with()
             .userid(-1)
@@ -459,7 +459,7 @@ class UserManagementServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         var user = provider.getUser(username);
@@ -480,7 +480,7 @@ class UserManagementServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var username = "jod";
         // Set failed login count to 0 to start with a known state
@@ -516,7 +516,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, () -> provider.loginFailed("jad"));
     }
@@ -531,7 +531,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, () -> provider.successfulLogin("jad"));
         }
@@ -546,7 +546,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-             provider.activate();
+             provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
                  assertThrows(AuthserviceException.class, () -> provider.unlockUser("jad"));
         }
@@ -561,7 +561,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThat(provider.userIsLocked("jad")).isFalse();
     }
@@ -572,7 +572,7 @@ class UserManagementServiceProviderTest {
         var logservice = new MockLogService();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThat(provider.userIsLocked("nosuchuser")).isFalse();
     }
@@ -583,7 +583,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var originalRoles = provider.getRoles();
         assertThat(originalRoles).isNotEmpty();
@@ -636,7 +636,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, provider::getRoles);
     }
@@ -647,7 +647,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var originalPermissions = provider.getPermissions();
         assertThat(originalPermissions).isNotEmpty();
@@ -700,7 +700,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, provider::getPermissions);
     }
@@ -711,7 +711,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var originalUserRoles = provider.getUserRoles();
         assertThat(originalUserRoles).isNotEmpty();
@@ -760,7 +760,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, provider::getUserRoles);
 
@@ -777,7 +777,7 @@ class UserManagementServiceProviderTest {
         var provider = new UserManagementServiceProvider();
         provider.setLogservice(logservice);
         provider.setDataSource(datasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         var originalRolesPermissions = provider.getRolesPermissions();
         assertThat(originalRolesPermissions).isNotEmpty();
@@ -829,7 +829,7 @@ class UserManagementServiceProviderTest {
         when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
         when(mockdatasource.getConnection()).thenReturn(connection);
         provider.setDataSource(mockdatasource);
-        provider.activate();
+        provider.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
 
         assertThrows(AuthserviceException.class, provider::getRolesPermissions);
 

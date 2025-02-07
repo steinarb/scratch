@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -53,7 +54,7 @@ class AuthserviceShiroFilterTest {
         runner.prepare(datasource);
         realm = new AuthserviceDbRealm();
         realm.setDataSource(datasource);
-        realm.activate();
+        realm.activate(Collections.singletonMap("excessiveFailedLoginLimit", Integer.valueOf(3)));
         context = mock(ServletContext.class);
         when(context.getContextPath()).thenReturn("/authservice");
     }

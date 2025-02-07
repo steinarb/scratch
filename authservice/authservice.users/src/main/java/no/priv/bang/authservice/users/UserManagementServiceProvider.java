@@ -54,7 +54,7 @@ import no.priv.bang.osgiservice.users.UserRoles;
 /***
  * A DS component that implements a {@link UserManagementService}
  */
-@Component(service=UserManagementService.class, immediate=true)
+@Component(service=UserManagementService.class, immediate=true, configurationPid="no.priv.bang.authservice.config", property= { "excessiveFailedLoginLimit:Integer=3" } )
 public class UserManagementServiceProvider implements UserManagementService {
     private static final String ROLE_NAME = "role_name";
     private static final String ROLE_ID = "role_id";
@@ -64,7 +64,7 @@ public class UserManagementServiceProvider implements UserManagementService {
     private Logger logger;
     private DataSource datasource;
 
-    int excessiveFailedLoginLimit = 3;
+    int excessiveFailedLoginLimit;
 
     @Reference
     public void setLogservice(LogService logservice) {
@@ -77,8 +77,8 @@ public class UserManagementServiceProvider implements UserManagementService {
     }
 
     @Activate
-    public void activate() {
-        // Called after all injections have been satisfied
+    public void activate(Map<String, Object> config) {
+        excessiveFailedLoginLimit = (int) config.get("excessiveFailedLoginLimit");
     }
 
     @Override

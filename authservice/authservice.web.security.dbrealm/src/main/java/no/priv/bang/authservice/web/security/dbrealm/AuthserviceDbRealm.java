@@ -1,6 +1,7 @@
 package no.priv.bang.authservice.web.security.dbrealm;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -20,7 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import no.priv.bang.authservice.definitions.AuthserviceException;
 
-@Component( service=Realm.class, immediate=true )
+@Component( service=Realm.class, immediate=true, configurationPid="no.priv.bang.authservice.config" )
 public class AuthserviceDbRealm extends JdbcRealm {
 
     int excessiveFailedLoginLimit = 3;
@@ -32,7 +33,8 @@ public class AuthserviceDbRealm extends JdbcRealm {
     }
 
     @Activate
-    public void activate() {
+    public void activate(Map<String, Object> config) {
+        //excessiveFailedLoginLimit = (int) config.get("excessiveFailedLoginLimit");
         setSaltStyle(SaltStyle.COLUMN);
         var credentialsMatcher = new HashedCredentialsMatcher();
         credentialsMatcher.setHashAlgorithmName("SHA-256");
