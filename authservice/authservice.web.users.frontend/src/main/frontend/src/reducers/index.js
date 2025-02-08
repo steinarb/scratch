@@ -9,6 +9,7 @@ import selectedInPermissions from './selectedInPermissionsSlice';
 import permission from './permissionSlice';
 import modifyFailedError from './modifyFailedErrorReducer';
 import errors from './errorsReducer';
+import config from './configSlice';
 
 export default (basename) => combineReducers({
     [api.reducerPath]: api.reducer,
@@ -18,6 +19,7 @@ export default (basename) => combineReducers({
     role,
     selectedInPermissions,
     permission,
+    config,
     modifyFailedError,
     errors,
     basename: createReducer(basename, (builder) => builder),

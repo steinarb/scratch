@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetConfigQuery, usePostConfigModifyMutation, api } from '../api';
+import { setConfig, setExcessiveFailedLoginLimit } from '../reducers/configSlice';
 import Container from './bootstrap/Container';
 import StyledLinkLeft from './bootstrap/StyledLinkLeft';
 import FormRow from './bootstrap/FormRow';
@@ -10,10 +11,16 @@ import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import { findSelectedUser } from './common';
 
 export default function Configuration() {
-    const { data: config = {} } = useGetConfigQuery();
+    const { data } = useGetConfigQuery();
+    const config = useSelector(state => state.config);
     const dispatch = useDispatch();
     const [ postConfigModify ] = usePostConfigModifyMutation();
     const onModifyConfigClicked = async () => await postConfigModify(config);
+    useEffect(() => {
+        if (data) {
+            dispatch(setConfig(data));
+        }
+    }, [data, dispatch]);
 
     return (
         <div>
@@ -33,7 +40,7 @@ export default function Configuration() {
                                 className="form-control"
                                 type="text"
                                 value={config.excessiveFailedLoginLimit}
-                                onChange={e => dispatch(api.util.updateQueryData('getConfig', undefined, () => ({ ...config, excessiveFailedLoginLimit: e.target.value })))} />
+                                onChange={e => dispatch(setExcessiveFailedLoginLimit(e.target.value))} />
                         </FormField>
                     </FormRow>
                     <FormRow>
