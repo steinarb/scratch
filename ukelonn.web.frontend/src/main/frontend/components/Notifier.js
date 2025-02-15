@@ -9,11 +9,15 @@ export default function Notifier() {
         pollingInterval: 60000,
     });
     const dispatch = useDispatch();
+    console.log('Notifier(1)');
     if (isLoading) {
+        console.log('Notifier(2)');
         return null;
     }
 
+    console.log('Notifier(3)');
     if (!isLoading && notificationIsSuccess && notifications.length) {
+        console.log('Notifier(4)');
         const notification = notifications[0];
 
         if (notification.message) {
