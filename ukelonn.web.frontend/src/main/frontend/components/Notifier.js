@@ -4,13 +4,16 @@ import { useGetLoginQuery, useGetNotificationQuery, api } from '../api';
 
 export default function Notifier() {
     const { data: loginResponse = {}, isSuccess: loginIsSuccess } = useGetLoginQuery();
-    const { data: notifications, isSuccess: notificationIsSuccess } = useGetNotificationQuery(loginResponse.username, {
+    const { data: notifications, isLoading, isSuccess: notificationIsSuccess } = useGetNotificationQuery(loginResponse.username, {
         skip: !loginIsSuccess,
         pollingInterval: 60000,
     });
     const dispatch = useDispatch();
+    if (isLoading) {
+        return null;
+    }
 
-    if (notificationIsSuccess && notifications.length) {
+    if (!isLoading && notificationIsSuccess && notifications.length) {
         const notification = notifications[0];
 
         if (notification.message) {
