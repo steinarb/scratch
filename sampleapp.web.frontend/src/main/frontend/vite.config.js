@@ -30,13 +30,22 @@ export default defineConfig({
 });
 
 function exportRoutesPlugin() {
+    const files = [];
+
     return {
         name: 'export-routes',
+
+        async transform(src, id) {
+            if (!id.includes('node_modules')) {
+                files.push(id);
+            }
+        },
+
         generateBundle(options, bundle) {
             const outputDirectory = options.dir || 'dist';
             const assetsDirectory = path.join(outputDirectory, 'assets');
             const filePath = path.join(assetsDirectory, 'routes.txt');
-            const fileContent = 'Written by vite';
+            const fileContent = files.join('\n');
             fs.writeFileSync(filePath, fileContent);
         },
     };
