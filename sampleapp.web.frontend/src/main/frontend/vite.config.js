@@ -47,8 +47,14 @@ function exportRoutesPlugin() {
 
                 traverse(ast, {
                     enter(path) {
-                        if (t.isJSXElement(path.node)) {
-                            console.log('JSX Element:', path.node);
+                        if (t.isArrowFunctionExpression(path.node) || t.isFunctionDeclaration(path.node)) {
+                            const returnStatement = path.get('body').node.body.find(node => t.isReturnStatement(node));
+
+                            if (returnStatement && returnStatement.argument) {
+                                if (t.isJSXElement(returnStatement.argument)) {
+                                    console.log('JSX Element found in return:', returnStatement.argument);
+                                }
+                            }
                         }
                     }
                 });
