@@ -2,7 +2,9 @@ import { defineConfig } from 'vite';
 import eslintPlugin from "@nabla/vite-plugin-eslint";
 import path from 'path';
 import fs from 'fs';
-import { parse } from '@babel/core';
+import { parse } from '@babel/parser';
+import traverse from '@babel/traverse';
+import * as t from "@babel/types";
 
 export default defineConfig({
     plugins: [eslintPlugin(), exportRoutesPlugin()],
@@ -38,27 +40,18 @@ function exportRoutesPlugin() {
 
         async transform(src, id) {
             if (!id.includes('node_modules') && id.includes('.js')) {
-                console.log('hei(1)');
-                console.log(id);
                 const ast = parse(src, {
+                    sourceType: 'module',
+                    plugins: ['jsx'],
                 });
-                console.log('hei(2)');
 
-                const findPaths = (node) => {
-                    if (node.type === 'JSXElement' && node.openingElement.name.name === 'Route') {
-                        const pathAttr = node.openingElement.attributes.find(
-                            (attr) => attr.name.name === 'path'
-                        );
-                        if (pathAttr && pathAttr.value) {
-                            const pathValue = pathAttr.value.value;
-                            routePaths.add(pathValue);
+                traverse(ast, {
+                    enter(path) {
+                        if (t.isJSXElement(path.node)) {
+                            console.log('JSX Element:', path.node);
                         }
                     }
-                    if (node.children) {
-                        node.children.forEach((child) => findPaths(child));
-                    }
-                };
-                ast.program.body.forEach((node) => findPaths(node));
+                });
             }
         },
 
