@@ -39,24 +39,21 @@ function exportRoutesPlugin() {
         name: 'export-routes',
 
         async transform(src, id) {
-            if (!id.includes('node_modules') && id.includes('.js')) {
-                const ast = parse(src, {
-                    sourceType: 'module',
-                    plugins: ['jsx'],
-                });
+            if (!id.includes('node_modules') && !id.includes('commonjsHelpers') && id.includes('.js')) {
+                console.log(id);
+                fs.readFile(id, 'utf-8', (err, data) => {
+                    const ast = parse(data, {
+                        sourceType: 'module',
+                        plugins: ['jsx'],
+                    });
 
-                traverse(ast, {
-                    enter(path) {
-                        if (t.isArrowFunctionExpression(path.node) || t.isFunctionDeclaration(path.node)) {
-                            const returnStatement = path.get('body').node.body.find(node => t.isReturnStatement(node));
-
-                            if (returnStatement && returnStatement.argument) {
-                                if (t.isJSXElement(returnStatement.argument)) {
-                                    console.log('JSX Element found in return:', returnStatement.argument);
-                                }
+                    traverse(ast, {
+                        enter(path) {
+                            if (t.isJSXElement(path)) {
+                                console.log('JSXElement');
                             }
                         }
-                    }
+                    });
                 });
             }
         },
