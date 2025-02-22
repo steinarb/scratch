@@ -40,7 +40,6 @@ function exportRoutesPlugin() {
 
         async transform(src, id) {
             if (!id.includes('node_modules') && !id.includes('commonjsHelpers') && id.includes('.js')) {
-                console.log(id);
                 fs.readFile(id, 'utf-8', (err, data) => {
                     const ast = parse(data, {
                         sourceType: 'module',
@@ -49,8 +48,15 @@ function exportRoutesPlugin() {
 
                     traverse(ast, {
                         enter(path) {
-                            if (t.isJSXElement(path)) {
-                                console.log('JSXElement');
+                            if (t.isJSXElement(path.node)) {
+                                const elementName = path.node.openingElement.name.name;
+                                if (elementName === 'Route') {
+                                    path.node.openingElement.attributes.forEach((attribute) => {
+                                        if (attribute.name.name === 'path') {
+                                            routePaths.add( attribute.value.value);
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
