@@ -22,6 +22,9 @@ import java.util.Optional;
 
 import no.priv.bang.ratatoskr.asvocabulary.ActivityStreamObject;
 import no.priv.bang.ratatoskr.asvocabulary.Actor;
+import no.priv.bang.ratatoskr.asvocabulary.Article;
+import no.priv.bang.ratatoskr.asvocabulary.Group;
+import no.priv.bang.ratatoskr.asvocabulary.Like;
 import no.priv.bang.ratatoskr.services.beans.Account;
 import no.priv.bang.ratatoskr.services.beans.CounterBean;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
@@ -37,6 +40,14 @@ public interface RatatoskrService {
 
     public Optional<Actor> findActorWithUsername(String username);
 
+    Optional<Group> addGroup(Group group);
+
+    Optional<Article> addArticle(Article article);
+
+    Optional<Article> findArticle(String id);
+
+    Optional<Like> addLikeToUsername(String username, Like like);
+
     List<Actor> findFollowersWithUsername(String username);
 
     List<Actor> addFollowerToUsername(String username, String id);
@@ -44,6 +55,10 @@ public interface RatatoskrService {
     List<Actor> findFollowingWithUsername(String username);
 
     List<Actor> addFollowedToUsername(String username, String id);
+
+    List<Like> findLikedWithUsername(String username);
+
+    Optional<Like> userLikeArticle(String username, Article article, Group audience, String localWebContext);
 
     List<ActivityStreamObject> listInbox(Actor actor);
 

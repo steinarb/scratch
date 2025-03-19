@@ -15,7 +15,14 @@
  */
 package no.priv.bang.ratatoskr.backend;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
@@ -32,6 +39,11 @@ import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
+import no.priv.bang.ratatoskr.asvocabulary.Article;
+import no.priv.bang.ratatoskr.asvocabulary.Group;
+import no.priv.bang.ratatoskr.asvocabulary.Like;
+import no.priv.bang.ratatoskr.asvocabulary.Link;
+import no.priv.bang.ratatoskr.asvocabulary.LinkOrObjectList;
 import no.priv.bang.ratatoskr.asvocabulary.Person;
 import no.priv.bang.ratatoskr.db.liquibase.test.RatatoskrTestDbLiquibaseRunner;
 import no.priv.bang.ratatoskr.services.RatatoskrException;
@@ -313,6 +325,35 @@ class RatatoskrServiceProviderTest {
     }
 
     @Test
+    void testFindActorIdWithSQLExceptionThrow() throws Exception {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var mockDatasource = mock(DataSource.class);
+        when(mockDatasource.getConnection()).thenThrow(SQLException.class);
+        provider.setLogservice(logservice);
+        provider.setDatasource(mockDatasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        assertThrows(RatatoskrException.class, () -> provider.findActorId("kenzoishii"));
+    }
+
+    @Test
+    void testFindActorIdWithNotFound() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        int actorId = provider.findActorId("notfound");
+        assertThat(actorId).isEqualTo(-1);
+    }
+
+    @Test
     void testAddGroupWithSqlExceptionThrown() throws Exception {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
@@ -380,6 +421,54 @@ class RatatoskrServiceProviderTest {
             .build();
         var createdArticle = provider.addArticle(article);
         assertThat(createdArticle).hasValue(article);
+    }
+
+    @Test
+    void testAddArticleWithSqlExceptionThrown() throws Exception {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var mockDatasource = spy(datasource);
+        when(mockDatasource.getConnection()).thenCallRealMethod().thenCallRealMethod().thenCallRealMethod().thenThrow(SQLException.class);
+        provider.setLogservice(logservice);
+        provider.setDatasource(mockDatasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var sally = provider.findActorWithUsername("sally").get();
+        var article = Article.with().attributedTo(Link.with().href(sally.id()).build()).build();
+
+        assertThrows(RatatoskrException.class, () -> provider.addArticle(article));
+    }
+
+    @Test
+    void testFindArticleWithNameNotFound() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var article = provider.findArticle("Not found");
+        assertThat(article).isEmpty();
+        assertThat(logservice.getLogmessages()).isEmpty();
+    }
+
+    @Test
+    void testFindArticleWithSqlExceptionThrown() throws Exception {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var mockDatasource = mock(DataSource.class);
+        when(mockDatasource.getConnection()).thenThrow(SQLException.class);
+        provider.setLogservice(logservice);
+        provider.setDatasource(mockDatasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        assertThrows(RatatoskrException.class, () -> provider.findArticle("Doesn't matter"));
     }
 
     @Test
@@ -506,7 +595,7 @@ class RatatoskrServiceProviderTest {
             .attributedTo(Link.with().href(sally.id()).build())
             .build();
         provider.addArticle(article);
-        var group = provider.addGroup(Group.with().name("Project XYZ Working Group").build()).get();
+        var group = provider.addGroup(Group.with().name("Project ZYX Working Group").build()).get();
         var like = Like.with()
             .summary("John liked Sally's note")
             .audience(group)
@@ -515,6 +604,81 @@ class RatatoskrServiceProviderTest {
             .build();
         var updatedLike = provider.addLikeToUsername(username, like);
         assertThat(updatedLike).isNotEmpty().contains(like);
+    }
+
+    @Test
+    void testUserLikeArticle() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var username = "johnd";
+        var sally = provider.findActor("https://sally.example.com").get();
+        var audience = provider.addGroup(Group.with().name("Project XYZ Working Group").build()).get();
+        var article = provider.addArticle(Article.with()
+                .id("https://sally.example.com/posts/125")
+                .name("What a Crazy Day I Had")
+                .content("<div>... you will never believe ...</div>")
+                .attributedTo(Link.with().href(sally.id()).build())
+                .build()).get();
+        var likes = provider.userLikeArticle(username, article, audience, null); // Duplicate code: remove later
+        assertThat(likes).isNotEmpty();
+        
+        // Moved here from its own test to ensure that a like is present
+        var likes2 = provider.findLikedWithUsername(username);
+        assertThat(likes2).isNotEmpty();
+    }
+
+    @Test
+    void testAddLikesWithNoLikeFound() throws Exception {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var mockedDatasource = mock(DataSource.class);
+        var preparedStatement = mock(PreparedStatement.class);
+        var results = mock(ResultSet.class);
+        var statement = mock(Statement.class);
+        when(statement.executeQuery(anyString())).thenReturn(results);
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(connection.createStatement()).thenReturn(statement);
+        when(mockedDatasource.getConnection()).thenReturn(connection);
+        provider.setLogservice(logservice);
+        provider.setDatasource(mockedDatasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var username = "johnd";
+        var like = Like.with()
+            .summary("John liked Sally's note")
+            .actor(Link.with().href("http://localhost:8181/ratatoskr/as/actor/johnd").build())
+            .build();
+        var likes = provider.addLikeToUsername(username, like);
+        assertThat(likes).isEmpty();
+    }
+
+    @Test
+    void testAddLikesWithSQLExceptionThrown() throws Exception {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        var mockedDatasource = mock(DataSource.class);
+        when(mockedDatasource.getConnection()).thenThrow(SQLException.class);
+        provider.setLogservice(logservice);
+        provider.setDatasource(mockedDatasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var username = "johnd";
+        var like = Like.with()
+            .summary("John liked Sally's note")
+            .actor(Link.with().href("http://localhost:8181/ratatoskr/as/actor/johnd").build())
+            .build();
+        assertThrows(RatatoskrException.class, () -> provider.addLikeToUsername(username, like));
     }
 
     @Test
@@ -683,6 +847,49 @@ class RatatoskrServiceProviderTest {
         assertEquals("Hei", text3);
         var text4 = ratatoskr.displayText("hi", null);
         assertEquals("Hei", text4);
+    }
+
+    @Test
+    void testZonedDateTimeOrNull() throws Exception {
+        var ratatoskr = new RatatoskrServiceProvider();
+        var zonedDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+        var results = mock(ResultSet.class);
+        when(results.getTimestamp(anyString())).thenReturn(Timestamp.from(zonedDateTime.toInstant()));
+        when(results.wasNull()).thenReturn(true).thenReturn(false);
+
+        assertThat(ratatoskr.zonedDateTimeOrNull(results, "somecol")).isNull();
+        assertThat(ratatoskr.zonedDateTimeOrNull(results, "somecol")).isEqualTo(zonedDateTime);
+    }
+
+    @Test
+    void testFindId() {
+        var ratatoskr = new RatatoskrServiceProvider();
+
+        var personId = "https://person.company.com";
+        assertThat(ratatoskr.findId(Person.with().id(personId).build())).isEqualTo(personId);
+        assertThat(ratatoskr.findId(Link.with().href(personId).build())).isEqualTo(personId);
+        var list = new LinkOrObjectList(Collections.emptyList());
+        assertThrows(RatatoskrException.class, () -> ratatoskr.findId(list));
+    }
+
+    @Test
+    void testFindHref() {
+        var ratatoskr = new RatatoskrServiceProvider();
+
+        var personId = "https://person.company.com";
+        assertThat(ratatoskr.findHref(Person.with().id(personId).build())).isNull();
+        assertThat(ratatoskr.findHref(Link.with().href(personId).build())).isEqualTo(personId);
+        assertThat(ratatoskr.findHref(new LinkOrObjectList(Collections.emptyList()))).isNull();
+    }
+
+    @Test
+    void testFindName() {
+        var ratatoskr = new RatatoskrServiceProvider();
+
+        assertThat(ratatoskr.findName(null)).isNull();
+        assertThat(ratatoskr.findName(Person.with().name("Person name").build())).isEqualTo("Person name");
+        assertThat(ratatoskr.findName(Link.with().name("Link name").build())).isEqualTo("Link name");
+        assertThat(ratatoskr.findName(new LinkOrObjectList(Collections.emptyList()))).isNull();
     }
 
 }

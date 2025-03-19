@@ -22,6 +22,10 @@ import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -101,7 +105,51 @@ class RatatoskrLiquibaseTest {
             .value("followed").isEqualTo(actorId)
             .value("follower").isEqualTo(anotherActorId);
 
-        ratatoskrLiquibase.updateSchema(createConnection("ratatoskr"));
+        var articles1 = assertjConnection.table("articles").build();
+        assertThat(articles1).exists().isEmpty();
+        var articleId = addArticle(datasource, "https://sally.example.com/posts/123", "What a Crazy Day I Had", "<div>... you will never believe ...</div>", anotherActorId);
+        assertThat(articleId).isGreaterThan(0);
+
+        var articles2 = assertjConnection.table("articles").build();
+        assertThat(articles2).hasNumberOfRowsGreaterThan(0)
+            .row(0)
+            .value("name").isEqualTo("What a Crazy Day I Had")
+            .value("content").isEqualTo("<div>... you will never believe ...</div>")
+            .value("attributed_to").isEqualTo(anotherActorId);
+
+        // Try adding article with the same id as an existing
+        assertThrows(SQLIntegrityConstraintViolationException.class, () -> addArticle(datasource, "https://sally.example.com/posts/123", "Not the same", "Different", anotherActorId));
+        // Try adding article with attributed_to not matching actor to verify constraint
+        assertThrows(SQLIntegrityConstraintViolationException.class, () -> addArticle(datasource, "xxxyz", "foo", "bars", 357));
+
+        var groupId = addGroup(datasource, "Project XYZ Working Group");
+        assertThat(groupId).isGreaterThan(-1);
+
+        var published = new Date();
+        var likeid = addLike(datasource, "https://sally.example.com/likes/123", "Sally liked an article", groupId, anotherActorId, articleId, published);
+        var like = assertjConnection.request("select * from likes where like_id=?").parameters(likeid).build();
+        assertThat(like).hasNumberOfRows(1)
+            .row(0)
+            .value("id").isEqualTo("https://sally.example.com/likes/123")
+            .value("summary").isEqualTo("Sally liked an article")
+            .value("audience").isEqualTo(groupId)
+            .value("actor").isEqualTo(anotherActorId)
+            .value("article").isEqualTo(articleId)
+            .value("published").isEqualTo(Timestamp.from(published.toInstant()));
+
+        // Check that illegal group breaks constraints
+        assertThrows(SQLIntegrityConstraintViolationException.class, () -> addLike(datasource, "https://sally.example.com/likes/124", "Sally liked an article", groupId+1, anotherActorId, articleId, published));
+        // Check that null group is ok
+        assertDoesNotThrow(() -> addLike(datasource, "https://sally.example.com/likes/125", "Sally liked an article", null, anotherActorId, articleId, published));
+
+        // Check that null id is allowed (duplicates ar not allowed)
+        assertDoesNotThrow(() -> addLike(datasource, null, "Sally liked an article", groupId, anotherActorId, articleId, published));
+        // Check that a second null id is still allowed (duplicates ar not allowed but duplicate nulls are OK)
+        assertDoesNotThrow(() -> addLike(datasource, null, "Sally liked an article", groupId, anotherActorId, articleId, published));
+        // Check that null published date is allowed
+        assertDoesNotThrow(() -> addLike(datasource, "https://sally.example.com/likes/126", "Sally liked an article", groupId, anotherActorId, articleId, null));
+
+        ratatoskrLiquibase.updateSchema(datasource.getConnection());
     }
 
     @Test
@@ -181,6 +229,18 @@ class RatatoskrLiquibaseTest {
         }
     }
 
+    private int addGroup(DataSource datasource, String name) throws Exception {
+        try(var connection = datasource.getConnection()) {
+            var sql = "insert into groups (name) values (?)";
+            try(var statement = connection.prepareStatement(sql)) {
+                statement.setString(1, name);
+                statement.executeUpdate();
+            }
+
+            return findNewestGroupId(connection);
+        }
+    }
+
     private void addFollower(DataSource datasource, int actorId, int anotherActorId) throws Exception {
         try(var connection = datasource.getConnection()) {
             var sql = "insert into followers (followed, follower) values (?, ?)";
@@ -190,6 +250,59 @@ class RatatoskrLiquibaseTest {
                 statement.executeUpdate();
             }
         }
+    }
+
+    private int addArticle(DataSource datasource, String id, String name, String content, int actorAttributedTo) throws Exception {
+        try(var connection = datasource.getConnection()) {
+            var sql = "insert into articles (id, name, content, attributed_to) values (?, ?, ?, ?)";
+            try(var statement = connection.prepareStatement(sql)) {
+                statement.setString(1, id);
+                statement.setString(2, name);
+                statement.setString(3, content);
+                statement.setInt(4, actorAttributedTo);
+                statement.executeUpdate();
+            }
+
+            try (var statement = connection.createStatement()) {
+                try(var results = statement.executeQuery("select article_id from articles order by article_id desc")) {
+                    while(results.next()) {
+                        return results.getInt("article_id");
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    private int addLike(DataSource datasource, String id, String summary, Integer groupId, int actorId, int articleId, Date published) throws Exception {
+        try(var connection = datasource.getConnection()) {
+            var sql = "insert into likes (id, summary, audience, actor, article, published) values (?, ?, ?, ?, ?, ?)";
+            try(var statement = connection.prepareStatement(sql)) {
+                statement.setString(1, id);
+                statement.setString(2, summary);
+                if (groupId != null) {
+                    statement.setInt(3, groupId);
+                } else {
+                    statement.setNull(3, Types.INTEGER);
+                }
+                statement.setInt(4, actorId);
+                statement.setInt(5, articleId);
+                statement.setTimestamp(6, published != null ? Timestamp.from(published.toInstant()) : null);
+                statement.executeUpdate();
+            }
+
+            try (var statement = connection.prepareStatement("select like_id from likes where id=?")) {
+                statement.setString(1, id);
+                try(var results = statement.executeQuery()) {
+                    while(results.next()) {
+                        return results.getInt("like_id");
+                    }
+                }
+            }
+        }
+
+        return -1;
     }
 
     private int findActorId(Connection connection, String id) throws Exception {
@@ -202,6 +315,19 @@ class RatatoskrLiquibaseTest {
                 }
             }
         }
+        return -1;
+    }
+
+    private int findNewestGroupId(Connection connection) throws Exception {
+        var sql = "select group_id from groups order by group_id desc";
+        try(var statement = connection.createStatement()) {
+            try(var results = statement.executeQuery(sql)) {
+                while(results.next()) {
+                    return results.getInt("group_id");
+                }
+            }
+        }
+
         return -1;
     }
 

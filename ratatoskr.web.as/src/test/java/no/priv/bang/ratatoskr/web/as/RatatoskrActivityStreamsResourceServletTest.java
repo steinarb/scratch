@@ -42,7 +42,11 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 
 import no.priv.bang.ratatoskr.asvocabulary.Actor;
+import no.priv.bang.ratatoskr.asvocabulary.Article;
 import no.priv.bang.ratatoskr.asvocabulary.Collection;
+import no.priv.bang.ratatoskr.asvocabulary.Group;
+import no.priv.bang.ratatoskr.asvocabulary.Like;
+import no.priv.bang.ratatoskr.asvocabulary.Link;
 import no.priv.bang.ratatoskr.asvocabulary.Person;
 import no.priv.bang.ratatoskr.backend.RatatoskrServiceProvider;
 import no.priv.bang.ratatoskr.db.liquibase.test.RatatoskrTestDbLiquibaseRunner;
@@ -57,6 +61,8 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
         .findAndRegisterModules();
 
     private static DataSource datasource;
+
+    private static Like like;
 
     @BeforeAll
     static void beforeAll() throws Exception {
@@ -109,6 +115,24 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
         ratatoskr.addFollowerToUsername(johnd.preferredUsername(), sally.id());
         ratatoskr.addFollowedToUsername(johnd.preferredUsername(), kenzoishii.id());
         ratatoskr.addFollowedToUsername(johnd.preferredUsername(), sally.id());
+
+        // Add an article and a like of the article
+        var docId = "https://sally.example.com/posts/124";
+        var article = Article.with()
+            .id(docId)
+            .name("What a Crazy Day I Had")
+            .content("<div>... you will never believe ...</div>")
+            .attributedTo(Link.with().href(sally.id()).build())
+            .build();
+        ratatoskr.addArticle(article);
+        var group = ratatoskr.addGroup(Group.with().name("Project XYZ Working Group").build()).get();
+        var likeInput = Like.with()
+            .summary("John liked Sally's note")
+            .audience(group)
+            .actor(Link.with().href("http://localhost:8181/ratatoskr/as/actor/johnd").build())
+            .target(Link.with().href(docId).build())
+            .build();
+        like = ratatoskr.addLikeToUsername(johnd.preferredUsername(), likeInput).get();
     }
 
     @Test
@@ -208,6 +232,32 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
         assertThat(followers.current()).isEqualTo(follower1);
         assertThat(followers.first()).isEqualTo(follower1);
         assertThat(followers.last()).isEqualTo(follower2);
+    }
+
+    @Test
+    void testGetLikedCollection() throws Exception {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var ratatoskr = new RatatoskrServiceProvider();
+        ratatoskr.setLogservice(logservice);
+        ratatoskr.setDatasource(datasource);
+        ratatoskr.setUseradmin(useradmin);
+        ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var request = buildGetUrl("/liked/johnd");
+        var response = new MockHttpServletResponse();
+
+        // Add liked collection to the database
+
+        servlet.service(request, response);
+        assertEquals(200, response.getStatus());
+        var liked = mapper.readValue(response.getOutputStreamBinaryContent(), Collection.class);
+        assertThat(liked.id()).isEqualTo("http://localhost:8181/ratatoskr/as/liked/johnd");
+        assertThat(liked.totalItems()).isEqualTo(1);
+        assertThat(liked.items()).hasSize(1);
+        assertThat(liked.current()).isEqualTo(like);
+        assertThat(liked.first()).isEqualTo(like);
+        assertThat(liked.last()).isEqualTo(like);
     }
 
     private MockHttpServletRequest buildGetUrl(String resource) {
