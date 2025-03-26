@@ -54,7 +54,7 @@ under the License.
             **/RatatoskrTestDbLiquibaseRunner.java,
             **/RatatoskrProductionDbLiquibaseRunner.java,
         </sonar.cpd.exclusions>
-        <sonar.issue.ignore.multicriteria>e1,e2,e3,e4,e5,e6</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria>e1,e2,e3,e4,e5,e6,e7</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S2160</sonar.issue.ignore.multicriteria.e1.ruleKey>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/ratatoskr.services/**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
         <sonar.issue.ignore.multicriteria.e2.ruleKey>java:S5976</sonar.issue.ignore.multicriteria.e2.ruleKey>
@@ -67,6 +67,8 @@ under the License.
         <sonar.issue.ignore.multicriteria.e5.resourceKey>**/ParseTest.java</sonar.issue.ignore.multicriteria.e5.resourceKey>
         <sonar.issue.ignore.multicriteria.e6.ruleKey>javaarchitecture:S7027</sonar.issue.ignore.multicriteria.e6.ruleKey>
         <sonar.issue.ignore.multicriteria.e6.resourceKey>**/ratatoskr.asvocabulary/**/*.java</sonar.issue.ignore.multicriteria.e6.resourceKey>
+        <sonar.issue.ignore.multicriteria.e7.ruleKey>java:S6813</sonar.issue.ignore.multicriteria.e7.ruleKey>
+        <sonar.issue.ignore.multicriteria.e7.resourceKey>**/ratatoskr.web.as/src/main/java/**/resources/*.java</sonar.issue.ignore.multicriteria.e7.resourceKey>
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../jacoco-coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
