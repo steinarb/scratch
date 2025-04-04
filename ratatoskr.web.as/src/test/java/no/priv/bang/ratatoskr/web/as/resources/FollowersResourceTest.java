@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import no.priv.bang.ratatoskr.asvocabulary.Person;
 import no.priv.bang.ratatoskr.services.RatatoskrService;
 
-public class FollowersResourceTest {
+class FollowersResourceTest {
 
     @Test
     void testGetFollowers() {

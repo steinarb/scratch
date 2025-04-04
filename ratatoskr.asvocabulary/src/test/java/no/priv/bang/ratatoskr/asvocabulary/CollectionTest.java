@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class CollectionTest {
+class CollectionTest {
 
     @Test
     void testCreate() {
