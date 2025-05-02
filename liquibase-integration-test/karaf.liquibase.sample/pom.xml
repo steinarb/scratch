@@ -130,6 +130,11 @@
             <artifactId>liquibase-core</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>msv-rngconverter</artifactId>
+            <version>2022.7</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -170,6 +175,39 @@
                                 </artifactItem>
                             </artifactItems>
                             <includes>**/dbchangelog-${liquibase.xsd-version}.xsd</includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>convert-liquibase-xsd-to-rng</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.sun.msv.writer.relaxng.Driver</mainClass>
+                            <commandlineArgs>
+                                ${project.build.directory}/dependency/www.liquibase.org/xml/ns/dbchangelog/dbchangelog-${liquibase.xsd-version}.xsd
+                                ${project.build.directory}/dbchangelog-${liquibase.xsd-version}.rng
+                            </commandlineArgs>
+                            <systemProperties>
+                                <!-- The locale settings have to be set to "no location" to make the MSV run -->
+                                <!-- (The code is localized to two locations "default locale" or chinese, the default locale values are English) -->
+                                <systemProperty>
+                                    <key>user.language</key>
+                                    <value/>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>user.region</key>
+                                    <value/>
+                                </systemProperty>
+                            </systemProperties>
                         </configuration>
                     </execution>
                 </executions>
