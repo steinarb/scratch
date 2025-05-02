@@ -130,11 +130,6 @@
             <artifactId>liquibase-core</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>net.java.dev.msv</groupId>
-            <artifactId>msv-rngconverter</artifactId>
-            <version>2022.7</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -191,6 +186,10 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
+                            <executableDependency>
+                                <groupId>net.java.dev.msv</groupId>
+                                <artifactId>msv-rngconverter</artifactId>
+                            </executableDependency>
                             <mainClass>com.sun.msv.writer.relaxng.Driver</mainClass>
                             <commandlineArgs>
                                 ${project.build.directory}/dependency/www.liquibase.org/xml/ns/dbchangelog/dbchangelog-${liquibase.xsd-version}.xsd
@@ -211,6 +210,14 @@
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.java.dev.msv</groupId>
+                        <artifactId>msv-rngconverter</artifactId>
+                        <version>2022.7</version>
+                        <type>jar</type>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
