@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Steinar Bang
+ * Copyright 2018-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jsoup.Jsoup;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
@@ -45,21 +47,17 @@ public class HelloServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             response.setContentType("text/html");
-            try(var writer = response.getWriter()) {
-                writer.println("<html>");
-                writer.println("<head>");
-                writer.format("<title>%s</title>%n", TITLE);
-                writer.println("</head>");
-                writer.println("<body>");
-                writer
-                    .format("<h1>%s</h1>%n%n%n", TITLE)
-                    .format("<p>%s</p>%n", PARAGRAPH);
-                writer.println("</body>");
-                writer.println("</html>");
-
-                response.setStatus(200);
+            try(var template = getClass().getClassLoader().getResourceAsStream("index.html")) {
+                var html = Jsoup.parse(template, "UTF-8", "");
+                html.select("title").get(0).text(TITLE);
+                html.select("h1").get(0).text(TITLE);
+                html.select("p").get(0).text(PARAGRAPH);
+                try(var writer = response.getWriter()) {
+                    writer.print(html.toString());
+                }
             }
 
+            response.setStatus(200);
         } catch (Exception e) {
             logger.error("Hello servlet caught exception ", e);
             response.setStatus(500); // Report internal server error
