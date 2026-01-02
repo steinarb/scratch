@@ -887,7 +887,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     void readExifImageMetadata(String imageUrl, final Builder metadataBuilder, List<JPEGSegment> exifSegment) {
-        exifSegment.stream().map(s -> s.data()).forEach(exifData -> {
+        exifSegment.stream().map(s -> s.data()).findFirst().ifPresent(exifData -> {
             try {
                 exifData.read();
                 var exif = (CompoundDirectory) new TIFFReader().read(ImageIO.createImageInputStream(exifData));
