@@ -905,8 +905,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 extractExifDatetime(metadataBuilder, entry, imageUrl);
             } else if (entry.getIdentifier().equals(EXIF_DESCRIPTION)) {
                 metadataBuilder.title(entry.getValueAsString());
-            } else if (entry.getIdentifier().equals(EXIF_USER_COMMENT)) {
-                decodeExifUserCommentWithEncoding(metadataBuilder, entry);
             } else if (entry.getIdentifier().equals(EXIF_EXIF)) {
                 var nestedExif = (IFD) entry.getValue();
                 for (var nestedEntry : nestedExif) {
