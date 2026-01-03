@@ -1283,6 +1283,50 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDownloadAlbumEntryOnExistingImageFromShotwellExport() throws Exception {
+        var downloadFile = Files.createTempFile("image", "jpg").toFile();
+        try {
+            var replacementTitle = "Replacement title";
+            var replacementDescription = "Replacement description";
+            var provider = new OldAlbumServiceProvider();
+            var logservice = new MockLogService();
+            var imageIOService = new ImageioSpiRegistration();
+            provider.setLogService(logservice);
+            provider.setDataSource(datasource);
+            provider.setImageIOService(imageIOService);
+            provider.activate(Collections.emptyMap());
+            var dummyAlbum = provider
+                .addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build())
+                .stream().filter(e -> "dummy".equals(e.path())).findFirst().get();
+            var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id())
+                .title(replacementTitle).description(replacementDescription).build();
+            var entry = provider.addEntry(modifiedEntry).stream()
+                .filter(e -> replacementDescription.equals(e.description())).findFirst().get();
+            // Mocked HTTP request
+            var connectionFactory = mock(HttpConnectionFactory.class);
+            var connection = mock(HttpURLConnection.class);
+            when(connection.getResponseCode()).thenReturn(200);
+            when(connection.getInputStream())
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/PICT000023.jpeg"));
+            when(connectionFactory.connect(anyString())).thenReturn(connection);
+            provider.setConnectionFactory(connectionFactory);
+            var streamingOutput = provider.downloadAlbumEntry(entry.id());
+            assertNotNull(streamingOutput);
+            try (var outputStream = new FileOutputStream(downloadFile)) {
+                streamingOutput.write(outputStream);
+            }
+
+            var dummyConnection = mock(HttpURLConnection.class);
+            var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
+            assertThat(metadata.title()).startsWith(replacementTitle);
+            assertThat(metadata.description()).startsWith(replacementDescription);
+            assertEquals(entry.lastModified(), metadata.lastModified());
+        } finally {
+            Files.deleteIfExists(downloadFile.toPath());
+        }
+    }
+
+    @Test
     void testDownloadAlbumEntryOnExistingAlbum() throws Exception {
         var downloadAlbum = Files.createTempFile("album", "zip").toFile();
         try {
@@ -1495,7 +1539,7 @@ class OldAlbumServiceProviderTest {
         var title = "A title";
         var description = "A descrption";
         var entry = AlbumEntry.with().lastModified(lastModified).title(title).description(description).build();
-        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry, null);
         var unknown = markerSequence.getElementsByTagName("unknown");
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
@@ -1510,7 +1554,7 @@ class OldAlbumServiceProviderTest {
         var title = "A title";
         var description = "A descrption";
         var entry = AlbumEntry.with().title(title).description(description).build();
-        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry, null);
         var unknown = markerSequence.getElementsByTagName("unknown");
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
@@ -1525,7 +1569,7 @@ class OldAlbumServiceProviderTest {
         var lastModified = new Date();
         var description = "A descrption";
         var entry = AlbumEntry.with().lastModified(lastModified).description(description).build();
-        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry, null);
         var unknown = markerSequence.getElementsByTagName("unknown");
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
@@ -1540,7 +1584,7 @@ class OldAlbumServiceProviderTest {
         var lastModified = new Date();
         var title = "A title";
         var entry = AlbumEntry.with().lastModified(lastModified).title(title).build();
-        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry, null);
         var unknown = markerSequence.getElementsByTagName("unknown");
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
@@ -1553,7 +1597,7 @@ class OldAlbumServiceProviderTest {
         var provider = new OldAlbumServiceProvider();
         var markerSequence = new IIOMetadataNode("markerSequence");
         var entry = AlbumEntry.with().build();
-        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry);
+        provider.writeDateTitleAndDescriptionToExifDataStructure(markerSequence, entry, null);
         var unknown = markerSequence.getElementsByTagName("unknown");
         assertEquals(0, unknown.getLength());
     }

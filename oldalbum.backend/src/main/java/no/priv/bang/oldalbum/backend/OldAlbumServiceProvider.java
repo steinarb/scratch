@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,6 +83,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.twelvemonkeys.imageio.metadata.CompoundDirectory;
+import com.twelvemonkeys.imageio.metadata.Directory;
 import com.twelvemonkeys.imageio.metadata.Entry;
 import com.twelvemonkeys.imageio.metadata.exif.EXIF;
 import com.twelvemonkeys.imageio.metadata.jpeg.JPEG;
@@ -91,8 +93,11 @@ import com.twelvemonkeys.imageio.metadata.tiff.TIFF;
 import com.twelvemonkeys.imageio.metadata.tiff.TIFFEntry;
 import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
 import com.twelvemonkeys.imageio.metadata.tiff.TIFFWriter;
+import com.twelvemonkeys.imageio.stream.ByteArrayImageInputStream;
 import com.twelvemonkeys.imageio.util.ImageTypeSpecifiers;
 import com.twelvemonkeys.lang.StringUtil;
+import com.twelvemonkeys.xml.XMLSerializer;
+
 import static com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil.*;
 
 import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
@@ -731,7 +736,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var metadataAsTree = (IIOMetadataNode) image.getMetadata().getAsTree("javax_imageio_jpeg_image_1.0");
         var markerSequence = findMarkerSequenceAndCreateIfNotFound(metadataAsTree);
         setJfifCommentFromAlbumEntryDescription(markerSequence, albumEntry);
-        writeDateTitleAndDescriptionToExifDataStructure(markerSequence, albumEntry);
+        var existingExifDirectory = findExistingExifDirectory(markerSequence);
+        writeDateTitleAndDescriptionToExifDataStructure(markerSequence, albumEntry, existingExifDirectory);
 
         try (var outputStream = ImageIO.createImageOutputStream(output)){
             writer.setOutput(outputStream);
@@ -743,16 +749,48 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
     }
 
-    void writeDateTitleAndDescriptionToExifDataStructure(IIOMetadataNode markerSequence, AlbumEntry albumEntry) throws IOException {
+    Directory findExistingExifDirectory(IIOMetadataNode markerSequence) {
+        var unknown = findFirstUnknownNode(markerSequence);
+        if (unknown == null) {
+            return null;
+        }
+
+        var rawUserObject = (byte[]) unknown.getUserObject();
+        var serializedDirectory = removeExifPrefix(rawUserObject);
+        try(var input = new ByteArrayImageInputStream((byte[]) serializedDirectory)) {
+            return new TIFFReader().read(input);
+        } catch (IOException e) {
+            logger.info("Unable to parse existing EXIF directory: {}", e);
+        }
+
+        return null;
+    }
+
+    IIOMetadataNode findFirstUnknownNode(IIOMetadataNode markerSequence) {
+        return (IIOMetadataNode) markerSequence.getElementsByTagName("unknown").item(0);
+    }
+
+    byte[] removeExifPrefix(byte[] rawUserObject) {
+        return Arrays.copyOfRange(rawUserObject, 6, rawUserObject.length - 1);
+    }
+
+    void writeDateTitleAndDescriptionToExifDataStructure(
+        IIOMetadataNode markerSequence,
+        AlbumEntry albumEntry,
+        Directory existingExifDirectory) throws IOException
+    {
+        var hasExistingExifDirectory = existingExifDirectory != null;
         var entries = new ArrayList<Entry>();
+        var existingEntriesIterator = Optional.ofNullable(existingExifDirectory.iterator()).orElse(Collections.<Entry>emptyIterator());
+        existingEntriesIterator.forEachRemaining(entries::add);
         if (albumEntry.lastModified() != null) {
             var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
-            entries.add(new TIFFEntry(TIFF.TAG_DATE_TIME, formattedDateTime));
-            entries.add(new TIFFEntry(EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime));
+            replaceOrAddEntry(entries, TIFF.TAG_DATE_TIME, formattedDateTime);
+            replaceOrAddEntry(entries, EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime);
         }
 
         if (!StringUtil.isEmpty(albumEntry.title())) {
-            entries.add(new TIFFEntry(TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.title()));
+            replaceOrAddEntry(entries, TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.title());
         }
 
         if (!StringUtil.isEmpty(albumEntry.description())) {
@@ -769,12 +807,41 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             try(var imageOutputStream = new MemoryCacheImageOutputStream(bytes)) {
                 new TIFFWriter().write(entries, imageOutputStream);
             }
-
-            IIOMetadataNode exif = new IIOMetadataNode("unknown");
-            exif.setAttribute("MarkerTag", String.valueOf(0xE1)); // APP1 or "225"
-            exif.setUserObject(bytes.toByteArray());
-            markerSequence.appendChild(exif);
+            
+            if (hasExistingExifDirectory) {
+                findFirstUnknownNode(markerSequence).setUserObject(bytes.toByteArray());
+            } else {
+                var exif = new IIOMetadataNode("unknown");
+                exif.setAttribute("MarkerTag", String.valueOf(0xE1)); // APP1 or "225"
+                exif.setUserObject(bytes.toByteArray());
+                markerSequence.appendChild(exif);
+            }
         }
+
+        new XMLSerializer(System.out, "UTF-8").serialize(markerSequence, false);
+    }
+
+    void replaceOrAddEntry(ArrayList<Entry> entries, int tiffTag, String value) {
+        var indexOfEntry = findIndexOfEntryWithTiffTag(entries, tiffTag);
+        var entry = new TIFFEntry(tiffTag, value);
+        if (indexOfEntry < 0) {
+            entries.add(entry);
+        } else {
+            entries.set(indexOfEntry, entry);
+        }
+    }
+
+    int findIndexOfEntryWithTiffTag(ArrayList<Entry> entries, int tiffTag) {
+        int indexOfEntry = 0;
+        for (var entry : entries) {
+            if (entry.getIdentifier().equals(tiffTag)) {
+                return indexOfEntry;
+            }
+
+            ++indexOfEntry;
+        }
+
+        return -1;
     }
 
     String formatLastModifiedTimeAsExifDateString(AlbumEntry albumEntry) {
@@ -792,6 +859,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     IIOMetadataNode findMarkerSequenceAndCreateIfNotFound(IIOMetadataNode metadataAsTree) {
+        new XMLSerializer(System.out, "UTF-8").serialize(metadataAsTree, false);
         var markerSequence = (IIOMetadataNode) metadataAsTree.getElementsByTagName("markerSequence").item(0);
         if (markerSequence == null) {
             markerSequence = new IIOMetadataNode("markerSequence");
