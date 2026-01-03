@@ -781,7 +781,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     {
         var hasExistingExifDirectory = existingExifDirectory != null;
         var entries = new ArrayList<Entry>();
-        var existingEntriesIterator = Optional.ofNullable(existingExifDirectory.iterator()).orElse(Collections.<Entry>emptyIterator());
+        var existingEntriesIterator = Optional.ofNullable(existingExifDirectory).map(Directory::iterator).orElse(Collections.<Entry>emptyIterator());
         existingEntriesIterator.forEachRemaining(entries::add);
         if (albumEntry.lastModified() != null) {
             var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
