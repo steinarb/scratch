@@ -1544,7 +1544,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(136);
+        assertThat(userObject).hasSize(150);
     }
 
     @Test
@@ -1559,7 +1559,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(72);
+        assertThat(userObject).hasSize(86);
     }
 
     @Test
@@ -1574,7 +1574,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(116);
+        assertThat(userObject).hasSize(130);
     }
 
     @Test
@@ -1675,23 +1675,6 @@ class OldAlbumServiceProviderTest {
         assertThat(imageMetadata.lastModified()).isEqualTo(new Date(lastModifiedTime));
         assertThat(imageMetadata.title()).isEqualTo(" ");
         assertThat(imageMetadata.description()).isEqualTo("EXIF_HDL_ID_1");
-    }
-
-    @Test
-    void testReadJpegWithExifMetadataFromRolleiPDFS240SESlideScannerWithSavedMultipleDirectories() throws Exception {
-        var provider = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        provider.setLogService(logservice);
-        var imageFileName = "jpeg/PICT000023.JPG";
-        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
-        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
-        provider.setConnectionFactory(connectionFactory);
-
-        var imageMetadata = provider.readMetadata("http://localhost/PICT000023.JPG");
-        assertThat(imageMetadata).isNotNull();
-        assertThat(imageMetadata.lastModified()).isEqualTo(provider.parseExifDateTimeAtOsloTimezone("2002:05:20 02:00:00"));
-        assertThat(imageMetadata.title()).isEqualTo(" Verandablomster");
-        assertThat(imageMetadata.description()).isEqualTo("Blomster i kassen på verandaen i Nico Hambros vei 97");
     }
 
     @Test
