@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1240,136 +1240,147 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testDownloadAlbumEntryOnExistingImage() throws Exception {
-        var replacementTitle = "Replacement title";
-        var replacementDescription = "Replacement description";
-        var provider = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var imageIOService = new ImageioSpiRegistration();
-        provider.setLogService(logservice);
-        provider.setDataSource(datasource);
-        provider.setImageIOService(imageIOService);
-        provider.activate(Collections.emptyMap());
-        var dummyAlbum = provider.addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build()).stream().filter(e -> "dummy".equals(e.path())).findFirst().get();
-        var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id()).title(replacementTitle).description(replacementDescription).build();
-        var entry = provider.addEntry(modifiedEntry).stream().filter(e -> replacementDescription.equals(e.description())).findFirst().get();
-
-        // Mocked HTTP request
-        var connectionFactory = mock(HttpConnectionFactory.class);
-        var connection = mock(HttpURLConnection.class);
-        when(connection.getResponseCode()).thenReturn(200);
-        when(connection.getInputStream()).thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
-        when(connectionFactory.connect(anyString())).thenReturn(connection);
-        provider.setConnectionFactory(connectionFactory);
-
-        var streamingOutput = provider.downloadAlbumEntry(entry.id());
-        assertNotNull(streamingOutput);
         var downloadFile = Files.createTempFile("image", "jpg").toFile();
-        try(var outputStream = new FileOutputStream(downloadFile)) {
-            streamingOutput.write(outputStream);
-        }
+        try {
+            var replacementTitle = "Replacement title";
+            var replacementDescription = "Replacement description";
+            var provider = new OldAlbumServiceProvider();
+            var logservice = new MockLogService();
+            var imageIOService = new ImageioSpiRegistration();
+            provider.setLogService(logservice);
+            provider.setDataSource(datasource);
+            provider.setImageIOService(imageIOService);
+            provider.activate(Collections.emptyMap());
+            var dummyAlbum = provider
+                .addEntry(AlbumEntry.with().parent(1).album(true).path("dummy").title("Dummy album").description("Dummy description").build())
+                .stream().filter(e -> "dummy".equals(e.path())).findFirst().get();
+            var modifiedEntry = AlbumEntry.with(provider.getAlbumEntry(9).get()).parent(dummyAlbum.id())
+                .title(replacementTitle).description(replacementDescription).build();
+            var entry = provider.addEntry(modifiedEntry).stream()
+                .filter(e -> replacementDescription.equals(e.description())).findFirst().get();
+            // Mocked HTTP request
+            var connectionFactory = mock(HttpConnectionFactory.class);
+            var connection = mock(HttpURLConnection.class);
+            when(connection.getResponseCode()).thenReturn(200);
+            when(connection.getInputStream())
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+            when(connectionFactory.connect(anyString())).thenReturn(connection);
+            provider.setConnectionFactory(connectionFactory);
+            var streamingOutput = provider.downloadAlbumEntry(entry.id());
+            assertNotNull(streamingOutput);
+            try (var outputStream = new FileOutputStream(downloadFile)) {
+                streamingOutput.write(outputStream);
+            }
 
-        var dummyConnection = mock(HttpURLConnection.class);
-        var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
-        assertThat(metadata.title()).startsWith(replacementTitle);
-        assertThat(metadata.description()).startsWith(replacementDescription);
-        assertEquals(entry.lastModified(), metadata.lastModified());
+            var dummyConnection = mock(HttpURLConnection.class);
+            var metadata = provider.readMetadataOfLocalFile(downloadFile, dummyConnection);
+            assertThat(metadata.title()).startsWith(replacementTitle);
+            assertThat(metadata.description()).startsWith(replacementDescription);
+            assertEquals(entry.lastModified(), metadata.lastModified());
+        } finally {
+            Files.deleteIfExists(downloadFile.toPath());
+        }
     }
 
     @Test
     void testDownloadAlbumEntryOnExistingAlbum() throws Exception {
-        var provider = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var imageIOService = new ImageioSpiRegistration();
-        provider.setLogService(logservice);
-        provider.setDataSource(datasource);
-        provider.setImageIOService(imageIOService);
-        provider.activate(Collections.emptyMap());
-        var albumentry = provider.getAlbumEntry(4).get();
-        var albumpictures = provider.getChildren(albumentry.id(), false);
+        var downloadAlbum = Files.createTempFile("album", "zip").toFile();
+        try {
+            var provider = new OldAlbumServiceProvider();
+            var logservice = new MockLogService();
+            var imageIOService = new ImageioSpiRegistration();
+            provider.setLogService(logservice);
+            provider.setDataSource(datasource);
+            provider.setImageIOService(imageIOService);
+            provider.activate(Collections.emptyMap());
+            var albumentry = provider.getAlbumEntry(4).get();
+            var albumpictures = provider.getChildren(albumentry.id(), false);
+            // Mocked HTTP request
+            var connectionFactory = mock(HttpConnectionFactory.class);
+            var connection = mock(HttpURLConnection.class);
+            when(connection.getResponseCode()).thenReturn(200);
+            when(connection.getInputStream())
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+            when(connectionFactory.connect(anyString())).thenReturn(connection);
+            provider.setConnectionFactory(connectionFactory);
+            var streamingOutput = provider.downloadAlbumEntry(albumentry.id());
+            assertNotNull(streamingOutput);
+            // Stream the album into a zip file
+            try (var outputStream = new FileOutputStream(downloadAlbum)) {
+                streamingOutput.write(outputStream);
+            }
 
-        // Mocked HTTP request
-        var connectionFactory = mock(HttpConnectionFactory.class);
-        var connection = mock(HttpURLConnection.class);
-        when(connection.getResponseCode()).thenReturn(200);
-        when(connection.getInputStream())
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
-        when(connectionFactory.connect(anyString())).thenReturn(connection);
-        provider.setConnectionFactory(connectionFactory);
-
-        var streamingOutput = provider.downloadAlbumEntry(albumentry.id());
-        assertNotNull(streamingOutput);
-
-        // Stream the album into a zip file
-        var downloadAlbum = Files.createTempFile("album", "zip");
-        try(var outputStream = new FileOutputStream(downloadAlbum.toFile())) {
-            streamingOutput.write(outputStream);
+            // Check that zip members last modified time have been set to albumEntry values
+            var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).imageUrl());
+            var zipentry = findZipEntryFor(downloadAlbum, picturefilename);
+            assertEquals(albumpictures.get(0).lastModified(),
+                new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+        } finally {
+            Files.deleteIfExists(downloadAlbum.toPath());
         }
-
-        // Check that zip members last modified time have been set to albumEntry values
-        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).imageUrl());
-        var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
-        assertEquals(albumpictures.get(0).lastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
     }
 
     @Test
     void testDownloadAlbumEntrySelection() throws Exception {
-        var provider = new OldAlbumServiceProvider();
-        var logservice = new MockLogService();
-        var imageIOService = new ImageioSpiRegistration();
-        provider.setLogService(logservice);
-        provider.setDataSource(datasource);
-        provider.setImageIOService(imageIOService);
-        provider.activate(Collections.emptyMap());
-        var albumentry = provider.getAlbumEntry(4).get();
-        var albumpictures = provider.getChildren(albumentry.id(), false);
-        var selectedentryIds = albumpictures.stream().map(e -> e.id()).toList();
+        var downloadAlbum = Files.createTempFile("album", "zip").toFile();
+        try {
+            var provider = new OldAlbumServiceProvider();
+            var logservice = new MockLogService();
+            var imageIOService = new ImageioSpiRegistration();
+            provider.setLogService(logservice);
+            provider.setDataSource(datasource);
+            provider.setImageIOService(imageIOService);
+            provider.activate(Collections.emptyMap());
+            var albumentry = provider.getAlbumEntry(4).get();
+            var albumpictures = provider.getChildren(albumentry.id(), false);
+            var selectedentryIds = albumpictures.stream().map(e -> e.id()).toList();
+            // Mocked HTTP request
+            var connectionFactory = mock(HttpConnectionFactory.class);
+            var connection = mock(HttpURLConnection.class);
+            when(connection.getResponseCode()).thenReturn(200);
+            when(connection.getInputStream())
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
+                .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+            when(connectionFactory.connect(anyString())).thenReturn(connection);
+            provider.setConnectionFactory(connectionFactory);
+            var streamingOutput = provider.downloadAlbumEntrySelection(selectedentryIds);
+            assertNotNull(streamingOutput);
+            // Stream the album into a zip file
+            try (var outputStream = new FileOutputStream(downloadAlbum)) {
+                streamingOutput.write(outputStream);
+            }
 
-        // Mocked HTTP request
-        var connectionFactory = mock(HttpConnectionFactory.class);
-        var connection = mock(HttpURLConnection.class);
-        when(connection.getResponseCode()).thenReturn(200);
-        when(connection.getInputStream())
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"))
-            .thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
-        when(connectionFactory.connect(anyString())).thenReturn(connection);
-        provider.setConnectionFactory(connectionFactory);
-
-        var streamingOutput = provider.downloadAlbumEntrySelection(selectedentryIds);
-        assertNotNull(streamingOutput);
-
-        // Stream the album into a zip file
-        var downloadAlbum = Files.createTempFile("album", "zip");
-        try(var outputStream = new FileOutputStream(downloadAlbum.toFile())) {
-            streamingOutput.write(outputStream);
+            // Check that zip members last modified time have been set to albumEntry values
+            var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).imageUrl());
+            var zipentry = findZipEntryFor(downloadAlbum, picturefilename);
+            assertEquals(albumpictures.get(0).lastModified(),
+                new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+        } finally {
+            Files.deleteIfExists(downloadAlbum.toPath());
         }
-
-        // Check that zip members last modified time have been set to albumEntry values
-        var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).imageUrl());
-        var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
-        assertEquals(albumpictures.get(0).lastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
     }
 
     @Test
