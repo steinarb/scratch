@@ -785,16 +785,18 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         existingEntriesIterator.forEachRemaining(entries::add);
         if (albumEntry.lastModified() != null) {
             var formattedDateTime = formatLastModifiedTimeAsExifDateString(albumEntry);
-            replaceOrAddEntry(entries, TIFF.TAG_DATE_TIME, formattedDateTime);
-            replaceOrAddEntry(entries, EXIF.TAG_DATE_TIME_ORIGINAL, formattedDateTime);
+            replaceOrAddEntry(entries, TIFF.TAG_DATE_TIME, TIFF.TYPE_ASCII, formattedDateTime);
+            replaceOrAddEntry(entries, EXIF.TAG_DATE_TIME_ORIGINAL, TIFF.TYPE_ASCII, formattedDateTime);
         }
 
         if (!StringUtil.isEmpty(albumEntry.title())) {
-            replaceOrAddEntry(entries, TIFF.TAG_IMAGE_DESCRIPTION, albumEntry.title());
+            replaceOrAddEntry(entries, TIFF.TAG_IMAGE_DESCRIPTION, TIFF.TYPE_ASCII, albumEntry.title());
         }
 
         if (!StringUtil.isEmpty(albumEntry.description())) {
-            entries.add(new TIFFEntry(EXIF.TAG_USER_COMMENT, formatExifUserComment(albumEntry.description())));
+            var subDirectoryEntries = findEntriesOfSubdirectory(entries);
+            replaceOrAddEntry(subDirectoryEntries, EXIF.TAG_USER_COMMENT, TIFF.TYPE_BYTE, formatExifUserComment(albumEntry.description()));
+            replaceOrAddEntry(entries, EXIF_EXIF, TIFF.TYPE_IFD, new IFD(subDirectoryEntries));
         }
 
         if (entries.isEmpty()) {
@@ -807,7 +809,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             try(var imageOutputStream = new MemoryCacheImageOutputStream(bytes)) {
                 new TIFFWriter().write(entries, imageOutputStream);
             }
-            
+
             if (hasExistingExifDirectory) {
                 findFirstUnknownNode(markerSequence).setUserObject(bytes.toByteArray());
             } else {
@@ -821,9 +823,21 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         new XMLSerializer(System.out, "UTF-8").serialize(markerSequence, false);
     }
 
-    void replaceOrAddEntry(ArrayList<Entry> entries, int tiffTag, String value) {
+    ArrayList<Entry> findEntriesOfSubdirectory(ArrayList<Entry> entries) {
+        var indexOfExistingIFDDirectory = findIndexOfEntryWithTiffTag(entries, EXIF_EXIF);
+        if (indexOfExistingIFDDirectory < 0) {
+            return new ArrayList<Entry>();
+        } else {
+            var ifd = (IFD) entries.get(indexOfExistingIFDDirectory).getValue();
+            var subdirectoryEntries = new ArrayList<Entry>();
+            ifd.iterator().forEachRemaining(subdirectoryEntries::add);
+            return subdirectoryEntries;
+        }
+    }
+
+    void replaceOrAddEntry(ArrayList<Entry> entries, int tiffTag, short type, Object value) {
         var indexOfEntry = findIndexOfEntryWithTiffTag(entries, tiffTag);
-        var entry = new TIFFEntry(tiffTag, value);
+        var entry = new TIFFEntry(tiffTag, type, value);
         if (indexOfEntry < 0) {
             entries.add(entry);
         } else {
