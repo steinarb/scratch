@@ -1004,6 +1004,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var splitUserComment = splitUserCommentInEncodingAndComment(userCommentRaw);
         if (Arrays.compare(splitUserComment.get(0), EXIF_ASCII_ENCODING) == 0) {
             metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_8));
+            logger.info("decoded usercomment {}", new String(splitUserComment.get(1), StandardCharsets.UTF_8));
         } else {
             // Start of user comment not a valid EXIF encoding, try UTF-8 on the entire field
             metadataBuilder.description(new String(userCommentRaw, 0, indexOfFirstZeroByte(userCommentRaw), StandardCharsets.UTF_8));
@@ -1438,7 +1439,9 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     List<byte[]> splitUserCommentInEncodingAndComment(byte[] userCommentRaw) {
         var encoding = Arrays.copyOf(userCommentRaw, 8);
-        var comment = Arrays.copyOfRange(userCommentRaw, 8, userCommentRaw.length);
+        logger.info("encoding {}", new String(encoding));
+        var comment = Arrays.copyOfRange(userCommentRaw, 8, userCommentRaw.length - 8);
+        logger.info("comment {}", new String(comment));
         return Arrays.asList(encoding, comment);
     }
 
