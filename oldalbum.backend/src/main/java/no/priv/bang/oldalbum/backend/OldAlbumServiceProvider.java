@@ -1440,7 +1440,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     List<byte[]> splitUserCommentInEncodingAndComment(byte[] userCommentRaw) {
         var encoding = Arrays.copyOf(userCommentRaw, 8);
         logger.info("encoding {}", new String(encoding));
-        var comment = Arrays.copyOfRange(userCommentRaw, 8, userCommentRaw.length - 8);
+        var comment = Arrays.copyOfRange(userCommentRaw, 8, userCommentRaw.length);
         logger.info("comment {}", new String(comment));
         return Arrays.asList(encoding, comment);
     }
