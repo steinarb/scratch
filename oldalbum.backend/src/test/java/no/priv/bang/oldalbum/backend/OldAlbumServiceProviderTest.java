@@ -1605,6 +1605,8 @@ class OldAlbumServiceProviderTest {
     @Test
     void testFormatExifUserComment() {
         var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
         var originalUserComment = "This is a user comment";
 
         var exifUserComment = provider.formatExifUserComment(originalUserComment);
