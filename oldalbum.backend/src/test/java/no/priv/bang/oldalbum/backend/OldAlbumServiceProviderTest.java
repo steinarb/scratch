@@ -1589,7 +1589,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(104);
+        assertThat(userObject).hasSize(118);
     }
 
     @Test
