@@ -1,0 +1,53 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/activitystreams",
+    {
+      "toot": "http://joinmastodon.org/ns#",
+      "Emoji": "toot:Emoji"
+    }
+  ],
+  "id": "https://mastodon.example",
+  "type": "Create",
+  "actor": "https://mastodon.example",
+  "published": "2023-10-27T12:00:00Z",
+  "to": [
+    "https://www.w3.org/ns/activitystreams#Public"
+  ],
+  "cc": [
+    "https://mastodon.example/followers"
+  ],
+  "object": {
+    "id": "https://mastodon.example/statuses/12345",
+    "type": "Note",
+    "summary": "Optional Content Warning",
+    "inReplyTo": null,
+    "published": "2023-10-27T12:00:00Z",
+    "url": "https://mastodon.example",
+    "attributedTo": "https://mastodon.example",
+    "to": [
+      "https://www.w3.org/ns/activitystreams#Public"
+    ],
+    "cc": [
+      "https://mastodon.example/followers"
+    ],
+    "sensitive": false,
+    "content": "<p>Hello Fediverse! :blob_wave: #introduction</p>",
+    "tag": [
+      {
+        "type": "Hashtag",
+        "href": "https://mastodon.example",
+        "name": "#introduction"
+      },
+      {
+        "id": "https://mastodon.example",
+        "type": "Emoji",
+        "name": ":blob_wave:",
+        "icon": {
+          "type": "Image",
+          "mediaType": "image/png",
+          "url": "https://mastodon.example"
+        }
+      }
+    ]
+  }
+}
