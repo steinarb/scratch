@@ -39,8 +39,11 @@ public class ParseWithTitaniumTest {
     void testMastodonToot() throws Exception {
         var doc = JsonDocument.of(mastodonExample("mastodon-toot-01.json"));
         var expanded = JsonLd.expand(doc).get();
+        System.out.println("expanded:");
         System.out.println(expanded);
-        var compacted = JsonLd.compact(JsonDocument.of(expanded), "https://w3.org").get().toString();
+        var expandedJsonDocument = JsonDocument.of(expanded);
+        var compacted = JsonLd.compact(expandedJsonDocument, "https://www.w3.org/ns/activitystreams").get().toString();
+        System.out.println("compacted:");
         System.out.println(compacted);
         LinkOrObject object = mapper.readValue(compacted, LinkOrObject.class);
         switch(object) {
