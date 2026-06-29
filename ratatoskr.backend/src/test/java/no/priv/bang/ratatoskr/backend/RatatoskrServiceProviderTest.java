@@ -15,8 +15,6 @@
  */
 package no.priv.bang.ratatoskr.backend;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -39,17 +37,13 @@ import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
 
 import no.priv.bang.ratatoskr.asvocabulary.Article;
-import no.priv.bang.ratatoskr.asvocabulary.Group;
 import no.priv.bang.ratatoskr.asvocabulary.Link;
 import no.priv.bang.ratatoskr.asvocabulary.LinkOrObjectList;
 import no.priv.bang.ratatoskr.db.liquibase.test.RatatoskrTestDbLiquibaseRunner;
 import no.priv.bang.ratatoskr.services.RatatoskrException;
-import no.priv.bang.ratatoskr.services.activitypub.Like;
 import no.priv.bang.ratatoskr.services.activitypub.Person;
-import no.priv.bang.ratatoskr.services.activitypub.Status;
 import no.priv.bang.ratatoskr.services.beans.CounterIncrementStepBean;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
-import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
@@ -66,6 +60,7 @@ class RatatoskrServiceProviderTest {
         var properties = new Properties();
         properties.setProperty(DataSourceFactory.JDBC_URL, "jdbc:derby:memory:ratatoskr;create=true");
         datasource = derbyDataSourceFactory.createDataSource(properties);
+        var logservice = new MockLogService();
         var runner = new RatatoskrTestDbLiquibaseRunner();
         runner.activate();
         runner.prepare(datasource);
@@ -73,6 +68,7 @@ class RatatoskrServiceProviderTest {
         var ratatoskr = new RatatoskrServiceProvider();
         ratatoskr.setDatasource(datasource);
         ratatoskr.setUseradmin(mock(UserManagementService.class));
+        ratatoskr.setLogservice(logservice);
         ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
         var johnd = Person.with()
             .id("http://localhost:8181/ratatoskr/as/actor/johnd")
@@ -262,7 +258,7 @@ class RatatoskrServiceProviderTest {
 
         var actor = provider.addPerson(person);
         assertThat(actor).isEmpty();
-        assertThat(logservice.getLogmessages()).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
@@ -337,7 +333,7 @@ class RatatoskrServiceProviderTest {
         provider.setUseradmin(useradmin);
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
-        assertThrows(RatatoskrException.class, () -> provider.findActorId("kenzoishii"));
+        assertThrows(RatatoskrException.class, () -> provider.findProfileId("kenzoishii"));
     }
 
     @Test
@@ -350,57 +346,8 @@ class RatatoskrServiceProviderTest {
         provider.setUseradmin(useradmin);
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
-        int actorId = provider.findActorId("notfound");
+        int actorId = provider.findProfileId("notfound");
         assertThat(actorId).isEqualTo(-1);
-    }
-
-    @Test
-    void testAddGroupWithSqlExceptionThrown() throws Exception {
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var provider = new RatatoskrServiceProvider();
-        var mockDatasource = mock(DataSource.class);
-        when(mockDatasource.getConnection()).thenThrow(SQLException.class);
-        provider.setLogservice(logservice);
-        provider.setDatasource(mockDatasource);
-        provider.setUseradmin(useradmin);
-        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-
-        var group = Group.with().name("Sample group").build();
-
-        var addedGroup = provider.addGroup(group);
-        assertThat(addedGroup).isEmpty();
-        assertThat(logservice.getLogmessages()).isEmpty();
-    }
-
-    @Test
-    void testFindGroupWithNameNotFound() {
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var provider = new RatatoskrServiceProvider();
-        provider.setLogservice(logservice);
-        provider.setDatasource(datasource);
-        provider.setUseradmin(useradmin);
-        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-
-        var group = provider.findGroup("Not found");
-        assertThat(group).isEmpty();
-        assertThat(logservice.getLogmessages()).isEmpty();
-    }
-
-    @Test
-    void testFindGroupWithSqlExceptionThrown() throws Exception {
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var provider = new RatatoskrServiceProvider();
-        var mockDatasource = mock(DataSource.class);
-        when(mockDatasource.getConnection()).thenThrow(SQLException.class);
-        provider.setLogservice(logservice);
-        provider.setDatasource(mockDatasource);
-        provider.setUseradmin(useradmin);
-        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-
-        assertThrows(RatatoskrException.class, () -> provider.findGroup("Doesn't matter"));
     }
 
     @Test
@@ -429,15 +376,14 @@ class RatatoskrServiceProviderTest {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var provider = new RatatoskrServiceProvider();
-        var mockDatasource = spy(datasource);
-        when(mockDatasource.getConnection()).thenCallRealMethod().thenCallRealMethod().thenCallRealMethod().thenThrow(SQLException.class);
+        var mockDatasource = mock(DataSource.class);
+        when(mockDatasource.getConnection()).thenThrow(SQLException.class);
         provider.setLogservice(logservice);
         provider.setDatasource(mockDatasource);
         provider.setUseradmin(useradmin);
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
-        var sally = provider.findPersonWithUsername("sally").get();
-        var article = Article.with().attributedTo(Link.with().href(sally.id()).build()).build();
+        var article = Article.with().attributedTo(Link.with().href("http://someserver.somedomain/person/sally").build()).build();
 
         assertThrows(RatatoskrException.class, () -> provider.addArticle(article));
     }
@@ -473,7 +419,7 @@ class RatatoskrServiceProviderTest {
     }
 
     @Test
-    void testAddFollower() {
+    void testAddFollowerToUsername() {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var provider = new RatatoskrServiceProvider();
@@ -488,6 +434,43 @@ class RatatoskrServiceProviderTest {
         var sally = provider.findPersonWithUsername("sally").get();
         var updatedfollowers = provider.addFollowerToUsername(username, sally.id());
         assertThat(updatedfollowers).isNotEmpty().contains(sally);
+    }
+
+    @Test
+    void testAddFollowerToUsernameNoMatchForUsername() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var username = "unmatched";
+        var followers = provider.findFollowersWithUsername(username);
+        assertThat(followers).isEmpty();
+        var sally = provider.findPersonWithUsername("sally").get();
+        var updatedfollowers = provider.addFollowerToUsername(username, sally.id());
+        assertThat(updatedfollowers).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+    }
+
+    @Test
+    void testAddFollowerToUsernameNoMatchForFollowerUrlId() {
+        var logservice = new MockLogService();
+        var useradmin = mock(UserManagementService.class);
+        var provider = new RatatoskrServiceProvider();
+        provider.setLogservice(logservice);
+        provider.setDatasource(datasource);
+        provider.setUseradmin(useradmin);
+        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        var username = "johnd";
+        var followers = provider.findFollowersWithUsername(username);
+        assertThat(followers).isEmpty();
+        var updatedfollowers = provider.addFollowerToUsername(username, "http://id.matches.nothing.com");
+        assertThat(updatedfollowers).isEmpty();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
     }
 
     @Test
@@ -526,7 +509,7 @@ class RatatoskrServiceProviderTest {
     }
 
     @Test
-    void testAddFollowed() {
+    void testAddUsernameAsFollowerOfProfile() {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var provider = new RatatoskrServiceProvider();
@@ -536,15 +519,15 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         var username = "johnd";
-        var following = provider.findFollowingWithUsername(username);
+        var following = provider.findProfilesFollowedByUsername(username);
         assertThat(following).isEmpty();
         var sally = provider.findPersonWithUsername("sally").get();
-        var updatedfollowing = provider.addFollowedToUsername(username, sally.id());
+        var updatedfollowing = provider.addUsernameAsFollowerOfProfile(username, sally.id());
         assertThat(updatedfollowing).isNotEmpty().contains(sally);
     }
 
     @Test
-    void testAddFollowedWithSQLExceptionThrown() throws Exception {
+    void testAddUsernameAsFollowerOfProfileWithSQLExceptionThrown() throws Exception {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var provider = new RatatoskrServiceProvider();
@@ -557,11 +540,11 @@ class RatatoskrServiceProviderTest {
 
         var username = "johnd";
         var sallyId = provider.findPersonWithUsername("sally").get().id();
-        assertThrows(RatatoskrException.class, () -> provider.addFollowedToUsername(username, sallyId));
+        assertThrows(RatatoskrException.class, () -> provider.addUsernameAsFollowerOfProfile(username, sallyId));
     }
 
     @Test
-    void testfindFollowingWithUsernameWithSQLExceptionThrown() throws Exception {
+    void testFindProfilesFollowedByUsernameWithSQLExceptionThrown() throws Exception {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var provider = new RatatoskrServiceProvider();
@@ -573,7 +556,7 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         var username = "johnd";
-        assertThrows(RatatoskrException.class, () -> provider.findFollowingWithUsername(username));
+        assertThrows(RatatoskrException.class, () -> provider.findProfilesFollowedByUsername(username));
     }
 
     @Test
@@ -594,7 +577,6 @@ class RatatoskrServiceProviderTest {
 
     @Test
     void testAddLikes() throws Exception {
-        var sqldumper = new ResultSetSqlDumper();
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var provider = new RatatoskrServiceProvider();
@@ -613,19 +595,8 @@ class RatatoskrServiceProviderTest {
             .attributedTo(Link.with().href(sally.id()).build())
             .build();
         provider.addArticle(article);
-        var like = Like.with()
-            .summary("John liked Sally's note")
-            .authoredBy(Person.with().id("http://localhost:8181/ratatoskr/as/actor/johnd").build())
-            .inReplyTo(Status.with().id(docId).build())
-            .build();
-        System.err.println("before: " + sqldumper.prettyPrintSqlQuery(datasource, "select * from likes"));
-        System.err.println("group: " + sqldumper.prettyPrintSqlQuery(datasource, "select group_id from groups where name is NULL"));
-        var updatedLike = provider.addLikeToUsername(username, like);
-        System.err.print("after: " + sqldumper.prettyPrintSqlQuery(datasource, "select * from likes"));
-        assertThat(updatedLike)
-            .isNotEmpty()
-            .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-            .contains(like);
+        var likes = provider.addLikeToArticleByUsername(article, username);
+        assertThat(likes).isNotEmpty();
     }
 
     @Test
@@ -639,16 +610,25 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         var username = "johnd";
+        var johnd = provider.findPersonWithUsername(username).get();
         var sally = provider.findPerson("https://sally.example.com").get();
-        var audience = provider.addGroup(Group.with().name("Project XYZ Working Group").build()).get();
         var article = provider.addArticle(Article.with()
             .id("https://sally.example.com/posts/125")
             .name("What a Crazy Day I Had")
             .content("<div>... you will never believe ...</div>")
             .attributedTo(Link.with().href(sally.id()).build())
+            .published(ZonedDateTime.now())
             .build()).get();
-        var likes = provider.userLikeArticle(username, article, audience, null); // Duplicate code: remove later
+        var likes = provider.userLikeArticle(username, article, null); // Duplicate code: remove later
         assertThat(likes).isNotEmpty();
+        var addedLike = likes.getFirst();
+        var likedBy = addedLike.authoredBy();
+        assertThat(likedBy.id()).isEqualTo(johnd.id());
+        var post = addedLike.inReplyTo();
+        assertThat(post.id()).isEqualTo(article.id());
+        assertThat(addedLike.published())
+            .isAfter(article.published())
+            .isBefore(ZonedDateTime.now());
 
         // Moved here from its own test to ensure that a like is present
         var likes2 = provider.findLikedWithUsername(username);
@@ -668,34 +648,7 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         var article = Article.with().build();
-        var group = Group.with().build();
-        assertThrows(RatatoskrException.class, () -> provider.userLikeArticle("dummy", article, group, null));
-    }
-
-    @Test
-    void testAddLikesWithNoLikeFound() throws Exception {
-        var logservice = new MockLogService();
-        var useradmin = mock(UserManagementService.class);
-        var provider = new RatatoskrServiceProvider();
-        var mockedDatasource = mock(DataSource.class);
-        var preparedStatement = mock(PreparedStatement.class);
-        var results = mock(ResultSet.class);
-        when(preparedStatement.executeQuery()).thenReturn(results);
-        var connection = mock(Connection.class);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        when(mockedDatasource.getConnection()).thenReturn(connection);
-        provider.setLogservice(logservice);
-        provider.setDatasource(mockedDatasource);
-        provider.setUseradmin(useradmin);
-        provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
-
-        var username = "johnd";
-        var like = Like.with()
-            .summary("John liked Sally's note")
-            .authoredBy(Person.with().id("http://localhost:8181/ratatoskr/as/actor/johnd").build())
-            .build();
-        var likes = provider.addLikeToUsername(username, like);
-        assertThat(likes).isEmpty();
+        assertThrows(RatatoskrException.class, () -> provider.userLikeArticle("dummy", article, null));
     }
 
     @Test
@@ -711,11 +664,8 @@ class RatatoskrServiceProviderTest {
         provider.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
 
         var username = "johnd";
-        var like = Like.with()
-            .summary("John liked Sally's note")
-            .authoredBy(Person.with().id("http://localhost:8181/ratatoskr/as/actor/johnd").build())
-            .build();
-        assertThrows(RatatoskrException.class, () -> provider.addLikeToUsername(username, like));
+        var article = Article.with().build();
+        assertThrows(RatatoskrException.class, () -> provider.addLikeToArticleByUsername(article, username));
     }
 
     @Test
@@ -946,6 +896,53 @@ class RatatoskrServiceProviderTest {
         assertEquals("Hei", text3);
         var text4 = ratatoskr.displayText("hi", null);
         assertEquals("Hei", text4);
+    }
+
+    @Test
+    void testAddUrl() throws Exception {
+        var ratatoskr = new RatatoskrServiceProvider();
+        ratatoskr.setUseradmin(mock(UserManagementService.class));
+        ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        // Adding non-existing URL creates entry and returns id
+        Integer urlIdDummy1 = null;
+        try (var connection = datasource.getConnection()) {
+            urlIdDummy1 = ratatoskr.findExistingUrlIdOrAddUrlIfMissing(connection, "https://dummy.com/person1");
+        }
+        assertThat(urlIdDummy1).isNotNull();
+
+        // Adding non-existing URL creates entry and returns id
+        Integer urlIdDummy2 = null;
+        try (var connection = datasource.getConnection()) {
+            urlIdDummy2 = ratatoskr.findExistingUrlIdOrAddUrlIfMissing(connection, "https://dummy.com/person1");
+        }
+        assertThat(urlIdDummy2).isEqualTo(urlIdDummy1);
+    }
+
+    @Test
+    void testAddUrWithEmptyUrll() throws Exception {
+        var ratatoskr = new RatatoskrServiceProvider();
+        ratatoskr.setUseradmin(mock(UserManagementService.class));
+        ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        Integer urlIdDummy1 = null;
+        try (var connection = datasource.getConnection()) {
+            urlIdDummy1 = ratatoskr.findExistingUrlIdOrAddUrlIfMissing(connection, "");
+        }
+        assertThat(urlIdDummy1).isNull();
+    }
+
+    @Test
+    void testAddUrWithNullUrll() throws Exception {
+        var ratatoskr = new RatatoskrServiceProvider();
+        ratatoskr.setUseradmin(mock(UserManagementService.class));
+        ratatoskr.activate(Collections.singletonMap("defaultlocale", "nb_NO"));
+
+        Integer urlIdDummy1 = null;
+        try (var connection = datasource.getConnection()) {
+            urlIdDummy1 = ratatoskr.findExistingUrlIdOrAddUrlIfMissing(connection, null);
+        }
+        assertThat(urlIdDummy1).isNull();
     }
 
     @Test

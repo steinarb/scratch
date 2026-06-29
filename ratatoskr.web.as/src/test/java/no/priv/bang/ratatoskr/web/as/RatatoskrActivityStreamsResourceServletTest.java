@@ -114,8 +114,8 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
         ratatoskr.addPerson(johnd);
         ratatoskr.addFollowerToUsername(johnd.preferredUsername(), kenzoishii.id());
         ratatoskr.addFollowerToUsername(johnd.preferredUsername(), sally.id());
-        ratatoskr.addFollowedToUsername(johnd.preferredUsername(), kenzoishii.id());
-        ratatoskr.addFollowedToUsername(johnd.preferredUsername(), sally.id());
+        ratatoskr.addUsernameAsFollowerOfProfile(johnd.preferredUsername(), kenzoishii.id());
+        ratatoskr.addUsernameAsFollowerOfProfile(johnd.preferredUsername(), sally.id());
 
         // Add an article and a like of the article
         var docId = "https://sally.example.com/posts/124";
@@ -126,12 +126,7 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
             .attributedTo(Link.with().href(sally.id()).build())
             .build();
         ratatoskr.addArticle(article);
-        var likeInput = Like.with()
-            .summary("John liked Sally's note")
-            .authoredBy(Person.with().id("http://localhost:8181/ratatoskr/as/actor/johnd").build())
-            .inReplyTo(Status.with().id(docId).url(docId).build())
-            .build();
-        like = ratatoskr.addLikeToUsername(johnd.preferredUsername(), likeInput).get(0);
+        like = ratatoskr.addLikeToArticleByUsername(article, johnd.preferredUsername()).get(0);
     }
 
     @Test
