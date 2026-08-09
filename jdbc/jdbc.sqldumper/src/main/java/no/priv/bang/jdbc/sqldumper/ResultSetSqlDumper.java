@@ -60,6 +60,23 @@ import javax.sql.DataSource;
  */
 public class ResultSetSqlDumper {
 
+    void listResultSetColumns(ResultSet results) throws SQLException {
+        var metadata = results.getMetaData();
+        var numberOfColumnsInResultSet = metadata.getColumnCount();
+        System.out.println("--- COLUMNS ---");
+        for (int i = 1; i <= numberOfColumnsInResultSet; i++) {
+            System.out.print(metadata.getColumnLabel(i) + " | ");
+        }
+        System.out.println("\n----------------");
+        while (results.next()) {
+            for (int i = 1; i <= numberOfColumnsInResultSet; i++) {
+                var value = results.getObject(i);
+                System.out.print((value != null ? value.toString() : "NULL") + " | ");
+            }
+            System.out.println();
+        }
+    }
+
     /**
      * Traverse the JDBC {@link ResultSet} {@code
      * resultSetToGenerateSqlFor} and output an <a
