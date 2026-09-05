@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 Steinar Bang
+ * Copyright 2023-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 package no.priv.bang.ratatoskr.web.frontend;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
@@ -30,6 +29,8 @@ import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+
+import org.junit.jupiter.api.Test;
 
 public class RatatoskrServletTest {
 
