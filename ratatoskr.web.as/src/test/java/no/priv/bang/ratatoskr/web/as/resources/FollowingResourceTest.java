@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Steinar Bang
+ * Copyright 2025-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ class FollowingResourceTest {
             .icon("http://localhost:8181/ratatoskr/image/165987aklre4")
             .build();
         var ratatoskr = mock(RatatoskrService.class);
-        when(ratatoskr.findFollowingWithUsername(anyString())).thenReturn(List.of(person1, person2));
+        when(ratatoskr.findProfilesFollowedByUsername(anyString())).thenReturn(List.of(person1, person2));
 
         var resource = new FollowingResource();
         resource.ratatoskr = ratatoskr;

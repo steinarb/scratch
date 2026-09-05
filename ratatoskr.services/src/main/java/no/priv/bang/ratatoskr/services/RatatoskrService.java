@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2025 Steinar Bang
+ * Copyright 2023-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import no.priv.bang.ratatoskr.asvocabulary.ActivityStreamObject;
 import no.priv.bang.ratatoskr.asvocabulary.Article;
-import no.priv.bang.ratatoskr.asvocabulary.Group;
 import no.priv.bang.ratatoskr.services.activitypub.Like;
 import no.priv.bang.ratatoskr.services.activitypub.Person;
 import no.priv.bang.ratatoskr.services.beans.Account;
@@ -40,8 +39,6 @@ public interface RatatoskrService {
 
     public Optional<Person> findPersonWithUsername(String username);
 
-    Optional<Group> addGroup(Group group);
-
     Optional<Article> addArticle(Article article);
 
     Optional<Article> findArticle(String id);
@@ -50,15 +47,15 @@ public interface RatatoskrService {
 
     List<Person> addFollowerToUsername(String username, String id);
 
-    List<Person> findFollowingWithUsername(String username);
+    List<Person> findProfilesFollowedByUsername(String username);
 
-    List<Person> addFollowedToUsername(String username, String id);
+    List<Person> addUsernameAsFollowerOfProfile(String username, String id);
 
     List<Like> findLikedWithUsername(String username);
 
-    List<Like> addLikeToUsername(String username, Like like);
+    List<Like> addLikeToArticleByUsername(Article article, String username);
 
-    List<Like> userLikeArticle(String username, Article article, Group audience, String localWebContext);
+    List<Like> userLikeArticle(String username, Article article, String localWebContext);
 
     List<ActivityStreamObject> listInbox(Person actor);
 

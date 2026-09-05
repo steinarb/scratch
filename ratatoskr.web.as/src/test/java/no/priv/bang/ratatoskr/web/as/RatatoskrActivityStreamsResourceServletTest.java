@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -38,6 +39,7 @@ import org.osgi.service.log.LogService;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -53,13 +55,14 @@ import no.priv.bang.ratatoskr.services.activitypub.ActivityCollection;
 import no.priv.bang.ratatoskr.services.activitypub.Like;
 import no.priv.bang.ratatoskr.services.activitypub.Person;
 import no.priv.bang.ratatoskr.services.activitypub.PersonCollection;
-import no.priv.bang.ratatoskr.services.activitypub.Status;
 
 class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
 
     public static final ObjectMapper mapper = new ObjectMapper()
+        .findAndRegisterModules()
+        .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .findAndRegisterModules();
+        .setTimeZone(TimeZone.getDefault());
 
     private static DataSource datasource;
 
@@ -114,8 +117,8 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
         ratatoskr.addPerson(johnd);
         ratatoskr.addFollowerToUsername(johnd.preferredUsername(), kenzoishii.id());
         ratatoskr.addFollowerToUsername(johnd.preferredUsername(), sally.id());
-        ratatoskr.addFollowedToUsername(johnd.preferredUsername(), kenzoishii.id());
-        ratatoskr.addFollowedToUsername(johnd.preferredUsername(), sally.id());
+        ratatoskr.addUsernameAsFollowerOfProfile(johnd.preferredUsername(), kenzoishii.id());
+        ratatoskr.addUsernameAsFollowerOfProfile(johnd.preferredUsername(), sally.id());
 
         // Add an article and a like of the article
         var docId = "https://sally.example.com/posts/124";
@@ -126,12 +129,7 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
             .attributedTo(Link.with().href(sally.id()).build())
             .build();
         ratatoskr.addArticle(article);
-        var likeInput = Like.with()
-            .summary("John liked Sally's note")
-            .authoredBy(Person.with().id("http://localhost:8181/ratatoskr/as/actor/johnd").build())
-            .inReplyTo(Status.with().id(docId).url(docId).build())
-            .build();
-        like = ratatoskr.addLikeToUsername(johnd.preferredUsername(), likeInput).get(0);
+        like = ratatoskr.addLikeToArticleByUsername(article, johnd.preferredUsername()).get(0);
     }
 
     @Test
@@ -250,6 +248,7 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
 
         servlet.service(request, response);
         assertEquals(200, response.getStatus());
+        System.out.println(response.getOutputStreamContent());
         var liked = mapper.readValue(response.getOutputStreamBinaryContent(), ActivityCollection.class);
         assertThat(liked.id()).isEqualTo("http://localhost:8181/ratatoskr/as/liked/johnd");
         assertThat(liked.totalItems()).isEqualTo(1);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-Copyright 2023-2025 Steinar Bang
+Copyright 2023-2026 Steinar Bang
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,193 @@ under the License.
 -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-${liquibase.xsd-version}.xsd">
+
+    <changeSet author="sb" id="ratatoskr-1.0.0-store-activity-streams">
+        <createTable tableName="urls">
+            <column autoIncrement="true" name="url_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="urls_primary_key"/>
+            </column>
+            <column name="url" type="VARCHAR(512)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_urls_uri" />
+            </column>
+            <column name="first_encountered" type="TIMESTAMP" />
+            <column name="last_encountered" type="TIMESTAMP" />
+            <column name="resolved" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="profile_id" type="INTEGER" />
+            <column name="post_id" type="INTEGER" />
+        </createTable>
+
+        <createTable tableName="profiles">
+            <column autoIncrement="true" name="profile_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="profiles_primary_key"/>
+            </column>
+            <column name="url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_profiles_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="local" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="type" type="VARCHAR(20)" />
+            <column name="username" type="VARCHAR(100)" />
+            <column name="display_name" type="VARCHAR(200)" />
+            <column name="description" type="VARCHAR(512)" />
+            <column name="inbox_url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_profiles_inbox_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="following_url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_profiles_following_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="followers_url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_profiles_followers_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="liked_url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_profiles_liked_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="icon_url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_profiles_icon_to_urls" references="urls(url_id)"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="urls" baseColumnNames="post_id" constraintName="fk_urls_to_profiles" referencedTableName="profiles" referencedColumnNames="profile_id" />
+
+        <createTable tableName="posts">
+            <column autoIncrement="true" name="post_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="posts_primary_key"/>
+            </column>
+            <column name="url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_posts_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="local" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="fetch_time" type="TIMESTAMP" />
+            <column name="type" type="VARCHAR(20)" />
+            <column name="title" type="TEXT" />
+            <column name="content" type="TEXT" />
+            <column name="author_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_posts_to_profiles" references="profiles(profile_id)"/>
+            </column>
+            <column name="published_time" type="TIMESTAMP" />
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="urls" baseColumnNames="post_id" constraintName="fk_urls_to_posts" referencedTableName="posts" referencedColumnNames="post_id" />
+
+        <createTable tableName="tags">
+            <column autoIncrement="true" name="tag_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="tags_primary_key"/>
+            </column>
+            <column name="tag" type="VARCHAR(200)" />
+        </createTable>
+
+        <createTable tableName="tag_on_post">
+            <column autoIncrement="true" name="tag_on_post_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="tag_on_post_primary_key"/>
+            </column>
+            <column name="tag_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fk_tag_on_post_to_tags" references="tags(tag_id)"/>
+            </column>
+            <column name="post_id" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fk_tag_on_post_to_posts" references="posts(post_id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="likes">
+            <column autoIncrement="true" name="like_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="likes_primary_key"/>
+            </column>
+            <column name="url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_likes_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="local" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="actor_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_likes_to_profiles" references="profiles(profile_id)"/>
+            </column>
+            <column name="post_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_likes_to_posts" references="posts(post_id)"/>
+            </column>
+            <column name="published_time" type="TIMESTAMP" />
+        </createTable>
+
+        <createTable tableName="boosts">
+            <column autoIncrement="true" name="boost_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="boosts_primary_key"/>
+            </column>
+            <column name="url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_boosts_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="local" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="actor_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_boosts_to_profiles" references="profiles(profile_id)"/>
+            </column>
+            <column name="post_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_boosts_to_posts" references="posts(post_id)"/>
+            </column>
+            <column name="published_time" type="TIMESTAMP" />
+        </createTable>
+
+        <createTable tableName="follows">
+            <column autoIncrement="true" name="follow_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="follows_primary_key"/>
+            </column>
+            <column name="url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_follows_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="local" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="follows_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_follows_to_profiles" references="profiles(profile_id)"/>
+            </column>
+            <column name="followed_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_followed_to_profiles" references="profiles(profile_id)"/>
+            </column>
+            <column name="published_time" type="TIMESTAMP" />
+        </createTable>
+
+        <createTable tableName="activities">
+            <column autoIncrement="true" name="activity_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="activities_primary_key"/>
+            </column>
+            <column name="url_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_activities_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="resolved" type="BOOLEAN" defaultValueBoolean="false" />
+            <column name="actor_url" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_activity_actor_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="actor_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_activity_actor_to_profiles" references="profiles(profile_id)"/>
+            </column>
+            <column name="object_url" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_activity_object_to_urls" references="urls(url_id)"/>
+            </column>
+            <column name="object_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_activity_object_to_posts" references="posts(post_id)"/>
+            </column>
+            <column name="creation_time" type="TIMESTAMP" />
+        </createTable>
+
+        <createTable tableName="inbox">
+            <column autoIncrement="true" name="inbox_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="inbox_primary_key"/>
+            </column>
+            <column name="received_time" type="TIMESTAMP" />
+            <column name="activity_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_inbox_activity_to_profiles" references="activities(activity_id)"/>
+            </column>
+            <column name="profile_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_inbox_profile_to_profiles" references="profiles(profile_id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="outbox">
+            <column autoIncrement="true" name="outbox_id" type="INTEGER">
+                <constraints primaryKey="true" primaryKeyName="outbox_primary_key"/>
+            </column>
+            <column name="sent_time" type="TIMESTAMP" />
+            <column name="activity_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_outbox_activity_to_profiles" references="activities(activity_id)"/>
+            </column>
+            <column name="profile_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_outbox_profile_to_profiles" references="profiles(profile_id)"/>
+            </column>
+        </createTable>
+
+    </changeSet>
 
     <changeSet author="sb" id="ratatoskr-1.0.0-accounts">
         <preConditions onFail="CONTINUE" >
@@ -30,6 +217,9 @@ under the License.
             <column name="username" type="VARCHAR(64)">
                 <constraints nullable="false" unique="true"/>
             </column>
+            <column name="profile_id" type="INTEGER">
+                <constraints nullable="true" foreignKeyName="fk_accounts_to_profiles" references="profiles(profile_id)"/>
+            </column>
         </createTable>
 
         <createIndex indexName="ratatoskr_accounts_id_index" tableName="ratatoskr_accounts">
@@ -38,172 +228,6 @@ under the License.
 
         <createIndex indexName="ix_ratatoskr_accounts_username" tableName="ratatoskr_accounts">
             <column name="username" type="VARCHAR(64)" />
-        </createIndex>
-
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-asobject-types-table">
-        <createTable tableName="asobject_types">
-            <column autoIncrement="true" name="asobject_type_id" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="asobject_type_primary_key"/>
-            </column>
-            <column name="asobject_type_name" type="VARCHAR(64)" />
-            <column name="activity" type="BOOLEAN" defaultValueBoolean="false" />
-        </createTable>
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-populate-asobject-types-table">
-        <loadData file="ratatoskr-db-changelog/initial-asobject-types.csv" tableName="asobject_types" />
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-actors">
-        <createTable tableName="actors">
-            <column autoIncrement="true" name="actor_id" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="actor_primary_key"/>
-            </column>
-            <column name="id" type="VARCHAR(128)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="preferred_username" type="VARCHAR(64)" />
-            <column name="name" type="VARCHAR(128)" />
-            <column name="summary" type="VARCHAR(1024)" />
-            <column name="inbox" type="VARCHAR(128)" />
-            <column name="following" type="VARCHAR(128)" />
-            <column name="followers" type="VARCHAR(128)" />
-            <column name="liked" type="VARCHAR(128)" />
-            <column name="icon" type="VARCHAR(128)" />
-        </createTable>
-
-        <createIndex indexName="actors_actor_id_index" tableName="actors">
-            <column name="actor_id"/>
-        </createIndex>
-
-        <createIndex indexName="actors_id" tableName="actors">
-            <column name="id" />
-        </createIndex>
-
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-groups">
-        <createTable tableName="groups">
-            <column autoIncrement="true" name="group_id" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="group_primary_key"/>
-            </column>
-            <column name="name" type="VARCHAR(128)" />
-        </createTable>
-
-        <createIndex indexName="groups_group_id_index" tableName="groups">
-            <column name="group_id"/>
-        </createIndex>
-
-        <createIndex indexName="groups_name" tableName="groups">
-            <column name="name" />
-        </createIndex>
-
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-followers">
-        <createTable tableName="followers">
-            <column autoIncrement="true" name="follower_id" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="followers_primary_key"/>
-            </column>
-            <column name="followed" type="INTEGER" />
-            <column name="follower" type="INTEGER" />
-        </createTable>
-
-        <createIndex indexName="followers_follower_id_index" tableName="followers">
-            <column name="follower_id"/>
-        </createIndex>
-
-        <createIndex indexName="followers_followed" tableName="followers">
-            <column name="followed" />
-        </createIndex>
-
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-following">
-        <createTable tableName="following">
-            <column autoIncrement="true" name="following_id" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="following_primary_key"/>
-            </column>
-            <column name="follower" type="INTEGER" />
-            <column name="followed" type="INTEGER" />
-        </createTable>
-
-        <createIndex indexName="following_following_id_index" tableName="following">
-            <column name="following_id"/>
-        </createIndex>
-
-        <createIndex indexName="following_follower" tableName="following">
-            <column name="follower" />
-        </createIndex>
-
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-articles">
-        <createTable tableName="articles">
-            <column autoIncrement="true" name="article_id" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="articles_primary_key"/>
-            </column>
-            <column name="id" type="VARCHAR(128)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="name" type="VARCHAR(128)" />
-            <column name="content" type="VARCHAR(1024)" />
-            <column name="attributed_to" type="INTEGER">
-                <constraints nullable="false" foreignKeyName="fk_article_actor" references="actors(actor_id)"/>
-            </column>
-        </createTable>
-
-        <createIndex indexName="articles_article_id_index" tableName="articles">
-            <column name="article_id"/>
-        </createIndex>
-
-        <createIndex indexName="articles_id" tableName="articles">
-            <column name="id" />
-        </createIndex>
-
-        <createIndex indexName="articles_attributed_to_index" tableName="articles">
-            <column name="attributed_to" />
-        </createIndex>
-
-    </changeSet>
-
-    <changeSet author="sb" id="ratatoskr-1.0.0-likes">
-        <createTable tableName="likes">
-            <column autoIncrement="true" name="like_id" type="INTEGER">
-                <constraints primaryKey="true" primaryKeyName="likes_primary_key"/>
-            </column>
-            <column name="id" type="VARCHAR(128)">
-                <constraints unique="true"/>
-            </column>
-            <column name="summary" type="VARCHAR(1024)" />
-            <column name="audience" type="INTEGER">
-                <constraints foreignKeyName="fk_like_audience" references="groups(group_id)"/>
-            </column>
-            <column name="actor" type="INTEGER">
-                <constraints nullable="false" foreignKeyName="fk_like_actor" references="actors(actor_id)"/>
-            </column>
-            <column name="article" type="INTEGER">
-                <constraints nullable="false" foreignKeyName="fk_like_article" references="articles(article_id)"/>
-            </column>
-            <column name="published" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" />
-        </createTable>
-
-        <createIndex indexName="likes_like_id_index" tableName="likes">
-            <column name="like_id"/>
-        </createIndex>
-
-        <createIndex indexName="likes_id" tableName="likes">
-            <column name="id" />
-        </createIndex>
-
-        <createIndex indexName="likes_actor_index" tableName="likes">
-            <column name="actor" />
-        </createIndex>
-
-        <createIndex indexName="likes_article_index" tableName="likes">
-            <column name="article" />
         </createIndex>
 
     </changeSet>
