@@ -506,6 +506,10 @@ public class ResultSetSqlDumper {
                 values.add(quoteStringButNotNull(stringValue));
             } else if (columntypes.get(columname) == Types.TIMESTAMP && !resultset.wasNull()) {
                 values.add(String.format("'%s'", stringValue));
+            } else if (columntypes.get(columname) == Types.BOOLEAN && !resultset.wasNull()) {
+                var bval = resultset.getBoolean(columname);
+                var ival = bval ? 1 : 0;
+                values.add(String.format("%d", ival));
             } else {
                 values.add(stringValue);
             }

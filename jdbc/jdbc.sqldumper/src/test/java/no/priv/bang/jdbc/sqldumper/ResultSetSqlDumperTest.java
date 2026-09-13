@@ -80,8 +80,8 @@ class ResultSetSqlDumperTest {
             .startsWith("--liquibase formatted sql")
             .contains("--changeset sb:saved_albumentries")
             .contains("insert into ALBUMENTRIES (ALBUMENTRY_ID, PARENT, LOCALPATH, ALBUM, TITLE, DESCRIPTION, IMAGEURL, THUMBNAILURL, SORT, LASTMODIFIED, CONTENTTYPE, CONTENTLENGTH, REQUIRE_LOGIN, GROUP_BY_YEAR) values")
-            .contains("1, 0, '/', true, 'Picture archive', '', '', '', 0, null, null, null")
-            .contains("11, 4, '/moto/vfr96/acirc3', false, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-08-06 18:28:58.0', 'image/jpeg', 57732");
+            .contains("1, 0, '/', 1, 'Picture archive', '', '', '', 0, null, null, null")
+            .contains("11, 4, '/moto/vfr96/acirc3', 0, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-08-06 18:28:58.0', 'image/jpeg', 57732");
 
         var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum2");
         assertEmptyAlbumentries(restoredOldalbumDatasource);
@@ -126,8 +126,8 @@ class ResultSetSqlDumperTest {
             .startsWith("--liquibase formatted sql")
             .contains("--changeset sb:saved_albumentries")
             .contains("insert into ALBUMENTRIES (ALBUMENTRY_ID, PARENT, LOCALPATH, ALBUM, TITLE, DESCRIPTION, IMAGEURL, THUMBNAILURL, SORT, LASTMODIFIED, CONTENTTYPE, CONTENTLENGTH, REQUIRE_LOGIN, GROUP_BY_YEAR) values")
-            .contains("1, 0, '/', true, 'Picture archive', '', '', '', 0, null, null, null")
-            .contains("11, 4, '/moto/vfr96/acirc3', false, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-08-06 18:28:58.0', 'image/jpeg', 57732");
+            .contains("1, 0, '/', 1, 'Picture archive', '', '', '', 0, null, null, null")
+            .contains("11, 4, '/moto/vfr96/acirc3', 0, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-08-06 18:28:58.0', 'image/jpeg', 57732");
 
         var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum4");
         assertEmptyAlbumentries(restoredOldalbumDatasource);
