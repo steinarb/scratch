@@ -576,7 +576,7 @@ class RatatoskrServiceProviderTest {
     }
 
     @Test
-    void testAddLikes() throws Exception {
+    void testAddLikes() {
         var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
         var provider = new RatatoskrServiceProvider();
