@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -361,7 +362,7 @@ public class RatatoskrServiceProvider implements RatatoskrService {
                 statement.setBoolean(1, true);
                 statement.setString(2, username);
                 statement.setString(3, article.id());
-                statement.setTimestamp(4, Timestamp.from(ZonedDateTime.now().toInstant()));
+                statement.setTimestamp(4, Timestamp.from(ZonedDateTime.now(ZoneOffset.UTC).toInstant()));
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
