@@ -86,8 +86,9 @@ class ResultSetSqlDumperTest {
         var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesBeforeRestore).exists().isEmpty();
         var contentByFileName = new HashMap<String, String>();
-        contentByFileName.put("dumproutes.sql", dumpedsql);
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName);
+        var changelogFilename = "dumproutes.sql";
+        contentByFileName.put(changelogFilename, dumpedsql);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName, changelogFilename);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -140,8 +141,9 @@ class ResultSetSqlDumperTest {
         var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesBeforeRestore).exists().isEmpty();
         var contentByFileName = new HashMap<String, String>();
-        contentByFileName.put("dumproutes.sql", dumpedsql);
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName);
+        var changelogFilename = "dumproutes.sql";
+        contentByFileName.put(changelogFilename, dumpedsql);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName, changelogFilename);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -165,10 +167,38 @@ class ResultSetSqlDumperTest {
             }
         }
 
-        assertThat(writer.toString())
+        var dumpedcsv = writer.toString();
+        assertThat(dumpedcsv)
             .startsWith("ALBUMENTRY_ID,PARENT,LOCALPATH,ALBUM,TITLE,DESCRIPTION,IMAGEURL,THUMBNAILURL,SORT,LASTMODIFIED,CONTENTTYPE,CONTENTLENGTH,REQUIRE_LOGIN,GROUP_BY_YEAR")
             .contains("1,0,\"/\",1,\"Picture archive\",\"\",\"\",\"\",0,,,")
             .contains("11,4,\"/moto/vfr96/acirc3\",0,\"\",\"My VFR 750F at the arctic circle.\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif\",3,1996-08-06 18:28:58.0,\"image/jpeg\",57732");
+
+        // Use dumped CSV to populate an empty database and compare with original
+        var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum5");
+        var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
+        var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesBeforeRestore).exists().isEmpty();
+        String xmlChangelog = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <databaseChangeLog xmlns="http://liquibase.org" xmlns:xsi="http://w3.org" xsi:schemaLocation="http://liquibase.org http://liquibase.org/dbchangelog-latest.xsd">
+
+                    <changeSet id="load-csv-data" author="automated">
+                        <loadData tableName="albumentries" file="dumproutes.csv"/>
+                    </changeSet>
+                </databaseChangeLog>
+                """;
+        var contentByFileName = new HashMap<String, String>();
+        var changelogFilename = "changelog.xml";
+        contentByFileName.put(changelogFilename, xmlChangelog);
+        contentByFileName.put("dumproutes.csv", dumpedcsv);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName, changelogFilename);
+        var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
+        var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
+        var originalAlbumEntries = originalOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore.getRowsList())
+            .usingRecursiveComparison()
+            .isEqualTo(originalAlbumEntries.getRowsList());
     }
 
     @Test
@@ -361,7 +391,7 @@ Second line
         assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"\"quotes\"\"\" that must be tripled\"");
     }
 
-    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, Map<String,String> contentByFileName) throws Exception {
+    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, Map<String,String> contentByFileName, String changelogFilename) throws Exception {
         try(var connection = datasource.getConnection()) {
             try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
                 Map<String, Object> scopeObjects = Map.of(
@@ -370,7 +400,7 @@ Second line
 
                 Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
                     .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database)
-                    .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "dumproutes.sql")
+                    .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, changelogFilename)
                     .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
                     .execute());
             }
