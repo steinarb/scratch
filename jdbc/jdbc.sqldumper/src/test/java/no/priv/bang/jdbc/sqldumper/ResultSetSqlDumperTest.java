@@ -85,7 +85,9 @@ class ResultSetSqlDumperTest {
         var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
         var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesBeforeRestore).exists().isEmpty();
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
+        var contentByFileName = new HashMap<String, String>();
+        contentByFileName.put("dumproutes.sql", dumpedsql);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -137,7 +139,9 @@ class ResultSetSqlDumperTest {
         var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
         var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesBeforeRestore).exists().isEmpty();
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
+        var contentByFileName = new HashMap<String, String>();
+        contentByFileName.put("dumproutes.sql", dumpedsql);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -357,9 +361,7 @@ Second line
         assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"\"quotes\"\"\" that must be tripled\"");
     }
 
-    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {
-        var contentByFileName = new HashMap<String, String>();
-        contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
+    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, Map<String,String> contentByFileName) throws Exception {
         try(var connection = datasource.getConnection()) {
             try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
                 Map<String, Object> scopeObjects = Map.of(
