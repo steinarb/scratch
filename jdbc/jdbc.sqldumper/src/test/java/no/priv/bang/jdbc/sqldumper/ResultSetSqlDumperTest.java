@@ -50,6 +50,9 @@ import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
 import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.CompositeResourceAccessor;
+import liquibase.resource.ResourceAccessor;
 import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
@@ -88,7 +91,7 @@ class ResultSetSqlDumperTest {
         var contentByFileName = new HashMap<String, String>();
         var changelogFilename = "dumproutes.sql";
         contentByFileName.put(changelogFilename, dumpedsql);
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName, changelogFilename);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, new MockResourceAccessor(contentByFileName), changelogFilename);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -143,7 +146,7 @@ class ResultSetSqlDumperTest {
         var contentByFileName = new HashMap<String, String>();
         var changelogFilename = "dumproutes.sql";
         contentByFileName.put(changelogFilename, dumpedsql);
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName, changelogFilename);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, new MockResourceAccessor(contentByFileName), changelogFilename);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -191,7 +194,11 @@ class ResultSetSqlDumperTest {
         var changelogFilename = "changelog.xml";
         contentByFileName.put(changelogFilename, xmlChangelog);
         contentByFileName.put("dumproutes.csv", dumpedcsv);
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, contentByFileName, changelogFilename);
+        var compositeAccessor = new CompositeResourceAccessor(
+            new MockResourceAccessor(contentByFileName),
+            new ClassLoaderResourceAccessor()
+        );
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, compositeAccessor, changelogFilename);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -391,12 +398,12 @@ Second line
         assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"\"quotes\"\"\" that must be tripled\"");
     }
 
-    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, Map<String,String> contentByFileName, String changelogFilename) throws Exception {
+    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, ResourceAccessor resourceAccessor, String changelogFilename) throws Exception {
         try(var connection = datasource.getConnection()) {
             try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
                 Map<String, Object> scopeObjects = Map.of(
                     Scope.Attr.database.name(), database,
-                    Scope.Attr.resourceAccessor.name(), new MockResourceAccessor(contentByFileName));
+                    Scope.Attr.resourceAccessor.name(), resourceAccessor);
 
                 Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
                     .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database)
