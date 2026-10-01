@@ -27,9 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +34,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.assertj.db.type.AssertDbConnectionFactory;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -53,7 +51,6 @@ import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
-import no.priv.bang.jdbc.sqldumper.beans.AlbumEntry;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 
@@ -83,13 +80,19 @@ class ResultSetSqlDumperTest {
             .contains("1, 0, '/', true, 'Picture archive', '', '', '', 0, null, null, null")
             .contains("11, 4, '/moto/vfr96/acirc3', false, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-08-06 18:28:58.0', 'image/jpeg', 57732");
 
+        // Use dumped SQL to populate an empty database and compare with original
         var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum2");
-        assertEmptyAlbumentries(restoredOldalbumDatasource);
+        var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
+        var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesBeforeRestore).exists().isEmpty();
         setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
-        assertAlbumentriesNotEmpty(restoredOldalbumDatasource);
-        var originalAlbumEntries = findAllAlbumentries(oldalbumDatasource);
-        var restoredAlbumEntries = findAllAlbumentries(restoredOldalbumDatasource);
-        assertThat(restoredAlbumEntries).containsExactlyElementsOf(originalAlbumEntries);
+        var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
+        var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
+        var originalAlbumEntries = originalOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore.getRowsList())
+            .usingRecursiveComparison()
+            .isEqualTo(originalAlbumEntries.getRowsList());
     }
 
     @Test
@@ -129,13 +132,19 @@ class ResultSetSqlDumperTest {
             .contains("1, 0, '/', true, 'Picture archive', '', '', '', 0, null, null, null")
             .contains("11, 4, '/moto/vfr96/acirc3', false, '', 'My VFR 750F at the arctic circle.', 'https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg', 'https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif', 3, '1996-08-06 18:28:58.0', 'image/jpeg', 57732");
 
+        // Use dumped SQL to populate an empty database and compare with original
         var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum4");
-        assertEmptyAlbumentries(restoredOldalbumDatasource);
+        var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
+        var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesBeforeRestore).exists().isEmpty();
         setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
-        assertAlbumentriesNotEmpty(restoredOldalbumDatasource);
-        var originalAlbumEntries = findAllAlbumentries(oldalbumDatasource);
-        var restoredAlbumEntries = findAllAlbumentries(restoredOldalbumDatasource);
-        assertThat(restoredAlbumEntries).containsExactlyElementsOf(originalAlbumEntries);
+        var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
+        var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
+        var originalAlbumEntries = originalOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore.getRowsList())
+            .usingRecursiveComparison()
+            .isEqualTo(originalAlbumEntries.getRowsList());
     }
 
     @Test
@@ -348,28 +357,6 @@ Second line
         assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"\"quotes\"\"\" that must be tripled\"");
     }
 
-    private void assertEmptyAlbumentries(DataSource oldalbumDatasource) throws Exception {
-        var sql = "select * from albumentries";
-        try(var connection = oldalbumDatasource.getConnection()) {
-            try(var statement = connection.createStatement()) {
-                try(var resultset = statement.executeQuery(sql)) {
-                    assertFalse(resultset.next(), "Expected albumentries table to be empty");
-                }
-            }
-        }
-    }
-
-    private void assertAlbumentriesNotEmpty(DataSource oldalbumDatasource) throws Exception {
-        var sql = "select * from albumentries";
-        try(var connection = oldalbumDatasource.getConnection()) {
-            try(var statement = connection.createStatement()) {
-                try(var resultset = statement.executeQuery(sql)) {
-                    assertTrue(resultset.next(), "Expected albumentries table not to be empty");
-                }
-            }
-        }
-    }
-
     private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {
         var contentByFileName = new HashMap<String, String>();
         contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
@@ -386,52 +373,6 @@ Second line
                     .execute());
             }
         }
-    }
-
-    private List<AlbumEntry> findAllAlbumentries(DataSource datasource) throws Exception {
-        var allroutes = new ArrayList<AlbumEntry>();
-
-        var sql = "select * from albumentries";
-        try (var connection = datasource.getConnection()) {
-            try (var statement = connection.createStatement()) {
-                try (var results = statement.executeQuery(sql)) {
-                    while (results.next()) {
-                        var route = unpackAlbumEntry(results);
-                        allroutes.add(route);
-                    }
-                }
-            }
-        }
-
-        return allroutes;
-    }
-
-    private AlbumEntry unpackAlbumEntry(ResultSet results) throws Exception {
-        return AlbumEntry.with()
-            .id(results.getInt("albumentry_id"))
-            .parent(results.getInt("parent"))
-            .path(results.getString("localpath"))
-            .album(results.getBoolean("album"))
-            .title(results.getString("title"))
-            .description(results.getString("description"))
-            .imageUrl(results.getString("imageurl"))
-            .thumbnailUrl(results.getString("thumbnailurl"))
-            .sort(results.getInt("sort"))
-            .lastModified(timestampToDate(results.getTimestamp("lastmodified")))
-            .contentType(results.getString("contenttype"))
-            .contentLength(results.getInt("contentlength"))
-            .requireLogin(results.getBoolean("require_login"))
-            .childcount(findChildCount(results))
-            .build();
-    }
-
-    private int findChildCount(ResultSet results) throws Exception {
-        var columncount = results.getMetaData().getColumnCount();
-        return columncount > 13 ? results.getInt(14) : 0;
-    }
-
-    private Date timestampToDate(Timestamp lastmodifiedTimestamp) {
-        return lastmodifiedTimestamp != null ? Date.from(lastmodifiedTimestamp.toInstant()) : null;
     }
 
     private DataSource createOldalbumDbWithData(String dbname) throws Exception {
