@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -59,6 +60,18 @@ import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 
 class ResultSetSqlDumperTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+
+    private static final String LIQUIBASE_XSD_VERSION;
+
+    static {
+        Properties props = new Properties();
+        try (var input = ResultSetSqlDumperTest.class.getClassLoader().getResourceAsStream("version.properties")) {
+            props.load(input);
+            LIQUIBASE_XSD_VERSION = props.getProperty("liquibase.xsd.version");
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not load version.properties", ex);
+        }
+    }
 
     @Test
     void testDumpResultSetAsSqlOnOldalbum() throws Exception {
@@ -183,13 +196,12 @@ class ResultSetSqlDumperTest {
         assertThat(albumentriesBeforeRestore).exists().isEmpty();
         String xmlChangelog = """
                 <?xml version="1.0" encoding="UTF-8"?>
-                <databaseChangeLog xmlns="http://liquibase.org" xmlns:xsi="http://w3.org" xsi:schemaLocation="http://liquibase.org http://liquibase.org/dbchangelog-latest.xsd">
-
+                <databaseChangeLog xmlns="http://liquibase.org" xmlns:xsi="http://w3.org" xsi:schemaLocation="http://liquibase.org http://liquibase.org/dbchangelog-%s.xsd">
                     <changeSet id="load-csv-data" author="automated">
                         <loadData tableName="albumentries" file="dumproutes.csv"/>
                     </changeSet>
                 </databaseChangeLog>
-                """;
+                """.formatted(LIQUIBASE_XSD_VERSION);
         var contentByFileName = new HashMap<String, String>();
         var changelogFilename = "changelog.xml";
         contentByFileName.put(changelogFilename, xmlChangelog);
