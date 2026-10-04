@@ -106,9 +106,16 @@ public class ResultSetSqlDumper {
             var columnames = findColumnNames(resultSetToGenerateSqlFor);
             var columntypes = findColumntypes(resultSetToGenerateSqlFor);
             var tablename = findTableName(resultSetToGenerateSqlFor);
-            while(resultSetToGenerateSqlFor.next()) {
+            if(resultSetToGenerateSqlFor.next()) {
                 addInsertStatement(bufferedwriter, tablename, columnames);
                 addValues(bufferedwriter, resultSetToGenerateSqlFor, columnames, columntypes);
+                while(resultSetToGenerateSqlFor.next()) {
+                    bufferedwriter.write(",");
+                    bufferedwriter.newLine();
+                    addValues(bufferedwriter, resultSetToGenerateSqlFor, columnames, columntypes);
+                }
+                bufferedwriter.write(";");
+                bufferedwriter.newLine();
             }
         } catch (IOException | SQLException e) {
             throw new ResultsetSqlDumperException("Error dumping JDBC ResultSet as SQL insert statements", e);
@@ -496,7 +503,8 @@ public class ResultSetSqlDumper {
         writer.write(tablename);
         writer.write(" (");
         writer.write(String.join(", ", columnames));
-        writer.write(") values (");
+        writer.write(") values");
+        writer.newLine();
     }
 
     private void addValues(BufferedWriter writer, ResultSet resultset, List<String> columnames, Map<String, Integer> columntypes) throws SQLException, IOException {
@@ -512,9 +520,9 @@ public class ResultSetSqlDumper {
             }
         }
 
+        writer.write(" (");
         writer.write(String.join(", ", values));
-        writer.write(");");
-        writer.newLine();
+        writer.write(")");
     }
 
     private String quoteStringButNotNull(String string) {
