@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +104,17 @@ class ResultSetSqlDumperTest {
         var nullwriter = Writer.nullWriter();
         var e = assertThrows(ResultsetSqlDumperException.class, () -> { sqldumper.dumpResultSetAsSql("id", resultset, nullwriter);});
         assertThat(e.getMessage()).startsWith("Error dumping JDBC ResultSet as SQL insert statements");
+    }
+
+    @Test
+    void testDumpResultSetAsSqlWithEmptyResultset() throws Exception {
+        var sqldumper = new ResultSetSqlDumper();
+        var resultset = mock(ResultSet.class);
+        var emptyMetaData = mock(ResultSetMetaData.class);
+        when(resultset.getMetaData()).thenReturn(emptyMetaData);
+        var writer = new StringWriter();
+        sqldumper.dumpResultSetAsSql("id", resultset, writer);
+        assertThat(writer.toString().lines()).hasSize(2).containsSequence("--liquibase formatted sql", "--changeset sb:saved_albumentries");
     }
 
     @SuppressWarnings("removal")
