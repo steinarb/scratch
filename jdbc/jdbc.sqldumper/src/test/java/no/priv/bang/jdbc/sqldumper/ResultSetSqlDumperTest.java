@@ -365,8 +365,8 @@ Second line
         var resultset = mock(ResultSet.class);
         when(resultset.getString(anyString())).thenReturn("Text not needing quote expansion");
         assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text not needing quote expansion\"");
-        when(resultset.getString(anyString())).thenReturn("Text with \"quotes\" that must be tripled");
-        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"\"quotes\"\"\" that must be tripled\"");
+        when(resultset.getString(anyString())).thenReturn("Text with \"quotes\" that must be doubled");
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"quotes\"\" that must be doubled\"");
     }
 
     private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {

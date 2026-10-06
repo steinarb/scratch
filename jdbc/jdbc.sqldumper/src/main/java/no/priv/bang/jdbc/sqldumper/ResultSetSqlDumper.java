@@ -425,7 +425,7 @@ public class ResultSetSqlDumper {
             return ""; // null representation of CSV is empty string
         }
 
-        return "\"" + stringVal.replace("\"", "\"\"\"") + "\"";
+        return "\"" + stringVal.replace("\"", "\"\"") + "\"";
     }
 
     private String csvValueOrNull(ResultSet resultset, String columname) throws SQLException {
