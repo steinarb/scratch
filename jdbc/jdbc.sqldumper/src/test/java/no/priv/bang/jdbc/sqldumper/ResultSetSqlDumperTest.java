@@ -51,6 +51,7 @@ import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
 import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ResourceAccessor;
 import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
@@ -86,7 +87,10 @@ class ResultSetSqlDumperTest {
         var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
         var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesBeforeRestore).exists().isEmpty();
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
+        var contentByFileName = new HashMap<String, String>();
+        var changelogFilename = "dumproutes.sql";
+        contentByFileName.put(changelogFilename, dumpedsql);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, new MockResourceAccessor(contentByFileName), changelogFilename);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -149,7 +153,10 @@ class ResultSetSqlDumperTest {
         var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
         var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesBeforeRestore).exists().isEmpty();
-        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, dumpedsql);
+        var contentByFileName = new HashMap<String, String>();
+        var changelogFilename = "dumproutes.sql";
+        contentByFileName.put(changelogFilename, dumpedsql);
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, new MockResourceAccessor(contentByFileName), changelogFilename);
         var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
         assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
         var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
@@ -369,18 +376,16 @@ Second line
         assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"quotes\"\" that must be doubled\"");
     }
 
-    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, String contentLiquibaseChangelog) throws Exception {
-        var contentByFileName = new HashMap<String, String>();
-        contentByFileName.put("dumproutes.sql", contentLiquibaseChangelog);
+    private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, ResourceAccessor resourceAccessor, String changelogFilename) throws Exception {
         try(var connection = datasource.getConnection()) {
             try(var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection))) {
                 Map<String, Object> scopeObjects = Map.of(
                     Scope.Attr.database.name(), database,
-                    Scope.Attr.resourceAccessor.name(), new MockResourceAccessor(contentByFileName));
+                    Scope.Attr.resourceAccessor.name(), resourceAccessor);
 
                 Scope.child(scopeObjects, (ScopedRunner<?>) () -> new CommandScope("update")
                     .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, database)
-                    .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, "dumproutes.sql")
+                    .addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, changelogFilename)
                     .addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_PARAMETERS, new ChangeLogParameters(database))
                     .execute());
             }
