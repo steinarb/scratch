@@ -51,6 +51,8 @@ import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
 import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import liquibase.sdk.resource.MockResourceAccessor;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
@@ -184,6 +186,72 @@ class ResultSetSqlDumperTest {
             .startsWith("ALBUMENTRY_ID,PARENT,LOCALPATH,ALBUM,TITLE,DESCRIPTION,IMAGEURL,THUMBNAILURL,SORT,LASTMODIFIED,CONTENTTYPE,CONTENTLENGTH,REQUIRE_LOGIN,GROUP_BY_YEAR")
             .contains("1,0,\"/\",1,\"Picture archive\",\"\",\"\",\"\",0,,,")
             .contains("11,4,\"/moto/vfr96/acirc3\",0,\"\",\"My VFR 750F at the arctic circle.\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif\",3,1996-08-06 18:28:58.0,\"image/jpeg\",57732");
+    }
+
+    @Test
+    void testDumpResultSetAsCsvOnOldalbumWithLiquibaseRestoreFromCsv() throws Exception {
+        var sqldumper = new ResultSetSqlDumper();
+        var oldalbumDatasource = createOldalbumDbWithData("oldalbum1");
+        var writer = new StringWriter();
+        var sql = "select * from albumentries";
+        try(var connection = oldalbumDatasource.getConnection()) {
+            try(var statement = connection.createStatement()) {
+                try(var resultset = statement.executeQuery(sql)) {
+                    sqldumper.dumpResultSetAsCsv(resultset, writer);
+                }
+            }
+        }
+
+        var dumpedcsv = writer.toString();
+        assertThat(dumpedcsv)
+            .startsWith("ALBUMENTRY_ID,PARENT,LOCALPATH,ALBUM,TITLE,DESCRIPTION,IMAGEURL,THUMBNAILURL,SORT,LASTMODIFIED,CONTENTTYPE,CONTENTLENGTH,REQUIRE_LOGIN,GROUP_BY_YEAR")
+            .contains("1,0,\"/\",1,\"Picture archive\",\"\",\"\",\"\",0,,,")
+            .contains("11,4,\"/moto/vfr96/acirc3\",0,\"\",\"My VFR 750F at the arctic circle.\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif\",3,1996-08-06 18:28:58.0,\"image/jpeg\",57732");
+
+        // Use dumped CSV to populate an empty database and compare with original
+        var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum5");
+        var restoredOldalbumAssertjConnection = AssertDbConnectionFactory.of(restoredOldalbumDatasource).create();
+        var albumentriesBeforeRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesBeforeRestore).exists().isEmpty();
+        String xmlChangelog = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <databaseChangeLog  xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+                    <changeSet id="load-csv-data" author="automated">
+                        <loadData tableName="ALBUMENTRIES" file="dumproutes.csv">
+                          <column name="ALBUMENTRY_ID" type="NUMERIC"/>
+                          <column name="PARENT" type="NUMERIC"/>
+                          <column name="LOCALPATH" type="VARCHAR"/>
+                          <column name="ALBUM" type="BOOLEAN"/>
+                          <column name="TITLE" type="VARCHAR" nullPlaceholder=""/>
+                          <column name="DESCRIPTION" type="VARCHAR" nullPlaceholder=""/>
+                          <column name="IMAGEURL" type="VARCHAR" nullPlaceholder=""/>
+                          <column name="THUMBNAILURL" type="VARCHAR" nullPlaceholder=""/>
+                          <column name="SORT" type="NUMERIC"/>
+                          <column name="LASTMODIFIED" type="TIMESTAMP" nullPlaceholder=""/>
+                          <column name="CONTENTTYPE" type="VARCHAR" nullPlaceholder=""/>
+                          <column name="CONTENTLENGTH" type="NUMERIC" nullPlaceholder=""/>
+                          <column name="REQUIRE_LOGIN" type="BOOLEAN" nullPlaceholder=""/>
+                          <column name="GROUP_BY_YEAR" type="BOOLEAN" nullPlaceholder=""/>
+                        </loadData>
+                    </changeSet>
+                </databaseChangeLog>
+                """;
+        var contentByFileName = new HashMap<String, String>();
+        var changelogFilename = "changelog.xml";
+        contentByFileName.put(changelogFilename, xmlChangelog);
+        contentByFileName.put("dumproutes.csv", dumpedcsv);
+        var compositeAccessor = new CompositeResourceAccessor(
+            new MockResourceAccessor(contentByFileName),
+            new ClassLoaderResourceAccessor()
+        );
+        setDatabaseContentAsLiquibaseChangelog(restoredOldalbumDatasource, compositeAccessor, changelogFilename);
+        var albumentriesAfterRestore = restoredOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore).exists().hasNumberOfRowsGreaterThan(0);
+        var originalOldalbumAssertjConnection = AssertDbConnectionFactory.of(oldalbumDatasource).create();
+        var originalAlbumEntries = originalOldalbumAssertjConnection.table("albumentries").build();
+        assertThat(albumentriesAfterRestore.getRowsList())
+            .usingRecursiveComparison()
+            .isEqualTo(originalAlbumEntries.getRowsList());
     }
 
     @Test
