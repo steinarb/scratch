@@ -17,6 +17,7 @@ package no.priv.bang.jdbc.sqldumper;
 
 import static java.lang.Character.toLowerCase;
 import static java.lang.Character.toUpperCase;
+import static java.util.Optional.ofNullable;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -31,13 +32,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.sql.DataSource;
 
 /**
  * <p>A Java class containing methods for dumping a JDBC {@link ResultSet} in various ways:
  * <ul>
  * <li>to an {@link OutputStream} as an <a href="https://docs.liquibase.com/concepts/changelogs/sql-format.html">SQL formatted liquibase changeset</a> {@code #dumpResultSetAsSql(String, ResultSet, Writer)}</li>
- * <li>to a {@link Writer} as <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV file</a> {@link #dumpResultSetAsCsv(ResultSet, Writer)}</li>
+ * <li>to a {@link Writer} as <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV file</a> {@link #dumpResultSetAsCsv(ResultSet, Writer, String)}</li>
  * <li>to a {@link Writer} as a <a href="https://en.wikipedia.org/wiki/JSON">JSON array of objects</a> {@link #dumpResultSetAsJson(ResultSet, Writer)}</li>
  * </ul>
  *
@@ -189,14 +191,44 @@ public class ResultSetSqlDumper {
      *
      * @param resultset the JDBC {@link ResultSet} to generate output for
      * @param writer where the CSV file will be written
+     * @deprecated Use {@link #dumpResultSetAsCsv(ResultSet,Writer,String)} instead
      */
     public void dumpResultSetAsCsv(ResultSet resultset, Writer writer) {
+        dumpResultSetAsCsv(resultset, writer, null);
+    }
+
+    /**
+     * Traverse the JDBC {@link ResultSet} {@code
+     * resultset} and output a <a
+     * href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV
+     * file</a>.
+     *
+     * <em>Note</em>: there are no options to set how the CSV is generated.
+     * The CSV is targeted to be parsed out of the box by RDBMSes:
+     * <ul>
+     * <li>There is no way to set the separator, it is always ","</li>
+     * <li>Floating point numbers are always written US decimal comma, i.e. "."</li>
+     * <li>nulls are represented as empty strings (i.e. "nothing" between two commas ",,"</li>
+     * <li>Time stamps are written as unquoted <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601 formatted date times</a></li>
+     * <li>Strings are quoted with double quotes</li>
+     * </ul>
+     *
+     * <em>Warning</em>: Conversion of numerical values to strings is left to the JDBC driver (to
+     * keep things simple). That means that if you are e.g. using the Oracle thin driver, or another
+     * driver that respects the locale, and are in a locale that uses European decimal comma
+     * you will need to set the JVM locale while calling this method.
+     *
+     * @param resultset the JDBC {@link ResultSet} to generate output for
+     * @param writer where the CSV file will be written
+     * @param stringNullPlaceHolder set a value to be output for null String values to satisfy liquibase CSV loads, with value null will output an empty column which works with RDBMS CSV imports
+     */
+    public void dumpResultSetAsCsv(ResultSet resultset, Writer writer, String stringNullPlaceHolder) {
         try (var bufferedWriter = new BufferedWriter(writer)) {
             var columnames = findColumnNames(resultset);
             var columntypes = findColumntypes(resultset);
             writeCsvHeaderLine(bufferedWriter, columnames);
             while(resultset.next()) {
-                writeCsvLine(bufferedWriter, resultset, columnames, columntypes);
+                writeCsvLine(bufferedWriter, resultset, columnames, columntypes, stringNullPlaceHolder);
             }
         } catch (IOException | SQLException e) {
             throw new ResultsetSqlDumperException("Error dumping JDBC ResultSet as CSV file", e);
@@ -392,20 +424,20 @@ public class ResultSetSqlDumper {
         writer.newLine();
     }
 
-    private void writeCsvLine(BufferedWriter writer, ResultSet resultset, List<String> columnames, Map<String, Integer> columntypes) throws IOException, SQLException {
+    private void writeCsvLine(BufferedWriter writer, ResultSet resultset, List<String> columnames, Map<String, Integer> columntypes, String stringNullPlaceHolder) throws IOException, SQLException {
         for (var i = 0; i< columnames.size()-1; ++i) {
-            writeCsvValue(writer, resultset, columnames.get(i), columntypes);
+            writeCsvValue(writer, resultset, columnames.get(i), columntypes, stringNullPlaceHolder);
             writer.write(CSV_SEPARATOR);
         }
 
-        writeCsvValue(writer, resultset, columnames.getLast(), columntypes);
+        writeCsvValue(writer, resultset, columnames.getLast(), columntypes, stringNullPlaceHolder);
         writer.newLine();
     }
 
-    private void writeCsvValue(BufferedWriter writer, ResultSet resultset, String columname, Map<String, Integer> columntypes) throws IOException, SQLException {
+    private void writeCsvValue(BufferedWriter writer, ResultSet resultset, String columname, Map<String, Integer> columntypes, String stringNullPlaceHolder) throws IOException, SQLException {
         switch (columntypes.get(columname)) {
             case Types.BIT, Types.BOOLEAN -> writer.write(csvBooleanOrNull(resultset, columname));
-            case Types.VARCHAR, Types.NVARCHAR -> writer.write(csvQuotedStringOrNull(resultset, columname));
+            case Types.VARCHAR, Types.NVARCHAR -> writer.write(csvQuotedStringOrNull(resultset, columname, stringNullPlaceHolder));
             default -> writer.write(csvValueOrNull(resultset, columname));
         }
     }
@@ -419,10 +451,10 @@ public class ResultSetSqlDumper {
         return booleanVal ? "1" : "0";
     }
 
-    String csvQuotedStringOrNull(ResultSet resultset, String columname) throws SQLException {
+    String csvQuotedStringOrNull(ResultSet resultset, String columname, String stringNullPlaceHolder) throws SQLException {
         var stringVal = resultset.getString(columname);
         if (resultset.wasNull()) {
-            return ""; // null representation of CSV is empty string
+            return ofNullable(stringNullPlaceHolder).orElse("");
         }
 
         return "\"" + stringVal.replace("\"", "\"\"") + "\"";
