@@ -32,10 +32,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.assertj.db.type.AssertDbConnectionFactory;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -60,6 +64,17 @@ import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 
 class ResultSetSqlDumperTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+
+    @BeforeAll
+    static void setup() {
+        // Force the root logger to allow FINE logs
+        Logger.getLogger("").setLevel(Level.FINE);
+
+        // Force all default console output handlers to print FINE logs
+        for (Handler h : Logger.getLogger("").getHandlers()) {
+            h.setLevel(Level.FINE);
+        }
+    }
 
     @Test
     void testDumpResultSetAsSqlOnOldalbum() throws Exception {
