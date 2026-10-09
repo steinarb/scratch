@@ -67,10 +67,10 @@ class ResultSetSqlDumperTest {
 
     @BeforeAll
     static void setup() {
-        // Force the root logger to allow FINE logs
+        System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tH:%1$tM:%1$tS.%1$tL [%4$-7s] %3$s - %5$s%6$s%n");
+
         Logger.getLogger("").setLevel(Level.FINE);
 
-        // Force all default console output handlers to print FINE logs
         for (Handler h : Logger.getLogger("").getHandlers()) {
             h.setLevel(Level.FINE);
         }
