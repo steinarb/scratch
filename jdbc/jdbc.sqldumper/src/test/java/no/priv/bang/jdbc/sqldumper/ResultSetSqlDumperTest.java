@@ -237,13 +237,13 @@ class ResultSetSqlDumperTest {
                           <column name="PARENT" type="NUMERIC"/>
                           <column name="LOCALPATH" type="VARCHAR"/>
                           <column name="ALBUM" type="BOOLEAN"/>
-                          <column name="TITLE" type="VARCHAR" nullPlaceholder=""/>
-                          <column name="DESCRIPTION" type="VARCHAR" nullPlaceholder=""/>
-                          <column name="IMAGEURL" type="VARCHAR" nullPlaceholder=""/>
-                          <column name="THUMBNAILURL" type="VARCHAR" nullPlaceholder=""/>
+                          <column name="TITLE" type="VARCHAR" nullPlaceholder="NULL"/>
+                          <column name="DESCRIPTION" type="VARCHAR" nullPlaceholder="NULL"/>
+                          <column name="IMAGEURL" type="VARCHAR" nullPlaceholder="NULL"/>
+                          <column name="THUMBNAILURL" type="VARCHAR" nullPlaceholder="NULL"/>
                           <column name="SORT" type="NUMERIC"/>
                           <column name="LASTMODIFIED" type="TIMESTAMP" nullPlaceholder=""/>
-                          <column name="CONTENTTYPE" type="VARCHAR" nullPlaceholder=""/>
+                          <column name="CONTENTTYPE" type="VARCHAR" nullPlaceholder="NULL"/>
                           <column name="CONTENTLENGTH" type="NUMERIC" nullPlaceholder=""/>
                           <column name="REQUIRE_LOGIN" type="BOOLEAN" nullPlaceholder=""/>
                           <column name="GROUP_BY_YEAR" type="BOOLEAN" nullPlaceholder=""/>
