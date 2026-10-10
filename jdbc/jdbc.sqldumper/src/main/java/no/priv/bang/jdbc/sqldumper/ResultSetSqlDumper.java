@@ -17,6 +17,7 @@ package no.priv.bang.jdbc.sqldumper;
 
 import static java.lang.Character.toLowerCase;
 import static java.lang.Character.toUpperCase;
+import static java.util.Optional.ofNullable;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -31,13 +32,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.sql.DataSource;
 
 /**
  * <p>A Java class containing methods for dumping a JDBC {@link ResultSet} in various ways:
  * <ul>
  * <li>to an {@link OutputStream} as an <a href="https://docs.liquibase.com/concepts/changelogs/sql-format.html">SQL formatted liquibase changeset</a> {@code #dumpResultSetAsSql(String, ResultSet, Writer)}</li>
- * <li>to a {@link Writer} as <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV file</a> {@link #dumpResultSetAsCsv(ResultSet, Writer)}</li>
+ * <li>to a {@link Writer} as <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV file</a> {@link #dumpResultSetAsCsv(ResultSet, Writer, String)}</li>
  * <li>to a {@link Writer} as a <a href="https://en.wikipedia.org/wiki/JSON">JSON array of objects</a> {@link #dumpResultSetAsJson(ResultSet, Writer)}</li>
  * </ul>
  *
@@ -189,14 +191,15 @@ public class ResultSetSqlDumper {
      *
      * @param resultset the JDBC {@link ResultSet} to generate output for
      * @param writer where the CSV file will be written
+     * @param emptyStringPlaceholder if non-null will be output in place of an empty string, if null, the empty string will be output as two quotes
      */
-    public void dumpResultSetAsCsv(ResultSet resultset, Writer writer) {
+    public void dumpResultSetAsCsv(ResultSet resultset, Writer writer, String emptyStringPlaceholder) {
         try (var bufferedWriter = new BufferedWriter(writer)) {
             var columnames = findColumnNames(resultset);
             var columntypes = findColumntypes(resultset);
             writeCsvHeaderLine(bufferedWriter, columnames);
             while(resultset.next()) {
-                writeCsvLine(bufferedWriter, resultset, columnames, columntypes);
+                writeCsvLine(bufferedWriter, resultset, columnames, columntypes, emptyStringPlaceholder);
             }
         } catch (IOException | SQLException e) {
             throw new ResultsetSqlDumperException("Error dumping JDBC ResultSet as CSV file", e);
@@ -392,20 +395,20 @@ public class ResultSetSqlDumper {
         writer.newLine();
     }
 
-    private void writeCsvLine(BufferedWriter writer, ResultSet resultset, List<String> columnames, Map<String, Integer> columntypes) throws IOException, SQLException {
+    private void writeCsvLine(BufferedWriter writer, ResultSet resultset, List<String> columnames, Map<String, Integer> columntypes, String emptyStringPlaceholder) throws IOException, SQLException {
         for (var i = 0; i< columnames.size()-1; ++i) {
-            writeCsvValue(writer, resultset, columnames.get(i), columntypes);
+            writeCsvValue(writer, resultset, columnames.get(i), columntypes, emptyStringPlaceholder);
             writer.write(CSV_SEPARATOR);
         }
 
-        writeCsvValue(writer, resultset, columnames.getLast(), columntypes);
+        writeCsvValue(writer, resultset, columnames.getLast(), columntypes, emptyStringPlaceholder);
         writer.newLine();
     }
 
-    private void writeCsvValue(BufferedWriter writer, ResultSet resultset, String columname, Map<String, Integer> columntypes) throws IOException, SQLException {
+    private void writeCsvValue(BufferedWriter writer, ResultSet resultset, String columname, Map<String, Integer> columntypes, String emptyStringPlaceholder) throws IOException, SQLException {
         switch (columntypes.get(columname)) {
             case Types.BIT, Types.BOOLEAN -> writer.write(csvBooleanOrNull(resultset, columname));
-            case Types.VARCHAR, Types.NVARCHAR -> writer.write(csvQuotedStringOrNull(resultset, columname));
+            case Types.VARCHAR, Types.NVARCHAR -> writer.write(csvQuotedStringOrNull(resultset, columname, emptyStringPlaceholder));
             default -> writer.write(csvValueOrNull(resultset, columname));
         }
     }
@@ -419,13 +422,21 @@ public class ResultSetSqlDumper {
         return booleanVal ? "1" : "0";
     }
 
-    String csvQuotedStringOrNull(ResultSet resultset, String columname) throws SQLException {
+    String csvQuotedStringOrNull(ResultSet resultset, String columname, String emptyStringPlaceholder) throws SQLException {
         var stringVal = resultset.getString(columname);
         if (resultset.wasNull()) {
             return ""; // null representation of CSV is empty string
         }
 
-        return "\"" + stringVal.replace("\"", "\"\"") + "\"";
+        return "\"" + replaceEmpty(stringVal,emptyStringPlaceholder).replace("\"", "\"\"") + "\"";
+    }
+
+    private String replaceEmpty(String stringVal, String emptyStringPlaceholder) {
+        if (!stringVal.isEmpty()) {
+            return stringVal;
+        }
+
+        return ofNullable(emptyStringPlaceholder).orElse(stringVal);
     }
 
     private String csvValueOrNull(ResultSet resultset, String columname) throws SQLException {

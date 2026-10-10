@@ -192,7 +192,7 @@ class ResultSetSqlDumperTest {
         try(var connection = oldalbumDatasource.getConnection()) {
             try(var statement = connection.createStatement()) {
                 try(var resultset = statement.executeQuery(sql)) {
-                    sqldumper.dumpResultSetAsCsv(resultset, writer);
+                    sqldumper.dumpResultSetAsCsv(resultset, writer, null);
                 }
             }
         }
@@ -212,7 +212,7 @@ class ResultSetSqlDumperTest {
         try(var connection = oldalbumDatasource.getConnection()) {
             try(var statement = connection.createStatement()) {
                 try(var resultset = statement.executeQuery(sql)) {
-                    sqldumper.dumpResultSetAsCsv(resultset, writer);
+                    sqldumper.dumpResultSetAsCsv(resultset, writer, " ");
                 }
             }
         }
@@ -220,8 +220,8 @@ class ResultSetSqlDumperTest {
         var dumpedcsv = writer.toString();
         assertThat(dumpedcsv)
             .startsWith("ALBUMENTRY_ID,PARENT,LOCALPATH,ALBUM,TITLE,DESCRIPTION,IMAGEURL,THUMBNAILURL,SORT,LASTMODIFIED,CONTENTTYPE,CONTENTLENGTH,REQUIRE_LOGIN,GROUP_BY_YEAR")
-            .contains("1,0,\"/\",1,\"Picture archive\",\"\",\"\",\"\",0,,,")
-            .contains("11,4,\"/moto/vfr96/acirc3\",0,\"\",\"My VFR 750F at the arctic circle.\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif\",3,1996-08-06 18:28:58.0,\"image/jpeg\",57732");
+            .contains("1,0,\"/\",1,\"Picture archive\",\" \",\" \",\" \",0,,,")
+            .contains("11,4,\"/moto/vfr96/acirc3\",0,\" \",\"My VFR 750F at the arctic circle.\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/acirc3.jpg\",\"https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc3.gif\",3,1996-08-06 18:28:58.0,\"image/jpeg\",57732");
 
         // Use dumped CSV to populate an empty database and compare with original
         var restoredOldalbumDatasource = createOldalbumDbWithouthData("oldalbum5");
@@ -248,6 +248,13 @@ class ResultSetSqlDumperTest {
                           <column name="REQUIRE_LOGIN" type="BOOLEAN" nullPlaceholder=""/>
                           <column name="GROUP_BY_YEAR" type="BOOLEAN" nullPlaceholder=""/>
                         </loadData>
+
+                        <!-- replace empty string placeholder with empty string -->
+                        <update tableName="ALBUMENTRIES"><column name="TITLE" value="" /><where>title=' '</where></update>
+                        <update tableName="ALBUMENTRIES"><column name="DESCRIPTION" value="" /><where>description=' '</where></update>
+                        <update tableName="ALBUMENTRIES"><column name="IMAGEURL" value="" /><where>imageurl=' '</where></update>
+                        <update tableName="ALBUMENTRIES"><column name="THUMBNAILURL" value="" /><where>thumbnailurl=' '</where></update>
+                        <update tableName="ALBUMENTRIES"><column name="CONTENTTYPE" value="" /><where>contenttype=' '</where></update>
                     </changeSet>
                 </databaseChangeLog>
                 """;
@@ -275,7 +282,7 @@ class ResultSetSqlDumperTest {
         var resultset = mock(ResultSet.class);
         when(resultset.getMetaData()).thenThrow(SQLException.class);
         var nullWriter = Writer.nullWriter();
-        var e = assertThrows(ResultsetSqlDumperException.class, () -> { sqldumper.dumpResultSetAsCsv(resultset, nullWriter); });
+        var e = assertThrows(ResultsetSqlDumperException.class, () -> { sqldumper.dumpResultSetAsCsv(resultset, nullWriter, null); });
         assertThat(e.getMessage()).startsWith("Error dumping JDBC ResultSet as CSV file");
     }
 
@@ -453,10 +460,23 @@ Second line
     void testCsvQuotedStringOrNull() throws Exception {
         var dumper = new ResultSetSqlDumper();
         var resultset = mock(ResultSet.class);
+        // null string value
+        when(resultset.wasNull()).thenReturn(true);
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", null)).isEmpty();
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", " ")).isEmpty();
+        // empty string value
+        when(resultset.wasNull()).thenReturn(false);
+        when(resultset.getString(anyString())).thenReturn("");
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", null)).isEqualTo("\"\"");
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", " ")).isEqualTo("\" \"");
+        // Text not requiring expansion
         when(resultset.getString(anyString())).thenReturn("Text not needing quote expansion");
-        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text not needing quote expansion\"");
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", null)).isEqualTo("\"Text not needing quote expansion\"");
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", " ")).isEqualTo("\"Text not needing quote expansion\"");
+        // Text requiring expansion
         when(resultset.getString(anyString())).thenReturn("Text with \"quotes\" that must be doubled");
-        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy")).isEqualTo("\"Text with \"\"quotes\"\" that must be doubled\"");
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", null)).isEqualTo("\"Text with \"\"quotes\"\" that must be doubled\"");
+        assertThat(dumper.csvQuotedStringOrNull(resultset, "dummy", " ")).isEqualTo("\"Text with \"\"quotes\"\" that must be doubled\"");
     }
 
     private void setDatabaseContentAsLiquibaseChangelog(DataSource datasource, ResourceAccessor resourceAccessor, String changelogFilename) throws Exception {
