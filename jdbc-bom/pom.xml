@@ -22,6 +22,7 @@ under the License.
         <version>${revision}</version>
     </parent>
     <artifactId>jdbc-bom</artifactId>
+    <packaging>pom</packaging>
     <name>JDBC Utilities Library Bill of Materials</name>
     <description>BoM (Bill of Materials) for the JDBC common code</description>
 
