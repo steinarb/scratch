@@ -37,5 +37,5 @@ jobs:
           # Environment variable MAVEN_GPG_PASSPHRASE is picked up by maven-gpg-plugin 3.0.0+
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          mvn -e -X --batch-mode clean deploy -Prelease-sign-artifact -DskipTests \
+          mvn --batch-mode clean deploy -Prelease-sign-artifact -DskipTests \
             -Drevision="${RELEASE_VERSION}"
