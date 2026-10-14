@@ -26,13 +26,14 @@ Common code related to JDBC.
 
 ** Release history
 
-| Date                   | Version | Comment                                                                  |
-|------------------------+---------+--------------------------------------------------------------------------|
-| <2026-03-25 Wed 21:47> |   1.3.0 | Add ResultSetSqlDumper SQL query debugging helper methods                |
-| <2023-07-26 Wed 21:05> |   1.2.0 | Add ResultSetSqlDumper, build with Java 17                               |
-| <2021-06-11 Fri 00:13> |   1.1.1 | Provide a Bill of Materials (BoM)                                        |
-| <2021-04-15 Thu 19:49> |   1.1.0 | Get dependencies and maven config from parent POM. New versions of stuff |
-| <2020-01-03 Fri 23:55> |   1.0.0 | Add JDBC DataSourceProxy                                                 |
+| Date                   | Version | Comment                                                                                         |
+|------------------------+---------+-------------------------------------------------------------------------------------------------|
+| <2026-10-14 Wed 22:11> |   1.4.0 | Improved ResultSetSqlDumper SQL dump, more debug helper methods, CSV and JSON ResultSet dumpers |
+| <2026-03-25 Wed 21:47> |   1.3.0 | Add ResultSetSqlDumper SQL query debugging helper methods                                       |
+| <2023-07-26 Wed 21:05> |   1.2.0 | Add ResultSetSqlDumper, build with Java 17                                                      |
+| <2021-06-11 Fri 00:13> |   1.1.1 | Provide a Bill of Materials (BoM)                                                               |
+| <2021-04-15 Thu 19:49> |   1.1.0 | Get dependencies and maven config from parent POM. New versions of stuff                        |
+| <2020-01-03 Fri 23:55> |   1.0.0 | Add JDBC DataSourceProxy                                                                        |
 
 ** Overview of the project
 *** ResultSetSqlDumper
@@ -61,7 +62,7 @@ To use this in an OSGi maven project by first importing the BoM
       <dependency>
           <groupId>no.priv.bang.jdbc</groupId>
           <artifactId>jdbc-bom</artifactId>
-          <version>1.3.0</version>
+          <version>1.4.0</version>
           <type>pom</type>
           <scope>import</scope>
       </dependency>
@@ -97,7 +98,7 @@ To use this in an OSGi maven project by first importing the BoM
       <dependency>
           <groupId>no.priv.bang.jdbc</groupId>
           <artifactId>jdbc-bom</artifactId>
-          <version>1.3.0</version>
+          <version>1.4.0</version>
           <type>pom</type>
           <scope>import</scope>
       </dependency>
