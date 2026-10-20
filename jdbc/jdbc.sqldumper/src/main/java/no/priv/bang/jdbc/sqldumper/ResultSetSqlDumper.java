@@ -38,7 +38,7 @@ import javax.sql.DataSource;
 /**
  * <p>A Java class containing methods for dumping a JDBC {@link ResultSet} in various ways:
  * <ul>
- * <li>to an {@link OutputStream} as an <a href="https://docs.liquibase.com/concepts/changelogs/sql-format.html">SQL formatted liquibase changeset</a> {@code #dumpResultSetAsSql(String, ResultSet, Writer)}</li>
+ * <li>to an {@link Writer} as an <a href="https://docs.liquibase.com/concepts/changelogs/sql-format.html">SQL formatted liquibase changeset</a> {@code #dumpResultSetAsSql(String, ResultSet, Writer)}</li>
  * <li>to a {@link Writer} as <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV file</a> {@link #dumpResultSetAsCsv(ResultSet, Writer, String)}</li>
  * <li>to a {@link Writer} as a <a href="https://en.wikipedia.org/wiki/JSON">JSON array of objects</a> {@link #dumpResultSetAsJson(ResultSet, Writer)}</li>
  * </ul>
