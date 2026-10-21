@@ -82,6 +82,7 @@ import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.sdk.resource.MockResourceAccessor;
+import no.priv.bang.jdbc.sqldumper.ResultsetSqlDumperException;
 import no.priv.bang.oldalbum.backend.imageio.ImageioSpiRegistration;
 import no.priv.bang.oldalbum.db.liquibase.OldAlbumLiquibase;
 import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
@@ -2067,7 +2068,7 @@ class OldAlbumServiceProviderTest {
         var sql = provider.dumpDatabaseSql(null, false);
         assertThat(sql)
             .contains("insert into")
-            .hasLineCount(allroutesCount + 3);
+            .hasLineCount(allroutesCount + 4);
 
         // Create an empty database initialized with the oldalbum schema
         // Then use liquibase to fill the database with the dumped content
@@ -2103,7 +2104,7 @@ class OldAlbumServiceProviderTest {
         var sql = provider.dumpDatabaseSql(null, true);
         assertThat(sql)
             .contains("insert into")
-            .hasLineCount(allroutesCount + 3);
+            .hasLineCount(allroutesCount + 4);
 
         // Create an empty database initialized with the oldalbum schema
         // Then use liquibase to fill the database with the dumped content
@@ -2153,8 +2154,7 @@ class OldAlbumServiceProviderTest {
         var outputstream = mock(OutputStream.class);
         doThrow(IOException.class).when(outputstream).close();
 
-        provider.dumpDatabaseSqlToOutputStream(false, outputstream);
-        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThrows(ResultsetSqlDumperException.class, () -> provider.dumpDatabaseSqlToOutputStream(false, outputstream));
     }
 
     @Test
