@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2026-10-21 Wed 18:52> |  3.0.23 | Use postgresql jdbc 42.7.11, karaf 4.4.11, TwelveMonkeys 3.15.3                                                |
 | <2026-08-29 Sat 09:46> |  3.0.22 | Use liquibase 5.0.4                                                                                            |
 | <2026-07-23 Thu 10:25> |  3.0.21 | Use TwelveMonkeys 3.14.0                                                                                       |
 | <2026-07-20 Mon 12:29> |  3.0.20 | Use postgresql JDBC driver 42.7.13                                                                             |
