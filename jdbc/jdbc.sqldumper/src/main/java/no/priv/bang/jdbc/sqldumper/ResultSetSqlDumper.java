@@ -255,7 +255,7 @@ public class ResultSetSqlDumper {
      * operations in unit tests.
      *
      * @param resultset the JDBC {@link ResultSet} to generate output for
-     * @return a {@link String} containing a pretty-printed result set
+     * @return a {@link String} containing a pretty-printed result set row
      */
     public String prettyPrintResultSet(ResultSet resultset) {
         var stringbuilder = new StringBuilder();
@@ -300,6 +300,28 @@ public class ResultSetSqlDumper {
         return stringbuilder.toString();
     }
 
+    /**
+     * A lazy evaluation version of {@link #prettyPrintResultSetRow(ResultSet)} that returns a lambda
+     * that can be used as an argument to an slf4j fluent logging and not be evaluated unless logging
+     * at that level is enabled.
+     *
+     * An example usage:
+     * {@snippet :
+     *  var sql = "select * from albumentries";
+     *  try(var connection = oldalbumDatasource.getConnection()) {
+     *      try(var statement = connection.createStatement()) {
+     *          try(var resultset = statement.executeQuery(sql)) {
+     *              while(resultset.next()) {
+     *                  logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(sqldumper.lazyPrettyPrintResultSetRow(resultset)).log();
+     *              }
+     *          }
+     *      }
+     *  }
+     *  }
+     *
+     * @param resultset the JDBC {@link ResultSet} to generate output for a row in
+     * @return a {@link Supplier<String>} that can be evaluated to get a pretty-printed result set row
+     */
     public Supplier<String> lazyPrettyPrintResultSetRow(ResultSet resultset) {
         return () -> prettyPrintResultSetRow(resultset);
     }

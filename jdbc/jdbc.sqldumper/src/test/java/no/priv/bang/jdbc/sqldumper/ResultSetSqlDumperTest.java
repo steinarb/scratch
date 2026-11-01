@@ -418,8 +418,9 @@ class ResultSetSqlDumperTest {
         try(var connection = oldalbumDatasource.getConnection()) {
             try(var statement = connection.createStatement()) {
                 try(var resultset = statement.executeQuery(sql)) {
-                    resultset.next();
-                    logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(sqldumper.lazyPrettyPrintResultSetRow(resultset)).log();
+                    while(resultset.next()) {
+                        logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(sqldumper.lazyPrettyPrintResultSetRow(resultset)).log();
+                    }
                 }
             }
         }
@@ -438,8 +439,9 @@ class ResultSetSqlDumperTest {
         try(var connection = oldalbumDatasource.getConnection()) {
             try(var statement = connection.createStatement()) {
                 try(var resultset = statement.executeQuery(sql)) {
-                    resultset.next();
-                    logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(sqldumper.lazyPrettyPrintResultSetRow(resultset)).log();
+                    while(resultset.next()) {
+                        logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(sqldumper.lazyPrettyPrintResultSetRow(resultset)).log();
+                    }
                 }
             }
         }
