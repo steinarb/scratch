@@ -446,6 +446,7 @@ class ResultSetSqlDumperTest {
 
         assertThat(logappender.list).isNotEmpty();
         verify(sqldumper, atLeastOnce()).prettyPrintResultSetRow(any());
+        assertThat(logappender.list.getLast().getFormattedMessage()).startsWith("oldalbum entry row: [ ALBUMENTRY_ID=");
     }
 
     @Test
