@@ -81,7 +81,7 @@ class ResultSetSqlDumperTest {
             h.setLevel(java.util.logging.Level.FINE);
         }
     }
-    
+
     @BeforeEach
     void setupBeforeEach() {
         logger = (Logger) LoggerFactory.getLogger(this.getClass());
@@ -90,7 +90,7 @@ class ResultSetSqlDumperTest {
         logappender.start();
         logger.addAppender(logappender);
     }
-    
+
     @AfterEach
     void tearDownAfterEach() {
         logger.detachAppender(logappender);
@@ -446,7 +446,9 @@ class ResultSetSqlDumperTest {
 
         assertThat(logappender.list).isNotEmpty();
         verify(sqldumper, atLeastOnce()).prettyPrintResultSetRow(any());
-        assertThat(logappender.list.getLast().getFormattedMessage()).startsWith("oldalbum entry row: [ ALBUMENTRY_ID=");
+        assertThat(logappender.list.getLast()
+            .getFormattedMessage()).startsWith("oldalbum entry row: [ ALBUMENTRY_ID=")
+            .isNotEqualTo(logappender.list.getFirst().getFormattedMessage());
     }
 
     @Test
