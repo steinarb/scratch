@@ -36,13 +36,20 @@ import java.util.logging.Handler;
 import javax.sql.DataSource;
 
 import org.assertj.db.type.AssertDbConnectionFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
+import org.slf4j.LoggerFactory;
 
 import com.mockrunner.mock.jdbc.MockResultSet;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import liquibase.Scope;
 import liquibase.Scope.ScopedRunner;
 import liquibase.changelog.ChangeLogParameters;
@@ -61,9 +68,11 @@ import no.priv.bang.oldalbum.db.liquibase.test.OldAlbumDerbyTestDatabase;
 
 class ResultSetSqlDumperTest {
     DataSourceFactory derbyDataSourceFactory = new DerbyDataSourceFactory();
+    Logger logger;
+    ListAppender<ILoggingEvent> logappender;
 
     @BeforeAll
-    static void setup() {
+    static void setupBeforeAll() {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tH:%1$tM:%1$tS.%1$tL [%4$-7s] %3$s - %5$s%6$s%n");
 
         java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.FINE);
@@ -71,6 +80,20 @@ class ResultSetSqlDumperTest {
         for (Handler h : java.util.logging.Logger.getLogger("").getHandlers()) {
             h.setLevel(java.util.logging.Level.FINE);
         }
+    }
+    
+    @BeforeEach
+    void setupBeforeEach() {
+        logger = (Logger) LoggerFactory.getLogger(this.getClass());
+        logger.setLevel(Level.INFO); // Default log level for tests
+        logappender = new ListAppender<>();
+        logappender.start();
+        logger.addAppender(logappender);
+    }
+    
+    @AfterEach
+    void tearDownAfterEach() {
+        logger.detachAppender(logappender);
     }
 
     @Test
