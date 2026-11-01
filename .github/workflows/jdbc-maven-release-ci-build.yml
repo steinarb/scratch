@@ -16,18 +16,17 @@ jobs:
       - name: Checkout Codebase
         uses: actions/checkout@v7
 
-      - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@82a020f1f7f605c65dd2449b392a52c3fcfef7ef # v6.0.0
+      - name: Set up Java Environment
+        uses: actions/setup-java@v6.1.0
         with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          java-version: '21' # Adjust this to your specific runtime (e.g. 17, 21)
+          distribution: 'temurin'
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 
-      - name: Set up maven and Java version
-        uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5
+      - name: Setup Maven Settings
+        uses: s4u/maven-settings-action@4cfd36368400327fd45dcb28f190ae7b85533deb # v4.1.0
         with:
-          java-version: 21
-          maven-version: 3.9.16
-          settings-servers: '[{"id": "central", "username": "${{secrets.CENTRAL_PORTAL_USERNAME}}", "password": "${{secrets.CENTRAL_PORTAL_PASSWORD}}"}]'
+          servers: '[{"id": "central", "username": "${{secrets.CENTRAL_PORTAL_USERNAME}}", "password": "${{secrets.CENTRAL_PORTAL_PASSWORD}}"}]'
 
       - name: Extract maven release version from tag into enviroment variable RELEASE_VERSION
         id: extract_version
