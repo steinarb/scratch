@@ -33,9 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.sql.DataSource;
 
 import org.assertj.db.type.AssertDbConnectionFactory;
@@ -69,10 +66,10 @@ class ResultSetSqlDumperTest {
     static void setup() {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tH:%1$tM:%1$tS.%1$tL [%4$-7s] %3$s - %5$s%6$s%n");
 
-        Logger.getLogger("").setLevel(Level.FINE);
+        java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.FINE);
 
-        for (Handler h : Logger.getLogger("").getHandlers()) {
-            h.setLevel(Level.FINE);
+        for (Handler h : java.util.logging.Logger.getLogger("").getHandlers()) {
+            h.setLevel(java.util.logging.Level.FINE);
         }
     }
 
