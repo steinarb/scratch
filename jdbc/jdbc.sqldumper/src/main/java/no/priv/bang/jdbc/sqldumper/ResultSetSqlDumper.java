@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
@@ -297,6 +298,10 @@ public class ResultSetSqlDumper {
         }
 
         return stringbuilder.toString();
+    }
+
+    public Supplier<String> lazyPrettyPrintResultSetRow(ResultSet resultset) {
+        return () -> prettyPrintResultSetRow(resultset);
     }
 
     /**

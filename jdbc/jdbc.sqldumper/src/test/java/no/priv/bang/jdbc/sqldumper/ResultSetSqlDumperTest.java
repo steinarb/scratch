@@ -410,6 +410,45 @@ class ResultSetSqlDumperTest {
     }
 
     @Test
+    void testLazyPrettyPrintResultSetRowWhenNotLogging() throws Exception {
+        var sqldumper = spy(new ResultSetSqlDumper());
+        var oldalbumDatasource = createOldalbumDbWithData("oldalbum1");
+
+        var sql = "select * from albumentries";
+        try(var connection = oldalbumDatasource.getConnection()) {
+            try(var statement = connection.createStatement()) {
+                try(var resultset = statement.executeQuery(sql)) {
+                    resultset.next();
+                    logger.trace("oldalbum entry row: {}", sqldumper.lazyPrettyPrintResultSetRow(resultset));
+                }
+            }
+        }
+
+        assertThat(logappender.list).isEmpty();
+        verify(sqldumper, never()).prettyPrintResultSetRow(any());
+    }
+
+    @Test
+    void testLazyPrettyPrintResultSetRowWhenLogging() throws Exception {
+        logger.setLevel(Level.TRACE);
+        var sqldumper = spy(new ResultSetSqlDumper());
+        var oldalbumDatasource = createOldalbumDbWithData("oldalbum1");
+
+        var sql = "select * from albumentries";
+        try(var connection = oldalbumDatasource.getConnection()) {
+            try(var statement = connection.createStatement()) {
+                try(var resultset = statement.executeQuery(sql)) {
+                    resultset.next();
+                    logger.trace("oldalbum entry row: {}", sqldumper.lazyPrettyPrintResultSetRow(resultset));
+                }
+            }
+        }
+
+        assertThat(logappender.list).isNotEmpty();
+        verify(sqldumper, atLeastOnce()).prettyPrintResultSetRow(any());
+    }
+
+    @Test
     void testPrettyPrintSqlQuery() throws Exception {
         var sqldumper = new ResultSetSqlDumper();
         var oldalbumDatasource = createOldalbumDbWithData("oldalbum1");
