@@ -419,7 +419,7 @@ class ResultSetSqlDumperTest {
             try(var statement = connection.createStatement()) {
                 try(var resultset = statement.executeQuery(sql)) {
                     resultset.next();
-                    logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(() -> sqldumper.prettyPrintResultSetRow(resultset)).log();
+                    logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(sqldumper.lazyPrettyPrintResultSetRow(resultset)).log();
                 }
             }
         }
@@ -439,7 +439,7 @@ class ResultSetSqlDumperTest {
             try(var statement = connection.createStatement()) {
                 try(var resultset = statement.executeQuery(sql)) {
                     resultset.next();
-                    logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(() -> sqldumper.prettyPrintResultSetRow(resultset)).log();
+                    logger.atTrace().setMessage("oldalbum entry row: {}").addArgument(sqldumper.lazyPrettyPrintResultSetRow(resultset)).log();
                 }
             }
         }
