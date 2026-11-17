@@ -1,5 +1,6 @@
+package no.priv.bang.handlereg.web.frontend;
 /*
- * Copyright 2019-2025 Steinar Bang
+ * Copyright 2019-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +14,11 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.handlereg.web.frontend;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
-
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 import static org.mockito.Mockito.*;
 
@@ -36,12 +34,10 @@ class HandleregServletTest {
 
     @Test
     void testGet() throws Exception {
-        var logservice = new MockLogService();
         var servlet = new HandleregServlet();
         var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
-        servlet.setLogService(logservice);
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/");
@@ -58,7 +54,6 @@ class HandleregServletTest {
 
     @Test
     void testDoGetAddTrailingSlash() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/handlereg/useradmin"));
@@ -66,7 +61,6 @@ class HandleregServletTest {
         var response = new MockHttpServletResponse();
 
         var servlet = new HandleregServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 
@@ -75,7 +69,6 @@ class HandleregServletTest {
 
     @Test
     void testDoGetResponseThrowsIOException() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/");
@@ -87,7 +80,6 @@ class HandleregServletTest {
         when(response.getOutputStream()).thenReturn(streamThrowingIOException);
 
         var servlet = new HandleregServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 
@@ -96,7 +88,6 @@ class HandleregServletTest {
 
     @Test
     void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/");
@@ -106,7 +97,6 @@ class HandleregServletTest {
         when(response.getOutputStream()).thenThrow(IOException.class);
 
         var servlet = new HandleregServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 
@@ -115,7 +105,6 @@ class HandleregServletTest {
 
     @Test
     void testDoGetResourceNotFound() throws Exception {
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/handlereg/useradmin/static/nosuchname.png");
@@ -123,7 +112,6 @@ class HandleregServletTest {
         var response = new MockHttpServletResponse();
 
         var servlet = new HandleregServlet();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
 

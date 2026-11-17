@@ -1,5 +1,6 @@
+package no.priv.bang.handlereg.web.api.resources;
 /*
- * Copyright 2019-2025 Steinar Bang
+ * Copyright 2019-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.handlereg.web.api.resources;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -26,8 +26,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.apache.shiro.subject.Subject;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.Oversikt;
@@ -38,16 +38,10 @@ import no.priv.bang.handlereg.services.Oversikt;
 @RequiresUser
 @RequiresRoles("handleregbruker")
 public class OversiktResource {
-
-    private Logger logger;
+    private Logger logger = LoggerFactory.getLogger(OversiktResource.class);
 
     @Inject
     HandleregService handlereg;
-
-    @Inject
-    public void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(OversiktResource.class);
-    }
 
     @GET
     public Oversikt get() {

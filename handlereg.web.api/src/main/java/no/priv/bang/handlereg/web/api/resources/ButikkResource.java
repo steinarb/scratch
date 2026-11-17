@@ -1,5 +1,6 @@
+package no.priv.bang.handlereg.web.api.resources;
 /*
- * Copyright 2019-2024 Steinar Bang
+ * Copyright 2019-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.handlereg.web.api.resources;
 
 import java.util.List;
 
@@ -28,8 +28,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.authz.annotation.RequiresUser;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.handlereg.services.Butikk;
 import no.priv.bang.handlereg.services.HandleregService;
@@ -40,18 +40,12 @@ import no.priv.bang.handlereg.services.HandleregService;
 @RequiresUser
 @RequiresRoles("handleregbruker")
 public class ButikkResource {
+    private Logger logger = LoggerFactory.getLogger(ButikkResource.class);
 
     private static final String SEE_THE_LOG_FOR_DETAILS = ", see the log for details";
 
-    private Logger logger;
-
     @Inject
     HandleregService handlereg;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(ButikkResource.class);
-    }
 
     @GET
     @Path("/butikker")

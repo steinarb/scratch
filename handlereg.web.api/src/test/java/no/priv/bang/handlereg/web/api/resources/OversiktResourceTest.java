@@ -1,5 +1,6 @@
+package no.priv.bang.handlereg.web.api.resources;
 /*
- * Copyright 2019-2025 Steinar Bang
+ * Copyright 2019-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.handlereg.web.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.Oversikt;
 import no.priv.bang.handlereg.web.api.ShiroTestBase;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OversiktResourceTest extends ShiroTestBase {
 
@@ -51,7 +50,6 @@ class OversiktResourceTest extends ShiroTestBase {
 
     @Test
     void testGetOversiktNotLoggedIn() {
-        var logservice = new MockLogService();
         var handlereg = mock(HandleregService.class);
         var jdOversikt = Oversikt.with()
             .accountid(1)
@@ -63,7 +61,6 @@ class OversiktResourceTest extends ShiroTestBase {
             .build();
         when(handlereg.finnOversikt("jd")).thenReturn(jdOversikt);
         var resource = new OversiktResource();
-        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         removeWebSubjectFromThread();
 

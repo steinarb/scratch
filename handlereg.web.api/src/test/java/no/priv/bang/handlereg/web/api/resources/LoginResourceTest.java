@@ -1,5 +1,6 @@
+package no.priv.bang.handlereg.web.api.resources;
 /*
- * Copyright 2019-2025 Steinar Bang
+ * Copyright 2019-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.handlereg.web.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,27 +29,46 @@ import org.apache.shiro.web.util.WebUtils;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockServletContext;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.priv.bang.handlereg.services.Credentials;
 import no.priv.bang.handlereg.web.api.ShiroTestBase;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class LoginResourceTest extends ShiroTestBase {
+    private static Logger logger;
+    private ListAppender<ILoggingEvent> logappender;
+
+    @BeforeEach
+    void setup() {
+        logger = (Logger) LoggerFactory.getLogger(LoginResource.class);
+        logappender = new ListAppender<>();
+        logappender.start();
+        logger.addAppender(logappender);
+    }
+
+    @AfterEach
+    void teardown() {
+        logger.detachAppender(logappender);
+        logappender.stop();
+    }
 
     @Test
     void testLogin() {
-        var logservice = new MockLogService();
         var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/");
         var webcontext = new MockServletContext();
         webcontext.setContextPath("/handlereg");
         var resource = new LoginResource();
         resource.webcontext = webcontext;
         resource.request = httpRequest;
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
@@ -63,14 +82,12 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginDifferentPath() {
-        var logservice = new MockLogService();
         var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/statistikk");
         var webcontext = new MockServletContext();
         webcontext.setContextPath("/handlereg");
         var resource = new LoginResource();
         resource.webcontext = webcontext;
         resource.request = httpRequest;
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
@@ -84,14 +101,12 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginWithEmptyWebContextPath() {
-        var logservice = new MockLogService();
         var httpRequest = new MockHttpServletRequest().setRequestURI("/");
         var webcontext = new MockServletContext();
         webcontext.setContextPath("");
         var resource = new LoginResource();
         resource.webcontext = webcontext;
         resource.request = httpRequest;
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
@@ -105,31 +120,27 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginNoWebContext() {
-        var logservice = new MockLogService();
         var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/");
         var resource = new LoginResource();
         resource.request = httpRequest;
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
         WebUtils.saveRequest(httpRequest);
         var credentials = Credentials.with().username(username).password(password).build();
         assertThrows(InternalServerErrorException.class, () -> resource.login(credentials));
-        assertThat(logservice.getLogmessages()).hasSize(1);
-        assertThat(logservice.getLogmessages().get(0)).contains("NullPointerException");
+        assertThat(logappender.list).hasSize(1);
+        assertThat(logappender.list.get(0).getFormattedMessage()).contains("Login error: internal server error");
     }
 
     @Test
     void testLoginNoSavedRequest() {
-        var logservice = new MockLogService();
         var httpRequest = new MockHttpServletRequest().setRequestURI("/handlereg/");
         var webcontext = new MockServletContext();
         webcontext.setContextPath("/handlereg");
         var resource = new LoginResource();
         resource.webcontext = webcontext;
         resource.request = httpRequest;
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         createSubjectAndBindItToThread();
@@ -142,9 +153,7 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginFeilPassord() {
-        var logservice = new MockLogService();
         var resource = new LoginResource();
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
@@ -156,9 +165,7 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginGrenseForFeiledeInnloggingerNådd() {
-        var logservice = new MockLogService();
         var resource = new LoginResource();
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectThrowingExceptionAndBindItToThread(ExcessiveAttemptsException.class);
@@ -170,9 +177,7 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginKontoLåst() {
-        var logservice = new MockLogService();
         var resource = new LoginResource();
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectThrowingExceptionAndBindItToThread(LockedAccountException.class);
@@ -184,9 +189,7 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginGeneriskAutentiseringfeil() {
-        var logservice = new MockLogService();
         var resource = new LoginResource();
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectThrowingExceptionAndBindItToThread(AuthenticationException.class);
@@ -198,9 +201,7 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testLoginUkjentBrukernavn() {
-        var logservice = new MockLogService();
         var resource = new LoginResource();
-        resource.setLogservice(logservice);
         var username = "jdd";
         var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();

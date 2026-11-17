@@ -1,3 +1,4 @@
+package no.priv.bang.handlereg.web.api.resources;
 /*
  * Copyright 2019, 2024 Steinar Bang
  *
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.handlereg.web.api.resources;
 
 import java.util.List;
 
@@ -25,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.authz.annotation.RequiresUser;
-import org.osgi.service.log.LogService;
 
 import no.priv.bang.handlereg.services.ButikkCount;
 import no.priv.bang.handlereg.services.ButikkDate;
@@ -42,9 +41,6 @@ public class StatistikkResource {
 
     @Inject
     HandleregService handlereg;
-
-    @Inject
-    LogService logservice;
 
     @GET
     @Path("sumbutikk")

@@ -1,5 +1,6 @@
+package no.priv.bang.handlereg.web.api.resources;
 /*
- * Copyright 2019-2025 Steinar Bang
+ * Copyright 2019-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +14,7 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.handlereg.web.api.resources;
 
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -38,8 +37,8 @@ import org.apache.shiro.authz.annotation.RequiresUser;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.SavedRequest;
 import org.apache.shiro.web.util.WebUtils;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.handlereg.services.Credentials;
 import no.priv.bang.handlereg.services.Loginresultat;
@@ -52,19 +51,13 @@ import java.util.Optional;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class LoginResource {
-
-    private Logger logger;
+    private Logger logger = LoggerFactory.getLogger(LoginResource.class);
 
     @Context
     ServletContext webcontext;
 
     @Context
     HttpServletRequest request;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(LoginResource.class);
-    }
 
     @POST
     @Path("/login")

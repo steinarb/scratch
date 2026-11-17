@@ -30,17 +30,14 @@ import no.priv.bang.handlereg.services.HandleregService;
 import no.priv.bang.handlereg.services.NyHandling;
 import no.priv.bang.handlereg.services.Oversikt;
 import no.priv.bang.handlereg.services.Transaction;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class HandlingResourceTest {
 
     @Test
     void testGetHandlinger() {
-        var logservice = new MockLogService();
         var handlereg = mock(HandleregService.class);
         when(handlereg.findTransactions(1, 0, 10)).thenReturn(Arrays.asList(Transaction.with().build()));
         var resource = new HandlingResource();
-        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         var handlinger = resource.getHandlinger(1, 0, 10);
         assertThat(handlinger).isNotEmpty();
@@ -48,10 +45,8 @@ class HandlingResourceTest {
 
     @Test
     void testGetHandlingerEmpty() {
-        var logservice = new MockLogService();
         var handlereg = mock(HandleregService.class);
         var resource = new HandlingResource();
-        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         var handlinger = resource.getHandlinger(1, 0, 10);
         assertThat(handlinger).isEmpty();
@@ -59,11 +54,9 @@ class HandlingResourceTest {
 
     @Test
     void testGetHandlingerWhenExceptionIsThrown() {
-        var logservice = new MockLogService();
         var handlereg = mock(HandleregService.class);
         when(handlereg.findTransactions(anyInt(), anyInt(), anyInt())).thenThrow(HandleregException.class);
         var resource = new HandlingResource();
-        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
 
         assertThrows(InternalServerErrorException.class, () -> resource.getHandlinger(1, 0, 10));
@@ -71,7 +64,6 @@ class HandlingResourceTest {
 
     @Test
     void testNyhandling() {
-        var logservice = new MockLogService();
         var handlereg = mock(HandleregService.class);
         var oversikt = Oversikt.with()
             .accountid(1)
@@ -83,7 +75,6 @@ class HandlingResourceTest {
             .build();
         when(handlereg.registrerHandling(any())).thenReturn(oversikt);
         var resource = new HandlingResource();
-        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         var handling = NyHandling.with()
             .username("jd")
@@ -98,11 +89,9 @@ class HandlingResourceTest {
 
     @Test
     void testNyhandlingWhenExceptionIsThrown() {
-        var logservice = new MockLogService();
         var handlereg = mock(HandleregService.class);
         when(handlereg.registrerHandling(any())).thenThrow(HandleregException.class);
         var resource = new HandlingResource();
-        resource.setLogservice(logservice);
         resource.handlereg = handlereg;
         var handling = NyHandling.with()
             .username("jd")
