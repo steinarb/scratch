@@ -7,7 +7,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.junit.jupiter.api.Test;
-import org.osgi.service.log.LogService;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -16,14 +15,12 @@ import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
 
 import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class PagesServletTest extends ShiroTestBase {
 
     @Test
     void testGetSettingsPage() throws Exception {
-        var logservice = new MockLogService();
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration();
         var request = buildGetUrl("/settings");
         var response = new MockHttpServletResponse();
 
@@ -37,8 +34,7 @@ class PagesServletTest extends ShiroTestBase {
 
     @Test
     void testSubmitSettingsForm() throws Exception {
-        var logservice = new MockLogService();
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration();
         var request = buildPostUrl("/settings");
         var body = UriBuilder.fromUri("http://localhost:8181/oldalbum")
             .queryParam("originalRequestUri", "http://localhost:8181/oldalbum/moto/vfr96/acirc1")
@@ -84,9 +80,8 @@ class PagesServletTest extends ShiroTestBase {
             .setSession(session);
     }
 
-    private PagesServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(LogService logservice) throws Exception {
+    private PagesServlet simulateDSComponentActivationAndWebWhiteboardConfiguration() throws Exception {
         var servlet = new PagesServlet();
-        servlet.setLogService(logservice);
         servlet.activate();
         var config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
         servlet.init(config);

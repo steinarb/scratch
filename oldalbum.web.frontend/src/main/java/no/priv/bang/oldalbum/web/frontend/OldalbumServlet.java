@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.frontend;
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.frontend;
 
 import javax.servlet.Servlet;
 import javax.servlet.http.Cookie;
@@ -45,7 +45,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import org.osgi.service.log.LogService;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
@@ -62,12 +61,6 @@ public class OldalbumServlet extends FrontendServlet {
 
     public OldalbumServlet() {
         super(OldalbumServlet.class);
-    }
-
-    @Override
-    @Reference
-    public void setLogService(LogService logservice) {
-        super.setLogService(logservice);
     }
 
     @Reference

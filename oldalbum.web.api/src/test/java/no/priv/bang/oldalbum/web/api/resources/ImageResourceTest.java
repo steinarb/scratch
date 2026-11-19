@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.api.resources;
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.api.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,15 +27,37 @@ import java.util.Optional;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.oldalbum.services.bean.ImageMetadata;
 import no.priv.bang.oldalbum.services.bean.ImageRequest;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class ImageResourceTest {
+    private static Logger logger;
+    private ListAppender<ILoggingEvent> logappender;
+
+    @BeforeEach
+    void setup() {
+        logger = (Logger) LoggerFactory.getLogger(ImageResource.class);
+        logappender = new ListAppender<>();
+        logappender.start();
+        logger.addAppender(logappender);
+    }
+
+    @AfterEach
+    void teardown() {
+        logger.detachAppender(logappender);
+        logappender.stop();
+    }
 
     @Test
     void testGetMetadata() {
@@ -78,16 +100,14 @@ class ImageResourceTest {
     void testDownloadAlbumEntryWhenFileNotFound() {
         var backend = mock(OldAlbumService.class);
         when(backend.downloadAlbumEntry(anyInt())).thenThrow(OldAlbumException.class);
-        var logservice = new MockLogService();
         var resource = new ImageResource();
         resource.oldalbum = backend;
-        resource.setLogservice(logservice);
 
         var albumEntryId = 9;
-        assertThat(logservice.getLogmessages()).isEmpty();
+        assertThat(logappender.list).isEmpty();
         var response = resource.downloadAlbumEntry(albumEntryId);
         assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
-        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logappender.list).isNotEmpty();
     }
 
     @Test
@@ -131,18 +151,16 @@ class ImageResourceTest {
     void testDownloadAlbumEntrySelectionWhenParentAlbumFound() {
         var backend = mock(OldAlbumService.class);
         when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.empty());
-        var logservice = new MockLogService();
         var resource = new ImageResource();
         resource.oldalbum = backend;
-        resource.setLogservice(logservice);
 
         var albumId = 4;
         var albumEntryId = 9;
         var selectedentryIds = Collections.singletonList(albumEntryId);
-        assertThat(logservice.getLogmessages()).isEmpty();
+        assertThat(logappender.list).isEmpty();
         var response = resource.downloadAlbumEntrySelection(albumId, selectedentryIds);
         assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
-        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logappender.list).isNotEmpty();
     }
 
 }

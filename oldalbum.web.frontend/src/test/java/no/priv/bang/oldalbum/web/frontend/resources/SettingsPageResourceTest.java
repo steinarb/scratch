@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.frontend.resources;
 /*
- * Copyright 2024 Steinar Bang
+ * Copyright 2024-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.frontend.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,25 +29,44 @@ import java.io.InputStream;
 
 import javax.ws.rs.InternalServerErrorException;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 
 class SettingsPageResourceTest {
+    private static Logger logger;
+    private ListAppender<ILoggingEvent> logappender;
+
+    @BeforeEach
+    void setup() {
+        logger = (Logger) LoggerFactory.getLogger(SettingsPageResource.class);
+        logappender = new ListAppender<>();
+        logappender.start();
+        logger.addAppender(logappender);
+    }
+
+    @AfterEach
+    void teardown() {
+        logger.detachAppender(logappender);
+        logappender.stop();
+    }
 
     @Test
     void testLoadHtmlFileOnNonExistingFile() throws Exception {
-        var logservice = new MockLogService();
         var resource = spy(new SettingsPageResource());
         var streamThrowingException = mock(InputStream.class);
         when(streamThrowingException.read(any(byte[].class), anyInt(), anyInt())).thenThrow(IOException.class);
         when(resource.getClasspathResource(anyString())).thenReturn(streamThrowingException);
-        resource.setLogservice(logservice);
 
-        assertThat(logservice.getLogmessages()).isEmpty(); // check precondition
+        assertThat(logappender.list).isEmpty(); // check precondition
         var e = assertThrows(InternalServerErrorException.class, () -> resource.loadHtmlFile("nonexisting.html"));
 
-        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logappender.list).isNotEmpty();
         assertThat(e.getMessage()).startsWith("Got exception loading the");
     }
 

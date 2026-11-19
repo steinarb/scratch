@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.security;
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.security;
 
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.realm.Realm;
@@ -24,8 +24,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPattern;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.authservice.definitions.AuthserviceShiroConfigService;
 import no.priv.bang.authservice.definitions.CipherKeyService;
@@ -47,7 +47,7 @@ public class OldAlbumShiroFilter extends AuthserviceShiroFilterBase implements R
         INI_FILE.load(OldAlbumShiroFilter.class.getClassLoader().getResourceAsStream("shiro.ini"));
     }
     private OldAlbumService oldalbum;
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(OldAlbumShiroFilter.class);
 
     @Reference
     public void setRealm(Realm realm) {
@@ -72,11 +72,6 @@ public class OldAlbumShiroFilter extends AuthserviceShiroFilterBase implements R
     @Reference
     public void setOldAlbumService(OldAlbumService oldalbum) {
         this.oldalbum = oldalbum;
-    }
-
-    @Reference
-    public void setLogService(LogService logservice) {
-        this.logger = logservice.getLogger(getClass());
     }
 
     @Activate

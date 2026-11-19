@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.api.resources;
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.api.resources;
 
 import static javax.ws.rs.core.MediaType.*;
 
@@ -33,8 +33,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
@@ -44,16 +44,10 @@ import no.priv.bang.oldalbum.services.bean.ImageRequest;
 
 @Path("image")
 public class ImageResource {
+    private static final Logger logger = LoggerFactory.getLogger(ImageResource.class);
 
     @Inject
     OldAlbumService oldalbum;
-
-    private Logger logger;
-
-    @Inject
-    public void setLogservice(LogService logservice) {
-        logger = logservice.getLogger(ImageResource.class);
-    }
 
     @POST
     @Path("metadata")

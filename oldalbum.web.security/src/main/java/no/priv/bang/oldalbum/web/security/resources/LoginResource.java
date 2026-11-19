@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.security.resources;
 /*
- * Copyright 2024-2025 Steinar Bang
+ * Copyright 2024-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +14,10 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.security.resources;
 
 import java.net.URI;
 import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -43,32 +42,24 @@ import org.apache.shiro.web.util.SavedRequest;
 import org.apache.shiro.web.util.WebUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.FormElement;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("")
 public class LoginResource extends HtmlTemplateResource {
     private static final String LOGIN_ERROR = "Login error: ";
     private static final String LOGIN_HTML = "web/login.html";
+    private static final Logger logger = LoggerFactory.getLogger(LoginResource.class);
 
     @Context
     HttpHeaders httpHeaders;
-
-    private LogService logservice;
-    Logger logger;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logservice = logservice;
-        this.logger = logservice.getLogger(getClass());
-    }
 
     @GET
     @Path("/login")
     @Produces(MediaType.TEXT_HTML)
     public Response getLogin(@QueryParam("originalUri") String originalUri) {
         var originalRequestUri = findOriginalRequestUri().orElse(originalUri);
-        var html = loadHtmlFile(LOGIN_HTML, logservice);
+        var html = loadHtmlFile(LOGIN_HTML);
         fillFormValues(html, originalRequestUri);
         setCancelButtonUri(html, originalRequestUri);
 
@@ -90,35 +81,35 @@ public class LoginResource extends HtmlTemplateResource {
         } catch(UnknownAccountException e) {
             var message = "unknown user";
             logger.warn(LOGIN_ERROR + message, e);
-            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
+            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message);
             fillFormValues(html, originalUri, username, password);
             setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (IncorrectCredentialsException  e) {
             var message = "wrong password";
             logger.warn(LOGIN_ERROR + message, e);
-            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
+            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message);
             fillFormValues(html, originalUri, username, password);
             setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (ExcessiveAttemptsException  e) {
             var message = "maximum failed logins limit reached, account is locked";
             logger.warn(LOGIN_ERROR + message, e);
-            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message + ". contact system administrator", logservice);
+            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message + ". contact system administrator");
             fillFormValues(html, originalUri, username, password);
             setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (LockedAccountException  e) {
             var message = "locked account";
             logger.warn(LOGIN_ERROR + message, e);
-            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
+            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message);
             fillFormValues(html, originalUri, username, password);
             setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
         } catch (AuthenticationException e) {
             var message = "general authentication error";
             logger.warn(LOGIN_ERROR + message, e);
-            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
+            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message);
             fillFormValues(html, originalUri, username, password);
             setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();

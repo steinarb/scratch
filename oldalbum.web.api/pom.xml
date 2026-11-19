@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Copyright 2020-2024 Steinar Bang
+Copyright 2020-2026 Steinar Bang
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -99,11 +99,6 @@ under the License.
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-api</artifactId>
             <scope>provided</scope>
@@ -159,11 +154,6 @@ under the License.
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>service-mocks</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.mockrunner</groupId>
             <artifactId>mockrunner-servlet</artifactId>
             <scope>test</scope>
@@ -171,6 +161,11 @@ under the License.
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

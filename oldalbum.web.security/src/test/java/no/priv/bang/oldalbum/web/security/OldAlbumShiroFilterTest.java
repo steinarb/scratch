@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.security;
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.security;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -37,7 +37,6 @@ import com.mockrunner.mock.web.MockHttpSession;
 import no.priv.bang.authservice.definitions.AuthserviceShiroConfigService;
 import no.priv.bang.authservice.definitions.CipherKeyService;
 import no.priv.bang.oldalbum.services.OldAlbumService;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumShiroFilterTest {
 
@@ -54,8 +53,6 @@ class OldAlbumShiroFilterTest {
         filter.setShiroConfigService(shiroConfigService);
         var oldalbum = mock(OldAlbumService.class);
         filter.setOldAlbumService(oldalbum);
-        var logservice = new MockLogService();
-        filter.setLogService(logservice);
         filter.activate();
 
         var securitymanager = filter.getSecurityManager();
@@ -83,8 +80,6 @@ class OldAlbumShiroFilterTest {
         protectedUrls.put("/slides/", "authc");
         when(oldalbum.findShiroProtectedUrls()).thenReturn(emptyProtectedUrls).thenReturn(protectedUrls);
         filter.setOldAlbumService(oldalbum);
-        var logservice = new MockLogService();
-        filter.setLogService(logservice);
         filter.activate();
 
         // Resources to test

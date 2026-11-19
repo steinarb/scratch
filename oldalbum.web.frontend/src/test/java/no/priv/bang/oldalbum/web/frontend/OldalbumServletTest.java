@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.frontend;
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.frontend;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,8 +23,6 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -83,12 +81,10 @@ class OldalbumServletTest {
         var children = Arrays.asList(grava1, grava2, grava3, album1, hove1);
         when(oldalbum.getChildren(anyInt(), anyBoolean())).thenReturn(children);
         when(oldalbum.displayText(anyString(), anyString())).thenReturn("Up");
-        var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
         var request = mock(HttpServletRequest.class);
@@ -150,12 +146,10 @@ class OldalbumServletTest {
         var nextEntry = AlbumEntry.with().id(5).parent(2).path("/moto/places/grava3").album(false).title("Tyrigrava").description("On gamle Mossevei").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(2).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         when(oldalbum.getNextAlbumEntry(anyInt(), anyBoolean())).thenReturn(of(nextEntry));
         when(oldalbum.displayText(anyString(), anyString())).thenReturn("Up");
-        var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
         var request = mock(HttpServletRequest.class);
@@ -196,12 +190,10 @@ class OldalbumServletTest {
         var entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         when(oldalbum.displayText(anyString(), anyString())).thenReturn("");
-        var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
         var request = mock(HttpServletRequest.class);
@@ -236,12 +228,10 @@ class OldalbumServletTest {
         var entry = AlbumEntry.with().id(2).parent(1).path("/moto/places/").album(true).title("").description("").imageUrl("").thumbnailUrl("").sort(1).childcount(4).build();
         when(oldalbum.getAlbumEntryFromPath(anyString())).thenReturn(entry);
         when(oldalbum.displayText(anyString(), anyString())).thenReturn("");
-        var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
         var request = mock(HttpServletRequest.class);
@@ -272,12 +262,10 @@ class OldalbumServletTest {
     void testGetNullAlbumEntry() throws Exception {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/moto/"));
-        var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         var servletConfig = mock(ServletConfig.class);
         when(servletConfig.getInitParameter("from")).thenReturn("to");
         servlet.init(servletConfig);
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
         var request = mock(HttpServletRequest.class);
@@ -309,12 +297,9 @@ class OldalbumServletTest {
         request.setRequestURL("http://localhost:8181/someapp");
         request.setPathInfo("/notfound.html");
         var response = new MockHttpServletResponse();
-        var logservice = new MockLogService();
         var servlet = new OldalbumServlet();
         servlet.setOldalbumService(oldalbum);
-        servlet.setLogService(logservice);
         servlet.activate();
-        servlet.setLogService(logservice);
 
         servlet.service(request, response);
         assertEquals(SC_NOT_FOUND, response.getStatusCode());
@@ -323,7 +308,6 @@ class OldalbumServletTest {
     @Test
     void testDoGetAddTrailingSlash() throws Exception {
         var oldalbum = mock(OldAlbumService.class);
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8181/oldalbum/useradmin"));
@@ -331,7 +315,6 @@ class OldalbumServletTest {
         var response = new MockHttpServletResponse();
 
         var servlet = new OldalbumServlet();
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
@@ -343,7 +326,6 @@ class OldalbumServletTest {
     @Test
     void testDoGetResponseThrowsIOException() throws Exception {
         var oldalbum = mock(OldAlbumService.class);
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/favicon.ico");
@@ -355,7 +337,6 @@ class OldalbumServletTest {
         when(response.getOutputStream()).thenReturn(streamThrowingIOException);
 
         var servlet = new OldalbumServlet();
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
@@ -367,7 +348,6 @@ class OldalbumServletTest {
     @Test
     void testDoGetResponseStreamMethodThrowsIOException() throws Exception {
         var oldalbum = mock(OldAlbumService.class);
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/useradmin/");
@@ -378,7 +358,6 @@ class OldalbumServletTest {
         when(response.getOutputStream()).thenThrow(IOException.class);
 
         var servlet = new OldalbumServlet();
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
@@ -390,7 +369,6 @@ class OldalbumServletTest {
     @Test
     void testDoGetResourceNotFound() throws Exception {
         var oldalbum = mock(OldAlbumService.class);
-        var logservice = new MockLogService();
         var request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getRequestURI()).thenReturn("http://localhost:8181/oldalbum/useradmin/static/nosuchname.png");
@@ -398,7 +376,6 @@ class OldalbumServletTest {
         var response = new MockHttpServletResponse();
 
         var servlet = new OldalbumServlet();
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
@@ -414,10 +391,7 @@ class OldalbumServletTest {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/path1", "/path2"));
         when(oldalbum.getPaths(true)).thenReturn(Arrays.asList("/path1", "/path2", "/path3"));
-        var logservice = new MockLogService();
-
         var servlet = new OldalbumServlet();
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
 
@@ -431,10 +405,7 @@ class OldalbumServletTest {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.getPaths(false)).thenReturn(Arrays.asList("/path1", "/path2"));
         when(oldalbum.getPaths(true)).thenReturn(Arrays.asList("/path1", "/path2", "/path3"));
-        var logservice = new MockLogService();
-
         var servlet = new OldalbumServlet();
-        servlet.setLogService(logservice);
         servlet.setOldalbumService(oldalbum);
         servlet.activate();
 

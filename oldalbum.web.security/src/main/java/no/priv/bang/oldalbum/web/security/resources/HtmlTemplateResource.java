@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.security.resources;
 /*
- * Copyright 2024 Steinar Bang
+ * Copyright 20242-026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.security.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,19 +22,20 @@ import javax.ws.rs.InternalServerErrorException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HtmlTemplateResource {
+    private static final Logger logger = LoggerFactory.getLogger(HtmlTemplateResource.class);
 
     static void setError(Document html, String message) {
         setMessage(html, "Error: " + message);
     }
 
-    protected Document loadHtmlFile(String htmlFile, LogService logservice) {
+    protected Document loadHtmlFile(String htmlFile) {
         try (InputStream body = getClasspathResource(htmlFile)) {
             return Jsoup.parse(body, "UTF-8", "");
         } catch (IOException e) {
-            var logger = logservice.getLogger(getClass());
             var message = "Got exception loading the index.html file";
             logger.error(message, e);
             throw new InternalServerErrorException(message, e);
@@ -45,8 +46,8 @@ public class HtmlTemplateResource {
         return getClass().getClassLoader().getResourceAsStream(resource);
     }
 
-    protected Document loadHtmlFileAndSetMessage(String htmlFile, String message, LogService logservice) {
-        var html = loadHtmlFile(htmlFile, logservice);
+    protected Document loadHtmlFileAndSetMessage(String htmlFile, String message) {
+        var html = loadHtmlFile(htmlFile);
         setError(html, message);
         return html;
     }

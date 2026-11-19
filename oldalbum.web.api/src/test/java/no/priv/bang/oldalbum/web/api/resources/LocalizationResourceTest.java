@@ -25,13 +25,35 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.LocaleBean;
 
 class LocalizationResourceTest {
     private static final Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private static Logger logger;
+    private ListAppender<ILoggingEvent> logappender;
+
+    @BeforeEach
+    void setup() {
+        logger = (Logger) LoggerFactory.getLogger(LocalizationResource.class);
+        logappender = new ListAppender<>();
+        logappender.start();
+        logger.addAppender(logappender);
+    }
+
+    @AfterEach
+    void teardown() {
+        logger.detachAppender(logappender);
+        logappender.stop();
+    }
 
     @Test
     void testDefaultLocale() {
@@ -73,8 +95,6 @@ class LocalizationResourceTest {
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.displayTexts(any())).thenThrow(MissingResourceException.class);
         var resource = new LocalizationResource();
-        var logservice = new MockLogService();
-        resource.setLogservice(logservice);
         resource.oldalbum = oldalbum;
         var response = resource.displayTexts("en_UK");
         assertThat(response).hasFieldOrPropertyWithValue("status", 500);

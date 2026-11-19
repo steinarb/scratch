@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Copyright 2020-2025 Steinar Bang
+Copyright 2020-2026 Steinar Bang
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -81,22 +81,6 @@ under the License.
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.log</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.servlet</groupId>
             <artifactId>servlet.frontend</artifactId>
             <scope>provided</scope>
@@ -159,11 +143,6 @@ under the License.
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>service-mocks</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.testutilities</artifactId>
             <scope>test</scope>
@@ -172,6 +151,11 @@ under the License.
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.12.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

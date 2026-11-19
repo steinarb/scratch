@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.security;
 /*
- * Copyright 2024 Steinar Bang
+ * Copyright 2024-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.security;
 
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
@@ -22,12 +22,9 @@ import javax.servlet.Servlet;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
-import org.osgi.service.log.LogService;
-
 import no.priv.bang.servlet.jersey.JerseyServlet;
 
 /***
@@ -44,12 +41,6 @@ import no.priv.bang.servlet.jersey.JerseyServlet;
 @HttpWhiteboardServletPattern("/auth/*")
 public class OldalbumLoginServlet extends JerseyServlet {
     private static final long serialVersionUID = 6064420153498760622L;
-
-    @Override
-    @Reference
-    public void setLogService(LogService logService) {
-        super.setLogService(logService);
-    }
 
     @Activate
     public void activate() {

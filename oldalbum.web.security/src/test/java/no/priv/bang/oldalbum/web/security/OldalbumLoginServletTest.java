@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.security;
 /*
- * Copyright 2024 Steinar Bang
+ * Copyright 2024-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.security;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
@@ -26,7 +26,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.junit.jupiter.api.Test;
-import org.osgi.service.log.LogService;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -35,18 +34,15 @@ import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
 
 import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldalbumLoginServletTest extends ShiroTestBase {
 
     @Test
     void testGetLoginPageIndexHtml() throws Exception {
-        var logservice = new MockLogService();
-
         var request = buildGetLoginUrl();
         var response = new MockHttpServletResponse();
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration();
 
         createSubjectAndBindItToThread(request, response);
 
@@ -57,8 +53,6 @@ class OldalbumLoginServletTest extends ShiroTestBase {
 
     @Test
     void testAuthenticate() throws Exception {
-        var logservice = new MockLogService();
-
         var originalRequestUrl = "https://myserver.com/someresource";
         var request = buildPostToLoginUrl(originalRequestUrl);
         var body = UriBuilder.fromUri("http://localhost:8181/oldalbum")
@@ -68,7 +62,7 @@ class OldalbumLoginServletTest extends ShiroTestBase {
         request.setBodyContent(body);
         var response = new MockHttpServletResponse();
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration();
 
         createSubjectAndBindItToThread(request, response);
 
@@ -79,8 +73,6 @@ class OldalbumLoginServletTest extends ShiroTestBase {
 
     @Test
     void testAuthenticateUnknownAccount() throws Exception {
-        var logservice = new MockLogService();
-
         var originalRequestUrl = "https://myserver.com/someresource";
         var request = buildPostToLoginUrl(originalRequestUrl);
         var body = UriBuilder.fromUri("http://localhost:8181/oldalbum")
@@ -91,7 +83,7 @@ class OldalbumLoginServletTest extends ShiroTestBase {
         var response = new MockHttpServletResponse();
 
         // Emulate DS component setup
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration();
 
         createSubjectAndBindItToThread(request, response);
 
@@ -102,8 +94,6 @@ class OldalbumLoginServletTest extends ShiroTestBase {
 
     @Test
     void testAuthenticateWrongPassword() throws Exception {
-        var logservice = new MockLogService();
-
         var originalRequestUrl = "https://myserver.com/someresource";
         var request = buildPostToLoginUrl(originalRequestUrl);
         var body = UriBuilder.fromUri("http://localhost:8181/oldalbum")
@@ -113,7 +103,7 @@ class OldalbumLoginServletTest extends ShiroTestBase {
         request.setBodyContent(body);
         var response = new MockHttpServletResponse();
 
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration();
 
         createSubjectAndBindItToThread(request, response);
 
@@ -153,9 +143,8 @@ class OldalbumLoginServletTest extends ShiroTestBase {
         return request;
     }
 
-    private OldalbumLoginServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(LogService logservice) throws Exception {
+    private OldalbumLoginServlet simulateDSComponentActivationAndWebWhiteboardConfiguration() throws Exception {
         var servlet = new OldalbumLoginServlet();
-        servlet.setLogService(logservice);
         servlet.activate();
         var config = createServletConfigWithApplicationAndPackagenameForJerseyResources();
         servlet.init(config);

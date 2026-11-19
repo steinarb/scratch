@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.security.resources;
 /*
- * Copyright 2025 Steinar Bang
+ * Copyright 2025-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.security.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,16 +26,13 @@ import javax.ws.rs.InternalServerErrorException;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
-
 class HtmlTemplateResourceTest {
 
     @Test
     void testTemplateFileNotFound() {
-        var logservice = new MockLogService();
         class NotFoundFile extends HtmlTemplateResource {
             Document expandFile() {
-                return loadHtmlFile("Not found file", logservice);
+                return loadHtmlFile("Not found file");
             }
 
             @Override

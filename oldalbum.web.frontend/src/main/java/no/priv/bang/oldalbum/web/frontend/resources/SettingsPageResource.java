@@ -1,5 +1,6 @@
+package no.priv.bang.oldalbum.web.frontend.resources;
 /*
- * Copyright 2024 Steinar Bang
+ * Copyright 2024-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.frontend.resources;
 
 import static java.lang.String.format;
 
@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -40,18 +39,12 @@ import org.apache.shiro.web.util.WebUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.FormElement;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("")
 public class SettingsPageResource {
-
-    Logger logger;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(getClass());
-    }
+    private static final Logger logger = LoggerFactory.getLogger(SettingsPageResource.class);
 
     @Path("settings")
     @GET

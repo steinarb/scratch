@@ -1,3 +1,4 @@
+package no.priv.bang.oldalbum.web.api;
 /*
  * Copyright 2020-2026 Steinar Bang
  *
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalMatchers.*;
@@ -46,11 +46,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.glassfish.jersey.server.ServerProperties;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.osgi.service.log.LogService;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,6 +60,9 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletOutputStream;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
@@ -69,7 +73,7 @@ import no.priv.bang.oldalbum.services.bean.LocaleBean;
 import no.priv.bang.oldalbum.services.bean.LoginResult;
 import no.priv.bang.oldalbum.testutilities.ShiroTestBase;
 import no.priv.bang.oldalbum.web.api.resources.ErrorMessage;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
+import no.priv.bang.oldalbum.web.api.resources.ImageResource;
 import no.priv.bang.osgiservice.users.Role;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
@@ -80,6 +84,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     static final ObjectMapper mapper = new ObjectMapper();
     private static List<AlbumEntry> allroutes;
     static String dumpedroutes = loadClasspathResourceIntoString("dumproutes.sql");
+    private static Logger logger;
+    private ListAppender<ILoggingEvent> logappender;
 
     @BeforeAll
     static void beforeAllTests() throws Exception {
@@ -89,18 +95,27 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @BeforeEach
     void beforeEachTest() {
         removeWebSubjectFromThread();
+        logger = (Logger) LoggerFactory.getLogger(ImageResource.class);
+        logappender = new ListAppender<>();
+        logappender.start();
+        logger.addAppender(logappender);
+    }
+
+    @AfterEach
+    void teardown() {
+        logger.detachAppender(logappender);
+        logappender.stop();
     }
 
     @Test
     void testCheckLogin() throws Exception {
         createSubjectAndBindItToThread();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.fetchAllRoutes(any(), anyBoolean())).thenReturn(allroutes);
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildGetUrl("/login");
         var response = new MockHttpServletResponse();
         servlet.service(request, response);
@@ -112,13 +127,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testClearOriginalRequestUrl() throws Exception {
         createSubjectAndBindItToThread();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.fetchAllRoutes(any(), anyBoolean())).thenReturn(allroutes);
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildGetUrl("/clearoriginalrequesturl");
         var response = new MockHttpServletResponse();
         servlet.service(request, response);
@@ -129,14 +143,13 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testFetchRoutes() throws Exception {
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.fetchAllRoutes(any(), anyBoolean())).thenReturn(allroutes);
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         var shirofilter = mock(ReloadableShiroFilter.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin, shirofilter);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin, shirofilter);
         var request = buildGetUrl("/allroutes");
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -148,14 +161,13 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testDumpRoutesSql() throws Exception {
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.dumpDatabaseSql(null, false)).thenReturn(dumpedroutes);
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
         var shirofilter = mock(ReloadableShiroFilter.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin, shirofilter);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin, shirofilter);
         var request = buildGetUrl("/dumproutessql");
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -169,13 +181,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testModifyalbum() throws Exception {
         var modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/modifyalbum", modifiedAlbum);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -189,11 +200,10 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testTouchpicturetimestamp() throws Exception {
         var picture = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).requireLogin(true).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.touchPictureTimestamp(anyInt())).thenReturn(Arrays.asList(picture));
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildGetUrl("/touchpicturetimestamp/17");
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -207,11 +217,10 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testTogglepasswordprotection() throws Exception {
         var pictureWithToggledPasswordProtection = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).requireLogin(true).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.toggleEntryPasswordProtection((not(eq(0))))).thenReturn(Arrays.asList(pictureWithToggledPasswordProtection));
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildGetUrl(String.format("/togglepasswordprotection/%d", pictureWithToggledPasswordProtection.id()));
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -225,11 +234,10 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testTogglepasswordprotectionNotLoggedIn() throws Exception {
         var pictureWithToggledPasswordProtection = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).requireLogin(true).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.toggleEntryPasswordProtection((not(eq(0))))).thenReturn(Arrays.asList(pictureWithToggledPasswordProtection));
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildGetUrl(String.format("/togglepasswordprotection/%d", pictureWithToggledPasswordProtection.id()));
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -240,13 +248,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testModifyalbumLoggedInAsUserWithoutOldalbumadmin() throws Exception {
         var modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/modifyalbum", modifiedAlbum);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -258,13 +265,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testModifyalbumWhenNotLoggedIn() throws Exception {
         var modifiedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.updateEntry(any())).thenReturn(Arrays.asList(modifiedAlbum));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/modifyalbum", modifiedAlbum);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -275,13 +281,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testAddAlbum() throws Exception {
         var albumToAdd = AlbumEntry.with().parent(1).path("/newalbum/").album(true).title("A new album").description("A new album for new pictures").sort(2).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(albumToAdd));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/addalbum", albumToAdd);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -295,13 +300,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testAddPicture() throws Exception {
         var pictureToAdd = AlbumEntryWithBasename.with().id(2).parent(1).path("/moto/vfr96/acirc1").basename("acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd.convertTo()));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/addpicture", pictureToAdd);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -315,12 +319,11 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testDeleteEntry() throws Exception {
         var pictureToDelete = AlbumEntry.with().id(7).parent(3).path("/oldalbum/moto/places/grava3").album(false).title("").description("Tyrigrava, view from the north. Lotsa bikes here too").imageUrl("https://www.bang.priv.no/sb/pics/moto/places/grava3.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/places/icons/grava3.gif").sort(3).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/deleteentry", pictureToDelete);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -334,12 +337,11 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     @Test
     void testDeleteSelection() throws Exception {
         var selection = Arrays.asList(7);
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/deleteselection", selection);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -354,13 +356,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     void testMoveEntryUp() throws Exception {
         var albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
         var movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryUp(any())).thenReturn(Arrays.asList(movedAlbum));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/movealbumentryup", albumToMove);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -376,13 +377,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
     void testMoveEntryDown() throws Exception {
         var albumToMove = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(1).childcount(2).build();
         var movedAlbum = AlbumEntry.with().id(2).parent(1).path("/moto/").album(true).title("Album has been updated").description("This is an updated description").sort(2).childcount(2).build();
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         when(backendService.moveEntryDown(any())).thenReturn(Arrays.asList(movedAlbum));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var request = buildPostUrl("/movealbumentrydown", albumToMove);
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
@@ -411,9 +411,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var backend = mock(OldAlbumService.class);
         when(backend.getAlbumEntry(anyInt())).thenReturn(Optional.of(entry));
         when(backend.downloadAlbumEntry(anyInt())).thenReturn(streamingOutput);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, useradmin);
         var request = buildGetUrl("/image/download/" + albumEntryId);
         var response = new MockHttpServletResponse();
 
@@ -431,18 +430,15 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var albumEntryId = 9;
         var backend = mock(OldAlbumService.class);
         when(backend.downloadAlbumEntry(anyInt())).thenThrow(OldAlbumException.class);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, useradmin);
         var request = buildGetUrl("/image/download/" + albumEntryId);
         var response = new MockHttpServletResponse();
-
-        var originalNumberOfLogmessages = logservice.getLogmessages().size();
+        var originalNumberOfLogmessages = logappender.list.size();
         servlet.service(request, response);
-
         assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
         assertEquals(MediaType.TEXT_PLAIN, response.getContentType());
-        assertThat(logservice.getLogmessages()).hasSizeGreaterThan(originalNumberOfLogmessages);
+        assertThat(logappender.list).hasSizeGreaterThan(originalNumberOfLogmessages);
     }
 
     @SuppressWarnings("unchecked")
@@ -461,9 +457,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var backend = mock(OldAlbumService.class);
         when(backend.getAlbumEntry(albumId)).thenReturn(Optional.of(album));
         when(backend.downloadAlbumEntrySelection(anyList())).thenReturn(streamingOutput);
-        var logservice = new MockLogService();
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backend, useradmin);
         var request = buildGetUrl("/image/downloadselection/" + albumId);
         request.setQueryString("id=9&id=10&id=12");
         var response = new MockHttpServletResponse();
@@ -479,7 +474,6 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testGetMetadata() throws Exception {
-        var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
         var mockMetadata = ImageMetadata.with()
             .status(200)
@@ -491,7 +485,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, useradmin);
         var url = "https://www.bang.priv.no/sb/pics/moto/places/grava1.jpg";
         var request = buildPostUrl("/image/metadata", ImageRequest.with().url(url).build());
         var response = new MockHttpServletResponse();
@@ -509,10 +503,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         // Set up REST API servlet with mocked services
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.defaultLocale()).thenReturn(NB_NO);
-        var logservice = new MockLogService();
-
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/defaultlocale");
@@ -532,10 +524,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         // Set up REST API servlet with mocked services
         var oldalbum = mock(OldAlbumService.class);
         when(oldalbum.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).toList());
-        var logservice = new MockLogService();
-
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/availablelocales");
@@ -558,10 +548,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var texts = new HashMap<String, String>();
         texts.put("date", "Dato");
         when(oldalbum.displayTexts(NB_NO)).thenReturn(texts);
-        var logservice = new MockLogService();
-
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/displaytexts");
@@ -585,10 +573,8 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var texts = new HashMap<String, String>();
         texts.put("date", "Dato");
         when(oldalbum.displayTexts(EN_UK)).thenThrow(MissingResourceException.class);
-        var logservice = new MockLogService();
-
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, logservice, useradmin);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(oldalbum, useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/displaytexts");
@@ -635,13 +621,12 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
             .setSession(session);
     }
 
-    private OldAlbumWebApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(OldAlbumService oldAlbumService, LogService logservice, UserManagementService useradmin) throws Exception {
-        return simulateDSComponentActivationAndWebWhiteboardConfiguration(oldAlbumService, logservice, useradmin, null);
+    private OldAlbumWebApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(OldAlbumService oldAlbumService, UserManagementService useradmin) throws Exception {
+        return simulateDSComponentActivationAndWebWhiteboardConfiguration(oldAlbumService, useradmin, null);
     }
 
-    private OldAlbumWebApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(OldAlbumService oldAlbumService, LogService logservice, UserManagementService useradmin, ReloadableShiroFilter shirofilter) throws Exception {
+    private OldAlbumWebApiServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(OldAlbumService oldAlbumService, UserManagementService useradmin, ReloadableShiroFilter shirofilter) throws Exception {
         var servlet = new OldAlbumWebApiServlet();
-        servlet.setLogService(logservice);
         servlet.setOldAlbumService(oldAlbumService);
         servlet.setUseradmin(useradmin);
         if (shirofilter != null) {

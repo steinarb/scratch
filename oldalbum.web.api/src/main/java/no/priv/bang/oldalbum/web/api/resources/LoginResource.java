@@ -1,3 +1,4 @@
+package no.priv.bang.oldalbum.web.api.resources;
 /*
  * Copyright 2020-2026 Steinar Bang
  *
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.web.api.resources;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -26,8 +26,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
 
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.Credentials;
@@ -41,18 +39,11 @@ import no.priv.bang.osgiservice.users.UserManagementService;
 @Produces(MediaType.APPLICATION_JSON)
 public class LoginResource {
 
-    Logger logger;
-
     @Inject
     public UserManagementService useradmin;
 
     @Inject
     public OldAlbumService oldalbum;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(getClass());
-    }
 
     @GET
     @Path("/login")
