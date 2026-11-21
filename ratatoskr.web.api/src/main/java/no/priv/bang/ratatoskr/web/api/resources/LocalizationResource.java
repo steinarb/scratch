@@ -1,5 +1,6 @@
+package no.priv.bang.ratatoskr.web.api.resources;
 /*
- * Copyright 2023-2024 Steinar Bang
+ * Copyright 2023-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.web.api.resources;
 
 import java.util.List;
 import java.util.Locale;
@@ -28,24 +28,18 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.priv.bang.ratatoskr.services.RatatoskrService;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
 
 @Path("")
 public class LocalizationResource extends ResourceBase {
+    private static final Logger logger = LoggerFactory.getLogger(LocalizationResource.class);
 
     @Inject
     RatatoskrService ratatoskr;
-
-    Logger logger;
-
-    @Inject
-    void setLogservice(LogService logservice) {
-        this.logger = logservice.getLogger(getClass());
-    }
 
     @GET
     @Path("defaultlocale")

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-Copyright 2023-2024 Steinar Bang
+Copyright 2023-2026 Steinar Bang
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -176,11 +176,6 @@ under the License.
             <artifactId>jackson-java-time-module</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>

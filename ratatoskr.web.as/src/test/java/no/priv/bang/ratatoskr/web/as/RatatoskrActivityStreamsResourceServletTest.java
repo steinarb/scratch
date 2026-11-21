@@ -1,3 +1,4 @@
+package no.priv.bang.ratatoskr.web.as;
 /*
  * Copyright 2023-2026 Steinar Bang
  *
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.web.as;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -301,7 +301,6 @@ class RatatoskrActivityStreamsResourceServletTest extends ShiroTestBase {
 
     private RatatoskrActivityStreamsResourceServlet simulateDSComponentActivationAndWebWhiteboardConfiguration(RatatoskrService ratatoskr, UserManagementService useradmin, LogService logservice) throws Exception {
         var servlet = new RatatoskrActivityStreamsResourceServlet();
-        servlet.setLogService(logservice);
         servlet.setRatatoskrService(ratatoskr);
         servlet.setUseradmin(useradmin);
         servlet.activate();

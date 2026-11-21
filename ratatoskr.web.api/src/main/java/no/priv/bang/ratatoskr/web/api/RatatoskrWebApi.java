@@ -1,5 +1,6 @@
+package no.priv.bang.ratatoskr.web.api;
 /*
- * Copyright 2023-2024 Steinar Bang
+ * Copyright 2023-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.web.api;
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
@@ -24,7 +24,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
-import org.osgi.service.log.LogService;
 
 import no.priv.bang.osgiservice.users.UserManagementService;
 import no.priv.bang.ratatoskr.services.RatatoskrService;
@@ -37,12 +36,6 @@ import no.priv.bang.servlet.jersey.JerseyServlet;
 @HttpWhiteboardServletPattern("/api/*")
 public class RatatoskrWebApi extends JerseyServlet {
     private static final long serialVersionUID = 3391345571152153990L; // NOSONAR
-
-    @Override
-    @Reference
-    public void setLogService(LogService logService) {
-        super.setLogService(logService);
-    }
 
     @Reference
     public void setRatatoskrService(RatatoskrService ratatoskr) {
