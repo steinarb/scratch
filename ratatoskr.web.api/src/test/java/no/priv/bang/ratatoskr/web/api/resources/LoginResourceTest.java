@@ -1,5 +1,6 @@
+package no.priv.bang.ratatoskr.web.api.resources;
 /*
- * Copyright 2023-2024 Steinar Bang
+ * Copyright 2023-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.web.api.resources;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,7 +34,6 @@ import no.priv.bang.ratatoskr.services.RatatoskrService;
 import no.priv.bang.ratatoskr.services.beans.Credentials;
 import no.priv.bang.ratatoskr.web.api.ShiroTestBase;
 import no.priv.bang.authservice.definitions.AuthserviceException;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 class LoginResourceTest extends ShiroTestBase {
@@ -42,14 +41,12 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLogin() {
         var request = new MockHttpServletRequest();
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
         var webcontext = new MockServletContext();
         webcontext.setContextPath("/ratatoskr");
         var resource = new LoginResource();
         resource.webcontext = webcontext;
-        resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
@@ -67,14 +64,12 @@ class LoginResourceTest extends ShiroTestBase {
     @Test
     void testLoginByUserWithoutRole() {
         var request = new MockHttpServletRequest();
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
         var webcontext = new MockServletContext();
         webcontext.setContextPath("/ratatoskr");
         var resource = new LoginResource();
         resource.webcontext = webcontext;
-        resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
@@ -92,14 +87,12 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginWithOriginalRequestUrl() {
         var request = new MockHttpServletRequest()
             .setContextPath("/ratatoskr");
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
         var webcontext = new MockServletContext();
         webcontext.setContextPath("/ratatoskr");
         var resource = new LoginResource();
         resource.webcontext = webcontext;
-        resource.setLogservice(logservice);
         resource.request = request;
         resource.ratatoskr = ratatoskr;
         resource.useradmin = useradmin;
@@ -121,10 +114,8 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginFeilPassord() {
         var ratatoskr = mock(RatatoskrService.class);
         when(ratatoskr.displayText(anyString(), anyString())).thenReturn("Feil passord");
-        var logservice = new MockLogService();
         var resource = new LoginResource();
         resource.ratatoskr = ratatoskr;
-        resource.setLogservice(logservice);
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();
@@ -139,10 +130,8 @@ class LoginResourceTest extends ShiroTestBase {
     void testLoginUkjentBrukernavn() {
         var ratatoskr = mock(RatatoskrService.class);
         when(ratatoskr.displayText(anyString(), anyString())).thenReturn("Ukjent konto");
-        var logservice = new MockLogService();
         var resource = new LoginResource();
         resource.ratatoskr = ratatoskr;
-        resource.setLogservice(logservice);
         var username = "jdd";
         var password = Base64.getEncoder().encodeToString("feil".getBytes());
         createSubjectAndBindItToThread();

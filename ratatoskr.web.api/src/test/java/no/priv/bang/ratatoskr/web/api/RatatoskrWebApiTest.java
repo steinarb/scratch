@@ -1,5 +1,6 @@
+package no.priv.bang.ratatoskr.web.api;
 /*
- * Copyright 2023-2024 Steinar Bang
+ * Copyright 2023-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.ratatoskr.web.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +35,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.server.ServerProperties;
 import org.junit.jupiter.api.Test;
-import org.osgi.service.log.LogService;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -51,7 +50,6 @@ import no.priv.bang.ratatoskr.services.beans.Credentials;
 import no.priv.bang.ratatoskr.services.beans.LocaleBean;
 import no.priv.bang.ratatoskr.services.beans.Loginresult;
 import no.priv.bang.ratatoskr.web.api.resources.ErrorMessage;
-import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 import no.priv.bang.osgiservice.users.UserManagementService;
 
 class RatatoskrWebApiTest extends ShiroTestBase {
@@ -67,10 +65,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("johnnyBoi".getBytes());
         var credentials = Credentials.with().username(username).password(password).build();
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         createSubjectAndBindItToThread();
         var request = buildPostUrl("/login");
         var postBody = mapper.writeValueAsString(credentials);
@@ -88,10 +85,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         var username = "jd";
         var password = Base64.getEncoder().encodeToString("wrongPass".getBytes());
         var credentials = Credentials.with().username(username).password(password).build();
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         createSubjectAndBindItToThread();
         var request = buildPostUrl("/login");
         var postBody = mapper.writeValueAsString(credentials);
@@ -106,12 +102,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
 
     @Test
     void testGetAccounts() throws Exception {
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var account = Account.with().accountId(123).build();
         when(ratatoskr.getAccounts()).thenReturn(Collections.singletonList(account));
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/accounts");
         var response = new MockHttpServletResponse();
 
@@ -125,12 +120,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
     @Test
     void testGetCounterIncrementStep() throws Exception {
         var incrementStepValue = 1;
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var optionalIncrementStep = Optional.of(CounterIncrementStepBean.with().counterIncrementStep(incrementStepValue).build());
         when(ratatoskr.getCounterIncrementStep(anyString())).thenReturn(optionalIncrementStep);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
@@ -143,10 +137,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
 
     @Test
     void testGetCounterIncrementStepWhenNotFound() throws Exception {
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
@@ -158,12 +151,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
     @Test
     void testUpdateCounterIncrementStep() throws Exception {
         var incrementStepValue = 1;
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var optionalIncrementStep = Optional.of(CounterIncrementStepBean.with().counterIncrementStep(incrementStepValue).build());
         when(ratatoskr.updateCounterIncrementStep(any())).thenReturn(optionalIncrementStep);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var updateIncrementStep = CounterIncrementStepBean.with()
             .username("jad")
             .counterIncrementStep(incrementStepValue)
@@ -182,10 +174,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
 
     @Test
     void testUpdateCounterIncrementStepWhenUpdateFails() throws Exception {
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var updateIncrementStep = CounterIncrementStepBean.with()
             .username("jad")
             .counterIncrementStep(3)
@@ -203,12 +194,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
     @Test
     void testGetCounter() throws Exception {
         var counterValue = 3;
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var optionalCounter = Optional.of(CounterBean.with().counter(counterValue).build());
         when(ratatoskr.getCounter(anyString())).thenReturn(optionalCounter);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/jad");
         var response = new MockHttpServletResponse();
 
@@ -221,10 +211,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
 
     @Test
     void testGetCounterWhenNotFound() throws Exception {
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/jad");
         var response = new MockHttpServletResponse();
 
@@ -236,12 +225,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
     @Test
     void testIncrementCounter() throws Exception {
         var counterValue = 3;
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var optionalCounter = Optional.of(CounterBean.with().counter(counterValue).build());
         when(ratatoskr.incrementCounter(anyString())).thenReturn(optionalCounter);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/jad/increment");
         var response = new MockHttpServletResponse();
 
@@ -255,12 +243,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
     @Test
     void testGetCounterIncrementStepWhenNotLoggedIn() throws Exception {
         var incrementStepValue = 1;
-        var logservice = new MockLogService();
         var sampleapp = mock(RatatoskrService.class);
         var optionalIncrementStep = Optional.of(CounterIncrementStepBean.with().counterIncrementStep(incrementStepValue).build());
         when(sampleapp.getCounterIncrementStep(anyString())).thenReturn(optionalIncrementStep);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin);
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
@@ -272,12 +259,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
     @Test
     void testGetCounterIncrementStepWhenUserLacksRole() throws Exception {
         var incrementStepValue = 1;
-        var logservice = new MockLogService();
         var sampleapp = mock(RatatoskrService.class);
         var optionalIncrementStep = Optional.of(CounterIncrementStepBean.with().counterIncrementStep(incrementStepValue).build());
         when(sampleapp.getCounterIncrementStep(anyString())).thenReturn(optionalIncrementStep);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(sampleapp , useradmin);
         var request = buildGetUrl("/counter/incrementstep/jad");
         var response = new MockHttpServletResponse();
 
@@ -288,10 +274,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
 
     @Test
     void testIncrementCounterWhenFailing() throws Exception {
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/jad/increment");
         var response = new MockHttpServletResponse();
 
@@ -303,12 +288,11 @@ class RatatoskrWebApiTest extends ShiroTestBase {
     @Test
     void testDecrementCounter() throws Exception {
         var counterValue = 3;
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var optionalCounter = Optional.of(CounterBean.with().counter(counterValue).build());
         when(ratatoskr.decrementCounter(anyString())).thenReturn(optionalCounter);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/jad/decrement");
         var response = new MockHttpServletResponse();
 
@@ -321,10 +305,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
 
     @Test
     void testDecrementCounterWhenFailing() throws Exception {
-        var logservice = new MockLogService();
         var ratatoskr = mock(RatatoskrService.class);
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
         var request = buildGetUrl("/counter/jad/decrement");
         var response = new MockHttpServletResponse();
 
@@ -338,10 +321,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         // Set up REST API servlet with mocked services
         var ratatoskr = mock(RatatoskrService.class);
         when(ratatoskr.defaultLocale()).thenReturn(NB_NO);
-        var logservice = new MockLogService();
 
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/defaultlocale");
@@ -361,10 +343,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         // Set up REST API servlet with mocked services
         var ratatoskr = mock(RatatoskrService.class);
         when(ratatoskr.availableLocales()).thenReturn(Collections.singletonList(Locale.forLanguageTag("nb-NO")).stream().map(l -> LocaleBean.with().locale(l).build()).toList());
-        var logservice = new MockLogService();
 
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/availablelocales");
@@ -387,10 +368,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         var texts = new HashMap<String, String>();
         texts.put("date", "Dato");
         when(ratatoskr.displayTexts(NB_NO)).thenReturn(texts);
-        var logservice = new MockLogService();
 
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/displaytexts");
@@ -414,10 +394,9 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         var texts = new HashMap<String, String>();
         texts.put("date", "Dato");
         when(ratatoskr.displayTexts(EN_UK)).thenThrow(MissingResourceException.class);
-        var logservice = new MockLogService();
 
         var useradmin = mock(UserManagementService.class);
-        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin, logservice);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(ratatoskr , useradmin);
 
         // Create the request and response
         var request = buildGetUrl("/displaytexts");
@@ -462,9 +441,8 @@ class RatatoskrWebApiTest extends ShiroTestBase {
         return request;
     }
 
-    private RatatoskrWebApi simulateDSComponentActivationAndWebWhiteboardConfiguration(RatatoskrService ratatoskr, UserManagementService useradmin, LogService logservice) throws Exception {
+    private RatatoskrWebApi simulateDSComponentActivationAndWebWhiteboardConfiguration(RatatoskrService ratatoskr, UserManagementService useradmin) throws Exception {
         var servlet = new RatatoskrWebApi();
-        servlet.setLogService(logservice);
         servlet.setRatatoskrService(ratatoskr);
         servlet.setUseradmin(useradmin);
         servlet.activate();
